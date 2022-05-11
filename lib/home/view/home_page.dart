@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks.dart';
+import 'package:ricoms_app/change_password/view/change_password_page.dart';
 import 'package:ricoms_app/dashboard/view/dashboard.dart';
 import 'package:ricoms_app/history/view/history.dart';
 import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
@@ -138,7 +139,9 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('Change Password'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, ChangePasswordPage.route(userId));
+              },
             ),
             ListTile(
               title: const Text('Logout'),

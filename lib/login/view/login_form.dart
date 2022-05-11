@@ -14,7 +14,7 @@ class LoginForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
+              SnackBar(content: Text(state.errmsg)),
             );
         }
       },
@@ -92,21 +92,32 @@ class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      buildWhen: (previous, current) =>
+          previous.password != current.password ||
+          previous.passwordVisibility != current.passwordVisibility,
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
           textInputAction: TextInputAction.done,
           onChanged: (password) =>
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
-          obscureText: true,
+          obscureText: !state.passwordVisibility,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            filled: true,
-            fillColor: Colors.white,
-            labelText: 'password',
-            errorText: state.password.invalid ? 'invalid password' : null,
-          ),
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: Colors.white,
+              labelText: 'password',
+              errorText: state.password.invalid ? 'invalid password' : null,
+              suffixIcon: IconButton(
+                icon: state.passwordVisibility
+                    ? const Icon(Icons.visibility_outlined)
+                    : const Icon(Icons.visibility_off_outlined),
+                onPressed: () {
+                  context
+                      .read<LoginBloc>()
+                      .add(const LoginPasswordVisibilityChanged());
+                },
+              )),
         );
       },
     );

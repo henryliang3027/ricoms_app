@@ -28,7 +28,7 @@ class AuthenticationRepository {
     yield* _controller.stream;
   }
 
-  Future<void> logIn({
+  Future<String> logIn({
     required String ip,
     required String username,
     required String password,
@@ -42,6 +42,7 @@ class AuthenticationRepository {
         data: {'account': username, 'pwd': password},
       );
 
+      print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -51,14 +52,13 @@ class AuthenticationRepository {
         await userRepository.addUserByKey(
             userId, User(id: userId, ip: ip, isActivate: true));
         _controller.add(AuthenticationStatus.authenticated);
+        return '';
       } else {
         _controller.add(AuthenticationStatus.unauthenticated);
+        return data['msg'];
       }
-
-      print(response.data.toString());
     } on DioError catch (e) {
-      _controller
-          .add(AuthenticationStatus.unauthenticated); // if ip does not exist
+      // if ip does not exist
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       if (e.response != null) {
@@ -70,6 +70,8 @@ class AuthenticationRepository {
         print(e.requestOptions);
         print(e.message);
       }
+      _controller.add(AuthenticationStatus.unauthenticated);
+      throw Exception('Authentication Failure');
     }
 
     // await Future.delayed(
@@ -82,7 +84,7 @@ class AuthenticationRepository {
     required userId,
   }) async {
     bool ret = await userRepository.deActivateUser(userId);
-    print('is_logoug : ' + ret.toString());
+    print('is_logout : ' + ret.toString());
 
     _controller.add(AuthenticationStatus.unauthenticated);
   }

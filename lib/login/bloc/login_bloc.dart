@@ -15,6 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginIPChanged>(_onLoginIPChanged);
     on<LoginUsernameChanged>(_onLoginUsernameChanged);
     on<LoginPasswordChanged>(_onLoginPasswordChanged);
+    on<LoginPasswordVisibilityChanged>(_onLoginPasswordVisibilityChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
   }
 
@@ -59,22 +60,36 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
-  void _onLoginSubmitted(
-    LoginSubmitted event,
+  void _onLoginPasswordVisibilityChanged(
+    LoginPasswordVisibilityChanged event,
     Emitter<LoginState> emit,
   ) {
+    emit(state.copyWith(passwordVisibility: !state.passwordVisibility));
+  }
+
+  Future<void> _onLoginSubmitted(
+    LoginSubmitted event,
+    Emitter<LoginState> emit,
+  ) async {
     if (state.status.isValidated) {
       //LoginState.FormzStatus
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
       try {
-        _authenticationRepository.logIn(
+        String errmsg = await _authenticationRepository.logIn(
           ip: state.ip.value,
           username: state.username.value,
           password: state.password.value,
         );
-        emit(state.copyWith(status: FormzStatus.submissionSuccess));
-      } catch (_) {
-        emit(state.copyWith(status: FormzStatus.submissionFailure));
+
+        if (errmsg == '') {
+          emit(state.copyWith(status: FormzStatus.submissionSuccess));
+        } else {
+          emit(state.copyWith(
+              status: FormzStatus.submissionFailure, errmsg: errmsg));
+        }
+      } catch (e) {
+        emit(state.copyWith(
+            status: FormzStatus.submissionFailure, errmsg: e.toString()));
       }
     }
   }
