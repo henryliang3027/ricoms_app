@@ -40,7 +40,7 @@ class AuthenticationBloc
         case AuthenticationStatus.unauthenticated:
           return emit(const AuthenticationState.unauthenticated());
         case AuthenticationStatus.authenticated:
-          final user = await _authenticationRepository.userRepository
+          final user = _authenticationRepository.userRepository
               .getActivateUser(); //get current login user, activate is true
 
           print(user!.id);

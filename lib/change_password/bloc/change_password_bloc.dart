@@ -88,14 +88,32 @@ class ChangePasswordBloc
         confirmPasswordVisibility: !state.confirmPasswordVisibility));
   }
 
-  void _onPasswordSubmmited(
+  Future<void> _onPasswordSubmmited(
     PasswordSubmitted event,
     Emitter<ChangePasswordState> emit,
-  ) {
+  ) async {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-      emit(state.copyWith(status: FormzStatus.submissionSuccess));
+      if (state.newPassword.value != state.confirmPassword.value) {
+        //check if new password is the same as confirm password
+        String errmsg =
+            'Your confirmation password does not match the new password.';
+        emit(state.copyWith(
+            errmsg: errmsg, status: FormzStatus.submissionFailure));
+      } else {
+        // new password is the same as confirm password
+        String errmsg = await _authenticationRepository.changePassword(
+            currentPassword: state.currentPassword.value,
+            newPassword: state.newPassword.value);
+
+        if (errmsg == '') {
+          emit(state.copyWith(status: FormzStatus.submissionSuccess));
+        } else {
+          emit(state.copyWith(
+              errmsg: errmsg, status: FormzStatus.submissionFailure));
+        }
+      }
     }
   }
 }

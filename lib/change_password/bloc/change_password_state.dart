@@ -9,6 +9,7 @@ class ChangePasswordState extends Equatable {
     this.newPasswordVisibility = false,
     this.confirmPassword = const Password.pure(),
     this.confirmPasswordVisibility = false,
+    this.errmsg = '',
   });
 
   final FormzStatus status;
@@ -18,6 +19,7 @@ class ChangePasswordState extends Equatable {
   final bool newPasswordVisibility;
   final Password confirmPassword;
   final bool confirmPasswordVisibility;
+  final String errmsg;
 
   ChangePasswordState copyWith({
     FormzStatus? status,
@@ -27,18 +29,20 @@ class ChangePasswordState extends Equatable {
     bool? newPasswordVisibility,
     Password? confirmPassword,
     bool? confirmPasswordVisibility,
+    String? errmsg,
   }) {
     return ChangePasswordState(
       status: status ?? this.status,
       currentPassword: currentPassword ?? this.currentPassword,
       currentPasswordVisibility:
-          currentPasswordVisibility ?? this.confirmPasswordVisibility,
+          currentPasswordVisibility ?? this.currentPasswordVisibility,
       newPassword: newPassword ?? this.newPassword,
       newPasswordVisibility:
           newPasswordVisibility ?? this.newPasswordVisibility,
       confirmPassword: confirmPassword ?? this.confirmPassword,
       confirmPasswordVisibility:
           confirmPasswordVisibility ?? this.confirmPasswordVisibility,
+      errmsg: errmsg ?? this.errmsg,
     );
   }
 
@@ -50,6 +54,7 @@ class ChangePasswordState extends Equatable {
         newPassword,
         newPasswordVisibility,
         confirmPassword,
-        confirmPasswordVisibility
+        confirmPasswordVisibility,
+        errmsg
       ];
 }

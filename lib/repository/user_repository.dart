@@ -7,7 +7,7 @@ class UserRepository {
   final Box<User> _userBox;
 
   // get full note
-  Future<User?> getActivateUser() async {
+  User? getActivateUser() {
     List<User> users = _userBox.values.toList();
 
     for (User user in users) {
@@ -25,7 +25,15 @@ class UserRepository {
     if (user == null) {
       return false;
     } else {
-      User newUser = User(id: user.id, ip: user.ip, isActivate: false);
+      User newUser = User(
+          id: user.id,
+          ip: user.ip,
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile,
+          tel: user.tel,
+          ext: user.ext,
+          isActivate: false);
       await _userBox.put(userId, newUser);
 
       return true;

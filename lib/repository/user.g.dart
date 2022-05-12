@@ -19,19 +19,34 @@ class UserAdapter extends TypeAdapter<User> {
     return User(
       id: fields[0] as String,
       ip: fields[1] as String,
-      isActivate: fields[2] as bool,
+      name: fields[2] as String,
+      email: fields[3] as String,
+      mobile: fields[4] as String,
+      tel: fields[5] as String,
+      ext: fields[6] as String,
+      isActivate: fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.ip)
       ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.email)
+      ..writeByte(4)
+      ..write(obj.mobile)
+      ..writeByte(5)
+      ..write(obj.tel)
+      ..writeByte(6)
+      ..write(obj.ext)
+      ..writeByte(7)
       ..write(obj.isActivate);
   }
 

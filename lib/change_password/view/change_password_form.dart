@@ -8,7 +8,7 @@ class ChangePasswordForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _showMyDialog() async {
+    Future<void> _showSuccessDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -26,6 +26,33 @@ class ChangePasswordForm extends StatelessWidget {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showFailureDialog(String errmsg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(errmsg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
@@ -36,14 +63,17 @@ class ChangePasswordForm extends StatelessWidget {
     }
 
     return BlocListener<ChangePasswordBloc, ChangePasswordState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.status.isSubmissionSuccess) {
           // ScaffoldMessenger.of(context)
           //   ..hideCurrentSnackBar()
           //   ..showSnackBar(
           //     const SnackBar(content: Text('Update, Please login again')),
           //   );
-          _showMyDialog();
+          await _showSuccessDialog();
+          Navigator.of(context).pop(true); //pop this page
+        } else if (state.status.isSubmissionFailure) {
+          _showFailureDialog(state.errmsg);
         }
       },
       child: Column(
