@@ -84,9 +84,10 @@ class ChangePasswordForm extends StatelessWidget {
           _NewPasswordInput(),
           const Padding(padding: EdgeInsets.all(12)),
           _ConfirmPasswordInput(),
-          const Expanded(
-            child: SizedBox(),
-          ),
+          const Padding(padding: EdgeInsets.all(12)),
+          // const Expanded(
+          //   child: SizedBox(),
+          // ),
           _SaveButton(),
           const Padding(padding: EdgeInsets.all(12)),
         ],

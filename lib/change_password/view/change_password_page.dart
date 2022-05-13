@@ -28,6 +28,7 @@ class ChangePasswordPage extends StatelessWidget {
         return false; // will be pop without data if true, will not be pop if false
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(_title),
         ),
