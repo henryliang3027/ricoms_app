@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
 import 'package:ricoms_app/login/view/login_form.dart';
@@ -13,30 +14,30 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQueryData.fromWindow(window);
-
+    //final mq = MediaQueryData.fromWindow(window);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: ConstrainedBox(
-        constraints: BoxConstraints.tightFor(
-          height: mq.size.height,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/login_background.png'),
+              fit: BoxFit.cover),
         ),
-        child: Container(
-          height: double.infinity,
-          color: Colors.black,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: BlocProvider(
-              create: (context) {
-                return LoginBloc(
-                  authenticationRepository:
-                      RepositoryProvider.of<AuthenticationRepository>(
-                    context,
-                  ),
-                );
-              },
-              child: const LoginForm(),
-            ),
+        height: double.infinity,
+        //color: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: BlocProvider(
+            create: (context) {
+              return LoginBloc(
+                authenticationRepository:
+                    RepositoryProvider.of<AuthenticationRepository>(
+                  context,
+                ),
+              );
+            },
+            child: const LoginForm(),
           ),
         ),
       ),
