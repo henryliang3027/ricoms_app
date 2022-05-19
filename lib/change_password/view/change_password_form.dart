@@ -76,7 +76,7 @@ class ChangePasswordForm extends StatelessWidget {
           _showFailureDialog(state.errmsg);
         }
       },
-      child: ListView(
+      child: Column(
         children: [
           _CurrentPasswordInput(),
           const Padding(padding: EdgeInsets.all(12)),
