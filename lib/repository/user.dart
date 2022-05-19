@@ -7,6 +7,7 @@ class User {
     required this.id,
     required this.ip,
     required this.name,
+    required this.password,
     required this.email,
     required this.mobile,
     required this.tel,
@@ -19,6 +20,7 @@ class User {
             id: '-',
             ip: '-',
             name: '-',
+            password: '-',
             email: '-',
             mobile: '-',
             tel: '-',
@@ -35,17 +37,20 @@ class User {
   final String name;
 
   @HiveField(3)
-  final String email;
+  final String password;
 
   @HiveField(4)
-  final String mobile;
+  final String email;
 
   @HiveField(5)
-  final String tel;
+  final String mobile;
 
   @HiveField(6)
-  final String ext;
+  final String tel;
 
   @HiveField(7)
+  final String ext;
+
+  @HiveField(8)
   final bool isActivate;
 }

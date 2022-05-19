@@ -88,18 +88,18 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white12,
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Card(
-                        elevation: 0,
-                        shape: const CircleBorder(),
-                        color: Colors.grey.shade300,
-                        child: const Padding(
-                          padding: EdgeInsets.all(20),
-                          child:
-                              Image(image: AssetImage('assets/menu_logo.png')),
+                    Padding(padding: EdgeInsets.only(top: 10.0)),
+                    const SizedBox(
+                      child: Image(image: AssetImage('assets/ic_launcher.png')),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 2.0)),
+                    Text(user.name,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w700,
                         )),
-                    Text(user.name),
                   ],
                 ),
               ),

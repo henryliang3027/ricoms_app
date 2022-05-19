@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
@@ -21,11 +22,48 @@ class AuthenticationRepository {
     if (user == null) {
       yield AuthenticationStatus.unauthenticated;
     } else {
-      yield AuthenticationStatus.authenticated;
+      await autoLogIn(user: user);
     }
-
-    //yield AuthenticationStatus.unauthenticated;
     yield* _controller.stream;
+  }
+
+  Future<void> autoLogIn({
+    required User user,
+  }) async {
+    String loginPath = 'http://' + user.ip + '/aci/api/account/login';
+
+    try {
+      //404
+      Response response = await dio.post(
+        loginPath,
+        data: {'account': user.name, 'pwd': user.password},
+      );
+
+      print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        _controller.add(AuthenticationStatus.authenticated);
+      } else {
+        // username or password has changed on website
+        _controller.add(AuthenticationStatus.unauthenticated);
+      }
+    } on DioError catch (e) {
+      // if ip does not exist
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response!.data);
+        print(e.response!.headers);
+        print(e.response!.requestOptions);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+      }
+      bool ret = await userRepository.deActivateUser(user.id);
+      _controller.add(AuthenticationStatus.unknown);
+    }
   }
 
   Future<String> logIn({
@@ -61,6 +99,7 @@ class AuthenticationRepository {
                 id: userId,
                 ip: ip,
                 name: infoData['data'][0]['name'].toString(),
+                password: password,
                 email: infoData['data'][0]['email'].toString(),
                 mobile: infoData['data'][0]['mobile'].toString(),
                 tel: infoData['data'][0]['tel'].toString(),

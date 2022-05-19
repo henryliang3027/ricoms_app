@@ -24,12 +24,78 @@ class LoginForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Image(image: AssetImage('assets/ricoms_logo.png')),
+            const Padding(padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 20.0)),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 51.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Image.asset('assets/login_ip_icon.png'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: _IPInput(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             const Padding(padding: EdgeInsets.all(12)),
-            _IPInput(),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 51.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Image.asset('assets/login_username_icon.png'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: _UsernameInput(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             const Padding(padding: EdgeInsets.all(12)),
-            _UsernameInput(),
-            const Padding(padding: EdgeInsets.all(12)),
-            _PasswordInput(),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 51.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Image.asset('assets/login_password_icon.png'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: _PasswordInput(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             const Padding(padding: EdgeInsets.all(12)),
             // _LanguageDropDownButton(),
             // const Padding(padding: EdgeInsets.all(12)),
@@ -52,11 +118,14 @@ class _IPInput extends StatelessWidget {
           textInputAction: TextInputAction.done,
           onChanged: (ip) => context.read<LoginBloc>().add(LoginIPChanged(ip)),
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+            border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+            isDense: true,
             filled: true,
             fillColor: Colors.white,
-            labelText: 'ip',
-            errorText: state.ip.invalid ? 'invalid ip' : null,
+            labelText: 'IP',
+            labelStyle:
+                const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            errorText: state.ip.invalid ? 'Invalid IP' : null,
           ),
         );
       },
@@ -76,11 +145,14 @@ class _UsernameInput extends StatelessWidget {
           onChanged: (username) =>
               context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+            border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+            isDense: true,
             filled: true,
             fillColor: Colors.white,
-            labelText: 'username',
-            errorText: state.username.invalid ? 'invalid username' : null,
+            labelText: 'User ID',
+            labelStyle:
+                const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            errorText: state.username.invalid ? 'Invalid User ID' : null,
           ),
         );
       },
@@ -103,11 +175,14 @@ class _PasswordInput extends StatelessWidget {
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: !state.passwordVisibility,
           decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+              isDense: true,
               filled: true,
               fillColor: Colors.white,
-              labelText: 'password',
-              errorText: state.password.invalid ? 'invalid password' : null,
+              labelText: 'Password',
+              labelStyle:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              errorText: state.password.invalid ? 'Invalid Password' : null,
               suffixIcon: IconButton(
                 icon: state.passwordVisibility
                     ? const Icon(Icons.visibility_outlined)
@@ -168,32 +243,20 @@ class _LoginButton extends StatelessWidget {
         return state.status.isSubmissionInProgress
             ? const CircularProgressIndicator()
             : SizedBox(
-                width: 130.0,
-                height: 60.0,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed)) {
-                          return Colors.blue;
-                        } else if (states.contains(MaterialState.disabled)) {
-                          return Colors.grey;
-                        }
-                        return null; // Use the component's default.
-                      },
-                    ),
-                  ),
+                width: 200,
+                height: 80,
+                child: IconButton(
                   key: const Key('loginForm_continue_raisedButton'),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
+                  icon: state.status.isValidated
+                      ? Image.asset('assets/login_button_icon.png')
+                      : Image.asset('assets/login_button_disable.png'),
                   onPressed: state.status.isValidated
                       ? () {
                           context.read<LoginBloc>().add(const LoginSubmitted());
                         }
                       : null,
-                ));
+                ),
+              );
       },
     );
   }

@@ -29,6 +29,7 @@ class UserRepository {
           id: user.id,
           ip: user.ip,
           name: user.name,
+          password: user.password,
           email: user.email,
           mobile: user.mobile,
           tel: user.tel,
