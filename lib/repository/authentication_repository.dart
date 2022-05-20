@@ -3,19 +3,17 @@ import 'dart:convert';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
   AuthenticationRepository(this.userRepository);
 
-  final Dio dio = Dio();
   final UserRepository userRepository;
   final _controller = StreamController<AuthenticationStatus>();
 
   Stream<AuthenticationStatus> get status async* {
-    await Future<void>.delayed(const Duration(seconds: 1));
+    //await Future<void>.delayed(const Duration(seconds: 1));
 
     User? user = userRepository.getActivateUser();
 
@@ -30,7 +28,11 @@ class AuthenticationRepository {
   Future<void> autoLogIn({
     required User user,
   }) async {
-    String loginPath = 'http://' + user.ip + '/aci/api/account/login';
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String loginPath = '/account/login';
 
     try {
       //404
@@ -48,19 +50,20 @@ class AuthenticationRepository {
         // username or password has changed on website
         _controller.add(AuthenticationStatus.unauthenticated);
       }
-    } on DioError catch (e) {
+    } catch (e) {
       // if ip does not exist
+
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response!.data);
-        print(e.response!.headers);
-        print(e.response!.requestOptions);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.requestOptions);
-        print(e.message);
-      }
+      // if (e.response != null) {
+      //   print(e.response!.data);
+      //   print(e.response!.headers);
+      //   print(e.response!.requestOptions);
+      // } else {
+      //   // Something happened in setting up or sending the request that triggered an Error
+      //   print(e.requestOptions);
+      //   print(e.message);
+      // }
       bool ret = await userRepository.deActivateUser(user.id);
       _controller.add(AuthenticationStatus.unknown);
     }
@@ -71,7 +74,11 @@ class AuthenticationRepository {
     required String username,
     required String password,
   }) async {
-    String loginPath = 'http://' + ip + '/aci/api/account/login';
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String loginPath = '/account/login';
 
     try {
       //404
@@ -112,19 +119,20 @@ class AuthenticationRepository {
         _controller.add(AuthenticationStatus.unauthenticated);
         return data['msg'];
       }
-    } on DioError catch (e) {
+    } catch (e) {
       // if ip does not exist
+
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response!.data);
-        print(e.response!.headers);
-        print(e.response!.requestOptions);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.requestOptions);
-        print(e.message);
-      }
+      // if (e.response != null) {
+      //   print(e.response!.data);
+      //   print(e.response!.headers);
+      //   print(e.response!.requestOptions);
+      // } else {
+      //   // Something happened in setting up or sending the request that triggered an Error
+      //   print(e.requestOptions);
+      //   print(e.message);
+      // }
       _controller.add(AuthenticationStatus.unauthenticated);
       throw Exception('Authentication Failure');
     }
@@ -138,6 +146,7 @@ class AuthenticationRepository {
   Future<void> logOut({
     required userId,
   }) async {
+    // need to call api ?
     bool ret = await userRepository.deActivateUser(userId);
     print('is_logout : ' + ret.toString());
 
@@ -150,13 +159,17 @@ class AuthenticationRepository {
   }) async {
     User? user = userRepository.getActivateUser();
     if (user != null) {
-      String loginPath =
-          'http://' + user.ip + '/aci/api/account/' + user.id + '/pwd';
+      Dio dio = Dio();
+      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      dio.options.connectTimeout = 10000; //10s
+      dio.options.receiveTimeout = 10000;
+
+      String changePasswordPath = '/account/' + user.id + '/pwd';
 
       try {
         //404
         Response response = await dio.put(
-          loginPath,
+          changePasswordPath,
           data: {'current_pwd': currentPassword, 'new_pwd': newPassword},
         );
 
