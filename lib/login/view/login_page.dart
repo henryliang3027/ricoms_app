@@ -59,34 +59,26 @@ class LoginPage extends StatelessWidget {
               context)); //dialog should be call after finish building layout
     }
 
-    final mq = MediaQueryData.fromWindow(window);
+    //final mq = MediaQueryData.fromWindow(window);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          ConstrainedBox(
-            constraints: BoxConstraints.tightFor(
-              height: mq.size.height,
-            ),
-            child: Container(
-              height: double.infinity,
-              child: Image.asset(
-                'assets/login_background_android.png',
-                fit: BoxFit.cover,
-              ),
+          Container(
+            height: double.maxFinite,
+            child: Image.asset(
+              'assets/login_background_android.png',
+              fit: BoxFit.cover,
             ),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints.tightFor(
-              height: mq.size.height,
-            ),
-            child: Container(
-              height: double.infinity,
-              child: GifPlayer(),
-            ),
+
+          Container(
+            height: double.maxFinite,
+            child: GifPlayer(),
           ),
+
           Align(
             alignment: const Alignment(0, 0.96),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -103,29 +95,47 @@ class LoginPage extends StatelessWidget {
               )
             ]),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints.tightFor(
-              height: mq.size.height,
-            ),
-            child: Container(
-              height: double.infinity,
-              //color: Colors.black,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: BlocProvider(
-                  create: (context) {
-                    return LoginBloc(
-                      authenticationRepository:
-                          RepositoryProvider.of<AuthenticationRepository>(
-                        context,
-                      ),
-                    );
-                  },
-                  child: const LoginForm(),
-                ),
+          Container(
+            height: double.maxFinite,
+            //color: Colors.black,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: BlocProvider(
+                create: (context) {
+                  return LoginBloc(
+                    authenticationRepository:
+                        RepositoryProvider.of<AuthenticationRepository>(
+                      context,
+                    ),
+                  );
+                },
+                child: const LoginForm(),
               ),
             ),
           ),
+          // ConstrainedBox(
+          //   constraints: BoxConstraints.tightFor(
+          //     height: mq.size.height,
+          //   ),
+          //   child: Container(
+          //     height: double.infinity,
+          //     //color: Colors.black,
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(12),
+          //       child: BlocProvider(
+          //         create: (context) {
+          //           return LoginBloc(
+          //             authenticationRepository:
+          //                 RepositoryProvider.of<AuthenticationRepository>(
+          //               context,
+          //             ),
+          //           );
+          //         },
+          //         child: const LoginForm(),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
