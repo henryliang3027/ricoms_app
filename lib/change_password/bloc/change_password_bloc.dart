@@ -103,15 +103,20 @@ class ChangePasswordBloc
             errmsg: errmsg, status: FormzStatus.submissionFailure));
       } else {
         // new password is the same as confirm password
-        String errmsg = await _authenticationRepository.changePassword(
-            currentPassword: state.currentPassword.value,
-            newPassword: state.newPassword.value);
+        try {
+          String errmsg = await _authenticationRepository.changePassword(
+              currentPassword: state.currentPassword.value,
+              newPassword: state.newPassword.value);
 
-        if (errmsg == '') {
-          emit(state.copyWith(status: FormzStatus.submissionSuccess));
-        } else {
+          if (errmsg == '') {
+            emit(state.copyWith(status: FormzStatus.submissionSuccess));
+          } else {
+            emit(state.copyWith(
+                errmsg: errmsg, status: FormzStatus.submissionFailure));
+          }
+        } catch (e) {
           emit(state.copyWith(
-              errmsg: errmsg, status: FormzStatus.submissionFailure));
+              errmsg: e.toString(), status: FormzStatus.submissionFailure));
         }
       }
     }

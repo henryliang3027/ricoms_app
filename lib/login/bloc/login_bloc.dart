@@ -64,7 +64,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginPasswordVisibilityChanged event,
     Emitter<LoginState> emit,
   ) {
-    emit(state.copyWith(passwordVisibility: !state.passwordVisibility));
+    emit(state.copyWith(
+        status: Formz.validate([state.ip, state.username, state.password]),
+        passwordVisibility: !state.passwordVisibility));
   }
 
   Future<void> _onLoginSubmitted(

@@ -124,17 +124,22 @@ class AuthenticationRepository {
 
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      // if (e.response != null) {
-      //   print(e.response!.data);
-      //   print(e.response!.headers);
-      //   print(e.response!.requestOptions);
-      // } else {
-      //   // Something happened in setting up or sending the request that triggered an Error
-      //   print(e.requestOptions);
-      //   print(e.message);
-      // }
       _controller.add(AuthenticationStatus.unauthenticated);
-      throw Exception('Authentication Failure');
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          throw Exception('Server No Response');
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          throw Exception(e.message);
+        }
+      } else {
+        throw Exception(e.toString());
+      }
     }
 
     // await Future.delayed(
@@ -183,21 +188,29 @@ class AuthenticationRepository {
         } else {
           return data['msg'];
         }
-      } on DioError catch (e) {
+      } catch (e) {
         // if ip does not exist
+
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx and is also not 304.
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+        if (e is DioError) {
+          if (e.response != null) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+            throw Exception('Server No Response');
+          } else {
+            // Something happened in setting up or sending the request that triggered an Error
+            print(e.requestOptions);
+            print(e.message);
+            throw Exception(e.message);
+          }
         } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          throw Exception(e.toString());
         }
 
-        throw Exception('Change password Failure');
+        //print('CPE: $e');
+
       }
     } else {
       //print('User dose not exist when logout');
