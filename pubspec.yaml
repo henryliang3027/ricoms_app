@@ -45,7 +45,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   
   equatable: ^2.0.3
-  flutter_gifimage: ^1.0.1
 
 dev_dependencies:
   flutter_test:

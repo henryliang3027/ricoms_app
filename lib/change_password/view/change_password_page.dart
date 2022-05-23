@@ -19,7 +19,7 @@ class ChangePasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQueryData.fromWindow(window);
+    //final mq = MediaQueryData.fromWindow(window);
 
     return WillPopScope(
       onWillPop: () async {
@@ -32,24 +32,19 @@ class ChangePasswordPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(_title),
         ),
-        body: ConstrainedBox(
-          constraints: BoxConstraints.tightFor(
-            height: mq.size.height,
-          ),
-          child: Container(
-            height: double.infinity,
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: BlocProvider(
-                create: (context) {
-                  return ChangePasswordBloc(
-                      authenticationRepository:
-                          RepositoryProvider.of<AuthenticationRepository>(
-                              context));
-                },
-                child: const ChangePasswordForm(),
-              ),
+        body: Container(
+          height: double.maxFinite,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: BlocProvider(
+              create: (context) {
+                return ChangePasswordBloc(
+                    authenticationRepository:
+                        RepositoryProvider.of<AuthenticationRepository>(
+                            context));
+              },
+              child: const ChangePasswordForm(),
             ),
           ),
         ),

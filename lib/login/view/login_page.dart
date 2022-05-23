@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +5,6 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
 import 'package:ricoms_app/login/view/login_form.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
-import 'package:flutter_gifimage/flutter_gifimage.dart';
 
 class LoginPage extends StatelessWidget {
   static Route route() {
@@ -66,19 +63,13 @@ class LoginPage extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Container(
+          SizedBox(
             height: double.maxFinite,
             child: Image.asset(
-              'assets/login_background_android.png',
+              'assets/login_background_android.gif',
               fit: BoxFit.cover,
             ),
           ),
-
-          Container(
-            height: double.maxFinite,
-            child: GifPlayer(),
-          ),
-
           Align(
             alignment: const Alignment(0, 0.96),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -95,7 +86,7 @@ class LoginPage extends StatelessWidget {
               )
             ]),
           ),
-          Container(
+          SizedBox(
             height: double.maxFinite,
             //color: Colors.black,
             child: Padding(
@@ -113,66 +104,8 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-          // ConstrainedBox(
-          //   constraints: BoxConstraints.tightFor(
-          //     height: mq.size.height,
-          //   ),
-          //   child: Container(
-          //     height: double.infinity,
-          //     //color: Colors.black,
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(12),
-          //       child: BlocProvider(
-          //         create: (context) {
-          //           return LoginBloc(
-          //             authenticationRepository:
-          //                 RepositoryProvider.of<AuthenticationRepository>(
-          //               context,
-          //             ),
-          //           );
-          //         },
-          //         child: const LoginForm(),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
-  }
-}
-
-class GifPlayer extends StatefulWidget {
-  const GifPlayer({Key? key}) : super(key: key);
-
-  @override
-  State<GifPlayer> createState() => _GifPlayerState();
-}
-
-class _GifPlayerState extends State<GifPlayer>
-    with SingleTickerProviderStateMixin {
-  late final GifController controller;
-
-  @override
-  void initState() {
-    controller = GifController(vsync: this);
-    controller.repeat(
-        min: 0, max: 90, period: const Duration(milliseconds: 3000));
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GifImage(
-      controller: controller,
-      image: const AssetImage('assets/login_background_android.gif'),
-      fit: BoxFit.cover,
-    );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 }
