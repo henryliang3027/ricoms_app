@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.grey.shade300,
                     child: const Padding(
                         padding: EdgeInsets.all(10),
-                        child: Icon(Icons.notifications_outlined))),
+                        child: Icon(Icons.notifications_active_outlined))),
                 title: const Text('Real-Time Alarm'),
                 onTap: () {
                   // Update the state of the app

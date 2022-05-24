@@ -38,7 +38,7 @@ class AuthenticationBloc
     {
       switch (event.status) {
         case AuthenticationStatus.unauthenticated:
-          return emit(const AuthenticationState.unauthenticated());
+          return emit(const AuthenticationState.unauthenticated(errmsg: ''));
         case AuthenticationStatus.authenticated:
           final user = _authenticationRepository.userRepository
               .getActivateUser(); //get current login user, activate is true
@@ -47,10 +47,12 @@ class AuthenticationBloc
           return emit(
             user != null
                 ? AuthenticationState.authenticated(user)
-                : const AuthenticationState.unauthenticated(),
+                : const AuthenticationState.unauthenticated(errmsg: ''),
           );
-        default:
-          return emit(const AuthenticationState.unknown());
+        case AuthenticationStatus.unknown:
+          return emit(const AuthenticationState.unauthenticated(
+              errmsg:
+                  'Please try to login again. Make sure you are on the same domain as the server.'));
       }
     }
   }

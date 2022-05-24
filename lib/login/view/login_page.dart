@@ -17,7 +17,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _showConnectionLostDialog(BuildContext context) async {
+    Future<void> _showConnectionLostDialog(
+        BuildContext context, String errmsg) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -26,9 +27,8 @@ class LoginPage extends StatelessWidget {
             title: const Text('Lost connection to server'),
             content: SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
-                  Text('Please try to login again.'),
-                  Text('Make sure you are on the same domain as the server.')
+                children: <Widget>[
+                  Text(errmsg),
                 ],
               ),
             ),
@@ -45,15 +45,15 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    final AuthenticationStatus status = context.select(
-      (AuthenticationBloc bloc) => bloc.state.status,
+    final String errmsg = context.select(
+      (AuthenticationBloc bloc) => bloc.state.errmsg,
     );
 
-    if (status == AuthenticationStatus.unknown) {
+    if (errmsg != '') {
       Future.delayed(
           Duration.zero,
-          () => _showConnectionLostDialog(
-              context)); //dialog should be call after finish building layout
+          () => _showConnectionLostDialog(context,
+              errmsg)); //dialog should be call after finish building layout
     }
 
     //final mq = MediaQueryData.fromWindow(window);

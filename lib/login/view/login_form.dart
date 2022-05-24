@@ -61,7 +61,7 @@ class LoginForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 60.0, right: 60.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
                     height: 36.0,
@@ -71,10 +71,7 @@ class LoginForm extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: SizedBox(
-                      height: 36.0,
-                      child: _IPInput(),
-                    ),
+                    child: _IPInput(),
                   ),
                 ],
               ),
@@ -83,30 +80,17 @@ class LoginForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 60.0, right: 60.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    //height: 40.0,
+                  SizedBox(
+                    height: 36.0,
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: Image.asset('assets/login_username_icon.png'),
                     ),
-                    constraints: const BoxConstraints(
-                        minHeight: 0, minWidth: 0, maxHeight: 36, maxWidth: 36),
                   ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Container(
-                        //height: 40.0,
-                        child: _UsernameInput(),
-                        constraints: const BoxConstraints(
-                          minHeight: 0,
-                          minWidth: 0,
-                          maxHeight: 36,
-                        ),
-                      ),
-                    ),
+                    child: _UsernameInput(),
                   ),
                 ],
               ),
@@ -115,27 +99,17 @@ class LoginForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 60.0, right: 60.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    //height: 40.0,
+                  SizedBox(
+                    height: 36.0,
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: Image.asset('assets/login_password_icon.png'),
                     ),
-                    constraints: const BoxConstraints(
-                        minHeight: 0, minWidth: 0, maxHeight: 36, maxWidth: 36),
                   ),
                   Expanded(
-                    child: Container(
-                      //height: 40.0,
-                      child: _PasswordInput(),
-                      constraints: const BoxConstraints(
-                        minHeight: 0,
-                        minWidth: 0,
-                        maxHeight: 36,
-                      ),
-                    ),
+                    child: _PasswordInput(),
                   ),
                 ],
               ),
@@ -160,15 +134,13 @@ class _IPInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_ipInput_textField'),
-          textAlignVertical: TextAlignVertical.bottom,
-          style: TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 20),
           enabled: state.status.isSubmissionInProgress ? false : true,
           textInputAction: TextInputAction.done,
           onChanged: (ip) => context.read<LoginBloc>().add(LoginIPChanged(ip)),
           decoration: const InputDecoration(
-            // contentPadding:
-            //     const EdgeInsets.symmetric(vertical: 0.0, horizontal: 0.0),
             border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+            contentPadding: EdgeInsets.all(6.6),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
@@ -193,17 +165,19 @@ class _UsernameInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_usernameInput_textField'),
+          style: const TextStyle(fontSize: 20),
           enabled: state.status.isSubmissionInProgress ? false : true,
           textInputAction: TextInputAction.done,
           onChanged: (username) =>
               context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: const InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+            contentPadding: EdgeInsets.all(6.6),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: 'User ID',
-            hintStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            hintStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             //errorText: state.username.invalid ? 'Invalid User ID' : null,
           ),
         );
@@ -224,6 +198,7 @@ class _PasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('loginForm_passwordInput_textField'),
+          style: const TextStyle(fontSize: 20),
           enabled: state.status.isSubmissionInProgress ? false : true,
           textInputAction: TextInputAction.done,
           onChanged: (password) =>
@@ -231,14 +206,19 @@ class _PasswordInput extends StatelessWidget {
           obscureText: !state.passwordVisibility,
           decoration: InputDecoration(
             border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+            contentPadding: const EdgeInsets.all(6.6),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: 'Password',
             hintStyle:
-                const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
             //errorText: state.password.invalid ? 'Invalid Password' : null,
+            suffixIconConstraints: const BoxConstraints(
+                maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
             suffixIcon: IconButton(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 1.0, horizontal: 1.0),
               icon: state.passwordVisibility
                   ? const Icon(Icons.visibility_outlined)
                   : const Icon(Icons.visibility_off_outlined),
