@@ -76,44 +76,41 @@ class ChangePasswordForm extends StatelessWidget {
           _showFailureDialog(state.errmsg);
         }
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-            child: SizedBox(
-              height: 60,
+      child: Align(
+        alignment: const Alignment(0, -0.42),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 230,
+              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
               child: _CurrentPasswordInput(),
             ),
-          ),
 
-          const Padding(padding: EdgeInsets.all(6)),
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-            child: SizedBox(
-              height: 60,
+            const Padding(padding: EdgeInsets.all(6)),
+            SizedBox(
+              width: 230,
+              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
               child: _NewPasswordInput(),
             ),
-          ),
 
-          const Padding(padding: EdgeInsets.all(6)),
+            const Padding(padding: EdgeInsets.all(6)),
 
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-            child: SizedBox(
-              height: 60,
+            SizedBox(
+              width: 230,
+              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
               child: _ConfirmPasswordInput(),
             ),
-          ),
 
-          const Padding(padding: EdgeInsets.all(6)),
-          // const Expanded(
-          //   child: SizedBox(),
-          // ),
-          _SaveButton(),
-          const Padding(padding: EdgeInsets.all(50)),
-        ],
+            const Padding(padding: EdgeInsets.all(16)),
+            // const Expanded(
+            //   child: SizedBox(),
+            // ),
+            _SaveButton(),
+            //const Padding(padding: EdgeInsets.all(50)),
+          ],
+        ),
       ),
     );
   }
@@ -130,27 +127,31 @@ class _CurrentPasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('changePasswordForm_currentPasswordInput_textField'),
-          textAlignVertical: TextAlignVertical.bottom,
           textInputAction: TextInputAction.done,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 16),
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
               .add(CurrentPasswordChanged(password)),
           obscureText: !state.currentPasswordVisibility,
           obscuringCharacter: '●',
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            contentPadding: const EdgeInsets.all(5),
             border: const OutlineInputBorder(),
+            isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: 'Current password',
-            hintStyle: const TextStyle(fontSize: 20),
+            hintStyle: const TextStyle(fontSize: 16),
+            errorMaxLines: 2,
             errorText: state.currentPassword.invalid
                 ? 'Password must be between 4-32 characters.'
                 : null,
             helperText: 'Enter the Current password',
+            suffixIconConstraints: const BoxConstraints(
+                maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
             suffixIcon: IconButton(
+              iconSize: 22,
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
               icon: state.currentPasswordVisibility
                   ? const Icon(Icons.visibility_outlined)
                   : const Icon(Icons.visibility_off_outlined),
@@ -177,8 +178,7 @@ class _NewPasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('changePasswordForm_newPasswordInput_textField'),
-          textAlignVertical: TextAlignVertical.bottom,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 16),
           textInputAction: TextInputAction.done,
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
@@ -186,18 +186,23 @@ class _NewPasswordInput extends StatelessWidget {
           obscureText: !state.newPasswordVisibility,
           obscuringCharacter: '●',
           decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              contentPadding: const EdgeInsets.all(5),
               border: const OutlineInputBorder(),
+              isDense: true,
               filled: true,
               fillColor: Colors.white,
               hintText: 'New password',
-              hintStyle: const TextStyle(fontSize: 20),
+              hintStyle: const TextStyle(fontSize: 16),
+              errorMaxLines: 2,
               errorText: state.newPassword.invalid
                   ? 'Password must be between 4-32 characters.'
                   : null,
               helperText: 'Enter the New password',
+              suffixIconConstraints: const BoxConstraints(
+                  maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
               suffixIcon: IconButton(
+                iconSize: 22,
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
                 icon: state.newPasswordVisibility
                     ? const Icon(Icons.visibility_outlined)
                     : const Icon(Icons.visibility_off_outlined),
@@ -224,8 +229,7 @@ class _ConfirmPasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('changePasswordForm_confirmPasswordInput_textField'),
-          textAlignVertical: TextAlignVertical.bottom,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 16),
           textInputAction: TextInputAction.done,
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
@@ -233,18 +237,23 @@ class _ConfirmPasswordInput extends StatelessWidget {
           obscureText: !state.confirmPasswordVisibility,
           obscuringCharacter: '●',
           decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              contentPadding: const EdgeInsets.all(5),
               border: const OutlineInputBorder(),
+              isDense: true,
               filled: true,
               fillColor: Colors.white,
               hintText: 'Confirm password',
-              hintStyle: const TextStyle(fontSize: 20),
+              hintStyle: const TextStyle(fontSize: 16),
+              errorMaxLines: 2,
               errorText: state.confirmPassword.invalid
                   ? 'Password must be between 4-32 characters.'
                   : null,
               helperText: 'Confirm your new password',
+              suffixIconConstraints: const BoxConstraints(
+                  maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
               suffixIcon: IconButton(
+                iconSize: 22,
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
                 icon: state.confirmPasswordVisibility
                     ? const Icon(Icons.visibility_outlined)
                     : const Icon(Icons.visibility_off_outlined),
@@ -282,7 +291,7 @@ class _SaveButton extends StatelessWidget {
                   ),
                 ),
                 key: const Key('changePasswordForm_save_raisedButton'),
-                child: const Text('Save Change'),
+                child: const Text('Update'),
                 onPressed: state.status.isValidated
                     ? () {
                         context
