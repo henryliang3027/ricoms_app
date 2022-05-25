@@ -65,8 +65,9 @@ class StatusForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Icon(Icons.directions_car),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [],
     );
   }
 }
