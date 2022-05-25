@@ -41,7 +41,7 @@ class AuthenticationRepository {
         data: {'account': user.name, 'pwd': user.password},
       );
 
-      print(response.data.toString());
+      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -87,11 +87,11 @@ class AuthenticationRepository {
         data: {'account': username, 'pwd': password},
       );
 
-      print(response.data.toString());
+      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        print(data);
+        //print(data);
         // accunt and password are correct
         String userId = data['data']['uid'].toString();
         String accountInformationPath =
@@ -178,11 +178,11 @@ class AuthenticationRepository {
           data: {'current_pwd': currentPassword, 'new_pwd': newPassword},
         );
 
-        print(response.data.toString());
+        //print(response.data.toString());
         var data = jsonDecode(response.data.toString());
 
         if (data['code'] == '200') {
-          print(data);
+          //print(data);
 
           return '';
         } else {

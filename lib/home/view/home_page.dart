@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks.dart';
 import 'package:ricoms_app/change_password/view/change_password_page.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/dashboard/view/dashboard.dart';
 import 'package:ricoms_app/history/view/history.dart';
 import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
+import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<BottomNavigationBarItem> _bottomBarItem = [
     const BottomNavigationBarItem(
-      icon: Icon(Icons.notifications_active_outlined),
+      icon: Icon(CustomIcons.realtime_alarm),
       label: 'Real-Time Alarm',
     ),
     const BottomNavigationBarItem(
@@ -83,34 +86,41 @@ class _HomePageState extends State<HomePage> {
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.white12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 10.0)),
-                    const SizedBox(
-                      child: Image(image: AssetImage('assets/ic_launcher.png')),
-                    ),
-                    Padding(padding: EdgeInsets.only(top: 2.0)),
-                    Text(user.name,
-                        style: const TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ],
+              SizedBox(
+                height: 120,
+                child: DrawerHeader(
+                  decoration: const BoxDecoration(
+                    color: Colors.white12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      //Padding(padding: EdgeInsets.only(top: 10.0)),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 66.0),
+                        child: Image(
+                          image: AssetImage('assets/RICOMS.PNG'),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 6.0)),
+                      Text(user.name,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ],
+                  ),
                 ),
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.notifications_active_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_alarm.png'),
+                  ),
+                ),
                 title: const Text('Real-Time Alarm'),
                 onTap: () {
                   // Update the state of the app
@@ -121,13 +131,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.account_tree_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_root.png'),
+                  ),
+                ),
                 title: const Text('Root'),
                 onTap: () {
                   _pageController.jumpToPage(1);
@@ -135,13 +145,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.pie_chart_outline))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_dashboard.png'),
+                  ),
+                ),
                 title: const Text('Dashboard'),
                 onTap: () {
                   _pageController.jumpToPage(2);
@@ -149,13 +159,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.history_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_history.png'),
+                  ),
+                ),
                 title: const Text('History'),
                 onTap: () {
                   _pageController.jumpToPage(3);
@@ -163,13 +173,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.star_border_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_bookmarks.png'),
+                  ),
+                ),
                 title: const Text('Bookmarks'),
                 onTap: () {
                   _pageController.jumpToPage(4);
@@ -177,13 +187,13 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.supervisor_account_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_account.png'),
+                  ),
+                ),
                 title: const Text('Account'),
                 onTap: () {
                   _pageController.jumpToPage(1);
@@ -191,26 +201,23 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               const Divider(
-                height: 2.0,
-              ),
-              const SizedBox(
-                height: 8.0,
+                height: 0.0,
               ),
               const Padding(
-                padding: EdgeInsets.all(6.0),
+                padding: EdgeInsets.fromLTRB(10.0, 2.0, 2.0, 0.0),
                 child: Text(
                   'Setting',
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.security_outlined))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_chpwd.png'),
+                  ),
+                ),
                 title: const Text('Change Password'),
                 onTap: () async {
                   bool actionResult =
@@ -222,23 +229,17 @@ class _HomePageState extends State<HomePage> {
                       : null;
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.all(6.0),
-              ),
               const Divider(
-                height: 2.0,
+                height: 0.0,
               ),
               ListTile(
-                leading: Card(
-                    elevation: 0,
-                    shape: const CircleBorder(),
-                    color: Colors.grey.shade300,
-                    child: const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(
-                          Icons.logout_outlined,
-                          color: Colors.red,
-                        ))),
+                dense: true,
+                leading: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image(
+                    image: AssetImage('assets/ic_logout.png'),
+                  ),
+                ),
                 title: const Text('Logout'),
                 onTap: () {
                   context
@@ -246,18 +247,32 @@ class _HomePageState extends State<HomePage> {
                       .add(AuthenticationLogoutRequested(user.id));
                 },
               ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(2.0, 40.0, 2.0, 40.0),
+              ),
+              const Center(
+                //padding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
+                child: Text('0.9.0'),
+              ),
             ],
           ),
         ),
       ),
-      body: PageView(
-        controller: _pageController,
-        children: _widgetOptions,
-        onPageChanged: (pageIndex) {
-          setState(() {
-            _selectedIndex = pageIndex;
-          });
-        },
+      body: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<RootRepository>(
+            create: (context) => RootRepository(user),
+          ),
+        ],
+        child: PageView(
+          controller: _pageController,
+          children: _widgetOptions,
+          onPageChanged: (pageIndex) {
+            setState(() {
+              _selectedIndex = pageIndex;
+            });
+          },
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

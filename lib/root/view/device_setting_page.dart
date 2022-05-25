@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ricoms_app/repository/root_repository.dart';
 
 class DeviceSettingPage extends StatefulWidget {
-  const DeviceSettingPage({Key? key}) : super(key: key);
+  const DeviceSettingPage({Key? key, required this.rootRepository})
+      : super(key: key);
 
-  static Route route() {
-    return MaterialPageRoute(builder: (_) => const DeviceSettingPage());
+  static Route route(RootRepository rootRepository) {
+    return MaterialPageRoute(
+        builder: (_) => DeviceSettingPage(rootRepository: rootRepository));
   }
+
+  final RootRepository rootRepository;
 
   @override
   State<DeviceSettingPage> createState() => _DeviceSettingPageState();
@@ -24,6 +29,8 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
 
   @override
   Widget build(BuildContext context) {
+    widget.rootRepository.getDeviceStatus();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('A8K'),
@@ -39,14 +46,27 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
         ),
       ),
       body: TabBarView(
-        children: [
-          Icon(Icons.directions_car),
+        children: const [
+          StatusForm(
+            items: [],
+          ),
           Icon(Icons.directions_transit),
           Icon(Icons.directions_bike),
           Icon(Icons.directions_boat),
         ],
         controller: tabController,
       ),
+    );
+  }
+}
+
+class StatusForm extends StatelessWidget {
+  const StatusForm({Key? key, required List items}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Icon(Icons.directions_car),
     );
   }
 }
