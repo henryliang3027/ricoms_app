@@ -81,7 +81,7 @@ class StatusForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -102,7 +102,7 @@ class StatusForm extends StatelessWidget {
                   //CustomStyle.getBox(item[1]['style'], item[1]['value']),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(6.0),
+                      padding: const EdgeInsets.all(6.0),
                       child: CustomStyle.getBox(
                           item[2]['style'], item[2]['value']),
                     ),
@@ -115,7 +115,7 @@ class StatusForm extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(6.0),
+                      padding: const EdgeInsets.all(6.0),
                       child: CustomStyle.getBox(
                           item[0]['style'], item[0]['value']),
                     ),
