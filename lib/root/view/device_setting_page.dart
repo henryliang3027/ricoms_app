@@ -47,45 +47,79 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
           controller: tabController,
         ),
       ),
-      body: FutureBuilder<List>(
-        future: widget.rootRepository.getDeviceStatus(),
-        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return TabBarView(
-              children: [
-                StatusForm(
-                  items: snapshot.data as List,
-                ),
-                ThresholdForm(),
-                Icon(Icons.directions_bike),
-                Icon(Icons.directions_boat),
-              ],
-              controller: tabController,
-            );
-          }
-        },
+      body: TabBarView(
+        children: [
+          FutureBuilder<dynamic>(
+            future: widget.rootRepository.getDeviceStatus(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                if (snapshot.data is List) {
+                  return StatusForm(
+                    items: snapshot.data as List,
+                  );
+                } else {
+                  String errnsg = snapshot.data;
+                  return Center(
+                    child: Text(errnsg),
+                  );
+                }
+              }
+            },
+          ),
+          FutureBuilder<dynamic>(
+            future: widget.rootRepository.getDeviceThreshold(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                if (snapshot.data is List) {
+                  return ThresholdForm(
+                    items: snapshot.data as List,
+                  );
+                } else {
+                  String errnsg = snapshot.data;
+                  return Center(
+                    child: Text(errnsg),
+                  );
+                }
+              }
+            },
+          ),
+          DescriptionForm(),
+          HistoryForm(),
+        ],
+        controller: tabController,
       ),
     );
   }
 }
 
-class StatusForm extends StatelessWidget {
+class StatusForm extends StatefulWidget {
   const StatusForm({Key? key, required this.items}) : super(key: key);
 
   final List items;
 
   @override
+  State<StatusForm> createState() => _StatusFormState();
+}
+
+class _StatusFormState extends State<StatusForm>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    print('build Status');
     return SingleChildScrollView(
       padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          for (var item in items)
+          for (var item in widget.items)
             if (item.length == 3) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,10 +161,16 @@ class StatusForm extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => false;
 }
 
 class ThresholdForm extends StatefulWidget {
-  const ThresholdForm({Key? key}) : super(key: key);
+  ThresholdForm({Key? key, required this.items}) : super(key: key);
+
+  final List items;
+  late final Map<String, bool> checkBoxValues;
 
   @override
   State<ThresholdForm> createState() => _ThresholdFormState();
@@ -139,11 +179,114 @@ class ThresholdForm extends StatefulWidget {
 class _ThresholdFormState extends State<ThresholdForm>
     with AutomaticKeepAliveClientMixin {
   @override
+  void initState() {
+    widget.checkBoxValues = <String, bool>{};
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print('build Threshold');
-    return const Center(
-      child: Icon(Icons.directions_transit),
+
+    Widget buildController(int style) {
+      if (style == 0) {
+        return TextField();
+      } else if (style == 99) {
+        return Checkbox(
+          value: widget.checkBoxValues['test'] ?? true,
+          onChanged: (value) {
+            setState(() {
+              widget.checkBoxValues['test'] = value ?? false;
+            });
+          },
+        );
+      } else {
+        return Container();
+      }
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (var item in widget.items)
+            if (item.length == 3) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3.0, horizontal: 6.0),
+                      child: CustomStyle.getBox(
+                          item[0]['style'], item[0]['value']),
+                    ),
+                  ),
+                  //CustomStyle.getBox(item[1]['style'], item[1]['value']),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: buildController(item[2]['style']),
+                    ),
+                  ),
+                ],
+              )
+            ] else if (item.length == 1) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: CustomStyle.getBox(
+                          item[0]['style'], item[0]['value']),
+                    ),
+                  ),
+                ],
+              ),
+            ]
+        ],
+      ),
     );
+  }
+
+  @override
+  bool get wantKeepAlive => false;
+}
+
+class DescriptionForm extends StatefulWidget {
+  const DescriptionForm({Key? key}) : super(key: key);
+
+  @override
+  State<DescriptionForm> createState() => _DescriptionFormState();
+}
+
+class _DescriptionFormState extends State<DescriptionForm>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  bool get wantKeepAlive => false;
+}
+
+class HistoryForm extends StatefulWidget {
+  const HistoryForm({Key? key}) : super(key: key);
+
+  @override
+  State<HistoryForm> createState() => _HistoryFormState();
+}
+
+class _HistoryFormState extends State<HistoryForm>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 
   @override

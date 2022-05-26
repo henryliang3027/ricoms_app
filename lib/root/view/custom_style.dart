@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomStyle {
-  static Container getBox(int style, String data) {
+  static Widget getBox(int style, String data) {
     switch (style) {
       case 100:
         return Container(
