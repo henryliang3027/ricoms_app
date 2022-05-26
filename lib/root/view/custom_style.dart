@@ -35,8 +35,9 @@ class CustomStyle {
         );
       case 103:
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.blue,
+            border: Border.all(color: Colors.blue),
           ),
           child: Text(
             data,

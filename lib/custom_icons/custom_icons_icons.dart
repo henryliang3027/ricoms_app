@@ -23,4 +23,12 @@ class CustomIcons {
 
   static const IconData realtime_alarm =
       IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData root =
+      IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dashboard =
+      IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData history =
+      IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bookmarks =
+      IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

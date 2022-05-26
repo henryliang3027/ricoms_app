@@ -38,19 +38,19 @@ class _HomePageState extends State<HomePage> {
       label: 'Real-Time Alarm',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.account_tree_outlined),
+      icon: Icon(CustomIcons.root),
       label: 'Root',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.insert_chart_outlined_outlined),
+      icon: Icon(CustomIcons.dashboard),
       label: 'Dashboard',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.history_outlined),
+      icon: Icon(CustomIcons.history),
       label: 'History',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.star_border_outlined),
+      icon: Icon(CustomIcons.bookmarks),
       label: 'Bookmarks',
     ),
   ];

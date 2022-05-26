@@ -8,7 +8,7 @@ class RootRepository {
 
   final User user;
 
-  Future<void> getDeviceStatus() async {
+  Future<List> getDeviceStatus() async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -23,10 +23,12 @@ class RootRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List dataList = data['data'];
-        print(data['data'][0][0]);
+        //List dataList = data['data'];
+        print(data['data'][0]);
+        return data['data'];
       } else {
         print('ERROR');
+        return [];
       }
     } catch (e) {
       // The request was made and the server responded with a status code

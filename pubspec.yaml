@@ -77,7 +77,7 @@ flutter:
     - family: CustomIcons
       fonts:
       - asset: assets/fonts/CustomIcons.ttf
-        weight: 500
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

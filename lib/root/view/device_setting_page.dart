@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/root/view/custom_style.dart';
 
 class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({Key? key, required this.rootRepository})
@@ -24,12 +25,13 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
   void initState() {
     // 建立 TabController，vsync 接受的型態是 TickerProvider
     tabController = TabController(length: 4, vsync: this);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.rootRepository.getDeviceStatus();
+    //print('123123');
 
     return Scaffold(
       appBar: AppBar(
@@ -45,29 +47,105 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
           controller: tabController,
         ),
       ),
-      body: TabBarView(
-        children: const [
-          StatusForm(
-            items: [],
-          ),
-          Icon(Icons.directions_transit),
-          Icon(Icons.directions_bike),
-          Icon(Icons.directions_boat),
-        ],
-        controller: tabController,
+      body: FutureBuilder<List>(
+        future: widget.rootRepository.getDeviceStatus(),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return TabBarView(
+              children: [
+                StatusForm(
+                  items: snapshot.data as List,
+                ),
+                ThresholdForm(),
+                Icon(Icons.directions_bike),
+                Icon(Icons.directions_boat),
+              ],
+              controller: tabController,
+            );
+          }
+        },
       ),
     );
   }
 }
 
 class StatusForm extends StatelessWidget {
-  const StatusForm({Key? key, required List items}) : super(key: key);
+  const StatusForm({Key? key, required this.items}) : super(key: key);
+
+  final List items;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [],
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (var item in items)
+            if (item.length == 3) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3.0, horizontal: 6.0),
+                      child: CustomStyle.getBox(
+                          item[0]['style'], item[0]['value']),
+                    ),
+                  ),
+                  //CustomStyle.getBox(item[1]['style'], item[1]['value']),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: CustomStyle.getBox(
+                          item[2]['style'], item[2]['value']),
+                    ),
+                  ),
+                ],
+              )
+            ] else if (item.length == 1) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: CustomStyle.getBox(
+                          item[0]['style'], item[0]['value']),
+                    ),
+                  ),
+                ],
+              ),
+            ]
+        ],
+      ),
     );
   }
+}
+
+class ThresholdForm extends StatefulWidget {
+  const ThresholdForm({Key? key}) : super(key: key);
+
+  @override
+  State<ThresholdForm> createState() => _ThresholdFormState();
+}
+
+class _ThresholdFormState extends State<ThresholdForm>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    print('build Threshold');
+    return const Center(
+      child: Icon(Icons.directions_transit),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => false;
 }
