@@ -170,7 +170,9 @@ class ThresholdForm extends StatefulWidget {
   ThresholdForm({Key? key, required this.items}) : super(key: key);
 
   final List items;
-  late final Map<String, bool> checkBoxValues;
+  late final Map<String, bool> checkBoxValues = <String, bool>{};
+  late final Map<String, TextEditingController> TextFieldControllers =
+      <String, TextEditingController>{};
 
   @override
   State<ThresholdForm> createState() => _ThresholdFormState();
@@ -179,25 +181,18 @@ class ThresholdForm extends StatefulWidget {
 class _ThresholdFormState extends State<ThresholdForm>
     with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    widget.checkBoxValues = <String, bool>{};
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     print('build Threshold');
 
-    Widget buildController(int style) {
+    Widget buildController(int style, String name) {
       if (style == 0) {
         return TextField();
       } else if (style == 99) {
         return Checkbox(
-          value: widget.checkBoxValues['test'] ?? true,
+          value: widget.checkBoxValues[name] ?? true,
           onChanged: (value) {
             setState(() {
-              widget.checkBoxValues['test'] = value ?? false;
+              widget.checkBoxValues[name] = value ?? false;
             });
           },
         );
@@ -229,7 +224,8 @@ class _ThresholdFormState extends State<ThresholdForm>
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(6.0),
-                      child: buildController(item[2]['style']),
+                      child:
+                          buildController(item[2]['style'], item[0]['value']),
                     ),
                   ),
                 ],

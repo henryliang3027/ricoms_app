@@ -100,7 +100,18 @@ class CustomStyle {
             style: const TextStyle(color: Colors.green),
           ),
         );
-
+      case 113:
+        return Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            border: Border.all(color: Colors.blue),
+          ),
+          child: Text(
+            data,
+            style: const TextStyle(color: Colors.white),
+          ),
+        );
       default:
         return Container(
           decoration: BoxDecoration(

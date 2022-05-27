@@ -117,9 +117,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_alarm.png'),
-                  ),
+                  child: Icon(CustomIcons.realtime_alarm),
                 ),
                 title: const Text('Real-Time Alarm'),
                 onTap: () {
@@ -134,9 +132,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_root.png'),
-                  ),
+                  child: Icon(CustomIcons.root),
                 ),
                 title: const Text('Root'),
                 onTap: () {
@@ -148,9 +144,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_dashboard.png'),
-                  ),
+                  child: Icon(CustomIcons.dashboard),
                 ),
                 title: const Text('Dashboard'),
                 onTap: () {
@@ -162,9 +156,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_history.png'),
-                  ),
+                  child: Icon(CustomIcons.history),
                 ),
                 title: const Text('History'),
                 onTap: () {
@@ -176,9 +168,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_bookmarks.png'),
-                  ),
+                  child: Icon(CustomIcons.bookmarks),
                 ),
                 title: const Text('Bookmarks'),
                 onTap: () {
@@ -190,9 +180,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_account.png'),
-                  ),
+                  child: Icon(CustomIcons.account),
                 ),
                 title: const Text('Account'),
                 onTap: () {
@@ -214,9 +202,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_chpwd.png'),
-                  ),
+                  child: Icon(CustomIcons.change_password),
                 ),
                 title: const Text('Change Password'),
                 onTap: () async {
@@ -236,9 +222,7 @@ class _HomePageState extends State<HomePage> {
                 dense: true,
                 leading: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Image(
-                    image: AssetImage('assets/ic_logout.png'),
-                  ),
+                  child: Icon(CustomIcons.logout),
                 ),
                 title: const Text('Logout'),
                 onTap: () {
