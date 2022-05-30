@@ -13,7 +13,7 @@ class RootRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceStatusPath = '/device/1003/block/101';
+    String deviceStatusPath = '/device/1049/block/101';
 
     try {
       //404
