@@ -19,8 +19,7 @@ class ThresholdForm extends StatefulWidget {
   State<ThresholdForm> createState() => _ThresholdFormState();
 }
 
-class _ThresholdFormState extends State<ThresholdForm>
-    with AutomaticKeepAliveClientMixin {
+class _ThresholdFormState extends State<ThresholdForm> {
   Future<void> _showSuccessDialog() async {
     return showDialog<void>(
       context: context,
@@ -182,9 +181,6 @@ class _ThresholdFormState extends State<ThresholdForm>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 
   @override
   void dispose() {

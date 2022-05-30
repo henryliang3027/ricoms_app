@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class CustomStyle {
@@ -70,16 +72,18 @@ class CustomStyle {
             flex: length,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 6.0),
-              child: Container(
-                child: Checkbox(
-                  visualDensity: const VisualDensity(vertical: -4.0),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: checkBoxValues[id],
-                  onChanged: isEditing
-                      ? (value) => checkBoxValues[id] = value ?? false
-                      : null,
-                ),
-              ),
+              child: CustomCheckbox(
+                  checkBoxValues: checkBoxValues,
+                  isEditing: isEditing,
+                  oid: id),
+              // Checkbox(
+              //   visualDensity: const VisualDensity(vertical: -4.0),
+              //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              //   value: checkBoxValues[id],
+              //   onChanged: isEditing
+              //       ? (value) => checkBoxValues[id] = value ?? false
+              //       : null,
+              // ),
             ),
           );
         } else {
@@ -277,54 +281,6 @@ class CustomStyle {
         );
     }
   }
-
-  Widget buildController(
-      int style, String oid, String initValue, bool isEditing,
-      {Map<String, bool>? checkBoxValues,
-      Map<String, TextEditingController>? textFieldControllers}) {
-    if (style == 0 && textFieldControllers != null) {
-      if (textFieldControllers.containsKey(oid)) {
-        //avoid assigning initvalue when setstate
-        textFieldControllers[oid] = TextEditingController()..text = initValue;
-      }
-      return TextField(
-        key: Key(oid),
-        controller: textFieldControllers[oid],
-        textAlign: TextAlign.center,
-        enabled: isEditing,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: isEditing ? Colors.white : Colors.grey.shade300,
-          //isDense: true,
-          //contentPadding: EdgeInsets.all(0.0),
-          isCollapsed: true,
-          focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue, width: 1.0),
-            borderRadius: BorderRadius.zero,
-          ),
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 1.0),
-            borderRadius: BorderRadius.zero,
-          ),
-          disabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 1.0),
-            borderRadius: BorderRadius.zero,
-          ),
-        ),
-      );
-    } else if (style == 99 && checkBoxValues != null) {
-      bool _initValue = initValue == '0' || initValue == "" ? false : true;
-      if (checkBoxValues.containsKey(oid)) {
-        //avoid assigning initvalue when setstate
-        checkBoxValues[oid] = _initValue;
-      }
-
-      return CustomCheckbox(
-          isEditing: isEditing, oid: oid, checkBoxValues: checkBoxValues);
-    } else {
-      return Container();
-    }
-  }
 }
 
 class CustomCheckbox extends StatefulWidget {
@@ -344,20 +300,26 @@ class CustomCheckbox extends StatefulWidget {
 }
 
 class _CustomCheckboxState extends State<CustomCheckbox> {
+  final StreamController<bool> _checkBoxController = StreamController();
+  Stream<bool> get _checkBoxStream => _checkBoxController.stream;
+
   @override
   Widget build(BuildContext context) {
-    return Checkbox(
-      visualDensity: const VisualDensity(vertical: -4.0),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      value: widget.checkBoxValues[widget.oid],
-      onChanged: widget.isEditing
-          ? (value) {
-              setState(() {
-                widget.checkBoxValues[widget.oid] = value ?? false;
-                print('checkBoxValues: ${widget.checkBoxValues}');
-              });
-            }
-          : null,
-    );
+    return StreamBuilder(
+        stream: _checkBoxStream,
+        initialData: widget.checkBoxValues[widget.oid],
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          return Checkbox(
+            visualDensity: const VisualDensity(vertical: -4.0),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            value: snapshot.data,
+            onChanged: widget.isEditing
+                ? (value) {
+                    _checkBoxController.sink.add(value!);
+                    widget.checkBoxValues[widget.oid] = value;
+                  }
+                : null,
+          );
+        });
   }
 }

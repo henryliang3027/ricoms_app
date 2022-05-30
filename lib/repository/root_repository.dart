@@ -70,7 +70,7 @@ class RootRepository {
 
       if (data['code'] == '200') {
         //List dataList = data['data'];
-        print(data['data'][0]);
+        //print(data['data'][0]);
         return data['data'];
       } else {
         print('ERROR');

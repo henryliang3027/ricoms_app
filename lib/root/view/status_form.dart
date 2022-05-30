@@ -14,13 +14,7 @@ class StatusForm extends StatefulWidget {
   State<StatusForm> createState() => _StatusFormState();
 }
 
-class _StatusFormState extends State<StatusForm>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _StatusFormState extends State<StatusForm> {
   @override
   Widget build(BuildContext context) {
     print('build Status');
@@ -62,7 +56,4 @@ class _StatusFormState extends State<StatusForm>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }
