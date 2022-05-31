@@ -5,8 +5,8 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/threshold/threshold_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
-class ThresholdForm extends StatefulWidget {
-  ThresholdForm({Key? key, required this.rootRepository}) : super(key: key);
+class ConfigurationForm extends StatefulWidget {
+  ConfigurationForm({Key? key, required this.rootRepository}) : super(key: key);
 
   final RootRepository rootRepository;
   final Map<String, bool> checkBoxValues = <String, bool>{};
@@ -16,10 +16,10 @@ class ThresholdForm extends StatefulWidget {
   late bool isEditing = false;
 
   @override
-  State<ThresholdForm> createState() => _ThresholdFormState();
+  State<ConfigurationForm> createState() => _ConfigurationFormState();
 }
 
-class _ThresholdFormState extends State<ThresholdForm>
+class _ConfigurationFormState extends State<ConfigurationForm>
     with AutomaticKeepAliveClientMixin {
   Future<void> _showSuccessDialog() async {
     return showDialog<void>(

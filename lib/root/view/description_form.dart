@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/root/bloc/threshold/threshold_bloc.dart';
+import 'package:ricoms_app/root/bloc/description/description_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
-class ThresholdForm extends StatefulWidget {
-  ThresholdForm({Key? key, required this.rootRepository}) : super(key: key);
+class DescriptionForm extends StatefulWidget {
+  DescriptionForm({Key? key, required this.rootRepository}) : super(key: key);
 
   final RootRepository rootRepository;
-  final Map<String, bool> checkBoxValues = <String, bool>{};
   final Map<String, TextEditingController> textFieldControllers =
       <String, TextEditingController>{};
 
   late bool isEditing = false;
 
   @override
-  State<ThresholdForm> createState() => _ThresholdFormState();
+  State<DescriptionForm> createState() => _DescriptionFormState();
 }
 
-class _ThresholdFormState extends State<ThresholdForm>
+class _DescriptionFormState extends State<DescriptionForm>
     with AutomaticKeepAliveClientMixin {
   Future<void> _showSuccessDialog() async {
     return showDialog<void>(
@@ -43,12 +42,13 @@ class _ThresholdFormState extends State<ThresholdForm>
 
   @override
   Widget build(BuildContext context) {
-    print('build Threshold');
+    print('build Description');
 
     return BlocProvider(
-      create: (context) => ThresholdBloc(rootRepository: widget.rootRepository)
-        ..add(ThresholdDataRequested()),
-      child: BlocBuilder<ThresholdBloc, ThresholdState>(
+      create: (context) =>
+          DescriptionBloc(rootRepository: widget.rootRepository)
+            ..add(DescriptionDataRequested()),
+      child: BlocBuilder<DescriptionBloc, DescriptionState>(
         builder: (BuildContext context, state) {
           if (state.status.isSubmissionInProgress) {
             return const Center(
@@ -92,10 +92,6 @@ class _ThresholdFormState extends State<ThresholdForm>
                                 onPressed: () {
                                   Map<String, String> data = <String, String>{};
 
-                                  widget.checkBoxValues.forEach((key, value) {
-                                    data[key] = value ? '1' : '0';
-                                  });
-
                                   widget.textFieldControllers
                                       .forEach((key, value) {
                                     data[key] = value.text;
@@ -118,9 +114,6 @@ class _ThresholdFormState extends State<ThresholdForm>
                                   widget.textFieldControllers
                                       .forEach((key, value) {
                                     print('${key} : ${value.text}');
-                                  });
-                                  widget.checkBoxValues.forEach((key, value) {
-                                    print('${key} : ${value.toString()}');
                                   });
                                 },
                                 child: const Text('show data'),
@@ -162,7 +155,6 @@ class _ThresholdFormState extends State<ThresholdForm>
                         for (var e in item) ...[
                           CustomStyle.getBox(e['style'], e,
                               isEditing: widget.isEditing,
-                              checkBoxValues: widget.checkBoxValues,
                               textFieldControllers:
                                   widget.textFieldControllers),
                         ]

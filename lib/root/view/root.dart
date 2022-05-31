@@ -11,6 +11,8 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+  TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     RootRepository rootRepository = RepositoryProvider.of<RootRepository>(
@@ -18,12 +20,23 @@ class _RootPageState extends State<RootPage> {
     );
 
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(context, DeviceSettingPage.route(rootRepository));
-            },
-            child: Text('test A8KMF3')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: _controller,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                print('textfield text : ${_controller.text}');
+                rootRepository.deviceNodeId = _controller.text;
+                Navigator.push(
+                    context, DeviceSettingPage.route(rootRepository));
+              },
+              child: Text('test A8K')),
+        ],
       ),
     );
   }

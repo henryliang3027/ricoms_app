@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/threshold/threshold_bloc.dart';
+import 'package:ricoms_app/root/view/configuration_form.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/root/view/description_form.dart';
 import 'package:ricoms_app/root/view/status_form.dart';
 import 'package:ricoms_app/root/view/threshold_form.dart';
 
 class DeviceSettingPage extends StatefulWidget {
-  const DeviceSettingPage({Key? key, required this.rootRepository})
-      : super(key: key);
+  const DeviceSettingPage({
+    Key? key,
+    required this.rootRepository,
+  }) : super(key: key);
 
   static Route route(RootRepository rootRepository) {
     return MaterialPageRoute(
-        builder: (_) => DeviceSettingPage(rootRepository: rootRepository));
+        builder: (_) => DeviceSettingPage(
+              rootRepository: rootRepository,
+            ));
   }
 
   final RootRepository rootRepository;
@@ -42,6 +48,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
           isScrollable: true,
           tabs: const [
             Tab(text: 'Status'),
+            //Tab(text: 'Configuration'),
             Tab(text: 'Threshold'),
             Tab(text: 'Description'),
             Tab(text: 'History'),
@@ -52,8 +59,9 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
       body: TabBarView(
         children: [
           StatusForm(rootRepository: widget.rootRepository),
+          //ConfigurationForm(rootRepository: widget.rootRepository),
           ThresholdForm(rootRepository: widget.rootRepository),
-          Center(),
+          DescriptionForm(rootRepository: widget.rootRepository),
           Center(),
         ],
         controller: tabController,

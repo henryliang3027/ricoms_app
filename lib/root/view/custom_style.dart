@@ -8,6 +8,7 @@ class CustomStyle {
       Map<String, bool>? checkBoxValues,
       Map<String, TextEditingController>? textFieldControllers}) {
     int length = e['length'];
+    int height = e['height'];
     String value = e['value'];
     double font = (e['font'] as int).toDouble();
     int status = e['status'];
@@ -18,10 +19,8 @@ class CustomStyle {
     switch (style) {
       case 0:
         if (textFieldControllers != null) {
-          if (!textFieldControllers.containsKey(id)) {
-            //avoid assigning initvalue when setstate
-            textFieldControllers[id] = TextEditingController()..text = value;
-          }
+          textFieldControllers[id] = TextEditingController()..text = value;
+
           return Expanded(
             flex: length,
             child: Padding(
@@ -32,6 +31,7 @@ class CustomStyle {
                   controller: textFieldControllers[id],
                   textAlign: TextAlign.center,
                   enabled: isEditing,
+                  style: TextStyle(fontSize: font),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: isEditing ? Colors.white : Colors.grey.shade300,
@@ -60,13 +60,57 @@ class CustomStyle {
             child: Text("textFieldControllers not provided"),
           );
         }
+
+      case 98:
+        if (textFieldControllers != null) {
+          textFieldControllers[id] = TextEditingController()..text = value;
+
+          return Expanded(
+            flex: length,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 6.0),
+              child: SingleChildScrollView(
+                child: TextField(
+                  key: Key(id),
+                  controller: textFieldControllers[id],
+                  enabled: isEditing,
+                  style: TextStyle(fontSize: font),
+                  maxLines: height,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: isEditing ? Colors.white : Colors.grey.shade300,
+                    //isDense: true,
+                    //contentPadding: EdgeInsets.symmetric(vertical: 30.0),
+                    isCollapsed: true,
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    disabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            child: Text("textFieldControllers not provided"),
+          );
+        }
+
       case 99:
         if (checkBoxValues != null) {
           bool _initValue = value == '0' || value == "" ? false : true;
-          if (!checkBoxValues.containsKey(id)) {
-            //avoid assigning initvalue when setstate
-            checkBoxValues[id] = _initValue;
-          }
+
+          //avoid assigning initvalue when setstate
+          checkBoxValues[id] = _initValue;
 
           return Expanded(
             flex: length,
