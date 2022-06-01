@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/root/bloc/threshold/threshold_bloc.dart';
+import 'package:ricoms_app/root/bloc/configuration/configuration_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
 class ConfigurationForm extends StatefulWidget {
@@ -12,6 +12,8 @@ class ConfigurationForm extends StatefulWidget {
   final Map<String, bool> checkBoxValues = <String, bool>{};
   final Map<String, TextEditingController> textFieldControllers =
       <String, TextEditingController>{};
+
+  final Map<String, String> radioButtonValues = <String, String>{};
 
   late bool isEditing = false;
 
@@ -46,9 +48,10 @@ class _ConfigurationFormState extends State<ConfigurationForm>
     print('build Threshold');
 
     return BlocProvider(
-      create: (context) => ThresholdBloc(rootRepository: widget.rootRepository)
-        ..add(ThresholdDataRequested()),
-      child: BlocBuilder<ThresholdBloc, ThresholdState>(
+      create: (context) =>
+          ConfigurationBloc(rootRepository: widget.rootRepository)
+            ..add(ConfigurationDataRequested()),
+      child: BlocBuilder<ConfigurationBloc, ConfigurationState>(
         builder: (BuildContext context, state) {
           if (state.status.isSubmissionInProgress) {
             return const Center(
@@ -119,7 +122,8 @@ class _ConfigurationFormState extends State<ConfigurationForm>
                                       .forEach((key, value) {
                                     print('${key} : ${value.text}');
                                   });
-                                  widget.checkBoxValues.forEach((key, value) {
+                                  widget.radioButtonValues
+                                      .forEach((key, value) {
                                     print('${key} : ${value.toString()}');
                                   });
                                 },
@@ -163,8 +167,8 @@ class _ConfigurationFormState extends State<ConfigurationForm>
                           CustomStyle.getBox(e['style'], e,
                               isEditing: widget.isEditing,
                               checkBoxValues: widget.checkBoxValues,
-                              textFieldControllers:
-                                  widget.textFieldControllers),
+                              textFieldControllers: widget.textFieldControllers,
+                              radioButtonValues: widget.radioButtonValues),
                         ]
                       ],
                     )

@@ -28,44 +28,76 @@ class DeviceSettingPage extends StatefulWidget {
 }
 
 class _DeviceSettingPageState extends State<DeviceSettingPage>
-    with SingleTickerProviderStateMixin {
-  late final TabController tabController;
+    with TickerProviderStateMixin {
+  late TabController tabController;
 
   @override
   void initState() {
     // 建立 TabController，vsync 接受的型態是 TickerProvider
-    tabController = TabController(length: 4, vsync: this);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('A8K'),
-        bottom: TabBar(
-          isScrollable: true,
-          tabs: const [
-            Tab(text: 'Status'),
-            //Tab(text: 'Configuration'),
-            Tab(text: 'Threshold'),
-            Tab(text: 'Description'),
-            Tab(text: 'History'),
-          ],
-          controller: tabController,
-        ),
-      ),
-      body: TabBarView(
-        children: [
-          StatusForm(rootRepository: widget.rootRepository),
-          //ConfigurationForm(rootRepository: widget.rootRepository),
-          ThresholdForm(rootRepository: widget.rootRepository),
-          DescriptionForm(rootRepository: widget.rootRepository),
-          Center(),
-        ],
-        controller: tabController,
-      ),
+    return FutureBuilder(
+      future: widget.rootRepository.createDeviceBlock(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data is List) {
+            tabController = TabController(
+                length: (snapshot.data as List).length, vsync: this);
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('A8K'),
+                bottom: TabBar(
+                  isScrollable: true,
+                  tabs: [
+                    for (var item in snapshot.data) Tab(text: item['name']),
+                  ],
+                  controller: tabController,
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  for (var item in snapshot.data)
+                    if (item['name'] == 'Status') ...[
+                      StatusForm(rootRepository: widget.rootRepository)
+                    ] else if (item['name'] == 'Threshold') ...[
+                      ThresholdForm(rootRepository: widget.rootRepository),
+                    ] else if (item['name'] == 'Configuration') ...[
+                      ConfigurationForm(rootRepository: widget.rootRepository),
+                    ] else if (item['name'] == 'Description') ...[
+                      DescriptionForm(rootRepository: widget.rootRepository),
+                    ] else ...[
+                      const Center(
+                        child: Text('Comming soon!'),
+                      )
+                    ]
+                ],
+                controller: tabController,
+              ),
+            );
+          } else {
+            //String
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Error'),
+              ),
+              body: Center(
+                child: Text("Error: ${snapshot.data}"),
+              ),
+            );
+          }
+        } else {
+          //catch exception
+          return Scaffold(
+            body: Center(
+              child: Text("Error: ${snapshot.error}"),
+            ),
+          );
+        }
+      },
     );
   }
 }

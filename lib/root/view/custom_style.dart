@@ -1,18 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
 class CustomStyle {
-  static Widget getBox(int style, dynamic e,
-      {bool isEditing = false,
-      Map<String, bool>? checkBoxValues,
-      Map<String, TextEditingController>? textFieldControllers}) {
+  static Widget getBox(
+    int style,
+    dynamic e, {
+    bool isEditing = false,
+    Map<String, bool>? checkBoxValues,
+    Map<String, TextEditingController>? textFieldControllers,
+    Map<String, String>? radioButtonValues,
+    Map<String, String>? SliderValues,
+  }) {
     int length = e['length'];
     int height = e['height'];
     String value = e['value'];
     double font = (e['font'] as int).toDouble();
     int status = e['status'];
-    String paraameter = e['parameter'];
+    String parameter = e['parameter'];
     int readonly = e['readonly'];
     String id = e['id'].toString();
 
@@ -61,6 +67,31 @@ class CustomStyle {
           );
         }
 
+      case 3:
+        if (radioButtonValues != null) {
+          List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
+          Map<String, String> _groupValue = <String, String>{};
+          _groupValue = {for (var e in _parameter) e['value']: e['text']};
+          print(_groupValue);
+          radioButtonValues[id] = value;
+
+          return Expanded(
+            flex: length,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 6.0),
+              child: CustomRadiobox(
+                isEditing: isEditing,
+                oid: id,
+                radioButtonValues: radioButtonValues,
+                groupValue: _groupValue,
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            child: Text("radioButtonValues not provided"),
+          );
+        }
       case 98:
         if (textFieldControllers != null) {
           textFieldControllers[id] = TextEditingController()..text = value;
@@ -132,7 +163,7 @@ class CustomStyle {
           );
         } else {
           return Container(
-            child: Text("checkboxes not provided"),
+            child: Text("checkBoxValues not provided"),
           );
         }
 
@@ -365,5 +396,63 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                 : null,
           );
         });
+  }
+}
+
+class CustomRadiobox extends StatefulWidget {
+  const CustomRadiobox(
+      {Key? key,
+      required this.isEditing,
+      required this.oid,
+      required this.radioButtonValues,
+      required this.groupValue})
+      : super(key: key);
+
+  final Map<String, String> groupValue;
+  final Map<String, String> radioButtonValues;
+  final String oid;
+  final bool isEditing;
+
+  @override
+  State<CustomRadiobox> createState() => _CustomRadioboxState();
+}
+
+class _CustomRadioboxState extends State<CustomRadiobox> {
+  final StreamController<String> _radioButtonController = StreamController();
+  Stream<String> get _radioButtonStream => _radioButtonController.stream;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _radioButtonStream,
+      initialData: widget.radioButtonValues[widget.oid],
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return Row(
+          children: [
+            for (var k in widget.groupValue.keys) ...[
+              Expanded(
+                child: Row(
+                  children: [
+                    Radio(
+                      value: k,
+                      groupValue: snapshot.data,
+                      onChanged: widget.isEditing
+                          ? (String? value) {
+                              _radioButtonController.sink.add(value!);
+                              widget.radioButtonValues[widget.oid] = value;
+                            }
+                          : null,
+                    ),
+                    Expanded(
+                      child: Text(widget.groupValue[k]!),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
   }
 }

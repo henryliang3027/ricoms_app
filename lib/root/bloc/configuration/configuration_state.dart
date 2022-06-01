@@ -1,7 +1,7 @@
-part of 'threshold_bloc.dart';
+part of 'configuration_bloc.dart';
 
-class ThresholdState extends Equatable {
-  const ThresholdState({
+class ConfigurationState extends Equatable {
+  const ConfigurationState({
     this.status = FormzStatus.submissionInProgress,
     this.data = const [],
     this.editable = false,
@@ -15,14 +15,14 @@ class ThresholdState extends Equatable {
   final bool isEditing;
   final Map<String, String> controllerValues;
 
-  ThresholdState copyWith({
+  ConfigurationState copyWith({
     FormzStatus? status,
     List? data,
     bool? editable,
     bool? isEditing,
     Map<String, String>? controllerValues,
   }) {
-    return ThresholdState(
+    return ConfigurationState(
       status: status ?? this.status,
       data: data ?? this.data,
       editable: editable ?? this.editable,

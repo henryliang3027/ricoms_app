@@ -9,11 +9,22 @@ class RootRepository {
   final User user;
   String _nodeId = '';
 
+  final Map<String, String> _pageId = <String, String>{};
+  final Map<String, bool> _pageEditable = <String, bool>{};
+
   set deviceNodeId(String nodeId) {
     _nodeId = nodeId;
   }
 
-  Future<dynamic> getDeviceBlock() async {
+  bool isEditable(String pageName) {
+    if (_pageEditable[pageName] == null) {
+      return false; // page not exist
+    } else {
+      return _pageEditable[pageName]!;
+    }
+  }
+
+  Future<dynamic> createDeviceBlock() async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -28,9 +39,18 @@ class RootRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        //List dataList = data['data'];
+        List dataList = data['data'];
 
-        return data['data'];
+        dataList.removeWhere((element) => element['mobile'] == 0);
+
+        // build two maps -> {pagename : id} and {pagename : editable}
+        for (var item in dataList) {
+          print('item: ${item}');
+          _pageId[item['name']] = item['id'].toString();
+          _pageEditable[item['name']] = item['edit'] == 1 ? true : false;
+        }
+
+        return dataList;
       } else {
         print('ERROR');
         return 'Error errno: ${data['code']}';
@@ -54,7 +74,7 @@ class RootRepository {
         }
       } else {
         //throw Exception(e.toString());
-        return e.toString();
+        return Future.error(e.toString());
       }
     }
   }
@@ -64,7 +84,13 @@ class RootRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceStatusPath = '/device/' + _nodeId + '/block/101';
+
+    if (_pageId['Status'] == null) {
+      return 'Page id does not exist! please look up block and give a page id';
+    }
+
+    String deviceStatusPath =
+        '/device/' + _nodeId + '/block/' + _pageId['Status']!;
 
     try {
       //404
@@ -75,7 +101,7 @@ class RootRepository {
 
       if (data['code'] == '200') {
         //List dataList = data['data'];
-        print(data['data'][0]);
+        //print(data['data'][0]);
         return data['data'];
       } else {
         print('ERROR');
@@ -110,7 +136,13 @@ class RootRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceThresholdPath = '/device/' + _nodeId + '/block/103';
+
+    if (_pageId['Threshold'] == null) {
+      return 'Page id does not exist! please look up block and give a page id';
+    }
+
+    String deviceThresholdPath =
+        '/device/' + _nodeId + '/block/' + _pageId['Threshold']!;
 
     try {
       //404
@@ -202,7 +234,13 @@ class RootRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceThresholdPath = '/device/' + _nodeId + '/block/200';
+
+    if (_pageId['Description'] == null) {
+      return 'Page id does not exist! please look up block and give a page id';
+    }
+
+    String deviceThresholdPath =
+        '/device/' + _nodeId + '/block/' + _pageId['Description']!;
 
     try {
       //404
@@ -219,6 +257,7 @@ class RootRepository {
 
         List dataList = data['data'];
 
+        //make different id value because textfield ids are the same in json
         for (int i = 0; i < dataList.length; i++) {
           for (int j = 0; j < dataList[i].length; j++) {
             if (dataList[i][j]['id'] == 1) {
@@ -311,7 +350,13 @@ class RootRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceThresholdPath = '/device/' + _nodeId + '/block/102';
+
+    if (_pageId['Configuration'] == null) {
+      return 'Page id does not exist! please look up block and give a page id';
+    }
+
+    String deviceThresholdPath =
+        '/device/' + _nodeId + '/block/' + _pageId['Configuration']!;
 
     try {
       //404
