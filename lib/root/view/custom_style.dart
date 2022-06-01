@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CustomStyle {
@@ -11,7 +11,7 @@ class CustomStyle {
     Map<String, bool>? checkBoxValues,
     Map<String, TextEditingController>? textFieldControllers,
     Map<String, String>? radioButtonValues,
-    Map<String, String>? SliderValues,
+    Map<String, double>? sliderValues,
   }) {
     int length = e['length'];
     int height = e['height'];
@@ -67,8 +67,49 @@ class CustomStyle {
           );
         }
 
+      case 2:
+        if (sliderValues != null) {
+          //replace ' with " to make json decode work
+          List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
+          Map<String, dynamic> _sliderParams = <String, dynamic>{};
+
+          for (var items in _parameter) {
+            double _min = double.parse(items['min']!);
+            double _max = double.parse(items['max']!);
+            var _interval = (items['interval']! as List)
+                .reduce((current, next) => current < next ? current : next);
+
+            print(_interval.runtimeType);
+
+            _sliderParams['min'] = _min;
+            _sliderParams['max'] = _max;
+            _sliderParams['division'] = ((_max - _min) ~/ _interval).toInt();
+          }
+
+          print(_sliderParams);
+          sliderValues[id] = double.parse(value);
+
+          return Expanded(
+            flex: length,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 6.0),
+              child: CustomSlider(
+                isEditing: isEditing,
+                oid: id,
+                sliderValues: sliderValues,
+                sliderParams: _sliderParams,
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            child: Text("sliderValues not provided"),
+          );
+        }
+
       case 3:
         if (radioButtonValues != null) {
+          //replace ' with " to make json decode work
           List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
           Map<String, String> _groupValue = <String, String>{};
           _groupValue = {for (var e in _parameter) e['value']: e['text']};
@@ -434,6 +475,8 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
                 child: Row(
                   children: [
                     Radio(
+                      visualDensity: const VisualDensity(vertical: -4.0),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       value: k,
                       groupValue: snapshot.data,
                       onChanged: widget.isEditing
@@ -454,5 +497,57 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
         );
       },
     );
+  }
+}
+
+class CustomSlider extends StatefulWidget {
+  const CustomSlider({
+    Key? key,
+    required this.isEditing,
+    required this.oid,
+    required this.sliderValues,
+    required this.sliderParams,
+  }) : super(key: key);
+
+  final Map<String, double> sliderValues;
+  final Map<String, dynamic> sliderParams;
+  final String oid;
+  final bool isEditing;
+
+  @override
+  State<CustomSlider> createState() => _CustomSliderState();
+}
+
+class _CustomSliderState extends State<CustomSlider> {
+  final StreamController<double> _sliderController = StreamController();
+  Stream<double> get _sliderStream => _sliderController.stream;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: _sliderStream,
+        initialData: widget.sliderValues[widget.oid],
+        builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+          return SliderTheme(
+            data: SliderThemeData(
+              valueIndicatorColor: Colors.red,
+              showValueIndicator: ShowValueIndicator.always,
+            ),
+            child: Slider(
+              min: widget.sliderParams['min']!,
+              max: widget.sliderParams['max']!,
+              divisions: widget.sliderParams['division']!,
+              label: snapshot.data!.round().toString(),
+              value: snapshot.data!,
+              thumbColor: null,
+              onChanged: widget.isEditing
+                  ? (value) {
+                      _sliderController.sink.add(value);
+                      widget.sliderValues[widget.oid] = value;
+                    }
+                  : null,
+            ),
+          );
+        });
   }
 }

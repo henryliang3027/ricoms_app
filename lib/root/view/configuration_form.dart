@@ -15,6 +15,8 @@ class ConfigurationForm extends StatefulWidget {
 
   final Map<String, String> radioButtonValues = <String, String>{};
 
+  final Map<String, double> sliderValues = <String, double>{};
+
   late bool isEditing = false;
 
   @override
@@ -164,11 +166,15 @@ class _ConfigurationFormState extends State<ConfigurationForm>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         for (var e in item) ...[
-                          CustomStyle.getBox(e['style'], e,
-                              isEditing: widget.isEditing,
-                              checkBoxValues: widget.checkBoxValues,
-                              textFieldControllers: widget.textFieldControllers,
-                              radioButtonValues: widget.radioButtonValues),
+                          CustomStyle.getBox(
+                            e['style'],
+                            e,
+                            isEditing: widget.isEditing,
+                            checkBoxValues: widget.checkBoxValues,
+                            textFieldControllers: widget.textFieldControllers,
+                            radioButtonValues: widget.radioButtonValues,
+                            sliderValues: widget.sliderValues,
+                          ),
                         ]
                       ],
                     )
