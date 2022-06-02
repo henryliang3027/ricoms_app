@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/root/bloc/threshold/threshold_bloc.dart';
-import 'package:ricoms_app/root/view/configuration_form.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
-import 'package:ricoms_app/root/view/description_form.dart';
-import 'package:ricoms_app/root/view/status_form.dart';
-import 'package:ricoms_app/root/view/threshold_form.dart';
+import 'package:ricoms_app/root/view/device_setting_form.dart';
 
 class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({
@@ -60,20 +54,12 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
               ),
               body: TabBarView(
                 children: [
-                  for (var item in snapshot.data)
-                    if (item['name'] == 'Status') ...[
-                      StatusForm(rootRepository: widget.rootRepository)
-                    ] else if (item['name'] == 'Threshold') ...[
-                      ThresholdForm(rootRepository: widget.rootRepository),
-                    ] else if (item['name'] == 'Configuration') ...[
-                      ConfigurationForm(rootRepository: widget.rootRepository),
-                    ] else if (item['name'] == 'Description') ...[
-                      DescriptionForm(rootRepository: widget.rootRepository),
-                    ] else ...[
-                      const Center(
-                        child: Text('Comming soon!'),
-                      )
-                    ]
+                  for (var item in snapshot.data) ...[
+                    DeviceSettingForm(
+                      rootRepository: widget.rootRepository,
+                      pageName: item['name'],
+                    )
+                  ]
                 ],
                 controller: tabController,
               ),

@@ -12,6 +12,7 @@ class CustomStyle {
     Map<String, TextEditingController>? textFieldControllers,
     Map<String, String>? radioButtonValues,
     Map<String, double>? sliderValues,
+    Map<String, String>? controllerInitValues,
   }) {
     int length = e['length'];
     int height = e['height'];
@@ -25,8 +26,13 @@ class CustomStyle {
     switch (style) {
       case 0:
         if (textFieldControllers != null) {
-          textFieldControllers[id] = TextEditingController()..text = value;
-
+          if (textFieldControllers[id] == null) {
+            //avoid assigning initvalue when setstate
+            textFieldControllers[id] = TextEditingController()..text = value;
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = value;
+            }
+          }
           return Expanded(
             flex: length,
             child: Padding(
@@ -79,15 +85,18 @@ class CustomStyle {
             var _interval = (items['interval']! as List)
                 .reduce((current, next) => current < next ? current : next);
 
-            print(_interval.runtimeType);
-
             _sliderParams['min'] = _min;
             _sliderParams['max'] = _max;
             _sliderParams['division'] = ((_max - _min) ~/ _interval).toInt();
           }
 
-          print(_sliderParams);
-          sliderValues[id] = double.parse(value);
+          if (sliderValues[id] == null) {
+            //avoid assigning initvalue when setstate
+            sliderValues[id] = double.parse(value);
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = sliderValues[id].toString();
+            }
+          }
 
           return Expanded(
             flex: length,
@@ -110,17 +119,26 @@ class CustomStyle {
       case 3:
         if (radioButtonValues != null) {
           //replace ' with " to make json decode work
+
           List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
           Map<String, String> _groupValue = <String, String>{};
           _groupValue = {for (var e in _parameter) e['value']: e['text']};
-          print(_groupValue);
-          radioButtonValues[id] = value;
+          //print(_groupValue);
+
+          if (radioButtonValues[id] == null) {
+            //avoid assigning initvalue when setstate
+            radioButtonValues[id] = value;
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = value;
+            }
+          }
 
           return Expanded(
             flex: length,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 6.0),
               child: CustomRadiobox(
+                font: font,
                 isEditing: isEditing,
                 oid: id,
                 radioButtonValues: radioButtonValues,
@@ -135,8 +153,13 @@ class CustomStyle {
         }
       case 98:
         if (textFieldControllers != null) {
-          textFieldControllers[id] = TextEditingController()..text = value;
-
+          if (textFieldControllers[id] == null) {
+            //avoid assigning initvalue when setstate
+            textFieldControllers[id] = TextEditingController()..text = value;
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = value;
+            }
+          }
           return Expanded(
             flex: length,
             child: Padding(
@@ -179,10 +202,11 @@ class CustomStyle {
 
       case 99:
         if (checkBoxValues != null) {
-          bool _initValue = value == '0' || value == "" ? false : true;
-
-          //avoid assigning initvalue when setstate
-          checkBoxValues[id] = _initValue;
+          if (checkBoxValues[id] == null) {
+            //avoid assigning initvalue when setstate
+            bool _initValue = value == '0' || value == "" ? false : true;
+            checkBoxValues[id] = _initValue;
+          }
 
           return Expanded(
             flex: length,
@@ -443,6 +467,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
 class CustomRadiobox extends StatefulWidget {
   const CustomRadiobox(
       {Key? key,
+      required this.font,
       required this.isEditing,
       required this.oid,
       required this.radioButtonValues,
@@ -453,6 +478,7 @@ class CustomRadiobox extends StatefulWidget {
   final Map<String, String> radioButtonValues;
   final String oid;
   final bool isEditing;
+  final double font;
 
   @override
   State<CustomRadiobox> createState() => _CustomRadioboxState();
@@ -487,7 +513,12 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
                           : null,
                     ),
                     Expanded(
-                      child: Text(widget.groupValue[k]!),
+                      child: Text(
+                        widget.groupValue[k]!,
+                        style: TextStyle(
+                          fontSize: widget.font,
+                        ),
+                      ),
                     )
                   ],
                 ),
