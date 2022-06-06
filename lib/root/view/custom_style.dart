@@ -12,6 +12,7 @@ class CustomStyle {
     Map<String, TextEditingController>? textFieldControllers,
     Map<String, String>? radioButtonValues,
     Map<String, double>? sliderValues,
+    Map<String, String>? dropDownMenuValues,
     Map<String, String>? controllerInitValues,
   }) {
     int length = e['length'];
@@ -68,9 +69,41 @@ class CustomStyle {
             ),
           );
         } else {
-          return Container(
-            child: Text("textFieldControllers not provided"),
+          return const Text("textFieldControllers not provided");
+        }
+
+      case 1:
+        if (dropDownMenuValues != null) {
+          //replace ' with " to make json decode work
+
+          List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
+          Map<String, String> _groupValue = <String, String>{};
+          _groupValue = {for (var e in _parameter) e['value']: e['text']};
+          //print(_groupValue);
+
+          if (dropDownMenuValues[id] == null) {
+            //avoid assigning initvalue when setstate
+            dropDownMenuValues[id] = value;
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = value;
+            }
+          }
+
+          return Expanded(
+            flex: length,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: CustomDropDownMenu(
+                font: font,
+                isEditing: isEditing,
+                oid: id,
+                dropDownMenuValues: dropDownMenuValues,
+                groupValue: _groupValue,
+              ),
+            ),
           );
+        } else {
+          return const Text("dropDownMenuValues not provided");
         }
 
       case 2:
@@ -111,9 +144,7 @@ class CustomStyle {
             ),
           );
         } else {
-          return Container(
-            child: Text("sliderValues not provided"),
-          );
+          return const Text("sliderValues not provided");
         }
 
       case 3:
@@ -136,7 +167,7 @@ class CustomStyle {
           return Expanded(
             flex: length,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: CustomRadiobox(
                 font: font,
                 isEditing: isEditing,
@@ -147,9 +178,7 @@ class CustomStyle {
             ),
           );
         } else {
-          return Container(
-            child: Text("radioButtonValues not provided"),
-          );
+          return const Text("radioButtonValues not provided");
         }
       case 98:
         if (textFieldControllers != null) {
@@ -163,7 +192,7 @@ class CustomStyle {
           return Expanded(
             flex: length,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: SingleChildScrollView(
                 child: TextField(
                   key: Key(id),
@@ -195,9 +224,7 @@ class CustomStyle {
             ),
           );
         } else {
-          return Container(
-            child: Text("textFieldControllers not provided"),
-          );
+          return const Text("textFieldControllers not provided");
         }
 
       case 99:
@@ -206,12 +233,15 @@ class CustomStyle {
             //avoid assigning initvalue when setstate
             bool _initValue = value == '0' || value == "" ? false : true;
             checkBoxValues[id] = _initValue;
+            if (controllerInitValues != null) {
+              controllerInitValues[id] = value;
+            }
           }
 
           return Expanded(
             flex: length,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: CustomCheckbox(
                   checkBoxValues: checkBoxValues,
                   isEditing: isEditing,
@@ -227,16 +257,14 @@ class CustomStyle {
             ),
           );
         } else {
-          return Container(
-            child: Text("checkBoxValues not provided"),
-          );
+          return const Text("checkBoxValues not provided");
         }
 
       case 100:
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -253,7 +281,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.grey,
@@ -269,7 +297,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -285,7 +313,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -302,7 +330,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.green,
@@ -318,7 +346,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -335,7 +363,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
@@ -353,7 +381,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
@@ -371,7 +399,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
@@ -388,7 +416,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -406,7 +434,7 @@ class CustomStyle {
         return Expanded(
           flex: length,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
@@ -560,7 +588,7 @@ class _CustomSliderState extends State<CustomSlider> {
         initialData: widget.sliderValues[widget.oid],
         builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
           return SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
               valueIndicatorColor: Colors.red,
               showValueIndicator: ShowValueIndicator.always,
             ),
@@ -580,5 +608,68 @@ class _CustomSliderState extends State<CustomSlider> {
             ),
           );
         });
+  }
+}
+
+class CustomDropDownMenu extends StatefulWidget {
+  const CustomDropDownMenu(
+      {Key? key,
+      required this.font,
+      required this.isEditing,
+      required this.oid,
+      required this.dropDownMenuValues,
+      required this.groupValue})
+      : super(key: key);
+
+  final Map<String, String> groupValue;
+  final Map<String, String> dropDownMenuValues;
+  final String oid;
+  final bool isEditing;
+  final double font;
+
+  @override
+  State<CustomDropDownMenu> createState() => _CustomDropDownMenuState();
+}
+
+class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
+  final StreamController<String> _dropDownMenuController = StreamController();
+  Stream<String> get _dropDownMenuStream => _dropDownMenuController.stream;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _dropDownMenuStream,
+      initialData: widget.dropDownMenuValues[widget.oid],
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return InputDecorator(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+            isDense: true,
+            contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isDense: true,
+              isExpanded: true,
+              icon: const Icon(Icons.keyboard_arrow_down),
+              value: widget.dropDownMenuValues[widget.oid],
+              items: [
+                for (String k in widget.groupValue.keys)
+                  DropdownMenuItem(
+                    value: k,
+                    child: Text(widget.groupValue[k]!),
+                  )
+              ],
+              onChanged: widget.isEditing
+                  ? (String? value) {
+                      _dropDownMenuController.sink.add(value!);
+                      widget.dropDownMenuValues[widget.oid] = value;
+                    }
+                  : null,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

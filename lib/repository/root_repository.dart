@@ -106,16 +106,28 @@ class RootRepository {
 
         if (pageName == 'Description') {
           //make different id value because textfield ids are the same in json
-          int autoId = 99;
+          int autoId = 9998;
+
+          var deviceInfo = await getDeviceDescription();
+
+          if (deviceInfo.runtimeType is String) {
+            return deviceInfo;
+          }
 
           //make different id value because textfield ids are the same in json
           for (int i = 0; i < dataList.length; i++) {
             for (int j = 0; j < dataList[i].length; j++) {
-              if (dataList[i][j]['id'] == 1) {
+              if (dataList[i][j]['id'] != -1) {
                 print(dataList[i][j]['value'] +
                     '  ' +
                     dataList[i][j]['id'].toString());
                 dataList[i][j]['id'] = autoId;
+
+                if (dataList[i][j]['style'] == 0) {
+                  dataList[i][j]['value'] = deviceInfo[0]; // name
+                } else if (dataList[i][j]['style'] == 98) {
+                  dataList[i][j]['value'] = deviceInfo[1]; // description
+                } else {} //do nothing
                 autoId = autoId + 1;
               }
             }
@@ -201,172 +213,17 @@ class RootRepository {
     }
   }
 
-  Future<dynamic> getDeviceStatus() async {
-    Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-
-    if (_pageId['Status'] == null) {
-      return 'Page id does not exist! please look up block and give a page id';
-    }
-
-    String deviceStatusPath =
-        '/device/' + _nodeId + '/block/' + _pageId['Status']!;
-
-    try {
-      //404
-      Response response = await dio.get(deviceStatusPath);
-
-      //print(response.data.toString());
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        //List dataList = data['data'];
-        //print(data['data'][0]);
-        return data['data'];
-      } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
-      }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
-    }
-  }
-
-  Future<dynamic> getDeviceThreshold() async {
-    Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-
-    if (_pageId['Threshold'] == null) {
-      return 'Page id does not exist! please look up block and give a page id';
-    }
-
-    String deviceThresholdPath =
-        '/device/' + _nodeId + '/block/' + _pageId['Threshold']!;
-
-    try {
-      //404
-      Response response = await dio.get(deviceThresholdPath);
-
-      //print(response.data.toString());
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        //List dataList = data['data'];
-        //print(data['data'][0]);
-        return data['data'];
-      } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
-      }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
-    }
-  }
-
-  Future<String> setDeviceThreshold() async {
-    Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-    String deviceThresholdPath = '/device/' + _nodeId + '/write';
-
-    try {
-      //404
-      Response response = await dio.get(deviceThresholdPath);
-
-      //print(response.data.toString());
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        //List dataList = data['data'];
-        print(data['data'][0]);
-        return data['data'];
-      } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
-      }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
-    }
-  }
-
   Future<dynamic> getDeviceDescription() async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
-    if (_pageId['Description'] == null) {
-      return 'Page id does not exist! please look up block and give a page id';
-    }
-
-    String deviceThresholdPath =
-        '/device/' + _nodeId + '/block/' + _pageId['Description']!;
+    String deviceDescriptionPath = '/device/' + _nodeId;
 
     try {
       //404
-      Response response = await dio.get(deviceThresholdPath);
+      Response response = await dio.get(deviceDescriptionPath);
 
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
@@ -374,25 +231,12 @@ class RootRepository {
       if (data['code'] == '200') {
         //List dataList = data['data'];
         //print(data['data'][0]);
-
-        int autoId = 99;
-
         List dataList = data['data'];
+        List deviceInfo = <String>[];
+        deviceInfo.add(dataList[0]['name']);
+        deviceInfo.add(dataList[0]['description']);
 
-        //make different id value because textfield ids are the same in json
-        for (int i = 0; i < dataList.length; i++) {
-          for (int j = 0; j < dataList[i].length; j++) {
-            if (dataList[i][j]['id'] == 1) {
-              print(dataList[i][j]['value'] +
-                  '  ' +
-                  dataList[i][j]['id'].toString());
-              dataList[i][j]['id'] = autoId;
-              autoId = autoId + 1;
-            }
-          }
-        }
-
-        return dataList;
+        return deviceInfo;
       } else {
         print('ERROR');
         return 'Error errno: ${data['code']}';
@@ -421,27 +265,31 @@ class RootRepository {
     }
   }
 
-  Future<String> setDeviceDescription() async {
+  Future<List<dynamic>> setDeviceDescription(
+      String name, String description) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceThresholdPath = '/device/' + _nodeId + '/write';
-
+    String deviceDescriptionPath = '/device/' + _nodeId;
     try {
-      //404
-      Response response = await dio.get(deviceThresholdPath);
+      Map<String, dynamic> requestData = {
+        'uid': user.id,
+        'name': name,
+        'desc': description
+      };
+
+      String jsonData = jsonEncode(requestData);
+
+      Response response = await dio.put(deviceDescriptionPath, data: jsonData);
 
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        //List dataList = data['data'];
-        print(data['data'][0]);
-        return data['data'];
+        return [true, 'Setup completed!'];
       } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
+        return [false, 'Setup Failed! errno: ${data['code']}'];
       }
     } catch (e) {
       // The request was made and the server responded with a status code
@@ -452,69 +300,17 @@ class RootRepository {
           print(e.response!.headers);
           print(e.response!.requestOptions);
           //throw Exception('Server No Response');
-          return 'Server No Response';
+          return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
           print(e.requestOptions);
           print(e.message);
           //throw Exception(e.message);
-          return e.message;
+          return [false, e.message];
         }
       } else {
         //throw Exception(e.toString());
-        return e.toString();
-      }
-    }
-  }
-
-  Future<dynamic> getDeviceConfigration() async {
-    Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-
-    if (_pageId['Configuration'] == null) {
-      return 'Page id does not exist! please look up block and give a page id';
-    }
-
-    String deviceThresholdPath =
-        '/device/' + _nodeId + '/block/' + _pageId['Configuration']!;
-
-    try {
-      //404
-      Response response = await dio.get(deviceThresholdPath);
-
-      //print(response.data.toString());
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        //List dataList = data['data'];
-        //print(data['data'][0]);
-        return data['data'];
-      } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
-      }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
+        return [false, e.toString()];
       }
     }
   }

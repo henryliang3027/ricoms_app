@@ -70,7 +70,14 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionInProgress));
 
-    List result = await _rootRepository.setDeviceParams(event.param);
+    List result = [];
+    if (event.pageName == 'Description') {
+      String name = event.param[0]['value']!;
+      String description = event.param[1]['value']!;
+      result = await _rootRepository.setDeviceDescription(name, description);
+    } else {
+      result = await _rootRepository.setDeviceParams(event.param);
+    }
 
     if (result[0] == true) {
       emit(state.copyWith(

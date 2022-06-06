@@ -17,6 +17,7 @@ class DeviceSettingForm extends StatefulWidget {
       <String, TextEditingController>{};
   final Map<String, String> radioButtonValues = <String, String>{};
   final Map<String, double> sliderValues = <String, double>{};
+  final Map<String, String> dropDownMenuValues = <String, String>{};
   final Map<String, String> controllerInitValues = <String, String>{};
 
   late bool isEditing = false;
@@ -92,6 +93,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
             widget.textFieldControllers.clear();
             widget.radioButtonValues.clear();
             widget.checkBoxValues.clear();
+            widget.dropDownMenuValues.clear();
             context
                 .read<DeviceBloc>()
                 .add(DeviceDataRequested(widget.pageName));
@@ -114,10 +116,12 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                             height: 40.0,
                             child: CreateEditingTool(
                               isEditing: state.isEditing,
+                              pageName: widget.pageName,
                               checkBoxValues: widget.checkBoxValues,
                               textFieldControllers: widget.textFieldControllers,
                               radioButtonValues: widget.radioButtonValues,
                               sliderValues: widget.sliderValues,
+                              dropDownMenuValues: widget.dropDownMenuValues,
                               controllerInitValues: widget.controllerInitValues,
                             ))
                         : const SizedBox(
@@ -143,6 +147,8 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                                       radioButtonValues:
                                           widget.radioButtonValues,
                                       sliderValues: widget.sliderValues,
+                                      dropDownMenuValues:
+                                          widget.dropDownMenuValues,
                                       controllerInitValues:
                                           widget.controllerInitValues,
                                     ),
@@ -183,19 +189,22 @@ class CreateEditingTool extends StatelessWidget {
   const CreateEditingTool({
     Key? key,
     required this.isEditing,
+    required this.pageName,
     required this.checkBoxValues,
     required this.textFieldControllers,
     required this.radioButtonValues,
     required this.sliderValues,
+    required this.dropDownMenuValues,
     required this.controllerInitValues,
   }) : super(key: key);
 
   final bool isEditing;
-
+  final String pageName;
   final Map<String, bool> checkBoxValues;
   final Map<String, TextEditingController> textFieldControllers;
   final Map<String, String> radioButtonValues;
   final Map<String, double> sliderValues;
+  final Map<String, String> dropDownMenuValues;
   final Map<String, String> controllerInitValues;
 
   @override
@@ -236,19 +245,32 @@ class CreateEditingTool extends StatelessWidget {
 
                     if (checkBoxValues.isNotEmpty) {
                       checkBoxValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList
-                              .add({'oid_id': key, 'value': value ? '1' : '0'});
+                        String _binValue = value ? '1' : '0';
+                        if (controllerInitValues[key] != _binValue) {
+                          dataList.add({'oid_id': key, 'value': _binValue});
                         }
                       });
                     }
 
                     if (textFieldControllers.isNotEmpty) {
-                      textFieldControllers.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList.add({'oid_id': key, 'value': value.text});
-                        }
-                      });
+                      if (pageName == 'Description') {
+                        String nameId = '9998';
+                        String descriptionId = '9999';
+                        dataList.add({
+                          'oid_id': nameId,
+                          'value': textFieldControllers[nameId]!.text
+                        });
+                        dataList.add({
+                          'oid_id': descriptionId,
+                          'value': textFieldControllers[descriptionId]!.text
+                        });
+                      } else {
+                        textFieldControllers.forEach((key, value) {
+                          if (controllerInitValues[key] != value.text) {
+                            dataList.add({'oid_id': key, 'value': value.text});
+                          }
+                        });
+                      }
                     }
 
                     if (radioButtonValues.isNotEmpty) {
@@ -268,13 +290,23 @@ class CreateEditingTool extends StatelessWidget {
                       });
                     }
 
+                    if (dropDownMenuValues.isNotEmpty) {
+                      dropDownMenuValues.forEach((key, value) {
+                        if (controllerInitValues[key] != value) {
+                          dataList.add({'oid_id': key, 'value': value});
+                        }
+                      });
+                    }
+
                     print('--------------');
                     dataList.forEach((element) {
                       element
                           .forEach((key, value) => print('${key} : ${value}'));
                     });
                     print('--------------');
-                    context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
+                    context
+                        .read<DeviceBloc>()
+                        .add(DeviceParamSaved(pageName, dataList));
 
                     //widget.isEditing = false;
                     //_showSuccessDialog();},
@@ -286,14 +318,69 @@ class CreateEditingTool extends StatelessWidget {
                 padding: const EdgeInsets.all(6.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // textFieldControllers
-                    //     .forEach((key, value) {
-                    //   print('${key} : ${value.text}');
-                    // });
-                    // radioButtonValues
-                    //     .forEach((key, value) {
-                    //   print('${key} : ${value.toString()}');
-                    // });
+                    List<Map<String, String>> dataList = [];
+
+                    if (checkBoxValues.isNotEmpty) {
+                      checkBoxValues.forEach((key, value) {
+                        String _binValue = value ? '1' : '0';
+                        if (controllerInitValues[key] != _binValue) {
+                          dataList.add({'oid_id': key, 'value': _binValue});
+                        }
+                      });
+                    }
+
+                    if (textFieldControllers.isNotEmpty) {
+                      if (pageName == 'Description') {
+                        String nameId = '9998';
+                        String descriptionId = '9999';
+                        dataList.add({
+                          'oid_id': nameId,
+                          'value': textFieldControllers[nameId]!.text
+                        });
+                        dataList.add({
+                          'oid_id': descriptionId,
+                          'value': textFieldControllers[descriptionId]!.text
+                        });
+                      } else {
+                        textFieldControllers.forEach((key, value) {
+                          if (controllerInitValues[key] != value.text) {
+                            dataList.add({'oid_id': key, 'value': value.text});
+                          }
+                        });
+                      }
+                    }
+
+                    if (radioButtonValues.isNotEmpty) {
+                      radioButtonValues.forEach((key, value) {
+                        if (controllerInitValues[key] != value) {
+                          dataList.add({'oid_id': key, 'value': value});
+                        }
+                      });
+                    }
+
+                    if (sliderValues.isNotEmpty) {
+                      sliderValues.forEach((key, value) {
+                        if (controllerInitValues[key] != value.toString()) {
+                          dataList
+                              .add({'oid_id': key, 'value': value.toString()});
+                        }
+                      });
+                    }
+
+                    if (dropDownMenuValues.isNotEmpty) {
+                      dropDownMenuValues.forEach((key, value) {
+                        if (controllerInitValues[key] != value) {
+                          dataList.add({'oid_id': key, 'value': value});
+                        }
+                      });
+                    }
+
+                    print('--------------');
+                    dataList.forEach((element) {
+                      element
+                          .forEach((key, value) => print('${key} : ${value}'));
+                    });
+                    print('--------------');
                   },
                   child: const Text('show data'),
                 ),

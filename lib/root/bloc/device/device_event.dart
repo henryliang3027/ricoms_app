@@ -32,7 +32,8 @@ class ControllerValueChanged extends DeviceEvent {
 }
 
 class DeviceParamSaved extends DeviceEvent {
-  const DeviceParamSaved(this.param);
+  const DeviceParamSaved(this.pageName, this.param);
 
+  final String pageName;
   final List<Map<String, String>> param;
 }
