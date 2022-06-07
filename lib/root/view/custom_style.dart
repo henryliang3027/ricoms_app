@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CustomStyle {
@@ -34,6 +33,8 @@ class CustomStyle {
               controllerInitValues[id] = value;
             }
           }
+
+          bool _enabled = isEditing && readonly == 0;
           return Expanded(
             flex: length,
             child: Padding(
@@ -43,11 +44,11 @@ class CustomStyle {
                   key: Key(id),
                   controller: textFieldControllers[id],
                   textAlign: TextAlign.center,
-                  enabled: isEditing,
+                  enabled: _enabled,
                   style: TextStyle(fontSize: font),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: isEditing ? Colors.white : Colors.grey.shade300,
+                    fillColor: _enabled ? Colors.white : Colors.grey.shade300,
                     //isDense: true,
                     //contentPadding: EdgeInsets.all(0.0),
                     isCollapsed: true,
@@ -96,6 +97,7 @@ class CustomStyle {
               child: CustomDropDownMenu(
                 font: font,
                 isEditing: isEditing,
+                readonly: readonly,
                 oid: id,
                 dropDownMenuValues: dropDownMenuValues,
                 groupValue: _groupValue,
@@ -137,6 +139,7 @@ class CustomStyle {
               padding: EdgeInsets.symmetric(vertical: 6.0),
               child: CustomSlider(
                 isEditing: isEditing,
+                readonly: readonly,
                 oid: id,
                 sliderValues: sliderValues,
                 sliderParams: _sliderParams,
@@ -171,6 +174,7 @@ class CustomStyle {
               child: CustomRadiobox(
                 font: font,
                 isEditing: isEditing,
+                readonly: readonly,
                 oid: id,
                 radioButtonValues: radioButtonValues,
                 groupValue: _groupValue,
@@ -189,6 +193,8 @@ class CustomStyle {
               controllerInitValues[id] = value;
             }
           }
+
+          bool _enabled = isEditing && readonly == 0;
           return Expanded(
             flex: length,
             child: Padding(
@@ -197,12 +203,12 @@ class CustomStyle {
                 child: TextField(
                   key: Key(id),
                   controller: textFieldControllers[id],
-                  enabled: isEditing,
+                  enabled: _enabled,
                   style: TextStyle(fontSize: font),
                   maxLines: height,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: isEditing ? Colors.white : Colors.grey.shade300,
+                    fillColor: _enabled ? Colors.white : Colors.grey.shade300,
                     //isDense: true,
                     //contentPadding: EdgeInsets.symmetric(vertical: 30.0),
                     isCollapsed: true,
@@ -245,6 +251,7 @@ class CustomStyle {
               child: CustomCheckbox(
                   checkBoxValues: checkBoxValues,
                   isEditing: isEditing,
+                  readonly: readonly,
                   oid: id),
               // Checkbox(
               //   visualDensity: const VisualDensity(vertical: -4.0),
@@ -367,7 +374,7 @@ class CustomStyle {
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
-                color: Colors.white,
+                color: statusColor[status],
               ),
               child: Text(
                 value,
@@ -449,12 +456,27 @@ class CustomStyle {
         );
     }
   }
+
+  static const Map<int, Color> severityColor = {
+    0: Colors.grey,
+    1: Colors.green,
+    2: Colors.orange,
+    3: Colors.red,
+  };
+
+  static const Map<int, Color> statusColor = {
+    0: Colors.white,
+    1: Colors.white,
+    2: Colors.white,
+    3: Colors.red,
+  };
 }
 
 class CustomCheckbox extends StatefulWidget {
   const CustomCheckbox(
       {Key? key,
       required this.isEditing,
+      required this.readonly,
       required this.oid,
       required this.checkBoxValues})
       : super(key: key);
@@ -462,6 +484,7 @@ class CustomCheckbox extends StatefulWidget {
   final Map<String, bool> checkBoxValues;
   final String oid;
   final bool isEditing;
+  final int readonly;
 
   @override
   State<CustomCheckbox> createState() => _CustomCheckboxState();
@@ -481,7 +504,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
             visualDensity: const VisualDensity(vertical: -4.0),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             value: snapshot.data,
-            onChanged: widget.isEditing
+            onChanged: widget.isEditing && widget.readonly == 0
                 ? (value) {
                     _checkBoxController.sink.add(value!);
                     widget.checkBoxValues[widget.oid] = value;
@@ -497,6 +520,7 @@ class CustomRadiobox extends StatefulWidget {
       {Key? key,
       required this.font,
       required this.isEditing,
+      required this.readonly,
       required this.oid,
       required this.radioButtonValues,
       required this.groupValue})
@@ -507,6 +531,7 @@ class CustomRadiobox extends StatefulWidget {
   final String oid;
   final bool isEditing;
   final double font;
+  final int readonly;
 
   @override
   State<CustomRadiobox> createState() => _CustomRadioboxState();
@@ -533,7 +558,7 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       value: k,
                       groupValue: snapshot.data,
-                      onChanged: widget.isEditing
+                      onChanged: widget.isEditing && widget.readonly == 0
                           ? (String? value) {
                               _radioButtonController.sink.add(value!);
                               widget.radioButtonValues[widget.oid] = value;
@@ -563,6 +588,7 @@ class CustomSlider extends StatefulWidget {
   const CustomSlider({
     Key? key,
     required this.isEditing,
+    required this.readonly,
     required this.oid,
     required this.sliderValues,
     required this.sliderParams,
@@ -572,6 +598,7 @@ class CustomSlider extends StatefulWidget {
   final Map<String, dynamic> sliderParams;
   final String oid;
   final bool isEditing;
+  final int readonly;
 
   @override
   State<CustomSlider> createState() => _CustomSliderState();
@@ -587,25 +614,47 @@ class _CustomSliderState extends State<CustomSlider> {
         stream: _sliderStream,
         initialData: widget.sliderValues[widget.oid],
         builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
-          return SliderTheme(
-            data: const SliderThemeData(
-              valueIndicatorColor: Colors.red,
-              showValueIndicator: ShowValueIndicator.always,
-            ),
-            child: Slider(
-              min: widget.sliderParams['min']!,
-              max: widget.sliderParams['max']!,
-              divisions: widget.sliderParams['division']!,
-              label: snapshot.data!.round().toString(),
-              value: snapshot.data!,
-              thumbColor: null,
-              onChanged: widget.isEditing
-                  ? (value) {
-                      _sliderController.sink.add(value);
-                      widget.sliderValues[widget.oid] = value;
-                    }
-                  : null,
-            ),
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 6,
+                child: SliderTheme(
+                  data: const SliderThemeData(
+                    valueIndicatorColor: Colors.red,
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: Slider(
+                    min: widget.sliderParams['min']!,
+                    max: widget.sliderParams['max']!,
+                    divisions: widget.sliderParams['division']!,
+                    value: snapshot.data!,
+                    onChanged: widget.isEditing && widget.readonly == 0
+                        ? (value) {
+                            print(
+                                'value: ${double.parse(value.toStringAsFixed(1))}');
+                            _sliderController.sink.add(value);
+                            widget.sliderValues[widget.oid] = value;
+                          }
+                        : null,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                  ),
+                  child: Text(
+                    widget.sliderValues[widget.oid]!.toStringAsFixed(1),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
           );
         });
   }
@@ -616,6 +665,7 @@ class CustomDropDownMenu extends StatefulWidget {
       {Key? key,
       required this.font,
       required this.isEditing,
+      required this.readonly,
       required this.oid,
       required this.dropDownMenuValues,
       required this.groupValue})
@@ -626,6 +676,7 @@ class CustomDropDownMenu extends StatefulWidget {
   final String oid;
   final bool isEditing;
   final double font;
+  final int readonly;
 
   @override
   State<CustomDropDownMenu> createState() => _CustomDropDownMenuState();
@@ -641,31 +692,47 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
       stream: _dropDownMenuStream,
       initialData: widget.dropDownMenuValues[widget.oid],
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        return InputDecorator(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-            isDense: true,
-            contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton(
+        return DecoratedBox(
+          decoration: BoxDecoration(
+              color: widget.isEditing && widget.readonly == 0
+                  ? Colors.white
+                  : Colors.grey.shade300),
+          child: InputDecorator(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
               isDense: true,
-              isExpanded: true,
-              icon: const Icon(Icons.keyboard_arrow_down),
-              value: widget.dropDownMenuValues[widget.oid],
-              items: [
-                for (String k in widget.groupValue.keys)
-                  DropdownMenuItem(
-                    value: k,
-                    child: Text(widget.groupValue[k]!),
-                  )
-              ],
-              onChanged: widget.isEditing
-                  ? (String? value) {
-                      _dropDownMenuController.sink.add(value!);
-                      widget.dropDownMenuValues[widget.oid] = value;
-                    }
-                  : null,
+              contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                isDense: true,
+                isExpanded: true,
+                icon: const Icon(Icons.keyboard_arrow_down),
+                value: widget.dropDownMenuValues[widget.oid],
+                items: [
+                  for (String k in widget.groupValue.keys)
+                    DropdownMenuItem(
+                      value: k,
+                      child: Center(
+                        child: Text(
+                          widget.groupValue[k]!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: widget.font,
+                              color: widget.isEditing && widget.readonly == 0
+                                  ? Colors.black
+                                  : Colors.black),
+                        ),
+                      ),
+                    )
+                ],
+                onChanged: widget.isEditing && widget.readonly == 0
+                    ? (String? value) {
+                        _dropDownMenuController.sink.add(value!);
+                        widget.dropDownMenuValues[widget.oid] = value;
+                      }
+                    : null,
+              ),
             ),
           ),
         );

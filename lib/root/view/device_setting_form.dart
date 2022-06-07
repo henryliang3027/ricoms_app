@@ -68,8 +68,9 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
     print('build ${widget.pageName}');
 
     return BlocProvider(
-      create: (context) => DeviceBloc(rootRepository: widget.rootRepository)
-        ..add(DeviceDataRequested(widget.pageName)),
+      create: (context) => DeviceBloc(
+          rootRepository: widget.rootRepository, pageName: widget.pageName)
+        ..add(const DeviceDataRequested()),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
           if (state.submissionStatus.isSubmissionInProgress) {
@@ -94,9 +95,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
             widget.radioButtonValues.clear();
             widget.checkBoxValues.clear();
             widget.dropDownMenuValues.clear();
-            context
-                .read<DeviceBloc>()
-                .add(DeviceDataRequested(widget.pageName));
+            context.read<DeviceBloc>().add(const DeviceDataRequested());
           }
         },
         child: BlocBuilder<DeviceBloc, DeviceState>(
@@ -304,9 +303,7 @@ class CreateEditingTool extends StatelessWidget {
                           .forEach((key, value) => print('${key} : ${value}'));
                     });
                     print('--------------');
-                    context
-                        .read<DeviceBloc>()
-                        .add(DeviceParamSaved(pageName, dataList));
+                    context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
 
                     //widget.isEditing = false;
                     //_showSuccessDialog();},

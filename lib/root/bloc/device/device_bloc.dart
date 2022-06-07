@@ -7,8 +7,9 @@ part 'device_event.dart';
 part 'device_state.dart';
 
 class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
-  DeviceBloc({required RootRepository rootRepository})
+  DeviceBloc({required RootRepository rootRepository, required String pageName})
       : _rootRepository = rootRepository,
+        _pageName = pageName,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<FormStatusChanged>(_onFormStatusChanged);
@@ -17,6 +18,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   }
 
   final RootRepository _rootRepository;
+  final String _pageName;
+  //var dataStream = Stream<int>.periodic(const Duration(seconds: 1));
 
   Future<void> _onDeviceDataRequested(
     DeviceDataRequested event,
@@ -24,8 +27,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   ) async {
     emit(state.copyWith(formStatus: FormStatus.requestInProgress));
 
-    dynamic data = await _rootRepository.getDevicePage(event.pageName);
-    bool isEditable = _rootRepository.isEditable(event.pageName);
+    dynamic data = await _rootRepository.getDevicePage(_pageName);
+    bool isEditable = _rootRepository.isEditable(_pageName);
 
     if (data is List) {
       emit(state.copyWith(
@@ -71,7 +74,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         submissionStatus: SubmissionStatus.submissionInProgress));
 
     List result = [];
-    if (event.pageName == 'Description') {
+    if (_pageName == 'Description') {
       String name = event.param[0]['value']!;
       String description = event.param[1]['value']!;
       result = await _rootRepository.setDeviceDescription(name, description);

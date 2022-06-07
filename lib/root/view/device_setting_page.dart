@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/root/view/device_history_form.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 
 class DeviceSettingPage extends StatefulWidget {
@@ -40,7 +41,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
         if (snapshot.hasData) {
           if (snapshot.data is List) {
             tabController = TabController(
-                length: (snapshot.data as List).length, vsync: this);
+                length: (snapshot.data as List).length + 1, vsync: this);
             return Scaffold(
               appBar: AppBar(
                 title: Text('A8K'),
@@ -48,6 +49,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                   isScrollable: true,
                   tabs: [
                     for (var item in snapshot.data) Tab(text: item['name']),
+                    const Tab(text: 'History')
                   ],
                   controller: tabController,
                 ),
@@ -59,7 +61,10 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                       rootRepository: widget.rootRepository,
                       pageName: item['name'],
                     )
-                  ]
+                  ],
+                  DeviceHistoryForm(
+                    rootRepository: widget.rootRepository,
+                  ),
                 ],
                 controller: tabController,
               ),

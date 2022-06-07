@@ -8,12 +8,10 @@ abstract class DeviceEvent extends Equatable {
 }
 
 class DeviceDataRequested extends DeviceEvent {
-  const DeviceDataRequested(this.pageName);
-
-  final String pageName;
+  const DeviceDataRequested();
 
   @override
-  List<Object> get props => [pageName];
+  List<Object> get props => [];
 }
 
 class FormStatusChanged extends DeviceEvent {
@@ -29,11 +27,13 @@ class ControllerValueChanged extends DeviceEvent {
   const ControllerValueChanged(this.controllerValues);
 
   final Map<String, String> controllerValues;
+
+  @override
+  List<Object> get props => [];
 }
 
 class DeviceParamSaved extends DeviceEvent {
-  const DeviceParamSaved(this.pageName, this.param);
+  const DeviceParamSaved(this.param);
 
-  final String pageName;
   final List<Map<String, String>> param;
 }
