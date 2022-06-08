@@ -20,15 +20,17 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     on<ControllerValueChanged>(_onControllerValueChanged);
 
     add(const DeviceDataRequested());
-    _dataStreamSubscription = _dataStream.listen((_) {
-      print('current state: ${pageName} => ${state.isEditing}');
+    _dataStreamSubscription = _dataStream.listen((count) {
+      print(
+          'trigger times: ${count}, current state: ${pageName} => isEditing : ${state.isEditing}');
       state.isEditing == false ? add(const DeviceDataUpdateRequested()) : null;
     });
   }
 
   final RootRepository _rootRepository;
   final String _pageName;
-  final _dataStream = Stream<int>.periodic(const Duration(seconds: 5));
+  final _dataStream =
+      Stream<int>.periodic(const Duration(seconds: 5), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
 
   @override

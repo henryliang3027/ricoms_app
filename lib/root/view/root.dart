@@ -20,23 +20,26 @@ class _RootPageState extends State<RootPage> {
     );
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _controller,
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                print('textfield text : ${_controller.text}');
-                rootRepository.deviceNodeId = _controller.text;
-                Navigator.push(
-                    context, DeviceSettingPage.route(rootRepository));
-              },
-              child: Text('test A8K')),
-        ],
+      body: Container(
+        color: Colors.grey.shade300,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _controller,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  print('textfield text : ${_controller.text}');
+                  rootRepository.deviceNodeId = _controller.text;
+                  Navigator.push(
+                      context, DeviceSettingPage.route(rootRepository));
+                },
+                child: Text('test A8K')),
+          ],
+        ),
       ),
     );
   }

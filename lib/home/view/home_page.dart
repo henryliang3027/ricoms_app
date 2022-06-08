@@ -7,7 +7,6 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/dashboard/view/dashboard.dart';
 import 'package:ricoms_app/history/view/history.dart';
 import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
-import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root.dart';
 
@@ -24,12 +23,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
+
   final List<Widget> _widgetOptions = <Widget>[
     const RealTimeAlarmPage(),
     const RootPage(),
     const DashboardPage(),
     const HistoryPage(),
     const BookmarksPage(),
+  ];
+
+  final List<List<Widget>> _widgetActions = <List<Widget>>[
+    [],
+    [
+      IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+      IconButton(onPressed: () {}, icon: Icon(Icons.save_alt_outlined)),
+    ],
+    [],
+    [
+      IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+      IconButton(onPressed: () {}, icon: Icon(Icons.save_alt_outlined)),
+    ],
+    [],
   ];
 
   final List<BottomNavigationBarItem> _bottomBarItem = [
@@ -75,7 +89,11 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_bottomBarItem[_selectedIndex].label!),
+        centerTitle: false,
+        title: Text(
+          _bottomBarItem[_selectedIndex].label!,
+        ),
+        actions: _widgetActions[_selectedIndex],
       ),
       drawer: SafeArea(
         child: Drawer(

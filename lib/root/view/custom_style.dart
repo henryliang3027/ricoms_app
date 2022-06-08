@@ -14,14 +14,14 @@ class CustomStyle {
     Map<String, String>? dropDownMenuValues,
     Map<String, String>? controllerInitValues,
   }) {
-    int length = e['length'];
-    int height = e['height'];
-    String value = e['value'];
-    double font = (e['font'] as int).toDouble();
-    int status = e['status'];
-    String parameter = e['parameter'];
-    int readonly = e['readonly'];
-    String id = e['id'].toString();
+    int length = e['length'] ?? 1;
+    int height = e['height'] ?? 15;
+    String value = e['value'] ?? '';
+    double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
+    int status = e['status'] ?? 0;
+    String parameter = e['parameter'] ?? '';
+    int readonly = e['readonly'] ?? 0;
+    String id = e['id'] != null ? e['id'].toString() : '-1';
 
     switch (style) {
       case 0: //文字輸入方塊
