@@ -24,7 +24,7 @@ class CustomStyle {
     String id = e['id'].toString();
 
     switch (style) {
-      case 0:
+      case 0: //文字輸入方塊
         if (textFieldControllers != null) {
           if (textFieldControllers[id] == null) {
             //avoid assigning initvalue when setstate
@@ -73,7 +73,7 @@ class CustomStyle {
           return const Text("textFieldControllers not provided");
         }
 
-      case 1:
+      case 1: //下拉式功能表
         if (dropDownMenuValues != null) {
           //replace ' with " to make json decode work
 
@@ -108,7 +108,7 @@ class CustomStyle {
           return const Text("dropDownMenuValues not provided");
         }
 
-      case 2:
+      case 2: //±值功能表
         if (sliderValues != null) {
           //replace ' with " to make json decode work
           List _parameter = jsonDecode(parameter.replaceAll('\'', '\"'));
@@ -138,6 +138,7 @@ class CustomStyle {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 6.0),
               child: CustomSlider(
+                font: font,
                 isEditing: isEditing,
                 readonly: readonly,
                 oid: id,
@@ -150,7 +151,7 @@ class CustomStyle {
           return const Text("sliderValues not provided");
         }
 
-      case 3:
+      case 3: //單選按鈕組(radio button list)
         if (radioButtonValues != null) {
           //replace ' with " to make json decode work
 
@@ -184,7 +185,7 @@ class CustomStyle {
         } else {
           return const Text("radioButtonValues not provided");
         }
-      case 98:
+      case 98: //區塊型欄位表單 (TextArea)
         if (textFieldControllers != null) {
           if (textFieldControllers[id] == null) {
             //avoid assigning initvalue when setstate
@@ -233,7 +234,7 @@ class CustomStyle {
           return const Text("textFieldControllers not provided");
         }
 
-      case 99:
+      case 99: //勾選方塊
         if (checkBoxValues != null) {
           if (checkBoxValues[id] == null) {
             //avoid assigning initvalue when setstate
@@ -267,14 +268,15 @@ class CustomStyle {
           return const Text("checkBoxValues not provided");
         }
 
-      case 100:
+      case 100: //文字標籤 - 白底黑字
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                border: Border.all(color: Colors.white),
               ),
               child: Text(
                 value,
@@ -284,14 +286,15 @@ class CustomStyle {
           ),
         );
 
-      case 101:
+      case 101: //文字標籤 - 灰底白字
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.grey,
+                border: Border.all(color: Colors.grey),
               ),
               child: Text(
                 value,
@@ -300,14 +303,15 @@ class CustomStyle {
             ),
           ),
         );
-      case 102:
+      case 102: //文字標籤 - 白底藍字
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                border: Border.all(color: Colors.white),
               ),
               child: Text(
                 value,
@@ -316,7 +320,7 @@ class CustomStyle {
             ),
           ),
         );
-      case 103:
+      case 103: //文字標籤 - 藍底白字
         return Expanded(
           flex: length,
           child: Padding(
@@ -333,14 +337,15 @@ class CustomStyle {
             ),
           ),
         );
-      case 104:
+      case 104: //文字標籤 - 綠底白字
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.green,
+                border: Border.all(color: Colors.green),
               ),
               child: Text(
                 value,
@@ -349,14 +354,15 @@ class CustomStyle {
             ),
           ),
         );
-      case 105:
+      case 105: //文字標籤 - 白底綠字
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                border: Border.all(color: Colors.white),
               ),
               child: Text(
                 value,
@@ -366,15 +372,15 @@ class CustomStyle {
           ),
         );
 
-      case 106:
+      case 106: //文字標籤 - 白底黑字 (有邊框)
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
                 color: statusColor[status],
+                border: Border.all(color: Colors.black),
               ),
               child: Text(
                 value,
@@ -384,15 +390,15 @@ class CustomStyle {
           ),
         );
 
-      case 107:
+      case 107: //文字標籤 - 白底藍字 (有邊框)
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
-                color: Colors.white,
               ),
               child: Text(
                 value,
@@ -402,15 +408,15 @@ class CustomStyle {
           ),
         );
 
-      case 108:
+      case 108: //文字標籤 - 白底綠字 (有邊框)
         return Expanded(
           flex: length,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
-                color: Colors.white,
               ),
               child: Text(
                 value,
@@ -419,7 +425,61 @@ class CustomStyle {
             ),
           ),
         );
-      case 113:
+      case 110: //文字標籤 - 白底黑字, 文字置中
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.black, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 111: //文字標籤 - 灰底白字, 文字置中
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 112: //文字標籤 - 白底藍字, 文字置中
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.blue, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 113: //文字標籤 - 藍底白字, 文字置中
         return Expanded(
           flex: length,
           child: Padding(
@@ -437,6 +497,258 @@ class CustomStyle {
             ),
           ),
         );
+      case 114: //文字標籤 - 綠底白字, 文字置中
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                border: Border.all(color: Colors.green),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 115: //文字標籤 - 白底綠字, 文字置中
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.green, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 116: //文字標籤 - 白底黑字, 文字置中 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.black, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 117: //文字標籤 - 白底藍字, 文字置中 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.blue, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 118: //文字標籤 - 白底綠字, 文字置中 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.green, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 120: //文字標籤 - 白底黑字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.black, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 121: //文字標籤 - 灰底白字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 122: //文字標籤 - 白底藍字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.blue, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 123: //文字標籤 - 藍底白字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                border: Border.all(color: Colors.blue),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 124: //文字標籤 - 綠底白字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                border: Border.all(color: Colors.green),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.white, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 125: //文字標籤 - 白底綠字, 文字靠右
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.green, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 126: //文字標籤 - 白底黑字, 文字靠右 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.black, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 127: //文字標籤 - 白底藍字, 文字靠右 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.blue, fontSize: font),
+              ),
+            ),
+          ),
+        );
+      case 128: //文字標籤 - 白底綠字, 文字靠右 (有邊框)
+        return Expanded(
+          flex: length,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Container(
+              alignment: Alignment.centerRight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.green, fontSize: font),
+              ),
+            ),
+          ),
+        );
       default:
         return Expanded(
           flex: length,
@@ -444,8 +756,8 @@ class CustomStyle {
             padding: const EdgeInsets.symmetric(vertical: 6.0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
                 color: Colors.white,
+                border: Border.all(color: Colors.black),
               ),
               child: Text(
                 value,
@@ -503,7 +815,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
           return Checkbox(
             visualDensity: const VisualDensity(vertical: -4.0),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            value: snapshot.data,
+            value: widget.checkBoxValues[widget.oid],
             onChanged: widget.isEditing && widget.readonly == 0
                 ? (value) {
                     _checkBoxController.sink.add(value!);
@@ -556,8 +868,9 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
                     Radio(
                       visualDensity: const VisualDensity(vertical: -4.0),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: k,
-                      groupValue: snapshot.data,
+                      value: k, //selected value
+                      groupValue: widget.radioButtonValues[
+                          widget.oid], //determine which is selected
                       onChanged: widget.isEditing && widget.readonly == 0
                           ? (String? value) {
                               _radioButtonController.sink.add(value!);
@@ -587,6 +900,7 @@ class _CustomRadioboxState extends State<CustomRadiobox> {
 class CustomSlider extends StatefulWidget {
   const CustomSlider({
     Key? key,
+    required this.font,
     required this.isEditing,
     required this.readonly,
     required this.oid,
@@ -598,6 +912,7 @@ class CustomSlider extends StatefulWidget {
   final Map<String, dynamic> sliderParams;
   final String oid;
   final bool isEditing;
+  final double font;
   final int readonly;
 
   @override
@@ -628,7 +943,7 @@ class _CustomSliderState extends State<CustomSlider> {
                     min: widget.sliderParams['min']!,
                     max: widget.sliderParams['max']!,
                     divisions: widget.sliderParams['division']!,
-                    value: snapshot.data!,
+                    value: widget.sliderValues[widget.oid]!,
                     onChanged: widget.isEditing && widget.readonly == 0
                         ? (value) {
                             print(
@@ -651,6 +966,7 @@ class _CustomSliderState extends State<CustomSlider> {
                   child: Text(
                     widget.sliderValues[widget.oid]!.toStringAsFixed(1),
                     textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: widget.font),
                   ),
                 ),
               ),

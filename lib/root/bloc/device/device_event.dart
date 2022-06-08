@@ -1,5 +1,7 @@
 part of 'device_bloc.dart';
 
+enum RequestType { initial, update }
+
 abstract class DeviceEvent extends Equatable {
   const DeviceEvent();
 
@@ -9,6 +11,13 @@ abstract class DeviceEvent extends Equatable {
 
 class DeviceDataRequested extends DeviceEvent {
   const DeviceDataRequested();
+
+  @override
+  List<Object> get props => [];
+}
+
+class DeviceDataUpdateRequested extends DeviceEvent {
+  const DeviceDataUpdateRequested();
 
   @override
   List<Object> get props => [];

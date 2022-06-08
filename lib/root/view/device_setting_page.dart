@@ -81,6 +81,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
             );
           }
         } else {
+          //no response
           //catch exception
           return Scaffold(
             body: Center(

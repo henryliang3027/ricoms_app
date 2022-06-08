@@ -34,7 +34,8 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return const AlertDialog(
-          title: Text('Setting UP...'),
+          title: Text('Setting up...'),
+          actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             CircularProgressIndicator(),
           ],
@@ -69,8 +70,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
 
     return BlocProvider(
       create: (context) => DeviceBloc(
-          rootRepository: widget.rootRepository, pageName: widget.pageName)
-        ..add(const DeviceDataRequested()),
+          rootRepository: widget.rootRepository, pageName: widget.pageName),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
           if (state.submissionStatus.isSubmissionInProgress) {
@@ -84,27 +84,30 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
               state.submissionStatus.isSubmissionSuccess) {
             Navigator.of(context).pop();
             _showCompleteDialog(state.saveResultMsg);
-
-            // fetch new values and reset the values in all controllers and init value map
-            // ex: set the value from 1 to 2
-            // if you don't update init value map, the value is still 1
-            // when you set to 1 again, the value will be consider as not change and will not be write to the device
-            widget.controllerInitValues.clear();
-            widget.sliderValues.clear();
-            widget.textFieldControllers.clear();
-            widget.radioButtonValues.clear();
-            widget.checkBoxValues.clear();
-            widget.dropDownMenuValues.clear();
             context.read<DeviceBloc>().add(const DeviceDataRequested());
           }
         },
         child: BlocBuilder<DeviceBloc, DeviceState>(
           builder: (BuildContext context, state) {
+            print('trigger');
             if (state.formStatus.isRequestInProgress) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (state.formStatus.isRequestSuccess) {
+            } else if (state.formStatus.isRequestSuccess ||
+                state.formStatus.isUpdating) {
+              // fetch new values and reset the values in all controllers and init value map
+              // ex: set the value from 1 to 2
+              // if you don't update init value map, the value is still 1
+              // when you set to 1 again, the value will be consider as not change and will not be write to the device
+              if (state.formStatus.isUpdating) {
+                widget.controllerInitValues.clear();
+                widget.sliderValues.clear();
+                widget.textFieldControllers.clear();
+                widget.radioButtonValues.clear();
+                widget.checkBoxValues.clear();
+                widget.dropDownMenuValues.clear();
+              }
               return Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -309,77 +312,6 @@ class CreateEditingTool extends StatelessWidget {
                     //_showSuccessDialog();},
                   },
                   child: const Text('Save'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    List<Map<String, String>> dataList = [];
-
-                    if (checkBoxValues.isNotEmpty) {
-                      checkBoxValues.forEach((key, value) {
-                        String _binValue = value ? '1' : '0';
-                        if (controllerInitValues[key] != _binValue) {
-                          dataList.add({'oid_id': key, 'value': _binValue});
-                        }
-                      });
-                    }
-
-                    if (textFieldControllers.isNotEmpty) {
-                      if (pageName == 'Description') {
-                        String nameId = '9998';
-                        String descriptionId = '9999';
-                        dataList.add({
-                          'oid_id': nameId,
-                          'value': textFieldControllers[nameId]!.text
-                        });
-                        dataList.add({
-                          'oid_id': descriptionId,
-                          'value': textFieldControllers[descriptionId]!.text
-                        });
-                      } else {
-                        textFieldControllers.forEach((key, value) {
-                          if (controllerInitValues[key] != value.text) {
-                            dataList.add({'oid_id': key, 'value': value.text});
-                          }
-                        });
-                      }
-                    }
-
-                    if (radioButtonValues.isNotEmpty) {
-                      radioButtonValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList.add({'oid_id': key, 'value': value});
-                        }
-                      });
-                    }
-
-                    if (sliderValues.isNotEmpty) {
-                      sliderValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value.toString()) {
-                          dataList
-                              .add({'oid_id': key, 'value': value.toString()});
-                        }
-                      });
-                    }
-
-                    if (dropDownMenuValues.isNotEmpty) {
-                      dropDownMenuValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList.add({'oid_id': key, 'value': value});
-                        }
-                      });
-                    }
-
-                    print('--------------');
-                    dataList.forEach((element) {
-                      element
-                          .forEach((key, value) => print('${key} : ${value}'));
-                    });
-                    print('--------------');
-                  },
-                  child: const Text('show data'),
                 ),
               ),
             ],
