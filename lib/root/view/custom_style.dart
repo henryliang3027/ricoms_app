@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 
 class CustomStyle {
   static Widget getBox(
@@ -781,6 +782,15 @@ class CustomStyle {
     1: Colors.white,
     2: Colors.white,
     3: Colors.red,
+  };
+
+  static const Map<int, Icon?> typeIcon = {
+    0: null, //Root
+    1: Icon(CustomIcons.root), //Group
+    2: Icon(Icons.monitor), //Device
+    3: Icon(Icons.monitor), //A8K
+    4: null, //shelf
+    5: null, //slot
   };
 }
 

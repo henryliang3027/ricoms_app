@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/root/bloc/device/form_status.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/root/bloc/form_status.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
 
 class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
-  DeviceBloc({required RootRepository rootRepository, required String pageName})
-      : _rootRepository = rootRepository,
+  DeviceBloc(
+      {required DeviceRepository deviceRepository, required String pageName})
+      : _deviceRepository = deviceRepository,
         _pageName = pageName,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
@@ -27,7 +28,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     });
   }
 
-  final RootRepository _rootRepository;
+  final DeviceRepository _deviceRepository;
   final String _pageName;
   final _dataStream =
       Stream<int>.periodic(const Duration(seconds: 5), (count) => count);
@@ -47,8 +48,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       formStatus: FormStatus.requestInProgress,
     ));
 
-    dynamic data = await _rootRepository.getDevicePage(_pageName);
-    bool isEditable = _rootRepository.isEditable(_pageName);
+    dynamic data = await _deviceRepository.getDevicePage(_pageName);
+    bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
       emit(state.copyWith(
@@ -75,8 +76,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       formStatus: FormStatus.updating,
     ));
 
-    dynamic data = await _rootRepository.getDevicePage(_pageName);
-    bool isEditable = _rootRepository.isEditable(_pageName);
+    dynamic data = await _deviceRepository.getDevicePage(_pageName);
+    bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
       emit(state.copyWith(
@@ -125,9 +126,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     if (_pageName == 'Description') {
       String name = event.param[0]['value']!;
       String description = event.param[1]['value']!;
-      result = await _rootRepository.setDeviceDescription(name, description);
+      result = await _deviceRepository.setDeviceDescription(name, description);
     } else {
-      result = await _rootRepository.setDeviceParams(event.param);
+      result = await _deviceRepository.setDeviceParams(event.param);
     }
 
     if (result[0] == true) {

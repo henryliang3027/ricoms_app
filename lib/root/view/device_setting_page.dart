@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_history_form.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 
 class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({
     Key? key,
-    required this.rootRepository,
+    required this.deviceRepository,
+    required this.name,
   }) : super(key: key);
 
-  static Route route(RootRepository rootRepository) {
+  static Route route(DeviceRepository deviceRepository, String name) {
     return MaterialPageRoute(
         builder: (_) => DeviceSettingPage(
-              rootRepository: rootRepository,
+              deviceRepository: deviceRepository,
+              name: name,
             ));
   }
 
-  final RootRepository rootRepository;
+  final DeviceRepository deviceRepository;
+  final String name;
 
   @override
   State<DeviceSettingPage> createState() => _DeviceSettingPageState();
@@ -36,7 +39,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.rootRepository.createDeviceBlock(),
+      future: widget.deviceRepository.createDeviceBlock(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data is List) {
@@ -44,7 +47,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 length: (snapshot.data as List).length + 1, vsync: this);
             return Scaffold(
               appBar: AppBar(
-                title: Text('A8K'),
+                title: Text(widget.name),
                 bottom: TabBar(
                   isScrollable: true,
                   tabs: [
@@ -58,12 +61,12 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 children: [
                   for (var item in snapshot.data) ...[
                     DeviceSettingForm(
-                      rootRepository: widget.rootRepository,
+                      deviceRepository: widget.deviceRepository,
                       pageName: item['name'],
                     )
                   ],
                   DeviceHistoryForm(
-                    rootRepository: widget.rootRepository,
+                    deviceRepository: widget.deviceRepository,
                   ),
                 ],
                 controller: tabController,

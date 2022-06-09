@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/root/bloc/device/form_status.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
 class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm(
-      {Key? key, required this.rootRepository, required this.pageName})
+      {Key? key, required this.deviceRepository, required this.pageName})
       : super(key: key);
 
-  final RootRepository rootRepository;
+  final DeviceRepository deviceRepository;
   final String pageName;
   final Map<String, bool> checkBoxValues = <String, bool>{};
   final Map<String, TextEditingController> textFieldControllers =
@@ -70,7 +70,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
 
     return BlocProvider(
       create: (context) => DeviceBloc(
-          rootRepository: widget.rootRepository, pageName: widget.pageName),
+          deviceRepository: widget.deviceRepository, pageName: widget.pageName),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
           if (state.submissionStatus.isSubmissionInProgress) {
@@ -166,6 +166,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                 ),
               );
             } else {
+              //FormStatus.requestFailure
               String errnsg = state.data[0];
               return Center(
                 child: Text(errnsg),

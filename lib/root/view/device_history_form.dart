@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
 class DeviceHistoryForm extends StatefulWidget {
-  const DeviceHistoryForm({Key? key, required this.rootRepository})
+  const DeviceHistoryForm({Key? key, required this.deviceRepository})
       : super(key: key);
 
-  final RootRepository rootRepository;
+  final DeviceRepository deviceRepository;
 
   @override
   State<DeviceHistoryForm> createState() => _DeviceHistoryFormState();
 }
 
 class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
-  _mySliverChildBuilderDelegate(List data) {
+  _historySliverChildBuilderDelegate(List data) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         print('build _mySliverChildBuilderDelegate : ${index}');
@@ -94,7 +94,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.rootRepository.getDeviceHistory(),
+      future: widget.deviceRepository.getDeviceHistory(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data is List) {
@@ -103,7 +103,8 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
               child: CustomScrollView(
                 slivers: [
                   SliverList(
-                      delegate: _mySliverChildBuilderDelegate(snapshot.data))
+                      delegate:
+                          _historySliverChildBuilderDelegate(snapshot.data))
                 ],
               ),
             );
