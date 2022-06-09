@@ -542,7 +542,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -560,7 +560,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -578,7 +578,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -596,7 +596,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.white),
               ),
               child: Text(
@@ -704,7 +704,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -722,7 +722,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -740,7 +740,7 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.black),
               ),
               child: Text(
@@ -771,17 +771,17 @@ class CustomStyle {
   }
 
   static const Map<int, Color> severityColor = {
-    0: Colors.grey,
-    1: Colors.green,
-    2: Colors.orange,
-    3: Colors.red,
+    0: Color(0xff6c757d), //notice
+    1: Color(0xff28a745), //normal
+    2: Color(0xffffc107), //warning
+    3: Color(0xffdc3545), //critical
   };
 
   static const Map<int, Color> statusColor = {
-    0: Colors.white,
-    1: Colors.white,
-    2: Colors.white,
-    3: Colors.red,
+    0: Colors.white, //notice
+    1: Colors.white, //normal
+    2: Color(0xffffc107), //warning
+    3: Color(0xffdc3545), //critical
   };
 
   static const Map<int, Icon?> typeIcon = {
@@ -980,6 +980,7 @@ class _CustomSliderState extends State<CustomSlider> {
                   ),
                 ),
               ),
+              Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
             ],
           );
         });
