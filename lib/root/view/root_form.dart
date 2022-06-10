@@ -55,6 +55,103 @@ class RootForm extends StatelessWidget {
       );
     }
 
+    Widget _getDisplayName(Node node) {
+      if (node.type == 5) {
+        //slot
+        if (node.shelf != 0 && node.slot == 0) {
+          //a8k FAN slot
+          return Row(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text(
+                  "FAN",
+                  style: TextStyle(
+                    fontSize: CommonStyle.sizeL,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  node.name,
+                  style: const TextStyle(
+                    fontSize: CommonStyle.sizeL,
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else if (node.shelf != 0) {
+          // a8k normal slot
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  node.slot.toString(),
+                  style: const TextStyle(
+                    fontSize: CommonStyle.sizeL,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  node.name,
+                  style: const TextStyle(
+                    fontSize: CommonStyle.sizeL,
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else if (node.shelf == 0 && node.slot == 0) {
+          return const Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Text(
+              "PCM2 (L)",
+              style: TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+          ); // display of PCML2 (L)
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              node.name,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+          );
+        }
+      } else if (node.type == 4) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Shelf ' + node.shelf.toString(),
+            style: const TextStyle(
+              fontSize: CommonStyle.sizeL,
+            ),
+          ),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            node.name,
+            style: const TextStyle(
+              fontSize: CommonStyle.sizeL,
+            ),
+          ),
+        );
+      }
+    }
+
     _rootSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
@@ -80,38 +177,26 @@ class RootForm extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Flexible(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: CommonStyle.severityRectangleWidth,
-                              height: CommonStyle.severityRectangleHeight,
-                              color: CustomStyle.severityColor[node.status],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Flexible(
-                        child: CustomStyle.typeIcon[node.type] != null
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: CustomStyle.typeIcon[node.type],
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.0),
-                              ),
-                      ),
-                      Flexible(
-                        flex: 6,
-                        child: Text(
-                          node.name,
-                          style: const TextStyle(
-                            fontSize: CommonStyle.sizeL,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: CommonStyle.severityRectangleWidth,
+                            height: CommonStyle.severityRectangleHeight,
+                            color: CustomStyle.severityColor[node.status],
                           ),
-                        ),
+                        ],
+                      ),
+                      CustomStyle.typeIcon[node.type] != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: CustomStyle.typeIcon[node.type],
+                            )
+                          : const Padding(
+                              padding: EdgeInsets.zero,
+                            ),
+                      Flexible(
+                        child: _getDisplayName(node),
                       ),
                     ],
                   ),

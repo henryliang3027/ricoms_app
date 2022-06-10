@@ -100,7 +100,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     FormStatusChanged event,
     Emitter<DeviceState> emit,
   ) {
-    emit(state.copyWith(formStatus: FormStatus.requestInProgress));
+    //emit(state.copyWith(formStatus: FormStatus.requestInProgress));
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,
@@ -133,12 +133,15 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     if (result[0] == true) {
       emit(state.copyWith(
-          submissionStatus: SubmissionStatus.submissionSuccess,
-          saveResultMsg: result[1]));
+        submissionStatus: SubmissionStatus.submissionSuccess,
+        saveResultMsg: result[1],
+        isEditing: false,
+      ));
     } else {
       emit(state.copyWith(
-          submissionStatus: SubmissionStatus.submissionFailure,
-          saveResultMsg: result[1]));
+        submissionStatus: SubmissionStatus.submissionFailure,
+        saveResultMsg: result[1],
+      ));
     }
   }
 }
