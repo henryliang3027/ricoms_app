@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class ChangePasswordForm extends StatelessWidget {
   const ChangePasswordForm({Key? key}) : super(key: key);
@@ -128,7 +129,9 @@ class _CurrentPasswordInput extends StatelessWidget {
         return TextField(
           key: const Key('changePasswordForm_currentPasswordInput_textField'),
           textInputAction: TextInputAction.done,
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(
+            fontSize: CommonStyle.sizeL,
+          ),
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
               .add(CurrentPasswordChanged(password)),
@@ -141,12 +144,16 @@ class _CurrentPasswordInput extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             hintText: 'Current password',
-            hintStyle: const TextStyle(fontSize: 16),
+            hintStyle: const TextStyle(
+              fontSize: CommonStyle.sizeL,
+            ),
             errorMaxLines: 2,
+            errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
             errorText: state.currentPassword.invalid
                 ? 'Password must be between 4-32 characters.'
                 : null,
             helperText: 'Enter the Current password',
+            helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
             suffixIconConstraints: const BoxConstraints(
                 maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
             suffixIcon: IconButton(
@@ -178,7 +185,9 @@ class _NewPasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('changePasswordForm_newPasswordInput_textField'),
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(
+            fontSize: CommonStyle.sizeL,
+          ),
           textInputAction: TextInputAction.done,
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
@@ -192,12 +201,16 @@ class _NewPasswordInput extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               hintText: 'New password',
-              hintStyle: const TextStyle(fontSize: 16),
+              hintStyle: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
               errorMaxLines: 2,
+              errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               errorText: state.newPassword.invalid
                   ? 'Password must be between 4-32 characters.'
                   : null,
               helperText: 'Enter the New password',
+              helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               suffixIconConstraints: const BoxConstraints(
                   maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
               suffixIcon: IconButton(
@@ -229,7 +242,9 @@ class _ConfirmPasswordInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('changePasswordForm_confirmPasswordInput_textField'),
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(
+            fontSize: CommonStyle.sizeL,
+          ),
           textInputAction: TextInputAction.done,
           onChanged: (password) => context
               .read<ChangePasswordBloc>()
@@ -243,12 +258,16 @@ class _ConfirmPasswordInput extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               hintText: 'Confirm password',
-              hintStyle: const TextStyle(fontSize: 16),
+              hintStyle: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
               errorMaxLines: 2,
+              errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               errorText: state.confirmPassword.invalid
                   ? 'Password must be between 4-32 characters.'
                   : null,
               helperText: 'Confirm your new password',
+              helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               suffixIconConstraints: const BoxConstraints(
                   maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
               suffixIcon: IconButton(
@@ -291,7 +310,12 @@ class _SaveButton extends StatelessWidget {
                   ),
                 ),
                 key: const Key('changePasswordForm_save_raisedButton'),
-                child: const Text('Update'),
+                child: const Text(
+                  'Update',
+                  style: TextStyle(
+                    fontSize: CommonStyle.sizeM,
+                  ),
+                ),
                 onPressed: state.status.isValidated
                     ? () {
                         context

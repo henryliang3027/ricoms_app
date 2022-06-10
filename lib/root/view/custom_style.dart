@@ -11,7 +11,7 @@ class CustomStyle {
     Map<String, bool>? checkBoxValues,
     Map<String, TextEditingController>? textFieldControllers,
     Map<String, String>? radioButtonValues,
-    Map<String, double>? sliderValues,
+    Map<String, String>? sliderValues,
     Map<String, String>? dropDownMenuValues,
     Map<String, String>? controllerInitValues,
   }) {
@@ -118,19 +118,19 @@ class CustomStyle {
           for (var items in _parameter) {
             double _min = double.parse(items['min']!);
             double _max = double.parse(items['max']!);
-            var _interval = (items['interval']! as List)
+            num _interval = (items['interval']! as List)
                 .reduce((current, next) => current < next ? current : next);
 
             _sliderParams['min'] = _min;
             _sliderParams['max'] = _max;
-            _sliderParams['division'] = ((_max - _min) ~/ _interval).toInt();
+            _sliderParams['interval'] = _interval;
           }
 
           if (sliderValues[id] == null) {
             //avoid assigning initvalue when setstate
-            sliderValues[id] = double.parse(value);
+            sliderValues[id] = value;
             if (controllerInitValues != null) {
-              controllerInitValues[id] = sliderValues[id].toString();
+              controllerInitValues[id] = sliderValues[id]!;
             }
           }
 
@@ -918,7 +918,7 @@ class CustomSlider extends StatefulWidget {
     required this.sliderParams,
   }) : super(key: key);
 
-  final Map<String, double> sliderValues;
+  final Map<String, String> sliderValues;
   final Map<String, dynamic> sliderParams;
   final String oid;
   final bool isEditing;
@@ -935,9 +935,17 @@ class _CustomSliderState extends State<CustomSlider> {
 
   @override
   Widget build(BuildContext context) {
+    double truncateDecimal(double value) {
+      double fixDecimal = double.parse(value.toStringAsFixed(1));
+      return double.parse(fixDecimal.toStringAsFixed(
+          fixDecimal.truncateToDouble() == fixDecimal ? 0 : 1));
+    }
+
+    bool isInteger(num value) => value is int || value == value.roundToDouble();
+
     return StreamBuilder(
         stream: _sliderStream,
-        initialData: widget.sliderValues[widget.oid],
+        initialData: double.parse(widget.sliderValues[widget.oid]!),
         builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -952,14 +960,24 @@ class _CustomSliderState extends State<CustomSlider> {
                   child: Slider(
                     min: widget.sliderParams['min']!,
                     max: widget.sliderParams['max']!,
-                    divisions: widget.sliderParams['division']!,
-                    value: widget.sliderValues[widget.oid]!,
+                    divisions: ((widget.sliderParams['max'] -
+                                widget.sliderParams['min']) ~/
+                            widget.sliderParams['interval'])
+                        .toInt(),
+                    value: double.parse(widget.sliderValues[widget.oid]!),
                     onChanged: widget.isEditing && widget.readonly == 0
                         ? (value) {
-                            print(
-                                'value: ${double.parse(value.toStringAsFixed(1))}');
                             _sliderController.sink.add(value);
-                            widget.sliderValues[widget.oid] = value;
+
+                            String strValue =
+                                isInteger(widget.sliderParams['interval'])
+                                    ? value.toInt().toString()
+                                    : truncateDecimal(value).toString();
+
+                            widget.sliderValues[widget.oid] = strValue;
+
+                            print(
+                                'double value: $value  String value: ${widget.sliderValues[widget.oid]}');
                           }
                         : null,
                   ),
@@ -974,7 +992,7 @@ class _CustomSliderState extends State<CustomSlider> {
                     ),
                   ),
                   child: Text(
-                    widget.sliderValues[widget.oid]!.toStringAsFixed(1),
+                    widget.sliderValues[widget.oid]!,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: widget.font),
                   ),

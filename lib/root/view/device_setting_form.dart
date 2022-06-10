@@ -16,7 +16,7 @@ class DeviceSettingForm extends StatefulWidget {
   final Map<String, TextEditingController> textFieldControllers =
       <String, TextEditingController>{};
   final Map<String, String> radioButtonValues = <String, String>{};
-  final Map<String, double> sliderValues = <String, double>{};
+  final Map<String, String> sliderValues = <String, String>{};
   final Map<String, String> dropDownMenuValues = <String, String>{};
   final Map<String, String> controllerInitValues = <String, String>{};
 
@@ -206,7 +206,7 @@ class CreateEditingTool extends StatelessWidget {
   final Map<String, bool> checkBoxValues;
   final Map<String, TextEditingController> textFieldControllers;
   final Map<String, String> radioButtonValues;
-  final Map<String, double> sliderValues;
+  final Map<String, String> sliderValues;
   final Map<String, String> dropDownMenuValues;
   final Map<String, String> controllerInitValues;
 
@@ -286,7 +286,7 @@ class CreateEditingTool extends StatelessWidget {
 
                     if (sliderValues.isNotEmpty) {
                       sliderValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value.toString()) {
+                        if (controllerInitValues[key] != value) {
                           dataList
                               .add({'oid_id': key, 'value': value.toString()});
                         }

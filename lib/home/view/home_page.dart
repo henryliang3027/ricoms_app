@@ -10,6 +10,7 @@ import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root_page.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -102,6 +103,7 @@ class _HomePageState extends State<HomePage> {
           centerTitle: false,
           title: Text(
             _bottomBarItem[_selectedIndex].label!,
+            style: const TextStyle(fontSize: CommonStyle.sizeXXL),
           ),
           actions: _widgetActions[_selectedIndex],
         ),
@@ -134,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                         Padding(padding: EdgeInsets.only(top: 6.0)),
                         Text(user.name,
                             style: const TextStyle(
-                              fontSize: 16.0,
+                              fontSize: CommonStyle.sizeM,
                               fontWeight: FontWeight.w700,
                             )),
                       ],
@@ -147,7 +149,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.realtime_alarm),
                   ),
-                  title: const Text('Real-Time Alarm'),
+                  title: const Text(
+                    'Real-Time Alarm',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     // Update the state of the app
                     // ...
@@ -162,7 +167,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.root),
                   ),
-                  title: const Text('Root'),
+                  title: const Text(
+                    'Root',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     _pageController.jumpToPage(1);
                     Navigator.pop(context);
@@ -174,7 +182,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.dashboard),
                   ),
-                  title: const Text('Dashboard'),
+                  title: const Text(
+                    'Dashboard',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     _pageController.jumpToPage(2);
                     Navigator.pop(context);
@@ -186,7 +197,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.history),
                   ),
-                  title: const Text('History'),
+                  title: const Text(
+                    'History',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     _pageController.jumpToPage(3);
                     Navigator.pop(context);
@@ -198,7 +212,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.bookmarks),
                   ),
-                  title: const Text('Bookmarks'),
+                  title: const Text(
+                    'Bookmarks',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     _pageController.jumpToPage(4);
                     Navigator.pop(context);
@@ -210,7 +227,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.account),
                   ),
-                  title: const Text('Account'),
+                  title: const Text(
+                    'Account',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     _pageController.jumpToPage(1);
                     Navigator.pop(context);
@@ -223,7 +243,10 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.fromLTRB(10.0, 2.0, 2.0, 0.0),
                   child: Text(
                     'Setting',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: CommonStyle.sizeS,
+                    ),
                   ),
                 ),
                 ListTile(
@@ -232,7 +255,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.change_password),
                   ),
-                  title: const Text('Change Password'),
+                  title: const Text(
+                    'Change Password',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () async {
                     bool actionResult = await Navigator.push(
                         context, ChangePasswordPage.route());
@@ -252,7 +278,10 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(CustomIcons.logout),
                   ),
-                  title: const Text('Logout'),
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                  ),
                   onTap: () {
                     context
                         .read<AuthenticationBloc>()
@@ -264,7 +293,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const Center(
                   //padding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-                  child: Text('0.9.0'),
+                  child: Text(
+                    CommonStyle.version,
+                    style: TextStyle(fontSize: CommonStyle.sizeS),
+                  ),
                 ),
               ],
             ),

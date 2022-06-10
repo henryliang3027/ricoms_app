@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
 import 'package:ricoms_app/change_password/view/change_password_form.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class ChangePasswordPage extends StatelessWidget {
   const ChangePasswordPage({
@@ -30,7 +31,10 @@ class ChangePasswordPage extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text(_title),
+          title: Text(
+            _title,
+            style: const TextStyle(fontSize: CommonStyle.sizeXXL),
+          ),
         ),
         body: Container(
           height: double.maxFinite,

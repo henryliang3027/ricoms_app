@@ -7,6 +7,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_setting_page.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class RootForm extends StatelessWidget {
   const RootForm({Key? key}) : super(key: key);
@@ -85,28 +86,30 @@ class RootForm extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.fromLTRB(
-                                  0.0, 0.0, 10.0, 0.0),
-                              width: 30.0,
-                              height: 60.0,
+                              width: CommonStyle.severityRectangleWidth,
+                              height: CommonStyle.severityRectangleHeight,
                               color: CustomStyle.severityColor[node.status],
                             ),
                           ],
                         ),
                       ),
                       Flexible(
-                        child: CustomStyle.typeIcon[node.type] ??
-                            const SizedBox(
-                              width: 0.0,
-                              height: 0.0,
-                            ),
+                        child: CustomStyle.typeIcon[node.type] != null
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: CustomStyle.typeIcon[node.type],
+                              )
+                            : const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                              ),
                       ),
                       Flexible(
                         flex: 6,
                         child: Text(
                           node.name,
                           style: const TextStyle(
-                            fontSize: 16.0,
+                            fontSize: CommonStyle.sizeL,
                           ),
                         ),
                       ),
