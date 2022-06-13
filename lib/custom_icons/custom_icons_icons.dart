@@ -29,4 +29,6 @@ class CustomIcons {
   static const IconData account = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData change_password = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData logout = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData device = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData network = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

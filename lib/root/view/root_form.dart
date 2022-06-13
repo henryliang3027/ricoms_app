@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -9,12 +8,23 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_setting_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
-class RootForm extends StatelessWidget {
+class RootForm extends StatefulWidget {
   const RootForm({Key? key}) : super(key: key);
 
   @override
+  State<RootForm> createState() => _RootFormState();
+}
+
+class _RootFormState extends State<RootForm> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController _controller = TextEditingController();
     DeviceRepository deviceRepository = RepositoryProvider.of<DeviceRepository>(
       context,
     );
@@ -90,7 +100,7 @@ class RootForm extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
-                  node.slot.toString(),
+                  node.slot.toString().padLeft(2, '0'),
                   style: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                     color: Colors.blue,
@@ -109,6 +119,7 @@ class RootForm extends StatelessWidget {
             ],
           );
         } else if (node.shelf == 0 && node.slot == 0) {
+          //PCML2 (L)
           return const Padding(
             padding: EdgeInsets.only(left: 8.0),
             child: Text(
@@ -130,6 +141,7 @@ class RootForm extends StatelessWidget {
           );
         }
       } else if (node.type == 4) {
+        //shelf
         return Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
@@ -152,6 +164,15 @@ class RootForm extends StatelessWidget {
       }
     }
 
+    void _autoScrollToTheEnd() {
+      Future.delayed(
+          const Duration(milliseconds: 500),
+          () => _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(seconds: 1),
+              curve: Curves.ease));
+    }
+
     _rootSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
@@ -166,7 +187,7 @@ class RootForm extends StatelessWidget {
                     // 2 : EDFA, 5 : A8K slot
                     deviceRepository.deviceNodeId = node.id.toString();
                     Navigator.push(context,
-                        DeviceSettingPage.route(deviceRepository, node.name));
+                        DeviceSettingPage.route(deviceRepository, node));
                   } else {
                     context.read<RootBloc>().add(ChildDataRequested(node));
                   }
@@ -217,6 +238,8 @@ class RootForm extends StatelessWidget {
             state.submissionStatus.isSubmissionSuccess) {
           Navigator.of(context).pop();
           _showCompleteDialog(state.saveResultMsg);
+        } else if (state.formStatus.isRequestSuccess) {
+          _autoScrollToTheEnd();
         }
       },
       child: BlocBuilder<RootBloc, RootState>(
@@ -233,43 +256,69 @@ class RootForm extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Padding(
-                                padding: EdgeInsets.all(6.0),
+                    child: Card(
+                      child: Row(
+                        children: [
+                          //home button
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<RootBloc>()
+                                  .add(ChildDataRequested(state.directory[0]));
+                            },
+                            icon: Icon(Icons.home_outlined),
+                            padding: EdgeInsets.zero,
+                            visualDensity: const VisualDensity(
+                                horizontal: -4.0, vertical: -4.0),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(2.0, 2.0, 6.0, 2.0),
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    for (Node node in state.directory)
-                                      if (node.id == 0) ...[
-                                        IconButton(
-                                            onPressed: () {
-                                              context.read<RootBloc>().add(
-                                                  ChildDataRequested(node));
-                                            },
-                                            icon: Icon(Icons.home_outlined)),
-                                      ] else ...[
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            context
-                                                .read<RootBloc>()
-                                                .add(ChildDataRequested(node));
-                                          },
-                                          child: Text(' > ${node.name}'),
+                                    for (int i = 1;
+                                        i < state.directory.length;
+                                        i++) ...[
+                                      const Icon(
+                                        Icons.keyboard_arrow_right_outlined,
+                                        size: 20.0,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          context.read<RootBloc>().add(
+                                              ChildDataRequested(
+                                                  state.directory[i]));
+                                        },
+                                        child: Text(
+                                          state.directory[i].name,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ]
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.white70,
+                                          elevation: 0,
+                                          side: const BorderSide(
+                                            width: 1.0,
+                                            color: Colors.black,
+                                          ),
+                                          visualDensity: const VisualDensity(
+                                              horizontal: -4.0, vertical: -4.0),
+                                        ),
+                                      ),
+                                    ]
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 

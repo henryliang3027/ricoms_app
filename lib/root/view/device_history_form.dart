@@ -28,12 +28,13 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
               padding: EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 1,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
@@ -52,7 +53,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 2.0),
+                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
                           child: Container(
                             child: Text(
                               data[index]['event'],
@@ -69,7 +70,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
                           padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 6.0),
                           child: Container(
                             child: Text(
-                              data[index]['start_time'],
+                              'Time Received: ' + data[index]['start_time'],
                               style: GoogleFonts.roboto(
                                 fontSize: 12.0,
                                 //fontWeight: FontWeight.w600,
@@ -78,6 +79,22 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
                             ),
                           ),
                         ),
+                        data[index]['clear_time'] != null
+                            ? Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 0.0, 10.0, 0.0),
+                                child: Container(
+                                  child: Text(
+                                    'Clear Time: ' + data[index]['clear_time'],
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 12.0,
+                                      //fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const Padding(padding: EdgeInsets.zero),
                       ],
                     ),
                   ),
@@ -111,7 +128,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
           } else {
             //String
             return Center(
-              child: Text("Error: ${snapshot.data}"),
+              child: Text(snapshot.data),
             );
           }
         } else {

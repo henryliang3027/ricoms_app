@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/device_history_form.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({
     Key? key,
     required this.deviceRepository,
-    required this.name,
+    required this.node,
   }) : super(key: key);
 
-  static Route route(DeviceRepository deviceRepository, String name) {
+  static Route route(DeviceRepository deviceRepository, Node node) {
     return MaterialPageRoute(
         builder: (_) => DeviceSettingPage(
               deviceRepository: deviceRepository,
-              name: name,
+              node: node,
             ));
   }
 
   final DeviceRepository deviceRepository;
-  final String name;
+  final Node node;
 
   @override
   State<DeviceSettingPage> createState() => _DeviceSettingPageState();
@@ -31,9 +33,15 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
 
   @override
   void initState() {
-    // 建立 TabController，vsync 接受的型態是 TickerProvider
-
     super.initState();
+  }
+
+  bool isA8KPCM2() {
+    if (widget.node.name == CommonStyle.a8KPCM2Name) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -42,32 +50,49 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
       future: widget.deviceRepository.createDeviceBlock(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          print(widget.node.name);
           if (snapshot.data is List) {
             tabController = TabController(
-                length: (snapshot.data as List).length + 1, vsync: this);
+                length: isA8KPCM2()
+                    ? (snapshot.data as List).length
+                    : (snapshot.data as List).length + 1,
+                vsync: this);
             return Scaffold(
               appBar: AppBar(
-                title: Text(widget.name),
+                title: Text(widget.node.name),
                 bottom: TabBar(
                   isScrollable: true,
                   tabs: [
-                    for (var item in snapshot.data) Tab(text: item['name']),
-                    const Tab(text: 'History')
+                    if (isA8KPCM2()) ...[
+                      for (var item in snapshot.data) Tab(text: item['name']),
+                    ] else ...[
+                      for (var item in snapshot.data) Tab(text: item['name']),
+                      const Tab(text: 'History')
+                    ]
                   ],
                   controller: tabController,
                 ),
               ),
               body: TabBarView(
                 children: [
-                  for (var item in snapshot.data) ...[
-                    DeviceSettingForm(
+                  if (isA8KPCM2()) ...[
+                    for (var item in snapshot.data) ...[
+                      DeviceSettingForm(
+                        deviceRepository: widget.deviceRepository,
+                        pageName: item['name'],
+                      )
+                    ],
+                  ] else ...[
+                    for (var item in snapshot.data) ...[
+                      DeviceSettingForm(
+                        deviceRepository: widget.deviceRepository,
+                        pageName: item['name'],
+                      )
+                    ],
+                    DeviceHistoryForm(
                       deviceRepository: widget.deviceRepository,
-                      pageName: item['name'],
-                    )
+                    ),
                   ],
-                  DeviceHistoryForm(
-                    deviceRepository: widget.deviceRepository,
-                  ),
                 ],
                 controller: tabController,
               ),
@@ -84,11 +109,10 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
             );
           }
         } else {
-          //no response
-          //catch exception
-          return Scaffold(
+          //wait for data
+          return const Scaffold(
             body: Center(
-              child: Text("Error: ${snapshot.error}"),
+              child: CircularProgressIndicator(),
             ),
           );
         }

@@ -9,4 +9,7 @@ class CommonStyle {
 
   static const double severityRectangleWidth = 20;
   static const double severityRectangleHeight = 40;
+
+  static const String a8KPCM2Name = 'A8KPCM2';
+  static const String a8KPCM2DisplayName = 'PCM2 (L)';
 }

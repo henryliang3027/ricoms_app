@@ -74,7 +74,7 @@ class DeviceRepository {
         }
       } else {
         //throw Exception(e.toString());
-        return Future.error(e.toString());
+        return e.toString();
       }
     }
   }
@@ -332,10 +332,11 @@ class DeviceRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        return data['data']['result'];
+        List dataList = data['data']['result'];
+        dataList.sort((b, a) => (a['id'] as int).compareTo(b['id'] as int));
+        return dataList;
       } else {
-        print('ERROR');
-        return 'Error errno: ${data['code']}';
+        return 'There are no records to show';
       }
     } catch (e) {
       // The request was made and the server responded with a status code
@@ -356,7 +357,7 @@ class DeviceRepository {
         }
       } else {
         //throw Exception(e.toString());
-        return Future.error(e.toString());
+        return e.toString();
       }
     }
   }

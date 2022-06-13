@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
       label: 'Real-Time Alarm',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(CustomIcons.root),
+      icon: Icon(CustomIcons.network),
       label: 'Root',
     ),
     const BottomNavigationBarItem(
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                   dense: true,
                   leading: const Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(CustomIcons.root),
+                    child: Icon(CustomIcons.network),
                   ),
                   title: const Text(
                     'Root',

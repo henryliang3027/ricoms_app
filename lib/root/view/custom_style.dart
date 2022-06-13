@@ -786,9 +786,18 @@ class CustomStyle {
 
   static const Map<int, Icon?> typeIcon = {
     0: null, //Root
-    1: Icon(CustomIcons.root), //Group
-    2: Icon(Icons.monitor), //Device
-    3: Icon(Icons.monitor), //A8K
+    1: Icon(
+      CustomIcons.root,
+      color: Color(0xff172a88),
+    ), //Group
+    2: Icon(
+      CustomIcons.device,
+      color: Color(0xff172a88),
+    ), //Device
+    3: Icon(
+      CustomIcons.device,
+      color: Color(0xff172a88),
+    ), //A8K
     4: null, //shelf
     5: null, //slot
   };
