@@ -12,7 +12,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         super(const RootState()) {
     on<ChildDataRequested>(_onChildDataRequested);
 
-    add(const ChildDataRequested(Node(id: 0)));
+    add(const ChildDataRequested(Node(id: 0, type: 1)));
   }
 
   final RootRepository _rootRepository;

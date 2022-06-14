@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -250,88 +251,101 @@ class _RootFormState extends State<RootForm> {
             );
           } else if (state.formStatus.isRequestSuccess ||
               state.formStatus.isUpdating) {
-            return Container(
-              color: Colors.grey.shade300,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
-                    child: Card(
-                      child: Row(
-                        children: [
-                          //home button
-                          IconButton(
-                            onPressed: () {
-                              context
-                                  .read<RootBloc>()
-                                  .add(ChildDataRequested(state.directory[0]));
-                            },
-                            icon: Icon(Icons.home_outlined),
-                            padding: EdgeInsets.zero,
-                            visualDensity: const VisualDensity(
-                                horizontal: -4.0, vertical: -4.0),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(2.0, 2.0, 6.0, 2.0),
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    for (int i = 1;
-                                        i < state.directory.length;
-                                        i++) ...[
-                                      const Icon(
-                                        Icons.keyboard_arrow_right_outlined,
-                                        size: 20.0,
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          context.read<RootBloc>().add(
-                                              ChildDataRequested(
-                                                  state.directory[i]));
-                                        },
-                                        child: Text(
-                                          state.directory[i].name,
-                                          style: const TextStyle(
-                                            color: Colors.black,
+            return Scaffold(
+              body: Container(
+                color: Colors.grey.shade300,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
+                      child: Card(
+                        child: Row(
+                          children: [
+                            //home button
+                            IconButton(
+                              onPressed: () {
+                                context.read<RootBloc>().add(
+                                    ChildDataRequested(state.directory[0]));
+                              },
+                              icon: Icon(Icons.home_outlined),
+                              padding: EdgeInsets.zero,
+                              visualDensity: const VisualDensity(
+                                  horizontal: -4.0, vertical: -4.0),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    EdgeInsets.fromLTRB(2.0, 2.0, 6.0, 2.0),
+                                child: SingleChildScrollView(
+                                  controller: _scrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      for (int i = 1;
+                                          i < state.directory.length;
+                                          i++) ...[
+                                        const Icon(
+                                          Icons.keyboard_arrow_right_outlined,
+                                          size: 20.0,
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            context.read<RootBloc>().add(
+                                                ChildDataRequested(
+                                                    state.directory[i]));
+                                          },
+                                          child: Text(
+                                            state.directory[i].name,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Colors.white70,
+                                            elevation: 0,
+                                            side: const BorderSide(
+                                              width: 1.0,
+                                              color: Colors.black,
+                                            ),
+                                            visualDensity: const VisualDensity(
+                                                horizontal: -4.0,
+                                                vertical: -4.0),
                                           ),
                                         ),
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.white70,
-                                          elevation: 0,
-                                          side: const BorderSide(
-                                            width: 1.0,
-                                            color: Colors.black,
-                                          ),
-                                          visualDensity: const VisualDensity(
-                                              horizontal: -4.0, vertical: -4.0),
-                                        ),
-                                      ),
-                                    ]
-                                  ],
+                                      ]
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverList(
+                              delegate:
+                                  _rootSliverChildBuilderDelegate(state.data))
                         ],
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverList(
-                            delegate:
-                                _rootSliverChildBuilderDelegate(state.data))
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              floatingActionButton: state.directory.last.type == 1
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => const _BottomMenu());
+                      },
+                      child: const Icon(Icons.add))
+                  : null,
             );
           } else {
             //FormStatus.requestFailure
@@ -342,6 +356,64 @@ class _RootFormState extends State<RootForm> {
           }
         },
       ),
+    );
+  }
+}
+
+class _BottomMenu extends StatelessWidget {
+  const _BottomMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      //padding: EdgeInsets.zero,
+      children: [
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  CustomIcons.root,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Group',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {},
+        ),
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  CustomIcons.device,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Device',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {},
+        ),
+      ],
     );
   }
 }
