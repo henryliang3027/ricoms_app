@@ -321,20 +321,6 @@ class _RootFormState extends State<RootForm> {
                       ),
                     ),
                   ),
-
-                  // TextField(
-                  //   controller: _controller,
-                  //   textAlign: TextAlign.center,
-                  //   keyboardType: TextInputType.number,
-                  // ),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       print('textfield text : ${_controller.text}');
-                  //       deviceRepository.deviceNodeId = _controller.text;
-                  //       Navigator.push(
-                  //           context, DeviceSettingPage.route(deviceRepository));
-                  //     },
-                  //     child: Text('test A8K')),
                   Expanded(
                     child: CustomScrollView(
                       slivers: [

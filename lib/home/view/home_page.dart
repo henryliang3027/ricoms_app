@@ -89,13 +89,47 @@ class _HomePageState extends State<HomePage> {
     );
     print('UserID: ${user.id}');
 
+    RootRepository rootRepository = RootRepository(user);
+    DeviceRepository deviceRepository = DeviceRepository(user);
+    List<Widget> buildActions() {
+      switch (_selectedIndex) {
+        case 0:
+          return [];
+        case 1:
+          return [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+            IconButton(
+                onPressed: () async {
+                  List<dynamic> result = await rootRepository.exportNodes();
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(content: Text(result[1])),
+                    );
+                },
+                icon: Icon(Icons.save_alt_outlined)),
+          ];
+        case 2:
+          return [];
+        case 3:
+          return [
+            IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.save_alt_outlined)),
+          ];
+        case 4:
+          return [];
+        default:
+          return [];
+      }
+    }
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<RootRepository>(
-          create: (context) => RootRepository(user),
+          create: (context) => rootRepository,
         ),
         RepositoryProvider<DeviceRepository>(
-          create: (context) => DeviceRepository(user),
+          create: (context) => deviceRepository,
         ),
       ],
       child: Scaffold(
@@ -105,7 +139,7 @@ class _HomePageState extends State<HomePage> {
             _bottomBarItem[_selectedIndex].label!,
             style: const TextStyle(fontSize: CommonStyle.sizeXXL),
           ),
-          actions: _widgetActions[_selectedIndex],
+          actions: buildActions(),
         ),
         drawer: SafeArea(
           child: Drawer(
