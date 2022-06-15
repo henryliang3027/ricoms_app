@@ -34,20 +34,6 @@ class _HomePageState extends State<HomePage> {
     const BookmarksPage(),
   ];
 
-  final List<List<Widget>> _widgetActions = <List<Widget>>[
-    [],
-    [
-      IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-      IconButton(onPressed: () {}, icon: Icon(Icons.save_alt_outlined)),
-    ],
-    [],
-    [
-      IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-      IconButton(onPressed: () {}, icon: Icon(Icons.save_alt_outlined)),
-    ],
-    [],
-  ];
-
   final List<BottomNavigationBarItem> _bottomBarItem = [
     const BottomNavigationBarItem(
       icon: Icon(CustomIcons.realtime_alarm),

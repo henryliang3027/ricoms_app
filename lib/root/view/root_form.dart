@@ -6,6 +6,7 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
@@ -27,6 +28,10 @@ class _RootFormState extends State<RootForm> {
   @override
   Widget build(BuildContext context) {
     DeviceRepository deviceRepository = RepositoryProvider.of<DeviceRepository>(
+      context,
+    );
+
+    RootRepository rootRepository = RepositoryProvider.of<RootRepository>(
       context,
     );
 
@@ -174,7 +179,7 @@ class _RootFormState extends State<RootForm> {
               curve: Curves.ease));
     }
 
-    _rootSliverChildBuilderDelegate(List data) {
+    _rootSliverChildBuilderDelegate(Node parentNode, List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           print('build _rootSliverChildBuilderDelegate : ${index}');
@@ -193,6 +198,12 @@ class _RootFormState extends State<RootForm> {
                     context.read<RootBloc>().add(ChildDataRequested(node));
                   }
                 },
+                onLongPress: () => showModalBottomSheet(
+                    context: context,
+                    builder: (context) => _NodeEditBottomMenu(
+                        rootRepository: rootRepository,
+                        parentNode: parentNode,
+                        currentNode: node)),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
@@ -329,8 +340,8 @@ class _RootFormState extends State<RootForm> {
                       child: CustomScrollView(
                         slivers: [
                           SliverList(
-                              delegate:
-                                  _rootSliverChildBuilderDelegate(state.data))
+                              delegate: _rootSliverChildBuilderDelegate(
+                                  state.directory.last, state.data))
                         ],
                       ),
                     ),
@@ -342,7 +353,10 @@ class _RootFormState extends State<RootForm> {
                       onPressed: () {
                         showModalBottomSheet(
                             context: context,
-                            builder: (context) => const _BottomMenu());
+                            builder: (context) => _NodeCreationBottomMenu(
+                                  rootRepository: rootRepository,
+                                  parentNode: state.directory.last,
+                                ));
                       },
                       child: const Icon(Icons.add))
                   : null,
@@ -360,13 +374,98 @@ class _RootFormState extends State<RootForm> {
   }
 }
 
-class _BottomMenu extends StatelessWidget {
-  const _BottomMenu({Key? key}) : super(key: key);
+class _NodeEditBottomMenu extends StatelessWidget {
+  const _NodeEditBottomMenu({
+    Key? key,
+    required this.rootRepository,
+    required this.parentNode,
+    required this.currentNode,
+  }) : super(key: key);
+
+  final RootRepository rootRepository;
+  final Node parentNode;
+  final Node currentNode;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      //padding: EdgeInsets.zero,
+      children: [
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.edit,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Edit',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                DeviceEditPage.route(
+                    rootRepository: rootRepository,
+                    parentNode: parentNode,
+                    isEditing: true,
+                    currentNode: currentNode));
+          },
+        ),
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.delete,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Delete',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {
+            // Navigator.pop(context);
+            // Navigator.push(
+            //     context, DeviceEditPage.route(rootRepository, parentNode));
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _NodeCreationBottomMenu extends StatelessWidget {
+  const _NodeCreationBottomMenu({
+    Key? key,
+    required this.rootRepository,
+    required this.parentNode,
+  }) : super(key: key);
+
+  final RootRepository rootRepository;
+  final Node parentNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
       children: [
         ListTile(
           dense: true,
@@ -411,7 +510,16 @@ class _BottomMenu extends StatelessWidget {
             'Device',
             style: TextStyle(fontSize: CommonStyle.sizeM),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                DeviceEditPage.route(
+                    rootRepository: rootRepository,
+                    parentNode: parentNode,
+                    isEditing: false,
+                    currentNode: null));
+          },
         ),
       ],
     );

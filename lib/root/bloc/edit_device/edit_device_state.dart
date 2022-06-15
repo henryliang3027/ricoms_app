@@ -3,35 +3,70 @@ part of 'edit_device_bloc.dart';
 class EditDeviceState extends Equatable {
   const EditDeviceState({
     this.status = FormzStatus.pure,
+    this.currentNode,
+    this.isEditing = false,
+    this.parentName = '',
     this.name = const Name.pure(),
     this.deviceIP = const DeviceIP.pure(),
-    this.errmsg = '',
+    this.read = 'public',
+    this.write = 'private',
+    this.description = '',
+    this.location = '',
+    this.msg = '',
   });
 
   final FormzStatus status;
+  final Node? currentNode;
+  final bool isEditing;
+  final String parentName;
   final Name name;
   final DeviceIP deviceIP;
-  final String errmsg;
+  final String read;
+  final String write;
+  final String description;
+  final String location;
+  final String msg;
 
   EditDeviceState copyWith({
     FormzStatus? status,
+    Node? currentNode,
+    bool? isEditing,
+    String? parentName,
     Name? name,
     DeviceIP? deviceIP,
-    String? errmsg,
+    String? read,
+    String? write,
+    String? description,
+    String? location,
+    String? msg,
   }) {
     return EditDeviceState(
       status: status ?? this.status,
+      currentNode: currentNode ?? this.currentNode,
+      isEditing: isEditing ?? this.isEditing,
+      parentName: parentName ?? this.parentName,
       name: name ?? this.name,
       deviceIP: deviceIP ?? this.deviceIP,
-      errmsg: errmsg ?? this.errmsg,
+      read: read ?? this.read,
+      write: write ?? this.write,
+      description: description ?? this.description,
+      location: location ?? this.location,
+      msg: msg ?? this.msg,
     );
   }
 
   @override
   List<Object?> get props => [
         status,
+        currentNode,
+        isEditing,
+        parentName,
         name,
         deviceIP,
-        errmsg,
+        read,
+        write,
+        description,
+        location,
+        msg,
       ];
 }

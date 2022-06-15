@@ -33,7 +33,8 @@ class RootRepository {
 
         for (var element in dataList) {
           if (element['id'] == null) continue;
-          childs.add(Node(
+
+          Node node = Node(
             id: element['id'],
             name: element['name'],
             type: element['type'],
@@ -43,9 +44,71 @@ class RootRepository {
             slot: element['slot'],
             status: element['status'],
             sort: element['sort'],
-          ));
+          );
+          childs.add(node);
         }
         return childs;
+      } else {
+        print('ERROR');
+        return 'Error errno: ${data['code']}';
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          //throw Exception('Server No Response');
+          return 'Server No Response';
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          //throw Exception(e.message);
+          return e.message;
+        }
+      } else {
+        //throw Exception(e.toString());
+        return Future.error(e.toString());
+      }
+    }
+  }
+
+  Future<dynamic> getNodeInfo(int nodeId) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String childsPath = '/net/node/' + nodeId.toString();
+
+    try {
+      //404
+      Response response = await dio.get(childsPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        var rawData = data['data'][0];
+
+        Info info = Info(
+          deviceID: rawData['device_id'] ?? -1,
+          ip: rawData['ip'] ?? '',
+          read: rawData['read'] ?? '',
+          write: rawData['write'] ?? '',
+          description: rawData['description'] ?? '',
+          location: rawData['location'] ?? '',
+          parentID: rawData['parent_id'] ?? -1,
+          path: rawData['path'] ?? '',
+          deviceMainID: rawData['device_main_id'] ?? -1,
+          moduleID: rawData['module_id'] ?? -1,
+          module: rawData['module'] ?? '',
+          series: rawData['series'] ?? '',
+        );
+
+        return info;
       } else {
         print('ERROR');
         return 'Error errno: ${data['code']}';
@@ -152,6 +215,89 @@ class RootRepository {
       }
     }
   }
+
+  Future<List<dynamic>> createNode({
+    required int parentId,
+    required int type,
+    required String name,
+    required String description,
+    required String deviceIP,
+    required String read,
+    required String write,
+    required String location,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String createNodePath = '/net/node/' + parentId.toString() + '/childs/new';
+
+    try {
+      //404
+
+      Response response;
+
+      if (type == 1) {
+        // group
+        Map<String, dynamic> requestData = {
+          'type': type,
+          'name': name,
+          'desc': description,
+          'uid': user.id,
+        };
+
+        response = await dio.put(createNodePath, data: requestData);
+      } else if (type == 2) {
+        // device
+        Map<String, dynamic> requestData = {
+          'type': type.toString(),
+          'name': name,
+          'desc': description,
+          'uid': user.id,
+          'ip': deviceIP,
+          'read': read,
+          'write': write,
+          'location': location,
+        };
+        response = await dio.post(createNodePath, data: requestData);
+      } else {
+        return [false, 'The given type is invalid. 1:Group / 2:Device'];
+      }
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, 'create node success'];
+      } else if (data['code'] == '204') {
+        return [true, 'The device is unconnedted and unsupported.'];
+      } else {
+        print('ERROR');
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
 }
 
 class Node {
@@ -165,6 +311,7 @@ class Node {
     this.slot = -1,
     this.status = -1,
     this.sort = '',
+    this.info,
   });
 
   final int id;
@@ -176,4 +323,51 @@ class Node {
   final int slot;
   final int status;
   final String sort;
+  final Info? info;
 }
+
+class Info {
+  const Info({
+    this.deviceID = -1,
+    this.ip = '',
+    this.read = '',
+    this.write = '',
+    this.description = '',
+    this.location = '',
+    this.parentID = -1,
+    this.path = '',
+    this.deviceMainID = -1,
+    this.moduleID = -1,
+    this.module = '',
+    this.series = '',
+  });
+
+  final int deviceID;
+  final String ip;
+  final String read;
+  final String write;
+  final String description;
+  final String location;
+  final int parentID;
+  final String path;
+  final int deviceMainID;
+  final int moduleID;
+  final String module;
+  final String series;
+}
+
+
+  // "device_id": 678,
+  // "ip": "192.168.29.202",
+  // "shelf": 0,
+  // "slot": 0,
+  // "read": "public",
+  // "write": "private",
+  // "description": "",
+  // "location": "",
+  // "parent_id": 779,
+  // "path": ",1000,779,",
+  // "device_main_id": -1,
+  // "module_id": -1,
+  // "module": "A8K3U",
+  // "series": "A8K3U"
