@@ -3,6 +3,7 @@ part of 'edit_device_bloc.dart';
 class EditDeviceState extends Equatable {
   const EditDeviceState({
     this.status = FormzStatus.pure,
+    this.isInitController = false,
     this.currentNode,
     this.isEditing = false,
     this.parentName = '',
@@ -16,6 +17,7 @@ class EditDeviceState extends Equatable {
   });
 
   final FormzStatus status;
+  final bool isInitController;
   final Node? currentNode;
   final bool isEditing;
   final String parentName;
@@ -29,6 +31,7 @@ class EditDeviceState extends Equatable {
 
   EditDeviceState copyWith({
     FormzStatus? status,
+    bool? isInitController,
     Node? currentNode,
     bool? isEditing,
     String? parentName,
@@ -42,6 +45,7 @@ class EditDeviceState extends Equatable {
   }) {
     return EditDeviceState(
       status: status ?? this.status,
+      isInitController: isInitController ?? this.isInitController,
       currentNode: currentNode ?? this.currentNode,
       isEditing: isEditing ?? this.isEditing,
       parentName: parentName ?? this.parentName,
@@ -58,6 +62,7 @@ class EditDeviceState extends Equatable {
   @override
   List<Object?> get props => [
         status,
+        isInitController,
         currentNode,
         isEditing,
         parentName,

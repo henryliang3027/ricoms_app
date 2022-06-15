@@ -85,6 +85,11 @@ class DeviceEditForm extends StatelessWidget {
     }
 
     TextEditingController _nameController = TextEditingController();
+    TextEditingController _deviceIPController = TextEditingController();
+    TextEditingController _readController = TextEditingController();
+    TextEditingController _writeController = TextEditingController();
+    TextEditingController _descriptionController = TextEditingController();
+    TextEditingController _locationController = TextEditingController();
 
     return BlocListener<EditDeviceBloc, EditDeviceState>(
       listener: ((context, state) async {
@@ -96,6 +101,18 @@ class DeviceEditForm extends StatelessWidget {
         } else if (state.status.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.msg);
+        } else if (state.isInitController) {
+          if (state.isEditing) {
+            _nameController.text = state.name.value;
+            _deviceIPController.text = state.deviceIP.value;
+            _readController.text = state.read;
+            _writeController.text = state.write;
+            _descriptionController.text = state.description;
+            _locationController.text = state.location;
+          } else {
+            _readController.text = state.read;
+            _writeController.text = state.write;
+          }
         }
       }),
       child: Align(
@@ -114,22 +131,18 @@ class DeviceEditForm extends StatelessWidget {
             SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _NameInput(nameController: _nameController),
+              child: _NameInput(
+                nameController: _nameController,
+              ),
             ),
 
             const Padding(padding: EdgeInsets.all(6)),
             SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _DeviceIPInput(),
-            ),
-
-            const Padding(padding: EdgeInsets.all(6)),
-
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _ReadInput(),
+              child: _DeviceIPInput(
+                deviceIPController: _deviceIPController,
+              ),
             ),
 
             const Padding(padding: EdgeInsets.all(6)),
@@ -137,7 +150,9 @@ class DeviceEditForm extends StatelessWidget {
             SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _WriteInput(),
+              child: _ReadInput(
+                readController: _readController,
+              ),
             ),
 
             const Padding(padding: EdgeInsets.all(6)),
@@ -145,7 +160,9 @@ class DeviceEditForm extends StatelessWidget {
             SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _DescriptionInput(),
+              child: _WriteInput(
+                writeController: _writeController,
+              ),
             ),
 
             const Padding(padding: EdgeInsets.all(6)),
@@ -153,7 +170,19 @@ class DeviceEditForm extends StatelessWidget {
             SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _LocationInput(),
+              child: _DescriptionInput(
+                descriptionController: _descriptionController,
+              ),
+            ),
+
+            const Padding(padding: EdgeInsets.all(6)),
+
+            SizedBox(
+              width: 230,
+              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              child: _LocationInput(
+                locationController: _locationController,
+              ),
             ),
 
             const Padding(padding: EdgeInsets.all(6)),
@@ -237,22 +266,21 @@ class _NameInput extends StatelessWidget {
 }
 
 class _DeviceIPInput extends StatelessWidget {
-  const _DeviceIPInput({Key? key}) : super(key: key);
+  const _DeviceIPInput({Key? key, required this.deviceIPController})
+      : super(key: key);
+
+  final TextEditingController deviceIPController;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.deviceIP != current.deviceIP,
       builder: (context, state) {
-        TextEditingController _deviceIPController = TextEditingController(
-            text: state.isEditing && state.currentNode!.info != null
-                ? state.currentNode!.info!.ip
-                : state.deviceIP.value);
         return TextFormField(
           key: const Key('deviceEditForm_deviceIPInput_textField'),
           // initialValue: state.isEditing && state.currentNode!.info != null
           //     ? state.currentNode!.info!.ip
           //     : null,
-          controller: _deviceIPController,
+          controller: deviceIPController,
           textInputAction: TextInputAction.done,
           style: const TextStyle(
             fontSize: CommonStyle.sizeL,
@@ -280,22 +308,21 @@ class _DeviceIPInput extends StatelessWidget {
 }
 
 class _ReadInput extends StatelessWidget {
+  const _ReadInput({Key? key, required this.readController}) : super(key: key);
+
+  final TextEditingController readController;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
-      buildWhen: (previous, current) =>
-          previous.currentNode != current.currentNode,
+      buildWhen: (previous, current) => previous.read != current.read,
       builder: (context, state) {
-        TextEditingController _readController = TextEditingController(
-            text: state.isEditing && state.currentNode!.info != null
-                ? state.currentNode!.info!.read
-                : state.read);
         return TextFormField(
           key: const Key('deviceEditForm_readPInput_textField'),
           // initialValue: state.isEditing && state.currentNode!.info != null
           //     ? state.currentNode!.info!.read
           //     : state.read,
-          controller: _readController,
+          controller: readController,
           textInputAction: TextInputAction.done,
           style: const TextStyle(
             fontSize: CommonStyle.sizeL,
@@ -320,22 +347,21 @@ class _ReadInput extends StatelessWidget {
 }
 
 class _WriteInput extends StatelessWidget {
+  const _WriteInput({Key? key, required this.writeController})
+      : super(key: key);
+
+  final TextEditingController writeController;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
-      buildWhen: (previous, current) =>
-          previous.currentNode != current.currentNode,
+      buildWhen: (previous, current) => previous.write != current.write,
       builder: (context, state) {
-        TextEditingController _writeController = TextEditingController(
-            text: state.isEditing && state.currentNode!.info != null
-                ? state.currentNode!.info!.write
-                : state.write);
         return TextFormField(
           key: const Key('deviceEditForm_writePInput_textField'),
           // initialValue: state.isEditing && state.currentNode!.info != null
           //     ? state.currentNode!.info!.write
           //     : state.write,
-          controller: _writeController,
+          controller: writeController,
           textInputAction: TextInputAction.done,
           style: const TextStyle(
             fontSize: CommonStyle.sizeL,
@@ -360,22 +386,23 @@ class _WriteInput extends StatelessWidget {
 }
 
 class _DescriptionInput extends StatelessWidget {
+  const _DescriptionInput({Key? key, required this.descriptionController})
+      : super(key: key);
+
+  final TextEditingController descriptionController;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) =>
-          previous.currentNode != current.currentNode,
+          previous.description != current.description,
       builder: (context, state) {
-        TextEditingController _descriptionController = TextEditingController(
-            text: state.isEditing && state.currentNode!.info != null
-                ? state.currentNode!.info!.description
-                : '');
         return TextFormField(
           key: const Key('deviceEditForm_descriptionInput_textField'),
           // initialValue: state.isEditing && state.currentNode!.info != null
           //     ? state.currentNode!.info!.description
           //     : state.description,
-          controller: _descriptionController,
+          controller: descriptionController,
           textInputAction: TextInputAction.done,
           style: const TextStyle(
             fontSize: CommonStyle.sizeL,
@@ -401,22 +428,19 @@ class _DescriptionInput extends StatelessWidget {
 }
 
 class _LocationInput extends StatelessWidget {
+  const _LocationInput({Key? key, required this.locationController})
+      : super(key: key);
+
+  final TextEditingController locationController;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
-      buildWhen: (previous, current) =>
-          previous.currentNode != current.currentNode,
+      buildWhen: (previous, current) => previous.location != current.location,
       builder: (context, state) {
-        TextEditingController _locationController = TextEditingController(
-            text: state.isEditing && state.currentNode!.info != null
-                ? state.currentNode!.info!.location
-                : '');
         return TextFormField(
           key: const Key('deviceEditForm_locationInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.info!.location
-          //     : state.location,
-          controller: _locationController,
+          controller: locationController,
           textInputAction: TextInputAction.done,
           style: const TextStyle(
             fontSize: CommonStyle.sizeL,

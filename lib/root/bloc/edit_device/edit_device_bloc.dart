@@ -65,6 +65,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
 
         emit(
           state.copyWith(
+            isInitController: true,
             currentNode: newCurrentNode,
             name: name,
             deviceIP: deviceIP,
@@ -76,6 +77,12 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
           ),
         );
       }
+    } else {
+      emit(state.copyWith(
+        isInitController: true,
+        read: state.read,
+        write: state.write,
+      ));
     }
   }
 
@@ -86,6 +93,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     final name = Name.dirty(event.name);
     emit(
       state.copyWith(
+        isInitController: false,
         name: name,
         status: Formz.validate([name, state.deviceIP]),
       ),
@@ -99,6 +107,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     final deviceIP = DeviceIP.dirty(event.deviceIP);
     emit(
       state.copyWith(
+        isInitController: false,
         deviceIP: deviceIP,
         status: Formz.validate([state.name, deviceIP]),
       ),
@@ -110,7 +119,10 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     Emitter<EditDeviceState> emit,
   ) {
     emit(
-      state.copyWith(read: event.read),
+      state.copyWith(
+        isInitController: false,
+        read: event.read,
+      ),
     );
   }
 
@@ -119,7 +131,10 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     Emitter<EditDeviceState> emit,
   ) {
     emit(
-      state.copyWith(write: event.write),
+      state.copyWith(
+        isInitController: false,
+        write: event.write,
+      ),
     );
   }
 
@@ -128,7 +143,10 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     Emitter<EditDeviceState> emit,
   ) {
     emit(
-      state.copyWith(description: event.description),
+      state.copyWith(
+        isInitController: false,
+        description: event.description,
+      ),
     );
   }
 
@@ -137,7 +155,10 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     Emitter<EditDeviceState> emit,
   ) {
     emit(
-      state.copyWith(location: event.location),
+      state.copyWith(
+        isInitController: false,
+        location: event.location,
+      ),
     );
   }
 
