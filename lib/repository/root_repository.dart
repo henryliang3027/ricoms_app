@@ -221,10 +221,10 @@ class RootRepository {
     required int type,
     required String name,
     required String description,
-    required String deviceIP,
-    required String read,
-    required String write,
-    required String location,
+    String? deviceIP,
+    String? read,
+    String? write,
+    String? location,
   }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
@@ -240,10 +240,14 @@ class RootRepository {
       if (type == 1) {
         // group
         Map<String, dynamic> requestData = {
-          'type': type,
+          'type': type.toString(),
           'name': name,
           'desc': description,
           'uid': user.id,
+          'ip': deviceIP ?? '',
+          'read': read ?? '',
+          'write': write ?? '',
+          'location': location ?? '',
         };
 
         response = await dio.post(createNodePath, data: requestData);
@@ -284,7 +288,7 @@ class RootRepository {
           print(e.response!.headers);
           print(e.response!.requestOptions);
           //throw Exception('Server No Response');
-          return [false, 'Server No Response'];
+          return [false, e.response!.statusMessage];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
           print(e.requestOptions);

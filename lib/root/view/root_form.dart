@@ -8,6 +8,7 @@ import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_page.dart';
+import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class RootForm extends StatefulWidget {
@@ -268,6 +269,7 @@ class _RootFormState extends State<RootForm> {
                 child: Column(
                   children: [
                     Padding(
+                      //directory
                       padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
                       child: Card(
                         child: Row(
@@ -412,13 +414,25 @@ class _NodeEditBottomMenu extends StatelessWidget {
           ),
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(
-                context,
-                DeviceEditPage.route(
-                    rootRepository: rootRepository,
-                    parentNode: parentNode,
-                    isEditing: true,
-                    currentNode: currentNode));
+            if (currentNode.type == 2 || currentNode.type == 3) {
+              //device or a8k
+              Navigator.push(
+                  context,
+                  DeviceEditPage.route(
+                      rootRepository: rootRepository,
+                      parentNode: parentNode,
+                      isEditing: true,
+                      currentNode: currentNode));
+            } else if (currentNode.type == 1) {
+              //group
+              Navigator.push(
+                  context,
+                  GroupEditPage.route(
+                      rootRepository: rootRepository,
+                      parentNode: parentNode,
+                      isEditing: true,
+                      currentNode: currentNode));
+            }
           },
         ),
         ListTile(
@@ -487,7 +501,16 @@ class _NodeCreationBottomMenu extends StatelessWidget {
             'Group',
             style: TextStyle(fontSize: CommonStyle.sizeM),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                GroupEditPage.route(
+                    rootRepository: rootRepository,
+                    parentNode: parentNode,
+                    isEditing: false,
+                    currentNode: null));
+          },
         ),
         ListTile(
           dense: true,
