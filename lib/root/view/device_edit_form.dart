@@ -10,15 +10,20 @@ class DeviceEditForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _showInProgressDialog() async {
+    Future<void> _showInProgressDialog(
+        bool isEditing, bool isTestConection) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text('Connecting to the device...'),
+          return AlertDialog(
+            title: isEditing
+                ? isTestConection
+                    ? const Text('Connecting to the device...')
+                    : const Text('Saving...')
+                : const Text('Connecting to the device...'),
             actionsAlignment: MainAxisAlignment.center,
-            actions: <Widget>[
+            actions: const <Widget>[
               CircularProgressIndicator(),
             ],
           );
@@ -26,16 +31,27 @@ class DeviceEditForm extends StatelessWidget {
       );
     }
 
-    Future<void> _showSuccessDialog(String msg) async {
+    Future<void> _showSuccessDialog(
+        bool isEditing, bool isTestConection, String msg) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-              'Created',
-              style: TextStyle(color: CustomStyle.severityColor[1]),
-            ),
+            title: isEditing
+                ? isTestConection
+                    ? Text(
+                        'Success!',
+                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                      )
+                    : Text(
+                        'Saved!',
+                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                      )
+                : Text(
+                    'Created!',
+                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                  ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -88,16 +104,18 @@ class DeviceEditForm extends StatelessWidget {
     TextEditingController _deviceIPController = TextEditingController();
     TextEditingController _readController = TextEditingController();
     TextEditingController _writeController = TextEditingController();
+    TextEditingController _moduleSreiesController = TextEditingController();
     TextEditingController _descriptionController = TextEditingController();
     TextEditingController _locationController = TextEditingController();
 
     return BlocListener<EditDeviceBloc, EditDeviceState>(
       listener: ((context, state) async {
         if (state.status.isSubmissionInProgress) {
-          await _showInProgressDialog();
+          await _showInProgressDialog(state.isEditing, state.isTestConnection);
         } else if (state.status.isSubmissionSuccess) {
           Navigator.of(context).pop();
-          _showSuccessDialog(state.msg);
+          _showSuccessDialog(
+              state.isEditing, state.isTestConnection, state.msg);
         } else if (state.status.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.msg);
@@ -107,6 +125,8 @@ class DeviceEditForm extends StatelessWidget {
             _deviceIPController.text = state.deviceIP.value;
             _readController.text = state.read;
             _writeController.text = state.write;
+            _moduleSreiesController.text =
+                state.currentNode!.info!.module; //for edit form
             _descriptionController.text = state.description;
             _locationController.text = state.location;
           } else {
@@ -119,73 +139,37 @@ class DeviceEditForm extends StatelessWidget {
         alignment: const Alignment(0, -0.42),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          //mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _ParentName(),
-            ),
-            const Padding(padding: EdgeInsets.all(6)),
+            const _ParentName(),
 
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _NameInput(
-                nameController: _nameController,
-              ),
+            _NameInput(
+              nameController: _nameController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _DeviceIPInput(
-                deviceIPController: _deviceIPController,
-              ),
+            _DeviceIPInput(
+              deviceIPController: _deviceIPController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
-
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _ReadInput(
-                readController: _readController,
-              ),
+            _ReadInput(
+              readController: _readController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
-
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _WriteInput(
-                writeController: _writeController,
-              ),
+            _WriteInput(
+              writeController: _writeController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
-
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _DescriptionInput(
-                descriptionController: _descriptionController,
-              ),
+            _ModuleSeries(
+              moduleSeriesController: _moduleSreiesController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
-
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: _LocationInput(
-                locationController: _locationController,
-              ),
+            _DescriptionInput(
+              descriptionController: _descriptionController,
             ),
 
-            const Padding(padding: EdgeInsets.all(6)),
+            _LocationInput(
+              locationController: _locationController,
+            ),
 
             _SaveButton(),
             //const Padding(padding: EdgeInsets.all(50)),
@@ -205,15 +189,22 @@ class _ParentName extends StatelessWidget {
         buildWhen: (previous, current) =>
             previous.parentName != current.parentName,
         builder: (context, state) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Parent'),
-              Text(
-                state.parentName,
-                style: const TextStyle(color: Colors.grey),
+          return Padding(
+            padding: EdgeInsets.all(3),
+            child: SizedBox(
+              width: 230,
+              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Parent'),
+                  Text(
+                    state.parentName,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         });
   }
@@ -229,35 +220,42 @@ class _NameInput extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.name != current.name,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_nameInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.name
-          //     : null,
-          controller: nameController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (name) {
-            print(name);
-            context.read<EditDeviceBloc>().add(NameChanged(name));
-          },
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(5),
-            border: const OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            hintText: 'Name',
-            hintStyle: const TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: const EdgeInsets.all(3),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_nameInput_textField'),
+              // initialValue: state.isEditing && state.currentNode!.info != null
+              //     ? state.currentNode!.name
+              //     : null,
+              controller: nameController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (name) {
+                print(name);
+                context.read<EditDeviceBloc>().add(NameChanged(name));
+              },
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Name',
+                hintStyle: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText: state.name.invalid
+                    ? 'The name must be between 1-64 characters long.'
+                    : null,
+              ),
             ),
-            errorMaxLines: 2,
-            errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
-            errorText: state.name.invalid
-                ? 'The name must be between 1-64 characters long.'
-                : null,
           ),
         );
       },
@@ -275,31 +273,39 @@ class _DeviceIPInput extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.deviceIP != current.deviceIP,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_deviceIPInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.info!.ip
-          //     : null,
-          controller: deviceIPController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (deviceIP) =>
-              context.read<EditDeviceBloc>().add(DeviceIPChanged(deviceIP)),
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(5),
-            border: const OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            hintText: 'IP',
-            hintStyle: const TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_deviceIPInput_textField'),
+              // initialValue: state.isEditing && state.currentNode!.info != null
+              //     ? state.currentNode!.info!.ip
+              //     : null,
+              controller: deviceIPController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (deviceIP) =>
+                  context.read<EditDeviceBloc>().add(DeviceIPChanged(deviceIP)),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'IP',
+                hintStyle: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText:
+                    state.deviceIP.invalid ? 'Invalid IP address.' : null,
+              ),
             ),
-            errorMaxLines: 2,
-            errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
-            errorText: state.deviceIP.invalid ? 'Invalid IP address.' : null,
           ),
         );
       },
@@ -317,27 +323,34 @@ class _ReadInput extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.read != current.read,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_readPInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.info!.read
-          //     : state.read,
-          controller: readController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (read) =>
-              context.read<EditDeviceBloc>().add(ReadChanged(read)),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(5),
-            border: OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            labelText: 'Read',
-            labelStyle: TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_readPInput_textField'),
+              // initialValue: state.isEditing && state.currentNode!.info != null
+              //     ? state.currentNode!.info!.read
+              //     : state.read,
+              controller: readController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (read) =>
+                  context.read<EditDeviceBloc>().add(ReadChanged(read)),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(5),
+                border: OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                labelText: 'Read',
+                labelStyle: TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
             ),
           ),
         );
@@ -356,32 +369,122 @@ class _WriteInput extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.write != current.write,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_writePInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.info!.write
-          //     : state.write,
-          controller: writeController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (write) =>
-              context.read<EditDeviceBloc>().add(WriteChanged(write)),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(5),
-            border: OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            labelText: 'Write',
-            labelStyle: TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_writePInput_textField'),
+              // initialValue: state.isEditing && state.currentNode!.info != null
+              //     ? state.currentNode!.info!.write
+              //     : state.write,
+              controller: writeController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (write) =>
+                  context.read<EditDeviceBloc>().add(WriteChanged(write)),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(5),
+                border: OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                labelText: 'Write',
+                labelStyle: TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
             ),
           ),
         );
       },
     );
+  }
+}
+
+class _ModuleSeries extends StatelessWidget {
+  const _ModuleSeries({Key? key, required this.moduleSeriesController})
+      : super(key: key);
+
+  final TextEditingController moduleSeriesController;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EditDeviceBloc, EditDeviceState>(
+        buildWhen: (previous, current) =>
+            previous.currentNode!.info!.module !=
+            current.currentNode!.info!.module,
+        builder: (context, state) {
+          return state.isEditing
+              ? Padding(
+                  padding: EdgeInsets.all(6),
+                  child: SizedBox(
+                    width: 230,
+                    //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            key: const Key(
+                                'deviceEditForm_moduleSeriesPInput_textField'),
+                            enabled: false,
+                            controller: moduleSeriesController,
+                            textInputAction: TextInputAction.done,
+                            style: const TextStyle(
+                              fontSize: CommonStyle.sizeL,
+                            ),
+                            onChanged: (write) => context
+                                .read<EditDeviceBloc>()
+                                .add(WriteChanged(write)),
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.all(5),
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                              filled: true,
+                              fillColor: Colors.white,
+                              labelText: 'Module Series',
+                              labelStyle: TextStyle(
+                                fontSize: CommonStyle.sizeL,
+                              ),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: const VisualDensity(
+                                vertical: -1.0,
+                              ),
+                            ),
+                            key: const Key(
+                                'deviceEditForm_connection_test_raisedButton'),
+                            child: const Text(
+                              'Connect',
+                              style: TextStyle(
+                                fontSize: CommonStyle.sizeM,
+                              ),
+                            ),
+                            onPressed: () {
+                              context
+                                  .read<EditDeviceBloc>()
+                                  .add(const DeviceConnectRequested());
+                            }),
+                      ],
+                    ),
+                  ),
+                )
+              : const SizedBox(
+                  width: 0.0,
+                  height: 0.0,
+                );
+        });
   }
 }
 
@@ -397,28 +500,35 @@ class _DescriptionInput extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.description != current.description,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_descriptionInput_textField'),
-          // initialValue: state.isEditing && state.currentNode!.info != null
-          //     ? state.currentNode!.info!.description
-          //     : state.description,
-          controller: descriptionController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (description) => context
-              .read<EditDeviceBloc>()
-              .add(DescriptionChanged(description)),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(5),
-            border: OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            hintText: 'Description',
-            hintStyle: TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_descriptionInput_textField'),
+              // initialValue: state.isEditing && state.currentNode!.info != null
+              //     ? state.currentNode!.info!.description
+              //     : state.description,
+              controller: descriptionController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (description) => context
+                  .read<EditDeviceBloc>()
+                  .add(DescriptionChanged(description)),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(5),
+                border: OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Description',
+                hintStyle: TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
             ),
           ),
         );
@@ -438,24 +548,31 @@ class _LocationInput extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.location != current.location,
       builder: (context, state) {
-        return TextFormField(
-          key: const Key('deviceEditForm_locationInput_textField'),
-          controller: locationController,
-          textInputAction: TextInputAction.done,
-          style: const TextStyle(
-            fontSize: CommonStyle.sizeL,
-          ),
-          onChanged: (location) =>
-              context.read<EditDeviceBloc>().add(LocationChanged(location)),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(5),
-            border: OutlineInputBorder(),
-            isDense: true,
-            filled: true,
-            fillColor: Colors.white,
-            hintText: 'Location',
-            hintStyle: TextStyle(
-              fontSize: CommonStyle.sizeL,
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: SizedBox(
+            width: 230,
+            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+            child: TextFormField(
+              key: const Key('deviceEditForm_locationInput_textField'),
+              controller: locationController,
+              textInputAction: TextInputAction.done,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+              onChanged: (location) =>
+                  context.read<EditDeviceBloc>().add(LocationChanged(location)),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.all(5),
+                border: OutlineInputBorder(),
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                hintText: 'Location',
+                hintStyle: TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
             ),
           ),
         );
@@ -470,31 +587,51 @@ class _SaveButton extends StatelessWidget {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.pressed)) {
-                  return Colors.blue;
-                } else if (states.contains(MaterialState.disabled)) {
-                  return Colors.grey;
-                }
-                return null; // Use the component's default.
-              },
+        return Padding(
+          padding: EdgeInsets.all(6),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.pressed)) {
+                    return Colors.blue;
+                  } else if (states.contains(MaterialState.disabled)) {
+                    return Colors.grey;
+                  }
+                  return null; // Use the component's default.
+                },
+              ),
             ),
+            key: const Key('deviceEditForm_submit_raisedButton'),
+            child: state.isEditing
+                ? const Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: CommonStyle.sizeM,
+                    ),
+                  )
+                : const Text(
+                    'Create',
+                    style: TextStyle(
+                      fontSize: CommonStyle.sizeM,
+                    ),
+                  ),
+            onPressed: state.isEditing
+                ? state.status.isValidated
+                    ? () {
+                        context
+                            .read<EditDeviceBloc>()
+                            .add(const NodeUpdateSubmitted());
+                      }
+                    : null
+                : state.status.isValidated
+                    ? () {
+                        context
+                            .read<EditDeviceBloc>()
+                            .add(const NodeCreationSubmitted());
+                      }
+                    : null,
           ),
-          key: const Key('changePasswordForm_save_raisedButton'),
-          child: const Text(
-            'Create',
-            style: TextStyle(
-              fontSize: CommonStyle.sizeM,
-            ),
-          ),
-          onPressed: state.status.isValidated
-              ? () {
-                  context.read<EditDeviceBloc>().add(const FormSubmitted());
-                }
-              : null,
         );
       },
     );

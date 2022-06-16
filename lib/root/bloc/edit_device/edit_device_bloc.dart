@@ -29,7 +29,9 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     on<WriteChanged>(_onWriteChanged);
     on<DescriptionChanged>(_onDescriptionChanged);
     on<LocationChanged>(_onLocationChanged);
-    on<FormSubmitted>(_onFormSubmmited);
+    on<NodeCreationSubmitted>(_onNodeCreationSubmitted);
+    on<NodeUpdateSubmitted>(_onNodeUpdateSubmitted);
+    on<DeviceConnectRequested>(_onDeviceConnectRequested);
 
     add(const DataRequested());
   }
@@ -94,6 +96,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         name: name,
         status: Formz.validate([name, state.deviceIP]),
       ),
@@ -108,6 +111,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         deviceIP: deviceIP,
         status: Formz.validate([state.name, deviceIP]),
       ),
@@ -121,6 +125,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         read: event.read,
       ),
     );
@@ -133,6 +138,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         write: event.write,
       ),
     );
@@ -145,6 +151,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         description: event.description,
       ),
     );
@@ -157,13 +164,14 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     emit(
       state.copyWith(
         isInitController: false,
+        isTestConnection: false,
         location: event.location,
       ),
     );
   }
 
-  Future<void> _onFormSubmmited(
-    FormSubmitted event,
+  Future<void> _onNodeCreationSubmitted(
+    NodeCreationSubmitted event,
     Emitter<EditDeviceState> emit,
   ) async {
     if (state.status.isValidated) {
@@ -184,11 +192,81 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
 
       if (msg[0]) {
         emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: false,
           msg: msg[1],
           status: FormzStatus.submissionSuccess,
         ));
       } else {
         emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: false,
+          msg: msg[1],
+          status: FormzStatus.submissionFailure,
+        ));
+      }
+    }
+  }
+
+  Future<void> _onNodeUpdateSubmitted(
+    NodeUpdateSubmitted event,
+    Emitter<EditDeviceState> emit,
+  ) async {
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
+      // new password is the same as confirm password
+      List<dynamic> msg = await _rootRepository.updateNode(
+        currentNode: state.currentNode!,
+        name: state.name.value,
+        description: state.description,
+        deviceIP: state.deviceIP.value,
+        read: state.read,
+        write: state.write,
+        location: state.location,
+      );
+
+      if (msg[0]) {
+        emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: false,
+          msg: msg[1],
+          status: FormzStatus.submissionSuccess,
+        ));
+      } else {
+        emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: false,
+          msg: msg[1],
+          status: FormzStatus.submissionFailure,
+        ));
+      }
+    }
+  }
+
+  Future<void> _onDeviceConnectRequested(
+    DeviceConnectRequested event,
+    Emitter<EditDeviceState> emit,
+  ) async {
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
+      // new password is the same as confirm password
+      List<dynamic> msg = await _rootRepository.connectDevice(
+        currentNode: state.currentNode!,
+      );
+
+      if (msg[0]) {
+        emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: true,
+          msg: msg[1],
+          status: FormzStatus.submissionSuccess,
+        ));
+      } else {
+        emit(state.copyWith(
+          isInitController: false,
+          isTestConnection: true,
           msg: msg[1],
           status: FormzStatus.submissionFailure,
         ));

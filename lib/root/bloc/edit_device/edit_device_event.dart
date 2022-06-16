@@ -62,6 +62,14 @@ class LocationChanged extends EditDeviceEvent {
   List<Object> get props => [location];
 }
 
-class FormSubmitted extends EditDeviceEvent {
-  const FormSubmitted();
+class NodeCreationSubmitted extends EditDeviceEvent {
+  const NodeCreationSubmitted();
+}
+
+class NodeUpdateSubmitted extends EditDeviceEvent {
+  const NodeUpdateSubmitted();
+}
+
+class DeviceConnectRequested extends EditDeviceEvent {
+  const DeviceConnectRequested();
 }

@@ -1,19 +1,14 @@
-part of 'edit_device_bloc.dart';
+part of 'edit_group_bloc.dart';
 
-class EditDeviceState extends Equatable {
-  const EditDeviceState({
+class EditGroupState extends Equatable {
+  const EditGroupState({
     this.status = FormzStatus.pure,
     this.isInitController = false,
     this.currentNode,
     this.isEditing = false,
-    this.isTestConnection = false,
     this.parentName = '',
     this.name = const Name.pure(),
-    this.deviceIP = const DeviceIP.pure(),
-    this.read = 'public',
-    this.write = 'private',
     this.description = '',
-    this.location = '',
     this.msg = '',
   });
 
@@ -21,44 +16,29 @@ class EditDeviceState extends Equatable {
   final bool isInitController;
   final Node? currentNode;
   final bool isEditing;
-  final bool isTestConnection;
   final String parentName;
   final Name name;
-  final DeviceIP deviceIP;
-  final String read;
-  final String write;
   final String description;
-  final String location;
   final String msg;
 
-  EditDeviceState copyWith({
+  EditGroupState copyWith({
     FormzStatus? status,
     bool? isInitController,
     Node? currentNode,
     bool? isEditing,
-    bool? isTestConnection,
     String? parentName,
     Name? name,
-    DeviceIP? deviceIP,
-    String? read,
-    String? write,
     String? description,
-    String? location,
     String? msg,
   }) {
-    return EditDeviceState(
+    return EditGroupState(
       status: status ?? this.status,
       isInitController: isInitController ?? this.isInitController,
       currentNode: currentNode ?? this.currentNode,
       isEditing: isEditing ?? this.isEditing,
-      isTestConnection: isInitController ?? this.isTestConnection,
       parentName: parentName ?? this.parentName,
       name: name ?? this.name,
-      deviceIP: deviceIP ?? this.deviceIP,
-      read: read ?? this.read,
-      write: write ?? this.write,
       description: description ?? this.description,
-      location: location ?? this.location,
       msg: msg ?? this.msg,
     );
   }
@@ -69,14 +49,9 @@ class EditDeviceState extends Equatable {
         isInitController,
         currentNode,
         isEditing,
-        isTestConnection,
         parentName,
         name,
-        deviceIP,
-        read,
-        write,
         description,
-        location,
         msg,
       ];
 }

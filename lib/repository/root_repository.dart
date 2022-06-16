@@ -246,7 +246,7 @@ class RootRepository {
           'uid': user.id,
         };
 
-        response = await dio.put(createNodePath, data: requestData);
+        response = await dio.post(createNodePath, data: requestData);
       } else if (type == 2) {
         // device
         Map<String, dynamic> requestData = {
@@ -271,6 +271,141 @@ class RootRepository {
         return [true, 'create node success'];
       } else if (data['code'] == '204') {
         return [true, 'The device is unconnedted and unsupported.'];
+      } else {
+        print('ERROR');
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<List<dynamic>> updateNode({
+    required Node currentNode,
+    required String name,
+    required String description,
+    String? deviceIP,
+    String? read,
+    String? write,
+    String? location,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String updateNodePath = '/net/node/' + currentNode.id.toString();
+
+    try {
+      //404
+
+      Response response;
+
+      if (currentNode.type == 1) {
+        // group
+        Map<String, dynamic> requestData = {
+          'name': name,
+          'desc': description,
+          'uid': user.id,
+          'type': 1,
+        };
+
+        response = await dio.put(updateNodePath, data: requestData);
+      } else if (currentNode.type == 2 || currentNode.type == 3) {
+        // device
+        Map<String, dynamic> requestData = {
+          'name': name,
+          'desc': description,
+          'uid': user.id,
+          'ip': deviceIP,
+          'read': read,
+          'write': write,
+          'series': currentNode.info!.series,
+          'type': 2,
+          'location': location,
+        };
+        response = await dio.put(updateNodePath, data: requestData);
+      } else {
+        return [false, 'The given type is invalid. 1:Group / 2:Device'];
+      }
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, 'create node success'];
+      } else if (data['code'] == '204') {
+        return [true, 'The device is unconnedted and unsupported.'];
+      } else {
+        print('ERROR');
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<List<dynamic>> connectDevice({
+    required Node currentNode,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String connectDevicePath =
+        '/net/node/' + currentNode.id.toString() + '/try';
+
+    try {
+      // device
+      Map<String, dynamic> requestData = {
+        'ip': currentNode.info!.ip,
+        'read': currentNode.info!.read,
+      };
+
+      Response response = await dio.post(connectDevicePath, data: requestData);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200' || data['code'] == '204') {
+        return [true, ''];
       } else {
         print('ERROR');
         return [false, data['msg']];
