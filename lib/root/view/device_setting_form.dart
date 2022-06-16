@@ -108,62 +108,60 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                 widget.checkBoxValues.clear();
                 widget.dropDownMenuValues.clear();
               }
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    state.editable
-                        ? SizedBox(
-                            height: 40.0,
-                            child: CreateEditingTool(
-                              isEditing: state.isEditing,
-                              pageName: widget.pageName,
-                              checkBoxValues: widget.checkBoxValues,
-                              textFieldControllers: widget.textFieldControllers,
-                              radioButtonValues: widget.radioButtonValues,
-                              sliderValues: widget.sliderValues,
-                              dropDownMenuValues: widget.dropDownMenuValues,
-                              controllerInitValues: widget.controllerInitValues,
-                            ))
-                        : const SizedBox(
-                            height: 40.0,
+              return Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              for (var item in state.data) ...[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var e in item) ...[
+                                      CustomStyle.getBox(
+                                        e['style'],
+                                        e,
+                                        isEditing: state.isEditing,
+                                        checkBoxValues: widget.checkBoxValues,
+                                        textFieldControllers:
+                                            widget.textFieldControllers,
+                                        radioButtonValues:
+                                            widget.radioButtonValues,
+                                        sliderValues: widget.sliderValues,
+                                        dropDownMenuValues:
+                                            widget.dropDownMenuValues,
+                                        controllerInitValues:
+                                            widget.controllerInitValues,
+                                      ),
+                                    ]
+                                  ],
+                                )
+                              ]
+                            ],
                           ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            for (var item in state.data) ...[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  for (var e in item) ...[
-                                    CustomStyle.getBox(
-                                      e['style'],
-                                      e,
-                                      isEditing: state.isEditing,
-                                      checkBoxValues: widget.checkBoxValues,
-                                      textFieldControllers:
-                                          widget.textFieldControllers,
-                                      radioButtonValues:
-                                          widget.radioButtonValues,
-                                      sliderValues: widget.sliderValues,
-                                      dropDownMenuValues:
-                                          widget.dropDownMenuValues,
-                                      controllerInitValues:
-                                          widget.controllerInitValues,
-                                    ),
-                                  ]
-                                ],
-                              )
-                            ]
-                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                floatingActionButton: state.editable
+                    ? CreateEditingTool(
+                        isEditing: state.isEditing,
+                        pageName: widget.pageName,
+                        checkBoxValues: widget.checkBoxValues,
+                        textFieldControllers: widget.textFieldControllers,
+                        radioButtonValues: widget.radioButtonValues,
+                        sliderValues: widget.sliderValues,
+                        dropDownMenuValues: widget.dropDownMenuValues,
+                        controllerInitValues: widget.controllerInitValues,
+                      )
+                    : null,
               );
             } else {
               //FormStatus.requestFailure
@@ -213,138 +211,112 @@ class CreateEditingTool extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isEditing
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              FloatingActionButton(
+                onPressed: () {
+                  List<Map<String, String>> dataList = [];
+
+                  if (checkBoxValues.isNotEmpty) {
+                    checkBoxValues.forEach((key, value) {
+                      String _binValue = value ? '1' : '0';
+                      if (controllerInitValues[key] != _binValue) {
+                        dataList.add({'oid_id': key, 'value': _binValue});
+                      }
+                    });
+                  }
+
+                  if (textFieldControllers.isNotEmpty) {
+                    if (pageName == 'Description') {
+                      String nameId = '9998';
+                      String descriptionId = '9999';
+                      dataList.add({
+                        'oid_id': nameId,
+                        'value': textFieldControllers[nameId]!.text
+                      });
+                      dataList.add({
+                        'oid_id': descriptionId,
+                        'value': textFieldControllers[descriptionId]!.text
+                      });
+                    } else {
+                      textFieldControllers.forEach((key, value) {
+                        if (controllerInitValues[key] != value.text) {
+                          dataList.add({'oid_id': key, 'value': value.text});
+                        }
+                      });
+                    }
+                  }
+
+                  if (radioButtonValues.isNotEmpty) {
+                    radioButtonValues.forEach((key, value) {
+                      if (controllerInitValues[key] != value) {
+                        dataList.add({'oid_id': key, 'value': value});
+                      }
+                    });
+                  }
+
+                  if (sliderValues.isNotEmpty) {
+                    sliderValues.forEach((key, value) {
+                      if (controllerInitValues[key] != value) {
+                        dataList
+                            .add({'oid_id': key, 'value': value.toString()});
+                      }
+                    });
+                  }
+
+                  if (dropDownMenuValues.isNotEmpty) {
+                    dropDownMenuValues.forEach((key, value) {
+                      if (controllerInitValues[key] != value) {
+                        dataList.add({'oid_id': key, 'value': value});
+                      }
+                    });
+                  }
+
+                  print('--------------');
+                  dataList.forEach((element) {
+                    element.forEach((key, value) => print('${key} : ${value}'));
+                  });
+                  print('--------------');
+                  context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
+
+                  //widget.isEditing = false;
+                  //_showSuccessDialog();},
+                },
+                child: Icon(Icons.check),
+                //const Text('Save'),
+              ),
               Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton(
+                padding: EdgeInsets.all(6.0),
+              ),
+              FloatingActionButton(
                   onPressed: () {
                     context
                         .read<DeviceBloc>()
                         .add(const FormStatusChanged(false));
                   },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white70,
-                    elevation: 0,
-                    side: const BorderSide(
-                      width: 1.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    List<Map<String, String>> dataList = [];
-
-                    if (checkBoxValues.isNotEmpty) {
-                      checkBoxValues.forEach((key, value) {
-                        String _binValue = value ? '1' : '0';
-                        if (controllerInitValues[key] != _binValue) {
-                          dataList.add({'oid_id': key, 'value': _binValue});
-                        }
-                      });
-                    }
-
-                    if (textFieldControllers.isNotEmpty) {
-                      if (pageName == 'Description') {
-                        String nameId = '9998';
-                        String descriptionId = '9999';
-                        dataList.add({
-                          'oid_id': nameId,
-                          'value': textFieldControllers[nameId]!.text
-                        });
-                        dataList.add({
-                          'oid_id': descriptionId,
-                          'value': textFieldControllers[descriptionId]!.text
-                        });
-                      } else {
-                        textFieldControllers.forEach((key, value) {
-                          if (controllerInitValues[key] != value.text) {
-                            dataList.add({'oid_id': key, 'value': value.text});
-                          }
-                        });
-                      }
-                    }
-
-                    if (radioButtonValues.isNotEmpty) {
-                      radioButtonValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList.add({'oid_id': key, 'value': value});
-                        }
-                      });
-                    }
-
-                    if (sliderValues.isNotEmpty) {
-                      sliderValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList
-                              .add({'oid_id': key, 'value': value.toString()});
-                        }
-                      });
-                    }
-
-                    if (dropDownMenuValues.isNotEmpty) {
-                      dropDownMenuValues.forEach((key, value) {
-                        if (controllerInitValues[key] != value) {
-                          dataList.add({'oid_id': key, 'value': value});
-                        }
-                      });
-                    }
-
-                    print('--------------');
-                    dataList.forEach((element) {
-                      element
-                          .forEach((key, value) => print('${key} : ${value}'));
-                    });
-                    print('--------------');
-                    context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
-
-                    //widget.isEditing = false;
-                    //_showSuccessDialog();},
-                  },
-                  child: const Text('Save'),
-                ),
-              ),
+                  child: Icon(Icons.cancel)),
             ],
           )
-        : Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    context
-                        .read<DeviceBloc>()
-                        .add(const FormStatusChanged(true));
-                  },
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white70,
-                    elevation: 0,
-                    side: const BorderSide(
-                      width: 1.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        : FloatingActionButton(
+            onPressed: () {
+              context.read<DeviceBloc>().add(const FormStatusChanged(true));
+            },
+            child: Icon(Icons.edit),
+            // const Text(
+            //   'Edit',
+            //   style: TextStyle(
+            //     color: Colors.black,
+            //   ),
+            // ),
+            // style: ElevatedButton.styleFrom(
+            //   primary: Colors.white70,
+            //   elevation: 0,
+            //   side: const BorderSide(
+            //     width: 1.0,
+            //     color: Colors.black,
+            //   ),
+            // ),
           );
   }
 }
