@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-  void _onItemTapped(int index) {
+  void _onBottomItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       _pageController.animateToPage(
@@ -153,10 +153,10 @@ class _HomePageState extends State<HomePage> {
                             image: AssetImage('assets/RICOMS.PNG'),
                           ),
                         ),
-                        Padding(padding: EdgeInsets.only(top: 6.0)),
+                        const Padding(padding: EdgeInsets.only(top: 6.0)),
                         Text(user.name,
                             style: const TextStyle(
-                              fontSize: CommonStyle.sizeM,
+                              fontSize: CommonStyle.sizeXL,
                               fontWeight: FontWeight.w700,
                             )),
                       ],
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Real-Time Alarm',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     // Update the state of the app
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Root',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     _pageController.jumpToPage(1);
@@ -204,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Dashboard',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     _pageController.jumpToPage(2);
@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'History',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     _pageController.jumpToPage(3);
@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Bookmarks',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     _pageController.jumpToPage(4);
@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Account',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     _pageController.jumpToPage(1);
@@ -277,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Change Password',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () async {
                     bool actionResult = await Navigator.push(
@@ -300,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: const Text(
                     'Logout',
-                    style: TextStyle(fontSize: CommonStyle.sizeM),
+                    style: TextStyle(fontSize: CommonStyle.sizeL),
                   ),
                   onTap: () {
                     context
@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
           currentIndex: _selectedIndex,
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Theme.of(context).hintColor,
-          onTap: _onItemTapped,
+          onTap: _onBottomItemTapped,
         ),
       ),
     );

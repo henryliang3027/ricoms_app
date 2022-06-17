@@ -199,12 +199,16 @@ class _RootFormState extends State<RootForm> {
                     context.read<RootBloc>().add(ChildDataRequested(node));
                   }
                 },
-                onLongPress: () => showModalBottomSheet(
-                    context: context,
-                    builder: (context) => _NodeEditBottomMenu(
-                        rootRepository: rootRepository,
-                        parentNode: parentNode,
-                        currentNode: node)),
+                onLongPress: () {
+                  if (node.type == 1 || node.type == 2 || node.type == 3) {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) => _NodeEditBottomMenu(
+                            rootRepository: rootRepository,
+                            parentNode: parentNode,
+                            currentNode: node));
+                  }
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
