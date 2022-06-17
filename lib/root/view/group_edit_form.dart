@@ -109,21 +109,26 @@ class GroupEditForm extends StatelessWidget {
           } else {}
         }
       }),
-      child: Align(
-        alignment: const Alignment(0, -0.42),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const _ParentName(),
-            _NameInput(
-              nameController: _nameController,
-            ),
-            _DescriptionInput(
-              descriptionController: _descriptionController,
-            ),
-            _SubmitButton(),
-          ],
+      child: SizedBox(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 40.0),
+              ),
+              const _ParentName(),
+              _NameInput(
+                nameController: _nameController,
+              ),
+              _DescriptionInput(
+                descriptionController: _descriptionController,
+              ),
+              _SubmitButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -140,19 +145,33 @@ class _ParentName extends StatelessWidget {
             previous.parentName != current.parentName,
         builder: (context, state) {
           return Padding(
-            padding: EdgeInsets.all(3),
+            padding: const EdgeInsets.all(CommonStyle.lineSpacing),
             child: SizedBox(
               width: 230,
               //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Parent'),
-                  Text(
-                    state.parentName,
-                    style: const TextStyle(color: Colors.grey),
+              child: TextFormField(
+                key: const Key('groupEditForm_parentNameInput_textField'),
+                enabled: false,
+                initialValue: state.parentName,
+                textInputAction: TextInputAction.done,
+                style: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+                onChanged: (name) {
+                  print(name);
+                  context.read<EditGroupBloc>().add(NameChanged(name));
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(5),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  labelText: 'Parent',
+                  labelStyle: const TextStyle(
+                    fontSize: CommonStyle.sizeL,
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -192,9 +211,10 @@ class _NameInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Name',
-                hintStyle: const TextStyle(
+                labelText: 'Name',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
@@ -240,15 +260,16 @@ class _DescriptionInput extends StatelessWidget {
               onChanged: (description) => context
                   .read<EditGroupBloc>()
                   .add(DescriptionChanged(description)),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Description',
-                hintStyle: TextStyle(
+                labelText: 'Description',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),

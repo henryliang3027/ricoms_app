@@ -387,20 +387,21 @@ class RootRepository {
   }
 
   Future<List<dynamic>> connectDevice({
-    required Node currentNode,
+    required int currentNodeID,
+    required String ip,
+    required String read,
   }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String connectDevicePath =
-        '/net/node/' + currentNode.id.toString() + '/try';
+    String connectDevicePath = '/net/node/' + currentNodeID.toString() + '/try';
 
     try {
       // device
       Map<String, dynamic> requestData = {
-        'ip': currentNode.info!.ip,
-        'read': currentNode.info!.read,
+        'ip': ip,
+        'read': read,
       };
 
       Response response = await dio.post(connectDevicePath, data: requestData);

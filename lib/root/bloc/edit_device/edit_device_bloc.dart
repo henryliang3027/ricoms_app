@@ -127,6 +127,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         isInitController: false,
         isTestConnection: false,
         read: event.read,
+        status: Formz.validate([state.name, state.deviceIP]),
       ),
     );
   }
@@ -140,6 +141,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         isInitController: false,
         isTestConnection: false,
         write: event.write,
+        status: Formz.validate([state.name, state.deviceIP]),
       ),
     );
   }
@@ -153,6 +155,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         isInitController: false,
         isTestConnection: false,
         description: event.description,
+        status: Formz.validate([state.name, state.deviceIP]),
       ),
     );
   }
@@ -166,6 +169,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         isInitController: false,
         isTestConnection: false,
         location: event.location,
+        status: Formz.validate([state.name, state.deviceIP]),
       ),
     );
   }
@@ -253,8 +257,9 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
 
       // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.connectDevice(
-        currentNode: state.currentNode!,
-      );
+          currentNodeID: state.currentNode!.id,
+          ip: state.deviceIP.value,
+          read: state.read);
 
       if (msg[0]) {
         emit(state.copyWith(

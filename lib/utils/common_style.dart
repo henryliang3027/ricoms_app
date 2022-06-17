@@ -12,4 +12,6 @@ class CommonStyle {
 
   static const String a8KPCM2Name = 'A8KPCM2';
   static const String a8KPCM2DisplayName = 'PCM2 (L)';
+
+  static const double lineSpacing = 8.0;
 }

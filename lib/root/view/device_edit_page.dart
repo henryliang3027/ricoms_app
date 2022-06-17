@@ -42,7 +42,7 @@ class DeviceEditPage extends StatelessWidget {
             isEditing: isEditing,
             currentNode: currentNode)),
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          //resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: isEditing
                 ? const Text('Edit Device')

@@ -142,7 +142,10 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                                     ]
                                   ],
                                 )
-                              ]
+                              ],
+                              const SizedBox(
+                                height: 120,
+                              ),
                             ],
                           ),
                         ),

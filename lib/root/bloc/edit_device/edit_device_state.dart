@@ -51,7 +51,7 @@ class EditDeviceState extends Equatable {
       isInitController: isInitController ?? this.isInitController,
       currentNode: currentNode ?? this.currentNode,
       isEditing: isEditing ?? this.isEditing,
-      isTestConnection: isInitController ?? this.isTestConnection,
+      isTestConnection: isTestConnection ?? this.isTestConnection,
       parentName: parentName ?? this.parentName,
       name: name ?? this.name,
       deviceIP: deviceIP ?? this.deviceIP,

@@ -135,45 +135,41 @@ class DeviceEditForm extends StatelessWidget {
           }
         }
       }),
-      child: Align(
-        alignment: const Alignment(0, -0.42),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const _ParentName(),
-
-            _NameInput(
-              nameController: _nameController,
-            ),
-
-            _DeviceIPInput(
-              deviceIPController: _deviceIPController,
-            ),
-
-            _ReadInput(
-              readController: _readController,
-            ),
-
-            _WriteInput(
-              writeController: _writeController,
-            ),
-
-            _ModuleSeries(
-              moduleSeriesController: _moduleSreiesController,
-            ),
-
-            _DescriptionInput(
-              descriptionController: _descriptionController,
-            ),
-
-            _LocationInput(
-              locationController: _locationController,
-            ),
-
-            _SaveButton(),
-            //const Padding(padding: EdgeInsets.all(50)),
-          ],
+      child: SizedBox(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 30.0),
+              ),
+              const _ParentName(),
+              _NameInput(
+                nameController: _nameController,
+              ),
+              _DeviceIPInput(
+                deviceIPController: _deviceIPController,
+              ),
+              _ReadInput(
+                readController: _readController,
+              ),
+              _WriteInput(
+                writeController: _writeController,
+              ),
+              _ModuleSeries(
+                moduleSeriesController: _moduleSreiesController,
+              ),
+              _DescriptionInput(
+                descriptionController: _descriptionController,
+              ),
+              _LocationInput(
+                locationController: _locationController,
+              ),
+              _SaveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -190,19 +186,32 @@ class _ParentName extends StatelessWidget {
             previous.parentName != current.parentName,
         builder: (context, state) {
           return Padding(
-            padding: EdgeInsets.all(3),
+            padding: const EdgeInsets.all(CommonStyle.lineSpacing),
             child: SizedBox(
               width: 230,
-              //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Parent'),
-                  Text(
-                    state.parentName,
-                    style: const TextStyle(color: Colors.grey),
+              child: TextFormField(
+                key: const Key('deviceEditForm_parentNameInput_textField'),
+                enabled: false,
+                initialValue: state.parentName,
+                textInputAction: TextInputAction.done,
+                style: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+                onChanged: (name) {
+                  print(name);
+                  context.read<EditDeviceBloc>().add(NameChanged(name));
+                },
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(5),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  labelText: 'Parent',
+                  labelStyle: const TextStyle(
+                    fontSize: CommonStyle.sizeL,
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -221,7 +230,7 @@ class _NameInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.name != current.name,
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.all(3),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -245,9 +254,10 @@ class _NameInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Name',
-                hintStyle: const TextStyle(
+                labelText: 'Name',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
@@ -274,7 +284,7 @@ class _DeviceIPInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.deviceIP != current.deviceIP,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -296,9 +306,10 @@ class _DeviceIPInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'IP',
-                hintStyle: const TextStyle(
+                labelText: 'IP',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
@@ -324,7 +335,7 @@ class _ReadInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.read != current.read,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -340,15 +351,16 @@ class _ReadInput extends StatelessWidget {
               ),
               onChanged: (read) =>
                   context.read<EditDeviceBloc>().add(ReadChanged(read)),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
                 labelText: 'Read',
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
@@ -370,7 +382,7 @@ class _WriteInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.write != current.write,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -386,15 +398,16 @@ class _WriteInput extends StatelessWidget {
               ),
               onChanged: (write) =>
                   context.read<EditDeviceBloc>().add(WriteChanged(write)),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
                 labelText: 'Write',
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
@@ -420,7 +433,7 @@ class _ModuleSeries extends StatelessWidget {
         builder: (context, state) {
           return state.isEditing
               ? Padding(
-                  padding: EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(CommonStyle.lineSpacing),
                   child: SizedBox(
                     width: 230,
                     //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -441,14 +454,14 @@ class _ModuleSeries extends StatelessWidget {
                             onChanged: (write) => context
                                 .read<EditDeviceBloc>()
                                 .add(WriteChanged(write)),
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.all(5),
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(5),
+                              border: const OutlineInputBorder(),
                               isDense: true,
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: Colors.grey.shade100,
                               labelText: 'Module Series',
-                              labelStyle: TextStyle(
+                              labelStyle: const TextStyle(
                                 fontSize: CommonStyle.sizeL,
                               ),
                             ),
@@ -501,7 +514,7 @@ class _DescriptionInput extends StatelessWidget {
           previous.description != current.description,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -518,15 +531,16 @@ class _DescriptionInput extends StatelessWidget {
               onChanged: (description) => context
                   .read<EditDeviceBloc>()
                   .add(DescriptionChanged(description)),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Description',
-                hintStyle: TextStyle(
+                labelText: 'Description',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
@@ -549,7 +563,7 @@ class _LocationInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.location != current.location,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -562,15 +576,16 @@ class _LocationInput extends StatelessWidget {
               ),
               onChanged: (location) =>
                   context.read<EditDeviceBloc>().add(LocationChanged(location)),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(5),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(5),
+                border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Location',
-                hintStyle: TextStyle(
+                labelText: 'Location',
+                labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: Colors.grey.shade400,
                 ),
               ),
             ),
@@ -588,7 +603,7 @@ class _SaveButton extends StatelessWidget {
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith(
