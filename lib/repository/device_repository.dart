@@ -53,7 +53,7 @@ class DeviceRepository {
         return dataList;
       } else {
         print('ERROR');
-        return 'Error errno: ${data['code']}';
+        return '${data['code']}: The device does not respond.';
       }
     } catch (e) {
       // The request was made and the server responded with a status code

@@ -104,7 +104,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 title: const Text('Error'),
               ),
               body: Center(
-                child: Text("Error: ${snapshot.data}"),
+                child: Text(snapshot.data),
               ),
             );
           }
