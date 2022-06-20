@@ -64,6 +64,7 @@ class DeviceEditForm extends StatelessWidget {
                 child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop(); // pop dialog
+                  isEditing ? null : Navigator.of(context).pop(); // pop form
                 },
               ),
             ],
@@ -167,7 +168,15 @@ class DeviceEditForm extends StatelessWidget {
               _LocationInput(
                 locationController: _locationController,
               ),
-              _SaveButton(),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const _CancelButton(),
+                  _SaveButton(),
+                ],
+              ),
+              //_SaveButton(),
             ],
           ),
         ),
@@ -598,6 +607,37 @@ class _LocationInput extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _CancelButton extends StatelessWidget {
+  const _CancelButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(CommonStyle.lineSpacing),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.white,
+            shape: const RoundedRectangleBorder(
+                side: BorderSide(width: 1.0, color: Colors.black),
+                borderRadius: BorderRadius.all(Radius.circular(4.0))),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          key: const Key('deviceEditForm_cancel_raisedButton'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(
+              fontSize: CommonStyle.sizeM,
+              color: Colors.black,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
     );
   }
 }

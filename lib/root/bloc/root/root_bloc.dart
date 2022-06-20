@@ -44,6 +44,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
+    //avoid user click node and dataStream trigger at the same time, stop before Request for child
+    _dataStreamSubscription?.pause();
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
@@ -76,6 +78,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         data: [data],
       ));
     }
+
+    //avoid user click node and dataStream trigger at the same time, reaume update periodic
+    _dataStreamSubscription?.resume();
   }
 
   Future<void> _onChildDataUpdated(
