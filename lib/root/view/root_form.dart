@@ -216,12 +216,15 @@ class _RootFormState extends State<RootForm> {
     }
 
     void _autoScrollToTheEnd() {
-      Future.delayed(
-          const Duration(milliseconds: 500),
-          () => _scrollController.animateTo(
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (_scrollController.hasClients) {
+          //prevent it loss client when periodic update directory
+          _scrollController.animateTo(
               _scrollController.position.maxScrollExtent,
               duration: const Duration(seconds: 1),
-              curve: Curves.ease));
+              curve: Curves.ease);
+        }
+      });
     }
 
     _rootSliverChildBuilderDelegate(Node parentNode, List data) {
