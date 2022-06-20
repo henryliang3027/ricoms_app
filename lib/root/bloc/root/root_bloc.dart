@@ -23,7 +23,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     )));
 
     _dataStreamSubscription = _dataStream.listen((count) {
-      print('trigger times: ${count}');
+      print('Root update trigger times: ${count}');
       add(const ChildDataUpdated());
     });
   }
@@ -80,6 +80,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
 
     //avoid user click node and dataStream trigger at the same time, reaume update periodic
+
     _dataStreamSubscription?.resume();
   }
 

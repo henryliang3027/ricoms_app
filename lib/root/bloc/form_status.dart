@@ -1,6 +1,8 @@
 enum FormStatus {
   updating,
 
+  updateSuccess,
+
   /// The form is in the process of requesting data.
   requestInProgress,
 
@@ -26,6 +28,9 @@ enum SubmissionStatus {
 
 extension FormStatusX on FormStatus {
   bool get isUpdating => this == FormStatus.updating;
+
+  /// Indicates whether the root form has been updated successfully.
+  bool get isUpdatSuccess => this == FormStatus.updateSuccess;
 
   /// Indicates whether the form is in the process of being requested.
   bool get isRequestInProgress => this == FormStatus.requestInProgress;

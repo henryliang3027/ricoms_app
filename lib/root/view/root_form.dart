@@ -315,7 +315,7 @@ class _RootFormState extends State<RootForm> {
               child: CircularProgressIndicator(),
             );
           } else if (state.formStatus.isRequestSuccess ||
-              state.formStatus.isUpdating) {
+              state.formStatus.isUpdatSuccess) {
             return Scaffold(
               body: Container(
                 color: Colors.grey.shade300,
@@ -365,16 +365,22 @@ class _RootFormState extends State<RootForm> {
                                           },
                                           child: Text(
                                             state.directory[i].name,
-                                            style: const TextStyle(
-                                              color: Colors.black,
+                                            style: TextStyle(
+                                              color: i ==
+                                                      state.directory.length - 1
+                                                  ? Colors.blue
+                                                  : Colors.black,
                                             ),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             primary: Colors.white70,
                                             elevation: 0,
-                                            side: const BorderSide(
+                                            side: BorderSide(
                                               width: 1.0,
-                                              color: Colors.black,
+                                              color: i ==
+                                                      state.directory.length - 1
+                                                  ? Colors.blue
+                                                  : Colors.black,
                                             ),
                                             visualDensity: const VisualDensity(
                                                 horizontal: -4.0,
@@ -413,7 +419,7 @@ class _RootFormState extends State<RootForm> {
                                   parentNode: state.directory.last,
                                 ));
                       },
-                      child: const Icon(Icons.add))
+                      child: const Icon(CustomIcons.add))
                   : null,
             );
           } else {

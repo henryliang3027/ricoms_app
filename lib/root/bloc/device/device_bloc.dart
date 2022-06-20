@@ -23,7 +23,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     add(const DeviceDataRequested());
     _dataStreamSubscription = _dataStream.listen((count) {
       print(
-          'trigger times: ${count}, current state: ${pageName} => isEditing : ${state.isEditing}');
+          'Device Setting update trigger times: ${count}, current state: ${pageName} => isEditing : ${state.isEditing}');
       state.isEditing == false ? add(const DeviceDataUpdateRequested()) : null;
     });
   }

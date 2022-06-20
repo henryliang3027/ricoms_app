@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
@@ -287,10 +288,10 @@ class CreateEditingTool extends StatelessWidget {
                   //widget.isEditing = false;
                   //_showSuccessDialog();},
                 },
-                child: Icon(Icons.check),
+                child: const Icon(CustomIcons.check),
                 //const Text('Save'),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(6.0),
               ),
               FloatingActionButton(
@@ -300,7 +301,7 @@ class CreateEditingTool extends StatelessWidget {
                         .read<DeviceBloc>()
                         .add(const FormStatusChanged(false));
                   },
-                  child: Icon(Icons.cancel)),
+                  child: const Icon(CustomIcons.cancel)),
             ],
           )
         : FloatingActionButton(
