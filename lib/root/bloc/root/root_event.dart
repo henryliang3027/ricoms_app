@@ -13,11 +13,18 @@ class ChildDataRequested extends RootEvent {
   List<Object?> get props => [parent];
 }
 
-class ParentDataRequested extends RootEvent {
-  const ParentDataRequested(this.child);
-
-  final Node child;
+class ChildDataUpdated extends RootEvent {
+  const ChildDataUpdated();
 
   @override
-  List<Object?> get props => [child];
+  List<Object?> get props => [];
+}
+
+class NodeDeleted extends RootEvent {
+  const NodeDeleted(this.node);
+
+  final Node node;
+
+  @override
+  List<Object?> get props => [node];
 }

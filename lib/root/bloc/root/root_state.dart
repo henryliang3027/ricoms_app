@@ -4,28 +4,28 @@ class RootState extends Equatable {
   const RootState({
     this.formStatus = FormStatus.requestInProgress,
     this.submissionStatus = SubmissionStatus.none,
-    this.saveResultMsg = '',
+    this.deleteResultMsg = '',
     this.data = const [],
     this.directory = const [],
   });
 
   final FormStatus formStatus;
   final SubmissionStatus submissionStatus;
-  final String saveResultMsg;
+  final String deleteResultMsg;
   final List data;
   final List<Node> directory;
 
   RootState copyWith({
     FormStatus? formStatus,
     SubmissionStatus? submissionStatus,
-    String? saveResultMsg,
+    String? deleteResultMsg,
     List? data,
     List<Node>? directory,
   }) {
     return RootState(
       formStatus: formStatus ?? this.formStatus,
       submissionStatus: submissionStatus ?? this.submissionStatus,
-      saveResultMsg: saveResultMsg ?? this.saveResultMsg,
+      deleteResultMsg: deleteResultMsg ?? this.deleteResultMsg,
       data: data ?? this.data,
       directory: directory ?? this.directory,
     );
@@ -35,7 +35,7 @@ class RootState extends Equatable {
   List<Object?> get props => [
         formStatus,
         submissionStatus,
-        saveResultMsg,
+        deleteResultMsg,
         data,
         directory,
       ];

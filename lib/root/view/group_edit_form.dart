@@ -163,7 +163,9 @@ class _ParentName extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(5),
-                  border: const OutlineInputBorder(),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                   isDense: true,
                   filled: true,
                   fillColor: Colors.grey.shade100,

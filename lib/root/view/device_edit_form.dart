@@ -203,7 +203,9 @@ class _ParentName extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(5),
-                  border: const OutlineInputBorder(),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                   isDense: true,
                   filled: true,
                   fillColor: Colors.grey.shade100,
@@ -456,7 +458,10 @@ class _ModuleSeries extends StatelessWidget {
                                 .add(WriteChanged(write)),
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(5),
-                              border: const OutlineInputBorder(),
+                              disabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1.0),
+                              ),
                               isDense: true,
                               filled: true,
                               fillColor: Colors.grey.shade100,
@@ -469,6 +474,7 @@ class _ModuleSeries extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              primary: CustomStyle.severityColor[0],
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -52,13 +52,57 @@ class _RootFormState extends State<RootForm> {
       );
     }
 
-    Future<void> _showCompleteDialog(String msg) async {
+    Future<void> _showSuccessDialog(String msg) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(msg),
+            title: Text(
+              'Deleted',
+              style: TextStyle(
+                color: CustomStyle.severityColor[1],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
@@ -202,11 +246,14 @@ class _RootFormState extends State<RootForm> {
                 onLongPress: () {
                   if (node.type == 1 || node.type == 2 || node.type == 3) {
                     showModalBottomSheet(
-                        context: context,
-                        builder: (context) => _NodeEditBottomMenu(
-                            rootRepository: rootRepository,
-                            parentNode: parentNode,
-                            currentNode: node));
+                      context: context,
+                      builder: (_) => _NodeEditBottomMenu(
+                          superContext:
+                              context, //pass this context contain RootBloc so that BottomMenu can use it to call NodeDeleted event
+                          rootRepository: rootRepository,
+                          parentNode: parentNode,
+                          currentNode: node),
+                    );
                   }
                 },
                 child: Padding(
@@ -251,10 +298,12 @@ class _RootFormState extends State<RootForm> {
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
           await _showInProgressDialog();
-        } else if (state.submissionStatus.isSubmissionFailure ||
-            state.submissionStatus.isSubmissionSuccess) {
+        } else if (state.submissionStatus.isSubmissionSuccess) {
           Navigator.of(context).pop();
-          _showCompleteDialog(state.saveResultMsg);
+          _showSuccessDialog(state.deleteResultMsg);
+        } else if (state.submissionStatus.isSubmissionFailure) {
+          Navigator.of(context).pop();
+          _showFailureDialog(state.deleteResultMsg);
         } else if (state.formStatus.isRequestSuccess) {
           _autoScrollToTheEnd();
         }
@@ -383,17 +432,88 @@ class _RootFormState extends State<RootForm> {
 class _NodeEditBottomMenu extends StatelessWidget {
   const _NodeEditBottomMenu({
     Key? key,
+    required this.superContext,
     required this.rootRepository,
     required this.parentNode,
     required this.currentNode,
   }) : super(key: key);
 
+  final BuildContext superContext;
   final RootRepository rootRepository;
   final Node parentNode;
   final Node currentNode;
 
   @override
   Widget build(BuildContext context) {
+    Future<bool?> _showConfirmDeleteDialog(Node currentNode) async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: currentNode.type == 1
+                ? const Text('Delete Group')
+                : const Text('Delete Device'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  // Text(
+                  //   'Are you sure you want to delete $nodeName ?',
+                  //   style: TextStyle(fontSize: CommonStyle.sizeL),
+                  // ),
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: 'Are you sure you want to delete ',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        TextSpan(
+                          text: currentNode.name,
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' ?',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Yes, delete it!',
+                  style: TextStyle(
+                    color: CustomStyle.severityColor[3],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Wrap(
       children: [
         ListTile(
@@ -460,10 +580,16 @@ class _NodeEditBottomMenu extends StatelessWidget {
             'Delete',
             style: TextStyle(fontSize: CommonStyle.sizeM),
           ),
-          onTap: () {
-            // Navigator.pop(context);
-            // Navigator.push(
-            //     context, DeviceEditPage.route(rootRepository, parentNode));
+          onTap: () async {
+            Navigator.pop(context);
+
+            bool? result = await _showConfirmDeleteDialog(currentNode);
+            print(result);
+            if (result != null) {
+              result
+                  ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
+                  : null;
+            }
           },
         ),
       ],
