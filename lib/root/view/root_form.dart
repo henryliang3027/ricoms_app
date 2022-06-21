@@ -414,6 +414,7 @@ class _RootFormState extends State<RootForm> {
               ),
               floatingActionButton: state.directory.last.type == 1
                   ? FloatingActionButton(
+                      backgroundColor: Colors.blue.shade900,
                       onPressed: () {
                         showModalBottomSheet(
                             context: context,
