@@ -10,6 +10,7 @@ import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root_page.dart';
+import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class HomePage extends StatefulWidget {
@@ -83,7 +84,12 @@ class _HomePageState extends State<HomePage> {
           return [];
         case 1:
           return [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      SearchPage.route(rootRepository, deviceRepository));
+                },
+                icon: const Icon(Icons.search)),
             IconButton(
                 onPressed: () async {
                   List<dynamic> result = await rootRepository.exportNodes();

@@ -50,6 +50,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   
   equatable: ^2.0.3
+  dropdown_button2: ^1.4.0 # custom dropdownButton and dropdownMenuItems
 
 dev_dependencies:
   flutter_test:

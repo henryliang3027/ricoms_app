@@ -110,48 +110,53 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                 widget.dropDownMenuValues.clear();
               }
               return Scaffold(
-                body: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for (var item in state.data) ...[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (var e in item) ...[
-                                      CustomStyle.getBox(
-                                        e['style'],
-                                        e,
-                                        isEditing: state.isEditing,
-                                        checkBoxValues: widget.checkBoxValues,
-                                        textFieldControllers:
-                                            widget.textFieldControllers,
-                                        radioButtonValues:
-                                            widget.radioButtonValues,
-                                        sliderValues: widget.sliderValues,
-                                        dropDownMenuValues:
-                                            widget.dropDownMenuValues,
-                                        controllerInitValues:
-                                            widget.controllerInitValues,
-                                      ),
-                                    ]
-                                  ],
-                                )
+                body: Container(
+                  width: double.maxFinite,
+                  height: double.maxFinite,
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                for (var item in state.data) ...[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (var e in item) ...[
+                                        CustomStyle.getBox(
+                                          e['style'],
+                                          e,
+                                          isEditing: state.isEditing,
+                                          checkBoxValues: widget.checkBoxValues,
+                                          textFieldControllers:
+                                              widget.textFieldControllers,
+                                          radioButtonValues:
+                                              widget.radioButtonValues,
+                                          sliderValues: widget.sliderValues,
+                                          dropDownMenuValues:
+                                              widget.dropDownMenuValues,
+                                          controllerInitValues:
+                                              widget.controllerInitValues,
+                                        ),
+                                      ]
+                                    ],
+                                  )
+                                ],
+                                const SizedBox(
+                                  height: 120,
+                                ),
                               ],
-                              const SizedBox(
-                                height: 120,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 floatingActionButton: state.editable

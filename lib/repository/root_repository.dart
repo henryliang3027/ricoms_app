@@ -490,6 +490,78 @@ class RootRepository {
       }
     }
   }
+
+  Future<List<dynamic>> searchNodes({
+    required int type,
+    required String keyword,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String deleteNodePath = '/device/search/';
+
+    try {
+      //404
+
+      Response response;
+
+      Map<String, dynamic> queryData = {
+        'type': type,
+        'value': keyword,
+      };
+
+      response = await dio.get(deleteNodePath, queryParameters: queryData);
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        List childs = [];
+        List dataList = data['data'];
+
+        for (var element in dataList) {
+          if (element['id'] == null) continue;
+
+          Node node = Node(
+            id: element['id'],
+            name: element['name'],
+            type: element['type'],
+            teg: element['teg'],
+            path: element['path'],
+            shelf: element['shelf'],
+            slot: element['slot'],
+            status: element['status'],
+          );
+          childs.add(node);
+        }
+        return [true, childs];
+      } else {
+        print('ERROR');
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.requestOptions);
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions);
+          print(e.message);
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
 }
 
 class Node {
