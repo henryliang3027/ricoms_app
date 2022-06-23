@@ -37,7 +37,8 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
   }
 
   bool isA8KPCM2() {
-    if (widget.node.name == CommonStyle.a8KPCM2Name) {
+    if (widget.node.name.startsWith(CommonStyle.a8KPCM2Name)) {
+      //some name of pcm2 are 'A8KPCM2(L)' or 'A8KPCM2'
       return true;
     } else {
       return false;
