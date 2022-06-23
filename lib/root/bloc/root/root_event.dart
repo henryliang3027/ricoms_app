@@ -28,3 +28,21 @@ class NodeDeleted extends RootEvent {
   @override
   List<Object?> get props => [node];
 }
+
+class DeviceDataRequested extends RootEvent {
+  const DeviceDataRequested(this.node);
+
+  final Node node;
+
+  @override
+  List<Object?> get props => [node];
+}
+
+class DeviceNavigateRequested extends RootEvent {
+  const DeviceNavigateRequested(this.path);
+
+  final List path;
+
+  @override
+  List<Object?> get props => [path];
+}

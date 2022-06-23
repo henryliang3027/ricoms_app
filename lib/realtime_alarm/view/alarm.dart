@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
+import 'package:ricoms_app/home/view/home_drawer.dart';
 
 class RealTimeAlarmPage extends StatefulWidget {
-  const RealTimeAlarmPage({Key? key}) : super(key: key);
+  const RealTimeAlarmPage({Key? key, required this.pageController})
+      : super(key: key);
+
+  final PageController pageController;
 
   @override
   State<RealTimeAlarmPage> createState() => _RealTimeAlarmPageState();
@@ -12,11 +19,19 @@ class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Real-Time Alarm')),
+      bottomNavigationBar: HomeBottomNavigationBar(
+        pageController: widget.pageController,
+        selectedIndex: 0,
+      ),
+      drawer: HomeDrawer(
+        user: context.select(
+          (AuthenticationBloc bloc) => bloc.state.user,
+        ),
+        pageController: widget.pageController,
+      ),
       body: const Center(
         child: Text('My RealTimeAlarmPage'),
-      ),
-      drawer: SafeArea(
-        child: DeviceManager(),
       ),
     );
   }

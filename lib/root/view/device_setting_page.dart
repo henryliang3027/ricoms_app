@@ -59,8 +59,16 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 vsync: this);
             return Scaffold(
               appBar: AppBar(
-                title: Text(widget.node.name),
-                bottom: TabBar(
+                //shape: Border(bottom: BorderSide(color: Colors.black)),
+                elevation: 0.0,
+                backgroundColor: Colors.white,
+
+                //title: Text(widget.node.name),
+                centerTitle: true,
+                titleSpacing: 0.0,
+                title: TabBar(
+                  unselectedLabelColor: Colors.grey,
+                  labelColor: Colors.blue,
                   isScrollable: true,
                   tabs: [
                     if (isA8KPCM2()) ...[

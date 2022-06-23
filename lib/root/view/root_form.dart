@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
+import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
+import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -9,20 +12,24 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_page.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
+import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class RootForm extends StatefulWidget {
-  const RootForm({Key? key}) : super(key: key);
+  const RootForm({Key? key, required this.pageController}) : super(key: key);
+
+  final PageController pageController;
 
   @override
   State<RootForm> createState() => _RootFormState();
 }
 
 class _RootFormState extends State<RootForm> {
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     super.initState();
   }
 
@@ -239,9 +246,10 @@ class _RootFormState extends State<RootForm> {
                 onTap: () {
                   if (node.type == 2 || node.type == 5) {
                     // 2 : EDFA, 5 : A8K slot
-                    deviceRepository.deviceNodeId = node.id.toString();
-                    Navigator.push(context,
-                        DeviceSettingPage.route(deviceRepository, node));
+                    context.read<RootBloc>().add(DeviceDataRequested(node));
+                    // deviceRepository.deviceNodeId = node.id.toString();
+                    // Navigator.push(context,
+                    //     DeviceSettingPage.route(deviceRepository, node));
                   } else {
                     context.read<RootBloc>().add(ChildDataRequested(node));
                   }
@@ -330,6 +338,46 @@ class _RootFormState extends State<RootForm> {
                 }
               },
               child: Scaffold(
+                appBar: AppBar(
+                  title: const Text('Network'),
+                  actions: [
+                    IconButton(
+                        onPressed: () async {
+                          List? path = await Navigator.push(
+                              context,
+                              SearchPage.route(
+                                  rootRepository, deviceRepository));
+
+                          if (path != null) {
+                            context
+                                .read<RootBloc>()
+                                .add(DeviceNavigateRequested(path));
+                          }
+                        },
+                        icon: const Icon(Icons.search)),
+                    IconButton(
+                        onPressed: () async {
+                          List<dynamic> result =
+                              await rootRepository.exportNodes();
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(content: Text(result[1])),
+                            );
+                        },
+                        icon: Icon(Icons.save_alt_outlined)),
+                  ],
+                ),
+                bottomNavigationBar: HomeBottomNavigationBar(
+                  pageController: widget.pageController,
+                  selectedIndex: 1,
+                ),
+                drawer: HomeDrawer(
+                  user: context.select(
+                    (AuthenticationBloc bloc) => bloc.state.user,
+                  ),
+                  pageController: widget.pageController,
+                ),
                 body: Container(
                   color: Colors.grey.shade300,
                   child: Column(
@@ -414,15 +462,23 @@ class _RootFormState extends State<RootForm> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverList(
-                                delegate: _rootSliverChildBuilderDelegate(
-                                    state.directory.last, state.data))
-                          ],
-                        ),
-                      ),
+                      state.directory.last.type == 2 ||
+                              state.directory.last.type == 5
+                          ? Expanded(
+                              child: DeviceSettingPage(
+                                deviceRepository: deviceRepository,
+                                node: state.directory.last,
+                              ),
+                            )
+                          : Expanded(
+                              child: CustomScrollView(
+                                slivers: [
+                                  SliverList(
+                                      delegate: _rootSliverChildBuilderDelegate(
+                                          state.directory.last, state.data))
+                                ],
+                              ),
+                            ),
                     ],
                   ),
                 ),

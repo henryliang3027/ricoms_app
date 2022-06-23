@@ -12,9 +12,9 @@ class SearchPage extends StatefulWidget {
     required this.deviceRepository,
   }) : super(key: key);
 
-  static Route route(
+  static Route<List> route(
       RootRepository rootRepository, DeviceRepository deviceRepository) {
-    return MaterialPageRoute<void>(
+    return MaterialPageRoute<List>(
         builder: (_) => SearchPage(
               rootRepository: rootRepository,
               deviceRepository: deviceRepository,

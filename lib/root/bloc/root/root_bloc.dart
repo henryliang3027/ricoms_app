@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 part 'root_event.dart';
@@ -10,11 +11,15 @@ part 'root_state.dart';
 class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
     required RootRepository rootRepository,
+    required DeviceRepository deviceRepository,
   })  : _rootRepository = rootRepository,
+        _deviceRepository = deviceRepository,
         super(const RootState()) {
     on<ChildDataRequested>(_onChildDataRequested);
     on<NodeDeleted>(_onNodeDeleted);
     on<ChildDataUpdated>(_onChildDataUpdated);
+    on<DeviceDataRequested>(_onDeviceDataRequested);
+    on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
 
     add(const ChildDataRequested(Node(
       id: 0,
@@ -28,6 +33,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     });
   }
 
+  final DeviceRepository _deviceRepository;
   final RootRepository _rootRepository;
   final List<Node> _directory = <Node>[];
   final _dataStream =
@@ -127,5 +133,90 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         submissionStatus: SubmissionStatus.submissionFailure,
       ));
     }
+  }
+
+  void _onDeviceDataRequested(
+    DeviceDataRequested event,
+    Emitter<RootState> emit,
+  ) {
+    emit(state.copyWith(
+      formStatus: FormStatus.requestInProgress,
+      submissionStatus: SubmissionStatus.none,
+    ));
+
+    _deviceRepository.deviceNodeId = event.node.id.toString();
+
+    !_directory.contains(event.node) ? _directory.add(event.node) : null;
+    int currentIndex = _directory
+        .indexOf(event.node); // -1 represent to element does not exist
+    currentIndex != -1
+        ? _directory.removeRange(
+            currentIndex + 1 < _directory.length
+                ? currentIndex + 1
+                : _directory.length,
+            _directory.length)
+        : null;
+
+    emit(state.copyWith(
+      formStatus: FormStatus.requestSuccess,
+      submissionStatus: SubmissionStatus.none,
+      directory: _directory,
+    ));
+  }
+
+  Future<void> _onDeviceNavigateRequested(
+    DeviceNavigateRequested event,
+    Emitter<RootState> emit,
+  ) async {
+    //avoid user click node and dataStream trigger at the same time, stop before Request for child
+    _dataStreamSubscription?.pause();
+    emit(state.copyWith(
+      formStatus: FormStatus.requestInProgress,
+      submissionStatus: SubmissionStatus.none,
+    ));
+
+    _directory.removeRange(1, _directory.length);
+
+    List path = event.path;
+
+    for (int i = path.length - 1; i >= 0; i--) {
+      dynamic data = await _rootRepository.getChilds(_directory.last);
+      if (data is List) {
+        for (int j = 0; j < data.length; j++) {
+          Node node = data[j];
+
+          if (node.id == path[i]) {
+            _directory.add(node);
+          }
+        }
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          data: data,
+          directory: _directory,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          data: [data],
+        ));
+        break;
+      }
+    }
+
+    if (_directory.length == path.length) {
+      _deviceRepository.deviceNodeId = _directory.last.id.toString();
+
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        directory: _directory,
+      ));
+    }
+
+    //avoid user click node and dataStream trigger at the same time, reaume update periodic
+
+    _dataStreamSubscription?.resume();
   }
 }

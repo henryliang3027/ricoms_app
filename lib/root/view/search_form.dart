@@ -160,7 +160,17 @@ class _DeviceListView extends StatelessWidget {
             child: Material(
               child: InkWell(
                 onTap: () {
-                  context.read<SearchBloc>().add(NodeTapped(node, context));
+                  List<String> elements = node.path
+                      .split(',')
+                      .where((element) => element.isNotEmpty)
+                      .toList();
+                  List<int> path = [];
+                  elements.forEach((element) {
+                    path.add(int.parse(element));
+                  });
+                  //context.read<SearchBloc>().add(NodeTapped(node, context));
+
+                  Navigator.pop(context, path);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
