@@ -123,100 +123,136 @@ class _RootFormState extends State<RootForm> {
       );
     }
 
-    Widget _getDisplayName(Node node) {
+    Widget _getDisplayName(Node node, {bool isLastItemOfDirectory = false}) {
+      //for sliver list and directory
+      // display name for each row
       if (node.type == 5) {
-        //slot
+        //a8k slot
         if (node.shelf != 0 && node.slot == 0) {
           //a8k FAN slot
-          return Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Text(
-                  "FAN",
+          return RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text: "FAN",
                   style: TextStyle(
-                    fontSize: CommonStyle.sizeL,
-                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                    fontSize: CommonStyle.sizeXL,
+                    color: isLastItemOfDirectory
+                        ? CustomStyle.severityColor[node.status]
+                        : Colors.blue,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  node.name,
-                  style: const TextStyle(
-                    fontSize: CommonStyle.sizeL,
+                const TextSpan(
+                  text: ' ',
+                  style: TextStyle(
+                    fontSize: CommonStyle.sizeXL,
                   ),
                 ),
-              ),
-            ],
+                TextSpan(
+                  text: node.name,
+                  style: TextStyle(
+                    fontSize: CommonStyle.sizeXL,
+                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                  ),
+                ),
+              ],
+            ),
           );
         } else if (node.shelf != 0) {
           // a8k normal slot
-          return Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  node.slot.toString().padLeft(2, '0'),
-                  style: const TextStyle(
-                    fontSize: CommonStyle.sizeL,
-                    color: Colors.blue,
+          return RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text: node.slot.toString().padLeft(2, '0'),
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: CommonStyle.sizeXL,
+                    color: isLastItemOfDirectory
+                        ? CustomStyle.severityColor[node.status]
+                        : Colors.blue,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  node.name,
-                  style: const TextStyle(
-                    fontSize: CommonStyle.sizeL,
+                const TextSpan(
+                  text: ' ',
+                  style: TextStyle(
+                    fontSize: CommonStyle.sizeXL,
                   ),
                 ),
-              ),
-            ],
+                TextSpan(
+                  text: node.name,
+                  style: TextStyle(
+                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                    fontSize: CommonStyle.sizeXL,
+                  ),
+                ),
+              ],
+            ),
           );
         } else if (node.shelf == 0 && node.slot == 0) {
           //PCML2 (L)
-          return const Padding(
-            padding: EdgeInsets.only(left: 8.0),
-            child: Text(
-              "PCM2 (L)",
-              style: TextStyle(
-                fontSize: CommonStyle.sizeL,
-              ),
+          return RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text: "PCM2 (L)",
+                  style: TextStyle(
+                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                    fontSize: CommonStyle.sizeXL,
+                  ),
+                ),
+              ],
             ),
-          ); // display of PCML2 (L)
+          );
         } else {
-          return Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              node.name,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-              ),
+          return RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text: node.name,
+                  style: TextStyle(
+                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                    fontSize: CommonStyle.sizeXL,
+                  ),
+                ),
+              ],
             ),
           );
         }
       } else if (node.type == 4) {
         //shelf
-        return Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text(
-            'Shelf ' + node.shelf.toString(),
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-            ),
+        return RichText(
+          text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: <TextSpan>[
+              TextSpan(
+                text: 'Shelf ' + node.shelf.toString(),
+                style: TextStyle(
+                  color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                  fontSize: CommonStyle.sizeXL,
+                ),
+              ),
+            ],
           ),
         );
       } else {
-        return Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Text(
-            node.name,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-            ),
+        return RichText(
+          text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: <TextSpan>[
+              TextSpan(
+                text: node.name,
+                style: TextStyle(
+                  color: isLastItemOfDirectory ? Colors.blue : Colors.black,
+                  fontSize: CommonStyle.sizeXL,
+                ),
+              ),
+            ],
           ),
         );
       }
@@ -291,8 +327,16 @@ class _RootFormState extends State<RootForm> {
                           : const Padding(
                               padding: EdgeInsets.zero,
                             ),
-                      Flexible(
-                        child: _getDisplayName(node),
+                      Expanded(
+                        child: Row(children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: _getDisplayName(node,
+                                  isLastItemOfDirectory: false),
+                            ),
+                          ),
+                        ]),
                       ),
                     ],
                   ),
@@ -321,189 +365,218 @@ class _RootFormState extends State<RootForm> {
       },
       child: BlocBuilder<RootBloc, RootState>(
         builder: (BuildContext context, state) {
-          if (state.formStatus.isRequestInProgress) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state.formStatus.isRequestSuccess ||
-              state.formStatus.isUpdatSuccess) {
-            return WillPopScope(
-              onWillPop: () async {
-                if (state.directory.length > 1) {
-                  context.read<RootBloc>().add(ChildDataRequested(
-                      state.directory[state.directory.length - 2]));
-                  return false;
-                } else {
-                  return true;
-                }
-              },
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text('Network'),
-                  actions: [
-                    IconButton(
-                        onPressed: () async {
-                          List? path = await Navigator.push(
-                              context,
-                              SearchPage.route(
-                                  rootRepository, deviceRepository));
+          Widget _getTitle() {
+            const String defaultTitle = 'Network';
 
-                          if (path != null) {
-                            context
-                                .read<RootBloc>()
-                                .add(DeviceNavigateRequested(path));
-                          }
-                        },
-                        icon: const Icon(Icons.search)),
-                    IconButton(
-                        onPressed: () async {
-                          List<dynamic> result =
-                              await rootRepository.exportNodes();
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(content: Text(result[1])),
-                            );
-                        },
-                        icon: Icon(Icons.save_alt_outlined)),
-                  ],
-                ),
-                bottomNavigationBar: HomeBottomNavigationBar(
-                  pageController: widget.pageController,
-                  selectedIndex: 1,
-                ),
-                drawer: HomeDrawer(
-                  user: context.select(
-                    (AuthenticationBloc bloc) => bloc.state.user,
-                  ),
-                  pageController: widget.pageController,
-                ),
-                body: Container(
-                  color: Colors.grey.shade300,
-                  child: Column(
-                    children: [
-                      Padding(
-                        //directory
-                        padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
-                        child: Card(
-                          child: Row(
-                            children: [
-                              //home button
-                              IconButton(
-                                onPressed: () {
-                                  context.read<RootBloc>().add(
-                                      ChildDataRequested(state.directory[0]));
-                                },
-                                icon: Icon(Icons.home_outlined),
-                                padding: EdgeInsets.zero,
-                                visualDensity: const VisualDensity(
-                                    horizontal: -4.0, vertical: -4.0),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(2.0, 2.0, 6.0, 2.0),
-                                  child: SingleChildScrollView(
-                                    controller: _scrollController,
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        for (int i = 1;
-                                            i < state.directory.length;
-                                            i++) ...[
-                                          const Icon(
-                                            Icons.keyboard_arrow_right_outlined,
-                                            size: 20.0,
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              context.read<RootBloc>().add(
-                                                  ChildDataRequested(
-                                                      state.directory[i]));
-                                            },
-                                            child: Text(
-                                              state.directory[i].name,
-                                              style: TextStyle(
-                                                color: i ==
-                                                        state.directory.length -
-                                                            1
-                                                    ? Colors.blue
-                                                    : Colors.black,
+            if (state.directory.isNotEmpty) {
+              Node node = state.directory.last;
+              if (node.type == 5 || node.type == 2) {
+                return Text(node.name);
+              } else {
+                return const Text(defaultTitle);
+              }
+            } else {
+              return const Text(defaultTitle);
+            }
+          }
+
+          Widget _buildBody() {
+            if (state.formStatus.isRequestInProgress) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state.formStatus.isRequestSuccess ||
+                state.formStatus.isUpdatSuccess) {
+              return state.directory.isNotEmpty
+                  //the directory is empty at first time
+                  ? Container(
+                      color: Colors.grey.shade300,
+                      child: Column(
+                        children: [
+                          Padding(
+                            //directory
+                            padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
+                            child: Card(
+                              child: Row(
+                                children: [
+                                  //home button
+                                  IconButton(
+                                    onPressed: () {
+                                      context.read<RootBloc>().add(
+                                          ChildDataRequested(
+                                              state.directory[0]));
+                                    },
+                                    icon: Icon(Icons.home_outlined),
+                                    padding: EdgeInsets.zero,
+                                    visualDensity: const VisualDensity(
+                                        horizontal: -4.0, vertical: -4.0),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          2.0, 2.0, 6.0, 2.0),
+                                      child: SingleChildScrollView(
+                                        controller: _scrollController,
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            for (int i = 1;
+                                                i < state.directory.length;
+                                                i++) ...[
+                                              const Icon(
+                                                Icons
+                                                    .keyboard_arrow_right_outlined,
+                                                size: 20.0,
                                               ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Colors.white70,
-                                              elevation: 0,
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                color: i ==
-                                                        state.directory.length -
-                                                            1
-                                                    ? Colors.blue
-                                                    : Colors.black,
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  context.read<RootBloc>().add(
+                                                      ChildDataRequested(
+                                                          state.directory[i]));
+                                                },
+                                                child: state.directory.length -
+                                                            1 ==
+                                                        i
+                                                    ? _getDisplayName(
+                                                        state.directory[i],
+                                                        isLastItemOfDirectory:
+                                                            true)
+                                                    : _getDisplayName(
+                                                        state.directory[i],
+                                                        isLastItemOfDirectory:
+                                                            false),
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Colors.white70,
+                                                  elevation: 0,
+                                                  side: BorderSide(
+                                                    width: 1.0,
+                                                    color: i ==
+                                                            state.directory
+                                                                    .length -
+                                                                1
+                                                        ? Colors.blue
+                                                        : Colors.black,
+                                                  ),
+                                                  visualDensity:
+                                                      const VisualDensity(
+                                                          horizontal: -4.0,
+                                                          vertical: -4.0),
+                                                ),
                                               ),
-                                              visualDensity:
-                                                  const VisualDensity(
-                                                      horizontal: -4.0,
-                                                      vertical: -4.0),
-                                            ),
-                                          ),
-                                        ]
-                                      ],
+                                            ]
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      state.directory.last.type == 2 ||
-                              state.directory.last.type == 5
-                          ? Expanded(
-                              child: DeviceSettingPage(
-                                deviceRepository: deviceRepository,
-                                node: state.directory.last,
-                              ),
-                            )
-                          : Expanded(
-                              child: CustomScrollView(
-                                slivers: [
-                                  SliverList(
-                                      delegate: _rootSliverChildBuilderDelegate(
-                                          state.directory.last, state.data))
                                 ],
                               ),
                             ),
-                    ],
-                  ),
-                ),
-                floatingActionButton: state.directory.last.type == 1
-                    ? FloatingActionButton(
-                        backgroundColor: Colors.blue.shade900,
-                        onPressed: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) => _NodeCreationBottomMenu(
-                                    rootRepository: rootRepository,
-                                    parentNode: state.directory.last,
-                                  ));
-                        },
-                        child: const Icon(CustomIcons.add))
-                    : null,
-              ),
-            );
-          } else {
-            //FormStatus.requestFailure
-            String errnsg = state.data[0];
-            return Center(
-              child: Text(errnsg),
-            );
+                          ),
+                          state.directory.last.type == 2 ||
+                                  state.directory.last.type == 5
+                              ? Expanded(
+                                  child: DeviceSettingPage(
+                                    deviceRepository: deviceRepository,
+                                    node: state.directory.last,
+                                  ),
+                                )
+                              : Expanded(
+                                  child: CustomScrollView(
+                                    slivers: [
+                                      SliverList(
+                                          delegate:
+                                              _rootSliverChildBuilderDelegate(
+                                                  state.directory.last,
+                                                  state.data))
+                                    ],
+                                  ),
+                                ),
+                        ],
+                      ),
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    );
+            } else {
+              //FormStatus.requestFailure
+              String errnsg = state.data[0];
+              return Center(
+                child: Text(errnsg),
+              );
+            }
           }
+
+          return WillPopScope(
+            onWillPop: () async {
+              if (state.directory.length > 1) {
+                context.read<RootBloc>().add(ChildDataRequested(
+                    state.directory[state.directory.length - 2]));
+                return false;
+              } else {
+                return true;
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: _getTitle(),
+                actions: [
+                  IconButton(
+                      onPressed: () async {
+                        List? path = await Navigator.push(context,
+                            SearchPage.route(rootRepository, deviceRepository));
+
+                        if (path != null) {
+                          context
+                              .read<RootBloc>()
+                              .add(DeviceNavigateRequested(path));
+                        }
+                      },
+                      icon: const Icon(Icons.search)),
+                  IconButton(
+                      onPressed: () async {
+                        List<dynamic> result =
+                            await rootRepository.exportNodes();
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            SnackBar(content: Text(result[1])),
+                          );
+                      },
+                      icon: Icon(Icons.save_alt_outlined)),
+                ],
+              ),
+              bottomNavigationBar: HomeBottomNavigationBar(
+                pageController: widget.pageController,
+                selectedIndex: 1,
+              ),
+              drawer: HomeDrawer(
+                user: context.select(
+                  (AuthenticationBloc bloc) => bloc.state.user,
+                ),
+                pageController: widget.pageController,
+              ),
+              body: _buildBody(),
+              floatingActionButton: state.directory.isNotEmpty &&
+                      state.directory.last.type == 1 //group
+                  ? FloatingActionButton(
+                      backgroundColor: Colors.blue.shade900,
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => _NodeCreationBottomMenu(
+                                  rootRepository: rootRepository,
+                                  parentNode: state.directory.last,
+                                ));
+                      },
+                      child: const Icon(CustomIcons.add))
+                  : null,
+            ),
+          );
         },
       ),
     );
