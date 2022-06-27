@@ -189,12 +189,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             _directory.add(node);
           }
         }
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          submissionStatus: SubmissionStatus.none,
-          data: data,
-          directory: _directory,
-        ));
+        // emit(state.copyWith(
+        //   formStatus: FormStatus.requestSuccess,
+        //   submissionStatus: SubmissionStatus.none,
+        //   data: data,
+        //   directory: _directory,
+        // ));
       } else {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
@@ -205,7 +205,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
     }
 
-    if (_directory.length == path.length) {
+    if (_directory.length == path.length + 1) {
+      // + 1 as root node id because path.length not consider root node id
       _deviceRepository.deviceNodeId = _directory.last.id.toString();
 
       emit(state.copyWith(

@@ -12,7 +12,7 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  await Hive.initFlutter();
+  await Hive.initFlutter('.db');
   Hive.registerAdapter<User>(UserAdapter());
   await Hive.openBox<User>('User');
   runApp(
