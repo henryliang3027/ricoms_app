@@ -439,25 +439,37 @@ class RootRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List childs = [];
+        List searchDataList = [];
         List dataList = data['data'];
 
         for (var element in dataList) {
           if (element['id'] == null) continue;
 
-          Node node = Node(
+          String rawPath = element['path'];
+          List<String> nodeIdList =
+              rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
+          List<int> path = [];
+          nodeIdList.forEach((nodeId) {
+            path.add(int.parse(nodeId));
+          });
+
+          SearchData searchData = SearchData(
             id: element['id'],
             name: element['name'],
-            type: element['type'],
-            teg: element['teg'],
-            path: element['path'],
+            path: path,
             shelf: element['shelf'],
             slot: element['slot'],
+            teg: element['teg'],
+            type: element['type'],
+            deviceName: element['device_name'],
+            deviceDescription: element['device_desc'],
+            deviceLocation: element['device_location'],
+            moduleId: element['module_id'],
             status: element['status'],
           );
-          childs.add(node);
+          searchDataList.add(searchData);
         }
-        return [true, childs];
+        return [true, searchDataList];
       } else {
         print('ERROR');
         return [false, data['msg']];
@@ -624,6 +636,36 @@ class RootRepository {
       }
     }
   }
+}
+
+class SearchData {
+  const SearchData({
+    required this.id,
+    this.name = '',
+    this.path = const [],
+    this.shelf = -1,
+    this.slot = -1,
+    this.type = -1,
+    this.teg = '',
+    this.deviceName = '',
+    this.deviceDescription = '',
+    this.deviceLocation = '',
+    this.moduleId = -1,
+    this.status = -1,
+  });
+
+  final int id;
+  final String name;
+  final List path;
+  final int shelf;
+  final int slot;
+  final int type;
+  final String teg;
+  final String deviceName;
+  final String deviceDescription;
+  final String deviceLocation;
+  final int moduleId;
+  final int status;
 }
 
 class Node {

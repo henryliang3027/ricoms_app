@@ -150,27 +150,34 @@ class _DeviceListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget _getDisplayName(SearchData searchData) {
+      if (searchData.type == 5) {
+        //a8k slot
+        if (searchData.shelf == 0 && searchData.slot == 1) {
+          return Text(
+              '${searchData.name} [${searchData.deviceName} / PCM2 (L)]');
+        } else {
+          return Text(
+              '${searchData.name} [${searchData.deviceName} / Shelf ${searchData.shelf} / Slot ${searchData.slot}]');
+        }
+      } else {
+        return Text(
+          searchData.name,
+        );
+      }
+    }
+
     _deviceSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           print('build _deviceSliverChildBuilderDelegate : ${index}');
-          Node node = data[index];
+          SearchData searchData = data[index];
           return Padding(
             padding: const EdgeInsets.all(1.0),
             child: Material(
               child: InkWell(
                 onTap: () {
-                  List<String> elements = node.path
-                      .split(',')
-                      .where((element) => element.isNotEmpty)
-                      .toList();
-                  List<int> path = [];
-                  elements.forEach((element) {
-                    path.add(int.parse(element));
-                  });
-                  //context.read<SearchBloc>().add(NodeTapped(node, context));
-
-                  Navigator.pop(context, path);
+                  Navigator.pop(context, searchData.path);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -188,9 +195,7 @@ class _DeviceListView extends StatelessWidget {
                         ],
                       ),
                       Flexible(
-                        child: Text(
-                          node.name,
-                        ),
+                        child: _getDisplayName(searchData),
                       ),
                     ],
                   ),
