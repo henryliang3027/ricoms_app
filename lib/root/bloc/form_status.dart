@@ -1,4 +1,6 @@
 enum FormStatus {
+  none,
+
   updating,
 
   updateSuccess,
@@ -27,6 +29,8 @@ enum SubmissionStatus {
 }
 
 extension FormStatusX on FormStatus {
+  bool get isNone => this == FormStatus.none;
+
   bool get isUpdating => this == FormStatus.updating;
 
   /// Indicates whether the root form has been updated successfully.

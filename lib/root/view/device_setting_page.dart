@@ -83,6 +83,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 ),
               ),
               body: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   if (isA8KPCM2()) ...[
                     for (var item in snapshot.data) ...[

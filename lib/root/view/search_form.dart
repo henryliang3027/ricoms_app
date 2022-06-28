@@ -155,10 +155,10 @@ class _DeviceListView extends StatelessWidget {
         //a8k slot
         if (searchData.shelf == 0 && searchData.slot == 1) {
           return Text(
-              '${searchData.name} [${searchData.deviceName} / PCM2 (L)]');
+              '${searchData.name} [ ${searchData.deviceName} / PCM2 (L) ]');
         } else {
           return Text(
-              '${searchData.name} [${searchData.deviceName} / Shelf ${searchData.shelf} / Slot ${searchData.slot}]');
+              '${searchData.name} [ ${searchData.deviceName} / Shelf ${searchData.shelf} / Slot ${searchData.slot} ]');
         }
       } else {
         return Text(

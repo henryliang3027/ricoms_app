@@ -4,7 +4,7 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks.dart';
 import 'package:ricoms_app/dashboard/view/dashboard.dart';
 import 'package:ricoms_app/history/view/history.dart';
-import 'package:ricoms_app/realtime_alarm/view/alarm.dart';
+import 'package:ricoms_app/real_time_alarm/view/real_time_alarm_page.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root_page.dart';
