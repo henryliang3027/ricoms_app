@@ -43,6 +43,7 @@ dependencies:
   external_path: ^1.0.1
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
+  device_info: ^2.0.3
   csv: ^5.0.1
   intl: ^0.17.0 # format datetime
 

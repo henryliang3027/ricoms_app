@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
@@ -528,47 +529,43 @@ class RootRepository {
         f.writeAsString(csv);
         return [true, 'Export root data success'];
       } else if (Platform.isAndroid) {
-        // PermissionStatus result = await Permission.storage.request();
-        // if (result.isGranted) {
-        //   Directory? externalStorageDirectory =
-        //       await getExternalStorageDirectory();
-        //   if (externalStorageDirectory == null) {
-        //     return [false, 'No Storage found'];
-        //   } else {
-        //     String externalStoragePath = externalStorageDirectory.path;
-        //     List<String> externalStoragePathList =
-        //         externalStoragePath.split('/');
-        //     int indexOfAndroidDir = externalStoragePathList.indexOf('Android');
-        //     String externalRootPath =
-        //         externalStoragePathList.sublist(0, indexOfAndroidDir).join('/');
-        //     String externalAppFolderPath = externalRootPath + '/RICOMS';
+        bool isPermit = await requestPermission();
+        if (isPermit) {
+          Directory? externalStorageDirectory =
+              await getExternalStorageDirectory();
+          if (externalStorageDirectory == null) {
+            return [false, 'No Storage found'];
+          } else {
+            String externalStoragePath = externalStorageDirectory.path;
+            List<String> externalStoragePathList =
+                externalStoragePath.split('/');
+            int indexOfAndroidDir = externalStoragePathList.indexOf('Android');
+            String externalRootPath =
+                externalStoragePathList.sublist(0, indexOfAndroidDir).join('/');
+            String externalAppFolderPath = externalRootPath + '/RICOMS';
 
-        //     //Create Directory (if not exist)
-        //     Directory externalAppDirectory = Directory(externalAppFolderPath);
-        //     if (!externalAppDirectory.existsSync()) {
-        //       //Creating Directory
-        //       try {
-        //         await externalAppDirectory.create(recursive: true);
-        //       } catch (e) {
-        //         return [false, e.toString()];
-        //       }
-        //       //Directory Created
-        //     } else {
-        //       //Directory Already Existed
-        //     }
+            //Create Directory (if not exist)
+            Directory externalAppDirectory = Directory(externalAppFolderPath);
+            if (!externalAppDirectory.existsSync()) {
+              //Creating Directory
+              try {
+                await externalAppDirectory.create(recursive: true);
+              } catch (e) {
+                return [false, e.toString()];
+              }
+              //Directory Created
+            } else {
+              //Directory Already Existed
+            }
 
-        String documentsPath =
-            await ExternalPath.getExternalStoragePublicDirectory(
-                ExternalPath.DIRECTORY_DOCUMENTS);
-
-        File f = File('$documentsPath/$filename');
-        f.writeAsString(csv);
-        return [true, 'Export root data success'];
-
-        // } else {
-        //   openAppSettings();
-        //   return [false, 'Please allow permission before you export your data'];
-        // }
+            File f = File('$externalAppFolderPath/$filename');
+            f.writeAsString(csv);
+            return [true, 'Export root data success'];
+          }
+        } else {
+          openAppSettings();
+          return [false, 'Please allow permission before you export your data'];
+        }
       } else {
         return [
           false,
@@ -595,6 +592,35 @@ class RootRepository {
       } else {
         //throw Exception(e.toString());
         return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<bool> requestPermission() async {
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    int sdkInt = androidInfo.version.sdkInt;
+    //print("sdk version " + sdkInt.toString());
+    if (sdkInt <= 28) {
+      // Android 9 or older
+      PermissionStatus storagePermission = await Permission.storage.request();
+      if (storagePermission.isGranted) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      //sdk 29, 30, (31-32), 33 Android 10, 11, 12, 13
+      PermissionStatus storagePermission = await Permission.storage.request();
+      PermissionStatus accessMediaLocationPermission =
+          await Permission.accessMediaLocation.request();
+      PermissionStatus manageExternalStoragePermission =
+          await Permission.manageExternalStorage.request();
+      if (storagePermission.isGranted &&
+          accessMediaLocationPermission.isGranted &&
+          manageExternalStoragePermission.isGranted) {
+        return true;
+      } else {
+        return false;
       }
     }
   }
@@ -656,18 +682,17 @@ class Info {
   final String series;
 }
 
-
-  // "device_id": 678,
-  // "ip": "192.168.29.202",
-  // "shelf": 0,
-  // "slot": 0,
-  // "read": "public",
-  // "write": "private",
-  // "description": "",
-  // "location": "",
-  // "parent_id": 779,
-  // "path": ",1000,779,",
-  // "device_main_id": -1,
-  // "module_id": -1,
-  // "module": "A8K3U",
-  // "series": "A8K3U"
+// "device_id": 678,
+// "ip": "192.168.29.202",
+// "shelf": 0,
+// "slot": 0,
+// "read": "public",
+// "write": "private",
+// "description": "",
+// "location": "",
+// "parent_id": 779,
+// "path": ",1000,779,",
+// "device_main_id": -1,
+// "module_id": -1,
+// "module": "A8K3U",
+// "series": "A8K3U"
