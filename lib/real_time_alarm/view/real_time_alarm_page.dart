@@ -21,9 +21,11 @@ class RealTimeAlarmPage extends StatefulWidget {
 class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
   @override
   Widget build(BuildContext context) {
+    //get user
     User _user = context.select(
       (AuthenticationBloc bloc) => bloc.state.user,
     );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Real-Time Alarm')),
       bottomNavigationBar: HomeBottomNavigationBar(
