@@ -770,6 +770,14 @@ class CustomStyle {
     }
   }
 
+  static const Map<int, String> severityName = {
+    // device severity
+    0: 'Notice', //notice
+    1: 'Normal', //normal
+    2: 'Warning', //warning
+    3: 'Critical', //critical
+  };
+
   static const Map<int, Color> severityColor = {
     // device severity
     0: Color(0xff6c757d), //notice

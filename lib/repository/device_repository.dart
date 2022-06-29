@@ -332,9 +332,39 @@ class DeviceRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List dataList = data['data']['result'];
-        dataList.sort((b, a) => (a['id'] as int).compareTo(b['id'] as int));
-        return dataList;
+        List rawdataList = data['data']['result'];
+        List<DeviceHistoryData> deviceHistoryDataList = [];
+
+        for (var element in rawdataList) {
+          String? event = element['event'];
+          String? alarmDuration = element['period_time'];
+          String? fixedAlarmDuration;
+
+          if (alarmDuration != null) {
+            List<String> units;
+            units = alarmDuration.split(' ');
+            units.removeWhere((element) => element.isEmpty);
+
+            fixedAlarmDuration = units.join(' ');
+          }
+
+          if (event != null) {
+            if (event.isNotEmpty) {
+              DeviceHistoryData deviceHistoryData = DeviceHistoryData(
+                event: event,
+                severity: element['status'],
+                timeReceived: element['start_time'],
+                clearTime: element['clear_time'] ?? '',
+                alarmDuration: fixedAlarmDuration ?? '',
+              );
+              deviceHistoryDataList.add(deviceHistoryData);
+            }
+          }
+        }
+
+        deviceHistoryDataList
+            .sort((b, a) => a.timeReceived.compareTo(b.timeReceived));
+        return deviceHistoryDataList;
       } else {
         return 'There are no records to show';
       }
@@ -361,48 +391,20 @@ class DeviceRepository {
       }
     }
   }
+}
 
-  // Future<dynamic> getChilds(String parentId) async {
-  //   Dio dio = Dio();
-  //   dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-  //   dio.options.connectTimeout = 10000; //10s
-  //   dio.options.receiveTimeout = 10000;
-  //   String childsPath = '/net/node/' + parentId + '/childs';
+class DeviceHistoryData {
+  const DeviceHistoryData({
+    required this.event,
+    this.severity = -1,
+    this.timeReceived = '',
+    this.clearTime = '',
+    this.alarmDuration = '',
+  });
 
-  //   try {
-  //     //404
-  //     Response response = await dio.get(childsPath);
-
-  //     //print(response.data.toString());
-  //     var data = jsonDecode(response.data.toString());
-
-  //     if (data['code'] == '200') {
-  //       return data['data'];
-  //     } else {
-  //       print('ERROR');
-  //       return 'Error errno: ${data['code']}';
-  //     }
-  //   } catch (e) {
-  //     // The request was made and the server responded with a status code
-  //     // that falls out of the range of 2xx and is also not 304.
-  //     if (e is DioError) {
-  //       if (e.response != null) {
-  //         print(e.response!.data);
-  //         print(e.response!.headers);
-  //         print(e.response!.requestOptions);
-  //         //throw Exception('Server No Response');
-  //         return 'Server No Response';
-  //       } else {
-  //         // Something happened in setting up or sending the request that triggered an Error
-  //         print(e.requestOptions);
-  //         print(e.message);
-  //         //throw Exception(e.message);
-  //         return e.message;
-  //       }
-  //     } else {
-  //       //throw Exception(e.toString());
-  //       return Future.error(e.toString());
-  //     }
-  //   }
-  // }
+  final int severity;
+  final String event;
+  final String timeReceived;
+  final String clearTime;
+  final String alarmDuration;
 }

@@ -22,9 +22,11 @@ class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
   @override
   Widget build(BuildContext context) {
     //get user
-    User _user = context.select(
-      (AuthenticationBloc bloc) => bloc.state.user,
-    );
+    // not sure if it trigger setState
+    // because it cause lauoutBuilder exception when use to pass as argument
+    // User _user = context.select(
+    //   (AuthenticationBloc bloc) => bloc.state.user,
+    // );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Real-Time Alarm')),
@@ -33,12 +35,12 @@ class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
         selectedIndex: 0,
       ),
       drawer: HomeDrawer(
-        user: _user,
+        user: context.read<AuthenticationBloc>().state.user,
         pageController: widget.pageController,
       ),
       body: BlocProvider(
         create: (context) => RealTimeAlarmBloc(
-          user: _user,
+          user: context.read<AuthenticationBloc>().state.user,
           realTimeAlarmRepository:
               RepositoryProvider.of<RealTimeAlarmRepository>(context),
         ),

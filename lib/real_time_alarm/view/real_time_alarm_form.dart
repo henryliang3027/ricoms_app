@@ -102,7 +102,7 @@ class _AlarmSliverList extends StatelessWidget {
                           children: [
                             Container(
                               width: CommonStyle.severityRectangleWidth,
-                              height: CommonStyle.severityRectangleHeight,
+                              height: 60.0,
                               color:
                                   CustomStyle.severityColor[alarmData.severity],
                             ),
@@ -110,37 +110,37 @@ class _AlarmSliverList extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        flex: 6,
+                        flex: 8,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 2.0, 4.0),
+                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                               child: Text(
                                 alarmData.event,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.roboto(
-                                  fontSize: 18.0,
+                                  fontSize: CommonStyle.sizeXL,
                                   //fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 2.0, 4.0),
+                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                               child: Text(
                                 alarmData.name,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.roboto(
-                                  fontSize: 12.0,
+                                  fontSize: CommonStyle.sizeS,
                                   //fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 2.0, 4.0),
+                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -150,7 +150,7 @@ class _AlarmSliverList extends StatelessWidget {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.roboto(
-                                      fontSize: 12.0,
+                                      fontSize: CommonStyle.sizeS,
                                       //fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -159,7 +159,7 @@ class _AlarmSliverList extends StatelessWidget {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.roboto(
-                                      fontSize: 12.0,
+                                      fontSize: CommonStyle.sizeS,
                                       //fontWeight: FontWeight.w500,
                                     ),
                                   ),

@@ -23,10 +23,10 @@ class RealTimeAlarmRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List rawData = data['data']['result'];
+        List rawDataList = data['data']['result'];
         List<Alarm> alarmDataList = [];
 
-        rawData.forEach((element) {
+        for (var element in rawDataList) {
           if (element['node_id'] != null) {
             Alarm alarm = Alarm(
               id: element['node_id'],
@@ -39,8 +39,10 @@ class RealTimeAlarmRepository {
 
             alarmDataList.add(alarm);
           }
-        });
+        }
 
+        // sort by received time from latest to oldest
+        alarmDataList.sort((b, a) => a.receivedTime.compareTo(b.receivedTime));
         switch (alarmType) {
           case AlarmType.all:
             break;

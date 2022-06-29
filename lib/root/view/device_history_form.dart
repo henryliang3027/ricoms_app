@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/root/view/device_history_detail_page.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class DeviceHistoryForm extends StatefulWidget {
   const DeviceHistoryForm({Key? key, required this.deviceRepository})
@@ -17,88 +19,92 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
   _historySliverChildBuilderDelegate(List data) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
-        print('build _mySliverChildBuilderDelegate : ${index}');
+        DeviceHistoryData deviceHistoryData = data[index];
         return Padding(
-          padding: EdgeInsets.all(1.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                          width: 30.0,
-                          height: 60.0,
-                          color:
-                              CustomStyle.severityColor[data[index]['status']],
+          padding: const EdgeInsets.all(1.0),
+          child: Material(
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context, DeviceHistoryDetailPage.route(deviceHistoryData));
+              },
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(
+                                  0.0, 0.0, 10.0, 0.0),
+                              width: CommonStyle.severityRectangleWidth,
+                              height: 60.0,
+                              color: CustomStyle
+                                  .severityColor[deviceHistoryData.severity],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 6,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
-                          child: Container(
-                            child: Text(
-                              data[index]['event'],
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.roboto(
-                                fontSize: 18.0,
-                                //fontWeight: FontWeight.w500,
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 0.0, 10.0, 2.0),
+                              child: Text(
+                                deviceHistoryData.event,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 18.0,
+                                  //fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 6.0),
-                          child: Container(
-                            child: Text(
-                              'Time Received: ' + data[index]['start_time'],
-                              style: GoogleFonts.roboto(
-                                fontSize: 12.0,
-                                //fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        data[index]['clear_time'] != null
-                            ? Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10.0, 0.0, 10.0, 0.0),
-                                child: Container(
-                                  child: Text(
-                                    'Clear Time: ' + data[index]['clear_time'],
-                                    style: GoogleFonts.roboto(
-                                      fontSize: 12.0,
-                                      //fontWeight: FontWeight.w600,
-                                      color: Colors.grey.shade400,
+                            deviceHistoryData.clearTime.isNotEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10.0, 0.0, 10.0, 0.0),
+                                    child: Text(
+                                      'Clear Time: ${deviceHistoryData.clearTime}',
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 12.0,
+                                        //fontWeight: FontWeight.w600,
+                                        color: Colors.grey.shade400,
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10.0, 0.0, 10.0, 0.0),
+                                    child: Text(
+                                      'Time Received: ${deviceHistoryData.timeReceived}',
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 12.0,
+                                        //fontWeight: FontWeight.w600,
+                                        color: Colors.grey.shade400,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                            : const Padding(padding: EdgeInsets.zero),
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
