@@ -76,7 +76,7 @@ class HomeDrawer extends StatelessWidget {
                 child: Icon(CustomIcons.network),
               ),
               title: const Text(
-                'Root',
+                'Network',
                 style: TextStyle(fontSize: CommonStyle.sizeL),
               ),
               onTap: () {
