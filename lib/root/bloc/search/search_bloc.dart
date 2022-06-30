@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/device_setting_page.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -19,7 +17,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchTypeChanged>(_onSearchTypeChanged);
     on<KeywordChanged>(_onKeywordChanged);
     on<SearchDataSubmitted>(_onSearchDataSubmitted);
-    on<NodeTapped>(_onNodeTapped);
   }
 
   final RootRepository _rootRepository;
@@ -68,14 +65,5 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         searchResult: 'No results found.',
       ));
     }
-  }
-
-  void _onNodeTapped(
-    NodeTapped event,
-    Emitter<SearchState> emit,
-  ) {
-    _deviceRepository.deviceNodeId = event.node.id.toString();
-    Navigator.push(
-        event.context, DeviceSettingPage.route(_deviceRepository, event.node));
   }
 }

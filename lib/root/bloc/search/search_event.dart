@@ -28,13 +28,3 @@ class SearchDataSubmitted extends SearchEvent {
   @override
   List<Object?> get props => [];
 }
-
-class NodeTapped extends SearchEvent {
-  const NodeTapped(this.node, this.context);
-
-  final Node node;
-  final BuildContext context;
-
-  @override
-  List<Object?> get props => [node];
-}

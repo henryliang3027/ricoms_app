@@ -249,6 +249,7 @@ class _AlarmSliverList extends StatelessWidget {
           return _showEmptyContent();
         }
       } else {
+        // always false, but just a default case
         if (state.allAlarms.isNotEmpty) {
           return CustomScrollView(
             slivers: [
