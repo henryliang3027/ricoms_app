@@ -180,6 +180,89 @@ class _AlarmSliverList extends StatelessWidget {
       );
     }
 
+    Widget _showEmptyContent() {
+      return const Center(
+        child: Text('There are no records to show'),
+      );
+    }
+
+    Widget _showSuccessDisplay(RealTimeAlarmState state) {
+      if (alarmType == AlarmType.all) {
+        if (state.allAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: _alarmSliverChildBuilderDelegate(state.allAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      } else if (alarmType == AlarmType.critical) {
+        if (state.criticalAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate:
+                    _alarmSliverChildBuilderDelegate(state.criticalAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      } else if (alarmType == AlarmType.warning) {
+        if (state.warningAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: _alarmSliverChildBuilderDelegate(state.warningAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      } else if (alarmType == AlarmType.normal) {
+        if (state.normalAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: _alarmSliverChildBuilderDelegate(state.normalAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      } else if (alarmType == AlarmType.notice) {
+        if (state.noticeAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: _alarmSliverChildBuilderDelegate(state.noticeAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      } else {
+        if (state.allAlarms.isNotEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: _alarmSliverChildBuilderDelegate(state.allAlarms),
+              )
+            ],
+          );
+        } else {
+          return _showEmptyContent();
+        }
+      }
+    }
+
     return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
       builder: (context, state) {
         if (state.status.isRequestInProgress) {
@@ -189,35 +272,7 @@ class _AlarmSliverList extends StatelessWidget {
         } else if (state.status.isRequestSuccess) {
           return Container(
             color: Colors.grey.shade300,
-            child: CustomScrollView(
-              slivers: [
-                if (alarmType == AlarmType.all) ...[
-                  SliverList(
-                      delegate:
-                          _alarmSliverChildBuilderDelegate(state.allAlarms))
-                ] else if (alarmType == AlarmType.critical) ...[
-                  SliverList(
-                      delegate: _alarmSliverChildBuilderDelegate(
-                          state.criticalAlarms))
-                ] else if (alarmType == AlarmType.warning) ...[
-                  SliverList(
-                      delegate:
-                          _alarmSliverChildBuilderDelegate(state.warningAlarms))
-                ] else if (alarmType == AlarmType.normal) ...[
-                  SliverList(
-                      delegate:
-                          _alarmSliverChildBuilderDelegate(state.normalAlarms))
-                ] else if (alarmType == AlarmType.notice) ...[
-                  SliverList(
-                      delegate:
-                          _alarmSliverChildBuilderDelegate(state.noticeAlarms))
-                ] else ...[
-                  SliverList(
-                      delegate:
-                          _alarmSliverChildBuilderDelegate(state.allAlarms))
-                ]
-              ],
-            ),
+            child: _showSuccessDisplay(state),
           );
         } else if (state.status.isrequestFailure) {
           if (alarmType == AlarmType.all) {

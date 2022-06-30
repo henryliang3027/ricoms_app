@@ -369,8 +369,93 @@ class _NodeSliverList extends StatelessWidget {
     return BlocBuilder<RootBloc, RootState>(
       builder: (context, state) {
         if (state.directory.isNotEmpty) {
-          if (state.directory.last.type == 2 ||
-              state.directory.last.type == 5) {
+          if (state.directory.last.type == 1) {
+            //group
+            if (state.directory.last.status == 0) {
+              return const Expanded(
+                child: Center(
+                  child: Text('No data.'),
+                ),
+              );
+            }
+
+            return Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: _rootSliverChildBuilderDelegate(
+                          state.directory.last, state.data))
+                ],
+              ),
+            );
+          } else if (state.directory.last.type == 2) {
+            //edfa device
+
+            if (state.directory.last.status == 0) {
+              return const Expanded(
+                child: Center(
+                  child: Text('The device does not respond.'),
+                ),
+              );
+            }
+
+            return Expanded(
+              child: DeviceSettingPage(
+                deviceRepository: RepositoryProvider.of<DeviceRepository>(
+                  context,
+                ),
+                node: state.directory.last,
+              ),
+            );
+          } else if (state.directory.last.type == 3) {
+            //a8k
+            if (state.directory.last.status == 0) {
+              return const Expanded(
+                child: Center(
+                  child: Text('The device does not respond.'),
+                ),
+              );
+            }
+
+            return Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: _rootSliverChildBuilderDelegate(
+                          state.directory.last, state.data))
+                ],
+              ),
+            );
+          } else if (state.directory.last.type == 4) {
+            // a8k shelf
+            if (state.directory.last.status == 0) {
+              return const Expanded(
+                child: Center(
+                  child: Text('The device does not respond.'),
+                ),
+              );
+            }
+
+            return Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: _rootSliverChildBuilderDelegate(
+                          state.directory.last, state.data))
+                ],
+              ),
+            );
+          } else if (state.directory.last.type == 5) {
+            // a8k slot
+
+            if (state.directory.last.status == 0) {
+              return Expanded(
+                child: Center(
+                  child: Text(
+                      'No module in slot ${state.directory.last.slot.toString()}, please try another.'),
+                ),
+              );
+            }
             return Expanded(
               child: DeviceSettingPage(
                 deviceRepository: RepositoryProvider.of<DeviceRepository>(
@@ -391,6 +476,7 @@ class _NodeSliverList extends StatelessWidget {
             );
           }
         } else {
+          // wait for data
           return const Center(
             child: CircularProgressIndicator(),
           );
