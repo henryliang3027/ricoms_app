@@ -413,7 +413,6 @@ class _NodeDirectory extends StatelessWidget {
         if (state.directory.isNotEmpty) {
           WidgetsBinding.instance?.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
-              //prevent it loss client when periodic update directory
               _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,
                   duration: const Duration(seconds: 1),
@@ -422,8 +421,7 @@ class _NodeDirectory extends StatelessWidget {
           });
 
           return Padding(
-            //directory
-            padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
+            padding: const EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
             child: Card(
               child: Row(
                 children: [
@@ -434,7 +432,7 @@ class _NodeDirectory extends StatelessWidget {
                           .read<RootBloc>()
                           .add(ChildDataRequested(state.directory[0]));
                     },
-                    icon: Icon(Icons.home_outlined),
+                    icon: const Icon(Icons.home_outlined),
                     padding: EdgeInsets.zero,
                     visualDensity:
                         const VisualDensity(horizontal: -4.0, vertical: -4.0),
