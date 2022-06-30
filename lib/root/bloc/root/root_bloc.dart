@@ -35,7 +35,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
   final DeviceRepository _deviceRepository;
   final RootRepository _rootRepository;
-  final List<Node> _directory = <Node>[];
+  //final List<Node> _directory = <Node>[];
   final _dataStream =
       Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
@@ -59,15 +59,18 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     dynamic data = await _rootRepository.getChilds(event.parent);
 
-    !_directory.contains(event.parent) ? _directory.add(event.parent) : null;
-    int currentIndex = _directory
+    List<Node> directory = [];
+    directory.addAll(state.directory);
+
+    !directory.contains(event.parent) ? directory.add(event.parent) : null;
+    int currentIndex = directory
         .indexOf(event.parent); // -1 represent to element does not exist
     currentIndex != -1
-        ? _directory.removeRange(
-            currentIndex + 1 < _directory.length
+        ? directory.removeRange(
+            currentIndex + 1 < directory.length
                 ? currentIndex + 1
-                : _directory.length,
-            _directory.length)
+                : directory.length,
+            directory.length)
         : null;
 
     if (data is List) {
@@ -75,7 +78,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
-        directory: _directory,
+        directory: directory,
       ));
     } else {
       emit(state.copyWith(
@@ -94,15 +97,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataUpdated event,
     Emitter<RootState> emit,
   ) async {
-    dynamic data =
-        await _rootRepository.getChilds(_directory[_directory.length - 1]);
+    dynamic data = await _rootRepository
+        .getChilds(state.directory[state.directory.length - 1]);
 
     if (data is List) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
-        directory: _directory,
+        directory: state.directory,
       ));
     } else {
       emit(state.copyWith(
@@ -144,23 +147,26 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       submissionStatus: SubmissionStatus.none,
     ));
 
+    List<Node> directory = [];
+    directory.addAll(state.directory);
+
     _deviceRepository.deviceNodeId = event.node.id.toString();
 
-    !_directory.contains(event.node) ? _directory.add(event.node) : null;
-    int currentIndex = _directory
-        .indexOf(event.node); // -1 represent to element does not exist
+    !directory.contains(event.node) ? directory.add(event.node) : null;
+    int currentIndex =
+        directory.indexOf(event.node); // -1 represent to element does not exist
     currentIndex != -1
-        ? _directory.removeRange(
-            currentIndex + 1 < _directory.length
+        ? directory.removeRange(
+            currentIndex + 1 < directory.length
                 ? currentIndex + 1
-                : _directory.length,
-            _directory.length)
+                : directory.length,
+            directory.length)
         : null;
 
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,
-      directory: _directory,
+      directory: directory,
     ));
   }
 
@@ -175,18 +181,21 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       submissionStatus: SubmissionStatus.none,
     ));
 
-    _directory.removeRange(1, _directory.length);
+    List<Node> directory = [];
+    directory.addAll(state.directory);
+
+    directory.removeRange(1, directory.length);
 
     List path = event.path;
 
     for (int i = path.length - 1; i >= 0; i--) {
-      dynamic data = await _rootRepository.getChilds(_directory.last);
+      dynamic data = await _rootRepository.getChilds(directory.last);
       if (data is List) {
         for (int j = 0; j < data.length; j++) {
           Node node = data[j];
 
           if (node.id == path[i]) {
-            _directory.add(node);
+            directory.add(node);
           }
         }
         // emit(state.copyWith(
@@ -205,14 +214,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
     }
 
-    if (_directory.length == path.length + 1) {
+    if (directory.length == path.length + 1) {
       // + 1 as root node id because path.length not consider root node id
-      _deviceRepository.deviceNodeId = _directory.last.id.toString();
+      _deviceRepository.deviceNodeId = directory.last.id.toString();
 
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
-        directory: _directory,
+        directory: directory,
       ));
     }
 

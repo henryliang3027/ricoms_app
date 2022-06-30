@@ -14,35 +14,15 @@ import 'package:ricoms_app/root/view/device_setting_page.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/display_style.dart';
 
-class RootForm extends StatefulWidget {
+class RootForm extends StatelessWidget {
   const RootForm({Key? key, required this.pageController}) : super(key: key);
 
   final PageController pageController;
 
   @override
-  State<RootForm> createState() => _RootFormState();
-}
-
-class _RootFormState extends State<RootForm> {
-  late final ScrollController _scrollController;
-
-  @override
-  void initState() {
-    _scrollController = ScrollController();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    DeviceRepository deviceRepository = RepositoryProvider.of<DeviceRepository>(
-      context,
-    );
-
-    RootRepository rootRepository = RepositoryProvider.of<RootRepository>(
-      context,
-    );
-
     Future<void> _showInProgressDialog() async {
       return showDialog<void>(
         context: context,
@@ -123,232 +103,6 @@ class _RootFormState extends State<RootForm> {
       );
     }
 
-    Widget _getDisplayName(Node node, {bool isLastItemOfDirectory = false}) {
-      //for sliver list and directory
-      // display name for each row
-      if (node.type == 5) {
-        //a8k slot
-        if (node.shelf != 0 && node.slot == 0) {
-          //a8k FAN slot
-          return RichText(
-            text: TextSpan(
-              style: DefaultTextStyle.of(context).style,
-              children: <TextSpan>[
-                TextSpan(
-                  text: "FAN",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: CommonStyle.sizeXL,
-                    color: isLastItemOfDirectory
-                        ? CustomStyle.severityColor[node.status]
-                        : Colors.blue,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' ',
-                  style: TextStyle(
-                    fontSize: CommonStyle.sizeXL,
-                  ),
-                ),
-                TextSpan(
-                  text: node.name,
-                  style: TextStyle(
-                    fontSize: CommonStyle.sizeXL,
-                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else if (node.shelf != 0) {
-          // a8k normal slot
-          return RichText(
-            text: TextSpan(
-              style: DefaultTextStyle.of(context).style,
-              children: <TextSpan>[
-                TextSpan(
-                  text: node.slot.toString().padLeft(2, '0'),
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: CommonStyle.sizeXL,
-                    color: isLastItemOfDirectory
-                        ? CustomStyle.severityColor[node.status]
-                        : Colors.blue,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' ',
-                  style: TextStyle(
-                    fontSize: CommonStyle.sizeXL,
-                  ),
-                ),
-                TextSpan(
-                  text: node.name,
-                  style: TextStyle(
-                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                    fontSize: CommonStyle.sizeXL,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else if (node.shelf == 0 && node.slot == 0) {
-          //PCML2 (L)
-          return RichText(
-            text: TextSpan(
-              style: DefaultTextStyle.of(context).style,
-              children: <TextSpan>[
-                TextSpan(
-                  text: "PCM2 (L)",
-                  style: TextStyle(
-                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                    fontSize: CommonStyle.sizeXL,
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return RichText(
-            text: TextSpan(
-              style: DefaultTextStyle.of(context).style,
-              children: <TextSpan>[
-                TextSpan(
-                  text: node.name,
-                  style: TextStyle(
-                    color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                    fontSize: CommonStyle.sizeXL,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-      } else if (node.type == 4) {
-        //shelf
-        return RichText(
-          text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
-            children: <TextSpan>[
-              TextSpan(
-                text: 'Shelf ' + node.shelf.toString(),
-                style: TextStyle(
-                  color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                  fontSize: CommonStyle.sizeXL,
-                ),
-              ),
-            ],
-          ),
-        );
-      } else {
-        return RichText(
-          text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
-            children: <TextSpan>[
-              TextSpan(
-                text: node.name,
-                style: TextStyle(
-                  color: isLastItemOfDirectory ? Colors.blue : Colors.black,
-                  fontSize: CommonStyle.sizeXL,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-
-    void _autoScrollToTheEnd() {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (_scrollController.hasClients) {
-          //prevent it loss client when periodic update directory
-          _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: const Duration(seconds: 1),
-              curve: Curves.ease);
-        }
-      });
-    }
-
-    _rootSliverChildBuilderDelegate(Node parentNode, List data) {
-      return SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          print('build _rootSliverChildBuilderDelegate : ${index}');
-          Node node = data[index];
-          return Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: Material(
-              child: InkWell(
-                onTap: () {
-                  if (node.type == 2 || node.type == 5) {
-                    // 2 : EDFA, 5 : A8K slot
-                    context.read<RootBloc>().add(DeviceDataRequested(node));
-                    // deviceRepository.deviceNodeId = node.id.toString();
-                    // Navigator.push(context,
-                    //     DeviceSettingPage.route(deviceRepository, node));
-                  } else {
-                    context.read<RootBloc>().add(ChildDataRequested(node));
-                  }
-                },
-                onLongPress: () {
-                  if (node.type == 1 || node.type == 2 || node.type == 3) {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (_) => _NodeEditBottomMenu(
-                          superContext:
-                              context, //pass this context contain RootBloc so that BottomMenu can use it to call NodeDeleted event
-                          rootRepository: rootRepository,
-                          parentNode: parentNode,
-                          currentNode: node),
-                    );
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: CommonStyle.severityRectangleWidth,
-                            height: CommonStyle.severityRectangleHeight,
-                            color: CustomStyle.severityColor[node.status],
-                          ),
-                        ],
-                      ),
-                      CustomStyle.typeIcon[node.type] != null
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: CustomStyle.typeIcon[node.type],
-                            )
-                          : const Padding(
-                              padding: EdgeInsets.zero,
-                            ),
-                      Expanded(
-                        child: Row(children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: _getDisplayName(node,
-                                  isLastItemOfDirectory: false),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        childCount: data.length,
-      );
-    }
-
     return BlocListener<RootBloc, RootState>(
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
@@ -359,226 +113,388 @@ class _RootFormState extends State<RootForm> {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
-        } else if (state.formStatus.isRequestSuccess) {
-          _autoScrollToTheEnd();
-        }
+        } else if (state.formStatus.isRequestSuccess) {}
       },
-      child: BlocBuilder<RootBloc, RootState>(
-        builder: (BuildContext context, state) {
-          Widget _getTitle() {
-            const String defaultTitle = 'Network';
-
-            if (state.directory.isNotEmpty) {
-              Node node = state.directory.last;
-              if (node.type == 5 || node.type == 2) {
-                return Text(node.name);
-              } else {
-                return const Text(defaultTitle);
-              }
-            } else {
-              return const Text(defaultTitle);
-            }
+      child: WillPopScope(
+        onWillPop: () async {
+          List<Node> _directory = context.read<RootBloc>().state.directory;
+          if (_directory.length > 1) {
+            context
+                .read<RootBloc>()
+                .add(ChildDataRequested(_directory[_directory.length - 2]));
+            return false;
+          } else {
+            return true;
           }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const _DynamicTitle(),
+            actions: const [
+              _SearchAction(),
+              _SecondAction(),
+            ],
+          ),
+          bottomNavigationBar: HomeBottomNavigationBar(
+            pageController: pageController,
+            selectedIndex: 1,
+          ),
+          drawer: HomeDrawer(
+            user: context.read<AuthenticationBloc>().state.user,
+            pageController: pageController,
+          ),
+          body: Container(
+            color: Colors.grey.shade300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                _NodeDirectory(),
+                _NodeSliverList(),
+              ],
+            ),
+          ),
+          floatingActionButton: const _DynamicFloatingActionButton(),
+        ),
+      ),
+    );
+  }
+}
 
-          Widget _buildBody() {
-            if (state.formStatus.isRequestInProgress) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state.formStatus.isRequestSuccess ||
-                state.formStatus.isUpdatSuccess) {
-              return state.directory.isNotEmpty
-                  //the directory is empty at first time
-                  ? Container(
-                      color: Colors.grey.shade300,
-                      child: Column(
-                        children: [
-                          Padding(
-                            //directory
-                            padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
-                            child: Card(
-                              child: Row(
-                                children: [
-                                  //home button
-                                  IconButton(
-                                    onPressed: () {
-                                      context.read<RootBloc>().add(
-                                          ChildDataRequested(
-                                              state.directory[0]));
-                                    },
-                                    icon: Icon(Icons.home_outlined),
-                                    padding: EdgeInsets.zero,
-                                    visualDensity: const VisualDensity(
-                                        horizontal: -4.0, vertical: -4.0),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          2.0, 2.0, 6.0, 2.0),
-                                      child: SingleChildScrollView(
-                                        controller: _scrollController,
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            for (int i = 1;
-                                                i < state.directory.length;
-                                                i++) ...[
-                                              const Icon(
-                                                Icons
-                                                    .keyboard_arrow_right_outlined,
-                                                size: 20.0,
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  context.read<RootBloc>().add(
-                                                      ChildDataRequested(
-                                                          state.directory[i]));
-                                                },
-                                                child: state.directory.length -
-                                                            1 ==
-                                                        i
-                                                    ? _getDisplayName(
-                                                        state.directory[i],
-                                                        isLastItemOfDirectory:
-                                                            true)
-                                                    : _getDisplayName(
-                                                        state.directory[i],
-                                                        isLastItemOfDirectory:
-                                                            false),
-                                                style: ElevatedButton.styleFrom(
-                                                  primary: Colors.white70,
-                                                  elevation: 0,
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: i ==
-                                                            state.directory
-                                                                    .length -
-                                                                1
-                                                        ? Colors.blue
-                                                        : Colors.black,
-                                                  ),
-                                                  visualDensity:
-                                                      const VisualDensity(
-                                                          horizontal: -4.0,
-                                                          vertical: -4.0),
-                                                ),
-                                              ),
-                                            ]
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          state.directory.last.type == 2 ||
-                                  state.directory.last.type == 5
-                              ? Expanded(
-                                  child: DeviceSettingPage(
-                                    deviceRepository: deviceRepository,
-                                    node: state.directory.last,
-                                  ),
-                                )
-                              : Expanded(
-                                  child: CustomScrollView(
-                                    slivers: [
-                                      SliverList(
-                                          delegate:
-                                              _rootSliverChildBuilderDelegate(
-                                                  state.directory.last,
-                                                  state.data))
-                                    ],
-                                  ),
-                                ),
-                        ],
-                      ),
-                    )
-                  : const Center(
-                      child: CircularProgressIndicator(),
-                    );
-            } else {
-              //FormStatus.requestFailure
-              String errnsg = state.data[0];
-              return Center(
-                child: Text(errnsg),
-              );
-            }
-          }
+class _DynamicTitle extends StatelessWidget {
+  const _DynamicTitle({Key? key}) : super(key: key);
 
-          return WillPopScope(
-            onWillPop: () async {
-              if (state.directory.length > 1) {
-                context.read<RootBloc>().add(ChildDataRequested(
-                    state.directory[state.directory.length - 2]));
-                return false;
-              } else {
-                return true;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      const String defaultTitle = 'Network';
+
+      if (state.directory.isNotEmpty) {
+        Node node = state.directory.last;
+        if (node.type == 5 || node.type == 2) {
+          return Text(node.name);
+        } else {
+          return const Text(defaultTitle);
+        }
+      } else {
+        return const Text(defaultTitle);
+      }
+    });
+  }
+}
+
+class _SearchAction extends StatelessWidget {
+  const _SearchAction({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      if (state.directory.isNotEmpty) {
+        Node node = state.directory.last;
+
+        return IconButton(
+            onPressed: () async {
+              List? path = await Navigator.push(
+                  context,
+                  SearchPage.route(
+                    RepositoryProvider.of<RootRepository>(
+                      context,
+                    ),
+                    RepositoryProvider.of<DeviceRepository>(
+                      context,
+                    ),
+                  ));
+
+              if (path != null) {
+                context.read<RootBloc>().add(DeviceNavigateRequested(path));
               }
             },
-            child: Scaffold(
-              appBar: AppBar(
-                title: _getTitle(),
-                actions: [
-                  IconButton(
-                      onPressed: () async {
-                        List? path = await Navigator.push(context,
-                            SearchPage.route(rootRepository, deviceRepository));
+            icon: const Icon(Icons.search));
+      } else {
+        return Center();
+      }
+    });
+  }
+}
 
-                        if (path != null) {
-                          context
-                              .read<RootBloc>()
-                              .add(DeviceNavigateRequested(path));
-                        }
-                      },
-                      icon: const Icon(Icons.search)),
-                  IconButton(
-                      onPressed: () async {
-                        List<dynamic> result =
-                            await rootRepository.exportNodes();
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(content: Text(result[1])),
-                          );
-                      },
-                      icon: Icon(Icons.save_alt_outlined)),
+class _SecondAction extends StatelessWidget {
+  const _SecondAction({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      if (state.directory.isNotEmpty) {
+        Node node = state.directory.last;
+        if (node.type == 5 || node.type == 2) {
+          return IconButton(onPressed: () {}, icon: Icon(Icons.star_rounded));
+        } else {
+          return IconButton(
+              onPressed: () async {
+                List<dynamic> result =
+                    await RepositoryProvider.of<RootRepository>(
+                  context,
+                ).exportNodes();
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(content: Text(result[1])),
+                  );
+              },
+              icon: Icon(Icons.save_alt_outlined));
+        }
+      } else {
+        return IconButton(
+            onPressed: () async {
+              List<dynamic> result =
+                  await RepositoryProvider.of<RootRepository>(
+                context,
+              ).exportNodes();
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(content: Text(result[1])),
+                );
+            },
+            icon: Icon(Icons.save_alt_outlined));
+      }
+    });
+  }
+}
+
+class _DynamicFloatingActionButton extends StatelessWidget {
+  const _DynamicFloatingActionButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      if (state.directory.isNotEmpty && state.directory.last.type == 1) {
+        // 1 is group
+        return FloatingActionButton(
+            backgroundColor: Colors.blue.shade900,
+            onPressed: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (_) => _NodeCreationBottomMenu(
+                        superContext: context,
+                        parentNode: state.directory.last,
+                      ));
+            },
+            child: const Icon(CustomIcons.add));
+      } else {
+        return Center();
+      }
+    });
+  }
+}
+
+class _NodeSliverList extends StatelessWidget {
+  const _NodeSliverList({Key? key}) : super(key: key);
+
+  _rootSliverChildBuilderDelegate(Node parentNode, List data) {
+    return SliverChildBuilderDelegate(
+      (BuildContext context, int index) {
+        print('build _rootSliverChildBuilderDelegate : ${index}');
+        Node node = data[index];
+        return Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: Material(
+            child: InkWell(
+              onTap: () {
+                if (node.type == 2 || node.type == 5) {
+                  // 2 : EDFA, 5 : A8K slot
+                  context.read<RootBloc>().add(DeviceDataRequested(node));
+                } else {
+                  context.read<RootBloc>().add(ChildDataRequested(node));
+                }
+              },
+              onLongPress: () {
+                if (node.type == 1 || node.type == 2 || node.type == 3) {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => _NodeEditBottomMenu(
+                        superContext:
+                            context, //pass this context contain RootBloc so that BottomMenu can use it to call NodeDeleted event
+                        parentNode: parentNode,
+                        currentNode: node),
+                  );
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: CommonStyle.severityRectangleWidth,
+                          height: CommonStyle.severityRectangleHeight,
+                          color: CustomStyle.severityColor[node.status],
+                        ),
+                      ],
+                    ),
+                    CustomStyle.typeIcon[node.type] != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: CustomStyle.typeIcon[node.type],
+                          )
+                        : const Padding(
+                            padding: EdgeInsets.zero,
+                          ),
+                    Expanded(
+                      child: Row(children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: DisplayStyle.getDisplayName(node, context,
+                                isLastItemOfDirectory: false),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      childCount: data.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(
+      builder: (context, state) {
+        if (state.directory.isNotEmpty) {
+          if (state.directory.last.type == 2 ||
+              state.directory.last.type == 5) {
+            return Expanded(
+              child: DeviceSettingPage(
+                deviceRepository: RepositoryProvider.of<DeviceRepository>(
+                  context,
+                ),
+                node: state.directory.last,
+              ),
+            );
+          } else {
+            return Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: _rootSliverChildBuilderDelegate(
+                          state.directory.last, state.data))
                 ],
               ),
-              bottomNavigationBar: HomeBottomNavigationBar(
-                pageController: widget.pageController,
-                selectedIndex: 1,
+            );
+          }
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NodeDirectory extends StatelessWidget {
+  const _NodeDirectory({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final ScrollController _scrollController = ScrollController();
+
+    return BlocBuilder<RootBloc, RootState>(
+      buildWhen: (previous, current) => previous.directory != current.directory,
+      builder: (context, state) {
+        if (state.directory.isNotEmpty) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              //prevent it loss client when periodic update directory
+              _scrollController.animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.ease);
+            }
+          });
+
+          return Padding(
+            //directory
+            padding: EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
+            child: Card(
+              child: Row(
+                children: [
+                  //home button
+                  IconButton(
+                    onPressed: () {
+                      context
+                          .read<RootBloc>()
+                          .add(ChildDataRequested(state.directory[0]));
+                    },
+                    icon: Icon(Icons.home_outlined),
+                    padding: EdgeInsets.zero,
+                    visualDensity:
+                        const VisualDensity(horizontal: -4.0, vertical: -4.0),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(2.0, 2.0, 6.0, 2.0),
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            for (int i = 1;
+                                i < state.directory.length;
+                                i++) ...[
+                              const Icon(
+                                Icons.keyboard_arrow_right_outlined,
+                                size: 20.0,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.read<RootBloc>().add(
+                                      ChildDataRequested(state.directory[i]));
+                                },
+                                child: state.directory.length - 1 == i
+                                    ? DisplayStyle.getDisplayName(
+                                        state.directory[i], context,
+                                        isLastItemOfDirectory: true)
+                                    : DisplayStyle.getDisplayName(
+                                        state.directory[i], context,
+                                        isLastItemOfDirectory: false),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.white70,
+                                  elevation: 0,
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    color: i == state.directory.length - 1
+                                        ? Colors.blue
+                                        : Colors.black,
+                                  ),
+                                  visualDensity: const VisualDensity(
+                                      horizontal: -4.0, vertical: -4.0),
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              drawer: HomeDrawer(
-                user: context.select(
-                  (AuthenticationBloc bloc) => bloc.state.user,
-                ),
-                pageController: widget.pageController,
-              ),
-              body: _buildBody(),
-              floatingActionButton: state.directory.isNotEmpty &&
-                      state.directory.last.type == 1 //group
-                  ? FloatingActionButton(
-                      backgroundColor: Colors.blue.shade900,
-                      onPressed: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) => _NodeCreationBottomMenu(
-                                  rootRepository: rootRepository,
-                                  parentNode: state.directory.last,
-                                ));
-                      },
-                      child: const Icon(CustomIcons.add))
-                  : null,
             ),
           );
-        },
-      ),
+        } else {
+          return const Center();
+        }
+      },
     );
   }
 }
@@ -587,13 +503,11 @@ class _NodeEditBottomMenu extends StatelessWidget {
   const _NodeEditBottomMenu({
     Key? key,
     required this.superContext,
-    required this.rootRepository,
     required this.parentNode,
     required this.currentNode,
   }) : super(key: key);
 
   final BuildContext superContext;
-  final RootRepository rootRepository;
   final Node parentNode;
   final Node currentNode;
 
@@ -611,10 +525,6 @@ class _NodeEditBottomMenu extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  // Text(
-                  //   'Are you sure you want to delete $nodeName ?',
-                  //   style: TextStyle(fontSize: CommonStyle.sizeL),
-                  // ),
                   RichText(
                     text: TextSpan(
                       style: DefaultTextStyle.of(context).style,
@@ -697,7 +607,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   DeviceEditPage.route(
-                      rootRepository: rootRepository,
+                      rootRepository:
+                          RepositoryProvider.of<RootRepository>(superContext),
                       parentNode: parentNode,
                       isEditing: true,
                       currentNode: currentNode));
@@ -706,7 +617,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   GroupEditPage.route(
-                      rootRepository: rootRepository,
+                      rootRepository:
+                          RepositoryProvider.of<RootRepository>(superContext),
                       parentNode: parentNode,
                       isEditing: true,
                       currentNode: currentNode));
@@ -754,11 +666,11 @@ class _NodeEditBottomMenu extends StatelessWidget {
 class _NodeCreationBottomMenu extends StatelessWidget {
   const _NodeCreationBottomMenu({
     Key? key,
-    required this.rootRepository,
+    required this.superContext,
     required this.parentNode,
   }) : super(key: key);
 
-  final RootRepository rootRepository;
+  final BuildContext superContext;
   final Node parentNode;
 
   @override
@@ -790,7 +702,8 @@ class _NodeCreationBottomMenu extends StatelessWidget {
             Navigator.push(
                 context,
                 GroupEditPage.route(
-                    rootRepository: rootRepository,
+                    rootRepository:
+                        RepositoryProvider.of<RootRepository>(superContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));
@@ -822,7 +735,8 @@ class _NodeCreationBottomMenu extends StatelessWidget {
             Navigator.push(
                 context,
                 DeviceEditPage.route(
-                    rootRepository: rootRepository,
+                    rootRepository:
+                        RepositoryProvider.of<RootRepository>(superContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));

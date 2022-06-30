@@ -20,7 +20,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
   final PageController _pageController = PageController();
 
   @override
@@ -63,11 +62,6 @@ class _HomePageState extends State<HomePage> {
               pageController: _pageController,
             ),
           ],
-          onPageChanged: (pageIndex) {
-            setState(() {
-              _selectedIndex = pageIndex;
-            });
-          },
         ),
       ),
     );
