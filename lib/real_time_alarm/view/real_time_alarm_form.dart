@@ -102,6 +102,19 @@ class _AlarmSliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String _getDisplayName(Alarm alarmData) {
+      if (alarmData.type == 5) {
+        //a8k slot
+        if (alarmData.shelf == 0 && alarmData.slot == 1) {
+          return '${alarmData.name} [ PCM2 (L) ]';
+        } else {
+          return '${alarmData.name} [ Shelf ${alarmData.shelf} / Slot ${alarmData.slot} ]';
+        }
+      } else {
+        return alarmData.name;
+      }
+    }
+
     _alarmSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
@@ -157,7 +170,7 @@ class _AlarmSliverList extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                               child: Text(
-                                alarmData.name,
+                                _getDisplayName(alarmData),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.roboto(

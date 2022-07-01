@@ -42,7 +42,10 @@ class RealTimeAlarmRepository {
               name: element['name'],
               receivedTime: element['startdate'],
               ip: element['ip'],
+              shelf: element['shelf'],
+              slot: element['slot'],
               severity: element['severity'],
+              type: int.parse(element['type']),
               path: path,
             );
 
@@ -115,7 +118,10 @@ class Alarm {
     this.name = '', // device name
     this.receivedTime = '',
     this.ip = '', //device ip
+    this.shelf = -1,
+    this.slot = -1,
     this.severity = -1,
+    this.type = -1,
     this.path = const [],
   });
 
@@ -124,6 +130,9 @@ class Alarm {
   final String name;
   final String receivedTime;
   final String ip;
+  final int shelf;
+  final int slot;
   final int severity;
+  final int type;
   final List path;
 }
