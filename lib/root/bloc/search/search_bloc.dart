@@ -2,16 +2,19 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc(
-      {required RootRepository rootRepository,
-      required DeviceRepository deviceRepository})
-      : _rootRepository = rootRepository,
+  SearchBloc({
+    required User user,
+    required RootRepository rootRepository,
+    required DeviceRepository deviceRepository,
+  })  : _user = user,
+        _rootRepository = rootRepository,
         _deviceRepository = deviceRepository,
         super(const SearchState()) {
     on<SearchTypeChanged>(_onSearchTypeChanged);
@@ -19,6 +22,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchDataSubmitted>(_onSearchDataSubmitted);
   }
 
+  final User _user;
   final RootRepository _rootRepository;
   final DeviceRepository _deviceRepository;
 
@@ -51,7 +55,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ));
 
     List<dynamic> result = await _rootRepository.searchNodes(
-        type: state.type, keyword: state.keyword);
+      user: _user,
+      type: state.type,
+      keyword: state.keyword,
+    );
 
     if (result[0]) {
       emit(state.copyWith(

@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class DeviceRepository {
-  DeviceRepository(this.user);
+  DeviceRepository();
 
-  final User user;
+  //final User user;
   String _nodeId = '';
 
   final Map<String, String> _pageId = <String, String>{};
@@ -24,7 +24,7 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> createDeviceBlock() async {
+  Future<dynamic> createDeviceBlock({required User user}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -79,7 +79,8 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDevicePage(String pageName) async {
+  Future<dynamic> getDevicePage(
+      {required User user, required String pageName}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -108,7 +109,7 @@ class DeviceRepository {
           //make different id value because textfield ids are the same in json
           int autoId = 9998;
 
-          var deviceInfo = await getDeviceDescription();
+          var deviceInfo = await getDeviceDescription(user: user);
 
           if (deviceInfo.runtimeType is String) {
             return deviceInfo;
@@ -164,7 +165,7 @@ class DeviceRepository {
   }
 
   Future<List<dynamic>> setDeviceParams(
-      List<Map<String, String>> params) async {
+      {required User user, required List<Map<String, String>> params}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -213,7 +214,7 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceDescription() async {
+  Future<dynamic> getDeviceDescription({required User user}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -265,8 +266,11 @@ class DeviceRepository {
     }
   }
 
-  Future<List<dynamic>> setDeviceDescription(
-      String name, String description) async {
+  Future<List<dynamic>> setDeviceDescription({
+    required User user,
+    required String name,
+    required String description,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -315,7 +319,7 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceHistory() async {
+  Future<dynamic> getDeviceHistory({required User user}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s

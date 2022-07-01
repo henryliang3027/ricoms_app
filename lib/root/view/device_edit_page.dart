@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/edit_device/edit_device_bloc.dart';
 import 'package:ricoms_app/root/view/device_edit_form.dart';
 
 class DeviceEditPage extends StatelessWidget {
   const DeviceEditPage({
     Key? key,
+    required this.user,
     required this.rootRepository,
     required this.parentNode,
     required this.isEditing,
@@ -14,6 +16,7 @@ class DeviceEditPage extends StatelessWidget {
   }) : super(key: key);
 
   static Route route({
+    required User user,
     required RootRepository rootRepository,
     required Node parentNode,
     required bool isEditing,
@@ -21,6 +24,7 @@ class DeviceEditPage extends StatelessWidget {
   }) {
     return MaterialPageRoute(
         builder: (_) => DeviceEditPage(
+              user: user,
               rootRepository: rootRepository,
               parentNode: parentNode,
               isEditing: isEditing,
@@ -28,6 +32,7 @@ class DeviceEditPage extends StatelessWidget {
             ));
   }
 
+  final User user;
   final RootRepository rootRepository;
   final Node parentNode;
   final bool isEditing;
@@ -37,6 +42,7 @@ class DeviceEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: ((context) => EditDeviceBloc(
+            user: user,
             rootRepository: rootRepository,
             parentNode: parentNode,
             isEditing: isEditing,

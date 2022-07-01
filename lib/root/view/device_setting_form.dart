@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 
 class DeviceSettingForm extends StatefulWidget {
-  DeviceSettingForm(
-      {Key? key, required this.deviceRepository, required this.pageName})
-      : super(key: key);
+  DeviceSettingForm({
+    Key? key,
+    required this.user,
+    required this.deviceRepository,
+    required this.pageName,
+  }) : super(key: key);
 
+  final User user;
   final DeviceRepository deviceRepository;
   final String pageName;
   final Map<String, bool> checkBoxValues = <String, bool>{};
@@ -71,7 +76,10 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
 
     return BlocProvider(
       create: (context) => DeviceBloc(
-          deviceRepository: widget.deviceRepository, pageName: widget.pageName),
+        user: widget.user,
+        deviceRepository: widget.deviceRepository,
+        pageName: widget.pageName,
+      ),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
           if (state.submissionStatus.isSubmissionInProgress) {

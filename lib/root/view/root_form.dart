@@ -113,7 +113,9 @@ class RootForm extends StatelessWidget {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
-        } else if (state.formStatus.isRequestSuccess) {}
+        } else if (state.formStatus.isRequestFailure) {
+          _showFailureDialog(state.deleteResultMsg);
+        }
       },
       child: WillPopScope(
         onWillPop: () async {
@@ -196,6 +198,7 @@ class _SearchAction extends StatelessWidget {
               List? path = await Navigator.push(
                   context,
                   SearchPage.route(
+                    context.read<AuthenticationBloc>().state.user,
                     RepositoryProvider.of<RootRepository>(
                       context,
                     ),
@@ -232,7 +235,9 @@ class _SecondAction extends StatelessWidget {
                 List<dynamic> result =
                     await RepositoryProvider.of<RootRepository>(
                   context,
-                ).exportNodes();
+                ).exportNodes(
+                  user: context.read<AuthenticationBloc>().state.user,
+                );
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
@@ -247,7 +252,9 @@ class _SecondAction extends StatelessWidget {
               List<dynamic> result =
                   await RepositoryProvider.of<RootRepository>(
                 context,
-              ).exportNodes();
+              ).exportNodes(
+                user: context.read<AuthenticationBloc>().state.user,
+              );
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
@@ -401,6 +408,7 @@ class _NodeSliverList extends StatelessWidget {
 
             return Expanded(
               child: DeviceSettingPage(
+                user: context.read<AuthenticationBloc>().state.user,
                 deviceRepository: RepositoryProvider.of<DeviceRepository>(
                   context,
                 ),
@@ -458,6 +466,7 @@ class _NodeSliverList extends StatelessWidget {
             }
             return Expanded(
               child: DeviceSettingPage(
+                user: context.read<AuthenticationBloc>().state.user,
                 deviceRepository: RepositoryProvider.of<DeviceRepository>(
                   context,
                 ),
@@ -691,6 +700,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   DeviceEditPage.route(
+                      user: context.read<AuthenticationBloc>().state.user,
                       rootRepository:
                           RepositoryProvider.of<RootRepository>(superContext),
                       parentNode: parentNode,
@@ -701,6 +711,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
               Navigator.push(
                   context,
                   GroupEditPage.route(
+                      user: context.read<AuthenticationBloc>().state.user,
                       rootRepository:
                           RepositoryProvider.of<RootRepository>(superContext),
                       parentNode: parentNode,
@@ -786,6 +797,7 @@ class _NodeCreationBottomMenu extends StatelessWidget {
             Navigator.push(
                 context,
                 GroupEditPage.route(
+                    user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
                         RepositoryProvider.of<RootRepository>(superContext),
                     parentNode: parentNode,
@@ -819,6 +831,7 @@ class _NodeCreationBottomMenu extends StatelessWidget {
             Navigator.push(
                 context,
                 DeviceEditPage.route(
+                    user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
                         RepositoryProvider.of<RootRepository>(superContext),
                     parentNode: parentNode,

@@ -43,7 +43,7 @@ extension FormStatusX on FormStatus {
   bool get isRequestSuccess => this == FormStatus.requestSuccess;
 
   /// Indicates whether the form request failed.
-  bool get isrequestFailure => this == FormStatus.requestFailure;
+  bool get isRequestFailure => this == FormStatus.requestFailure;
 }
 
 extension SubmissionStatusX on SubmissionStatus {

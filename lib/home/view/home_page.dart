@@ -5,8 +5,6 @@ import 'package:ricoms_app/bookmarks/view/bookmarks.dart';
 import 'package:ricoms_app/dashboard/view/dashboard.dart';
 import 'package:ricoms_app/history/view/history.dart';
 import 'package:ricoms_app/real_time_alarm/view/real_time_alarm_page.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/view/root_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +20,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
 
+  List initialRootPath = [];
+
   @override
   Widget build(BuildContext context) {
     final user = context.select(
@@ -29,40 +29,29 @@ class _HomePageState extends State<HomePage> {
     );
     print('UserID: ${user.id}');
 
-    RootRepository rootRepository = RootRepository(user);
-    DeviceRepository deviceRepository = DeviceRepository(user);
-
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<RootRepository>(
-          create: (context) => rootRepository,
-        ),
-        RepositoryProvider<DeviceRepository>(
-          create: (context) => deviceRepository,
-        ),
-      ],
-      child: Scaffold(
-        body: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _pageController,
-          children: <Widget>[
-            RealTimeAlarmPage(
-              pageController: _pageController,
-            ),
-            RootPage(
-              pageController: _pageController,
-            ),
-            DashboardPage(
-              pageController: _pageController,
-            ),
-            HistoryPage(
-              pageController: _pageController,
-            ),
-            BookmarksPage(
-              pageController: _pageController,
-            ),
-          ],
-        ),
+    return Scaffold(
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        children: <Widget>[
+          RealTimeAlarmPage(
+            pageController: _pageController,
+            initialRootPath: initialRootPath,
+          ),
+          RootPage(
+            pageController: _pageController,
+            initialRootPath: initialRootPath,
+          ),
+          DashboardPage(
+            pageController: _pageController,
+          ),
+          HistoryPage(
+            pageController: _pageController,
+          ),
+          BookmarksPage(
+            pageController: _pageController,
+          ),
+        ],
       ),
     );
   }

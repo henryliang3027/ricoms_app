@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/device_history_form.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -8,18 +9,25 @@ import 'package:ricoms_app/utils/common_style.dart';
 class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({
     Key? key,
+    required this.user,
     required this.deviceRepository,
     required this.node,
   }) : super(key: key);
 
-  static Route route(DeviceRepository deviceRepository, Node node) {
+  static Route route(
+    User user,
+    DeviceRepository deviceRepository,
+    Node node,
+  ) {
     return MaterialPageRoute(
         builder: (_) => DeviceSettingPage(
+              user: user,
               deviceRepository: deviceRepository,
               node: node,
             ));
   }
 
+  final User user;
   final DeviceRepository deviceRepository;
   final Node node;
 
@@ -48,7 +56,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.deviceRepository.createDeviceBlock(),
+      future: widget.deviceRepository.createDeviceBlock(user: widget.user),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           print(widget.node.name);
@@ -88,6 +96,7 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                   if (isA8KPCM2()) ...[
                     for (var item in snapshot.data) ...[
                       DeviceSettingForm(
+                        user: widget.user,
                         deviceRepository: widget.deviceRepository,
                         pageName: item['name'],
                       )
@@ -95,11 +104,13 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                   ] else ...[
                     for (var item in snapshot.data) ...[
                       DeviceSettingForm(
+                        user: widget.user,
                         deviceRepository: widget.deviceRepository,
                         pageName: item['name'],
                       )
                     ],
                     DeviceHistoryForm(
+                      user: widget.user,
                       deviceRepository: widget.deviceRepository,
                     ),
                   ],

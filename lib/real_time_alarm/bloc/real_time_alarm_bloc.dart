@@ -20,11 +20,11 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     on<NormalAlarmRequested>(_onNormalAlarmRequested);
     on<NoticeAlarmRequested>(_onNoticeAlarmRequested);
 
-    add(AllAlarmRequested());
-    add(CriticalAlarmRequested());
-    add(WarningAlarmRequested());
-    add(NormalAlarmRequested());
-    add(NoticeAlarmRequested());
+    add(const AllAlarmRequested());
+    add(const CriticalAlarmRequested());
+    add(const WarningAlarmRequested());
+    add(const NormalAlarmRequested());
+    add(const NoticeAlarmRequested());
   }
 
   final User _user;

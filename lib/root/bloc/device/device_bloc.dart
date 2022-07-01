@@ -3,15 +3,19 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
 
 class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
-  DeviceBloc(
-      {required DeviceRepository deviceRepository, required String pageName})
-      : _deviceRepository = deviceRepository,
+  DeviceBloc({
+    required User user,
+    required DeviceRepository deviceRepository,
+    required String pageName,
+  })  : _user = user,
+        _deviceRepository = deviceRepository,
         _pageName = pageName,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
@@ -28,6 +32,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     });
   }
 
+  final User _user;
   final DeviceRepository _deviceRepository;
   final String _pageName;
   final _dataStream =
@@ -48,7 +53,10 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       formStatus: FormStatus.requestInProgress,
     ));
 
-    dynamic data = await _deviceRepository.getDevicePage(_pageName);
+    dynamic data = await _deviceRepository.getDevicePage(
+      user: _user,
+      pageName: _pageName,
+    );
     bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
@@ -76,7 +84,10 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       formStatus: FormStatus.updating,
     ));
 
-    dynamic data = await _deviceRepository.getDevicePage(_pageName);
+    dynamic data = await _deviceRepository.getDevicePage(
+      user: _user,
+      pageName: _pageName,
+    );
     bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
@@ -126,9 +137,16 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     if (_pageName == 'Description') {
       String name = event.param[0]['value']!;
       String description = event.param[1]['value']!;
-      result = await _deviceRepository.setDeviceDescription(name, description);
+      result = await _deviceRepository.setDeviceDescription(
+        user: _user,
+        name: name,
+        description: description,
+      );
     } else {
-      result = await _deviceRepository.setDeviceParams(event.param);
+      result = await _deviceRepository.setDeviceParams(
+        user: _user,
+        params: event.param,
+      );
     }
 
     if (result[0] == true) {

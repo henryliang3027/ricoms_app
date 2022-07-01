@@ -4,16 +4,21 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 part 'root_event.dart';
 part 'root_state.dart';
 
 class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
+    required User user,
     required RootRepository rootRepository,
     required DeviceRepository deviceRepository,
-  })  : _rootRepository = rootRepository,
+    required List initialPath,
+  })  : _user = user,
+        _rootRepository = rootRepository,
         _deviceRepository = deviceRepository,
+        _initialPath = initialPath,
         super(const RootState()) {
     on<ChildDataRequested>(_onChildDataRequested);
     on<NodeDeleted>(_onNodeDeleted);
@@ -33,9 +38,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     });
   }
 
+  final User _user;
   final DeviceRepository _deviceRepository;
   final RootRepository _rootRepository;
-  //final List<Node> _directory = <Node>[];
+  final List? _initialPath;
   final _dataStream =
       Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
@@ -57,7 +63,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       submissionStatus: SubmissionStatus.none,
     ));
 
-    dynamic data = await _rootRepository.getChilds(event.parent);
+    dynamic data = await _rootRepository.getChilds(
+      user: _user,
+      parent: event.parent,
+    );
 
     List<Node> directory = [];
     directory.addAll(state.directory);
@@ -73,32 +82,57 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             directory.length)
         : null;
 
-    if (data is List) {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        submissionStatus: SubmissionStatus.none,
-        data: data,
-        directory: directory,
-      ));
+    if (_initialPath!.isNotEmpty) {
+      bool isSuccess = await _buildDirectorybyPath(directory, _initialPath!);
+      if (isSuccess) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          directory: directory,
+        ));
+      } else {
+        // show current directory and childs of the last node if failed
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          data: data,
+          directory: directory,
+          deleteResultMsg: 'The Device does not respond!',
+        ));
+      }
+
+      // clear path to avoid go to previous device setting page when user switch back from another page.
+      _initialPath!.clear();
     } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        submissionStatus: SubmissionStatus.none,
-        data: [data],
-      ));
+      if (data is List) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          data: data,
+          directory: directory,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          data: [data],
+        ));
+      }
+
+      //avoid user click node and dataStream trigger at the same time, reaume update periodic
+
+      _dataStreamSubscription?.resume();
     }
-
-    //avoid user click node and dataStream trigger at the same time, reaume update periodic
-
-    _dataStreamSubscription?.resume();
   }
 
   Future<void> _onChildDataUpdated(
     ChildDataUpdated event,
     Emitter<RootState> emit,
   ) async {
-    dynamic data = await _rootRepository
-        .getChilds(state.directory[state.directory.length - 1]);
+    dynamic data = await _rootRepository.getChilds(
+      user: _user,
+      parent: state.directory[state.directory.length - 1],
+    );
 
     if (data is List) {
       emit(state.copyWith(
@@ -124,7 +158,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         submissionStatus: SubmissionStatus.submissionInProgress));
 
     List<dynamic> msg =
-        await _rootRepository.deleteNode(currentNode: event.node);
+        await _rootRepository.deleteNode(user: _user, currentNode: event.node);
     if (msg[0]) {
       emit(state.copyWith(
         deleteResultMsg: msg[1],
@@ -188,8 +222,32 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     List path = event.path;
 
+    bool isSuccess = await _buildDirectorybyPath(directory, path);
+
+    if (isSuccess) {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        directory: directory,
+      ));
+    } else {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestFailure,
+        submissionStatus: SubmissionStatus.none,
+        data: ['Device not found!'],
+      ));
+    }
+
+    //avoid user click node and dataStream trigger at the same time, reaume update periodic
+    _dataStreamSubscription?.resume();
+  }
+
+  Future<bool> _buildDirectorybyPath(List<Node> directory, List path) async {
     for (int i = path.length - 1; i >= 0; i--) {
-      dynamic data = await _rootRepository.getChilds(directory.last);
+      dynamic data = await _rootRepository.getChilds(
+        user: _user,
+        parent: directory.last,
+      );
       if (data is List) {
         for (int j = 0; j < data.length; j++) {
           Node node = data[j];
@@ -198,35 +256,17 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             directory.add(node);
           }
         }
-        // emit(state.copyWith(
-        //   formStatus: FormStatus.requestSuccess,
-        //   submissionStatus: SubmissionStatus.none,
-        //   data: data,
-        //   directory: _directory,
-        // ));
       } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          data: [data],
-        ));
-        break;
+        return false;
       }
     }
 
     if (directory.length == path.length + 1) {
       // + 1 as root node id because path.length not consider root node id
       _deviceRepository.deviceNodeId = directory.last.id.toString();
-
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        submissionStatus: SubmissionStatus.none,
-        directory: directory,
-      ));
+      return true;
+    } else {
+      return false;
     }
-
-    //avoid user click node and dataStream trigger at the same time, reaume update periodic
-
-    _dataStreamSubscription?.resume();
   }
 }

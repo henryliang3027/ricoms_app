@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/models/name.dart';
 
 part 'edit_group_event.dart';
@@ -9,11 +10,13 @@ part 'edit_group_state.dart';
 
 class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
   EditGroupBloc(
-      {required RootRepository rootRepository,
+      {required User user,
+      required RootRepository rootRepository,
       required Node parentNode,
       required bool isEditing,
       Node? currentNode})
-      : _rootRepository = rootRepository,
+      : _user = user,
+        _rootRepository = rootRepository,
         _parentNode = parentNode,
         _currentNode = currentNode,
         super(EditGroupState(
@@ -29,6 +32,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     add(const DataRequested());
   }
 
+  final User _user;
   final RootRepository _rootRepository;
   final Node _parentNode;
   final Node? _currentNode;
@@ -39,7 +43,10 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     Emitter<EditGroupState> emit,
   ) async {
     if (state.isEditing && _currentNode != null) {
-      var info = await _rootRepository.getNodeInfo(_currentNode!.id);
+      var info = await _rootRepository.getNodeInfo(
+        user: _user,
+        nodeId: _currentNode!.id,
+      );
 
       if (info.runtimeType == Info) {
         Node newCurrentNode = Node(
@@ -106,6 +113,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
       // new password is the same as confirm password
 
       List<dynamic> msg = await _rootRepository.createNode(
+        user: _user,
         parentId: _parentNode.id,
         type: _type,
         name: state.name.value,
@@ -137,6 +145,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
 
       // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.updateNode(
+        user: _user,
         currentNode: state.currentNode!,
         name: state.name.value,
         description: state.description,

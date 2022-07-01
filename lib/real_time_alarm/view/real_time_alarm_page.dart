@@ -9,10 +9,14 @@ import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class RealTimeAlarmPage extends StatefulWidget {
-  const RealTimeAlarmPage({Key? key, required this.pageController})
-      : super(key: key);
+  const RealTimeAlarmPage({
+    Key? key,
+    required this.pageController,
+    required this.initialRootPath,
+  }) : super(key: key);
 
   final PageController pageController;
+  final List initialRootPath;
 
   @override
   State<RealTimeAlarmPage> createState() => _RealTimeAlarmPageState();
@@ -44,7 +48,10 @@ class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
           realTimeAlarmRepository:
               RepositoryProvider.of<RealTimeAlarmRepository>(context),
         ),
-        child: const RealTimeAlarmForm(),
+        child: RealTimeAlarmForm(
+          pageController: widget.pageController,
+          initialPath: widget.initialRootPath,
+        ),
       ),
     );
   }

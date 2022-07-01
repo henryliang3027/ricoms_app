@@ -28,6 +28,14 @@ class RealTimeAlarmRepository {
 
         for (var element in rawDataList) {
           if (element['node_id'] != null) {
+            String rawPath = element['path'];
+            List<String> nodeIdList =
+                rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
+            List<int> path = [];
+            nodeIdList.forEach((nodeId) {
+              path.add(int.parse(nodeId));
+            });
+
             Alarm alarm = Alarm(
               id: element['node_id'],
               event: element['event'],
@@ -35,6 +43,7 @@ class RealTimeAlarmRepository {
               receivedTime: element['startdate'],
               ip: element['ip'],
               severity: element['severity'],
+              path: path,
             );
 
             alarmDataList.add(alarm);
@@ -107,6 +116,7 @@ class Alarm {
     this.receivedTime = '',
     this.ip = '', //device ip
     this.severity = -1,
+    this.path = const [],
   });
 
   final int id;
@@ -115,4 +125,5 @@ class Alarm {
   final String receivedTime;
   final String ip;
   final int severity;
+  final List path;
 }

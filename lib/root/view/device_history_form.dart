@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_history_detail_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class DeviceHistoryForm extends StatefulWidget {
-  const DeviceHistoryForm({Key? key, required this.deviceRepository})
-      : super(key: key);
+  const DeviceHistoryForm({
+    Key? key,
+    required this.deviceRepository,
+    required this.user,
+  }) : super(key: key);
 
+  final User user;
   final DeviceRepository deviceRepository;
 
   @override
@@ -117,7 +122,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget.deviceRepository.getDeviceHistory(),
+      future: widget.deviceRepository.getDeviceHistory(user: widget.user),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data is List) {

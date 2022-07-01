@@ -6,16 +6,15 @@ import 'package:dio/dio.dart';
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:external_path/external_path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class RootRepository {
-  RootRepository(this.user);
+  RootRepository();
 
-  final User user;
+  //final User user;
 
-  Future<dynamic> getChilds(Node parent) async {
+  Future<dynamic> getChilds({required User user, required Node parent}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -78,7 +77,7 @@ class RootRepository {
     }
   }
 
-  Future<dynamic> getNodeInfo(int nodeId) async {
+  Future<dynamic> getNodeInfo({required User user, required int nodeId}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -140,6 +139,7 @@ class RootRepository {
   }
 
   Future<List<dynamic>> createNode({
+    required User user,
     required int parentId,
     required int type,
     required String name,
@@ -227,6 +227,7 @@ class RootRepository {
   }
 
   Future<List<dynamic>> updateNode({
+    required User user,
     required Node currentNode,
     required String name,
     required String description,
@@ -310,6 +311,7 @@ class RootRepository {
   }
 
   Future<List<dynamic>> connectDevice({
+    required User user,
     required int currentNodeID,
     required String ip,
     required String read,
@@ -363,6 +365,7 @@ class RootRepository {
   }
 
   Future<List<dynamic>> deleteNode({
+    required User user,
     required Node currentNode,
   }) async {
     Dio dio = Dio();
@@ -415,6 +418,7 @@ class RootRepository {
   }
 
   Future<List<dynamic>> searchNodes({
+    required User user,
     required int type,
     required String keyword,
   }) async {
@@ -498,7 +502,7 @@ class RootRepository {
     }
   }
 
-  Future<List<dynamic>> exportNodes() async {
+  Future<List<dynamic>> exportNodes({required User user}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s

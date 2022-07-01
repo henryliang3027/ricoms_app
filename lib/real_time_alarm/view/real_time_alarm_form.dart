@@ -5,10 +5,18 @@ import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/root/view/root_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class RealTimeAlarmForm extends StatelessWidget {
-  const RealTimeAlarmForm({Key? key}) : super(key: key);
+  const RealTimeAlarmForm({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
 
   @override
   Widget build(BuildContext context) {
@@ -45,22 +53,32 @@ class RealTimeAlarmForm extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
-          physics: NeverScrollableScrollPhysics(),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             _AlarmSliverList(
+              pageController: pageController,
+              initialPath: initialPath,
               alarmType: AlarmType.all,
             ),
             _AlarmSliverList(
+              pageController: pageController,
+              initialPath: initialPath,
               alarmType: AlarmType.critical,
             ),
             _AlarmSliverList(
+              pageController: pageController,
+              initialPath: initialPath,
               alarmType: AlarmType.warning,
             ),
             _AlarmSliverList(
+              pageController: pageController,
+              initialPath: initialPath,
               alarmType: AlarmType.normal,
             ),
             _AlarmSliverList(
+              pageController: pageController,
+              initialPath: initialPath,
               alarmType: AlarmType.notice,
             ),
           ],
@@ -71,23 +89,32 @@ class RealTimeAlarmForm extends StatelessWidget {
 }
 
 class _AlarmSliverList extends StatelessWidget {
-  const _AlarmSliverList({Key? key, required this.alarmType}) : super(key: key);
+  const _AlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.alarmType,
+    required this.initialPath,
+  }) : super(key: key);
 
   final AlarmType alarmType;
+  final PageController pageController;
+  final List initialPath;
 
   @override
   Widget build(BuildContext context) {
     _alarmSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          print('build _deviceSliverChildBuilderDelegate : ${index}');
+          print('build _alarmSliverChildBuilderDelegate : ${index}');
           Alarm alarmData = data[index];
           return Padding(
             padding: const EdgeInsets.all(1.0),
             child: Material(
               child: InkWell(
                 onTap: () {
-                  //Navigator.pop(context, searchData.path);
+                  initialPath.clear();
+                  initialPath.addAll(alarmData.path);
+                  pageController.jumpToPage(1);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -275,7 +302,7 @@ class _AlarmSliverList extends StatelessWidget {
             color: Colors.grey.shade300,
             child: _showSuccessDisplay(state),
           );
-        } else if (state.status.isrequestFailure) {
+        } else if (state.status.isRequestFailure) {
           if (alarmType == AlarmType.all) {
             return Center(
               child: Text(state.allAlarms[0]),
