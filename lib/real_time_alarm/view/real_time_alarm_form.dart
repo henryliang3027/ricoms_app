@@ -5,7 +5,6 @@ import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
-import 'package:ricoms_app/root/view/root_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class RealTimeAlarmForm extends StatelessWidget {
@@ -20,157 +19,205 @@ class RealTimeAlarmForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 5,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
-          //title: Text(widget.node.name),
-          centerTitle: true,
-          titleSpacing: 0.0,
-          title: const TabBar(
-            unselectedLabelColor: Colors.grey,
-            labelColor: Colors.blue,
-            isScrollable: true,
-            tabs: [
-              Tab(
-                text: 'All',
+    return BlocListener<RealTimeAlarmBloc, RealTimeAlarmState>(
+      listener: (context, state) {
+        if (state.targetDeviceStatus.isRequestFailure) {
+          _showFailureDialog(state.errmsg);
+        }
+      },
+      child: DefaultTabController(
+        length: 5,
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+
+            //title: Text(widget.node.name),
+            centerTitle: true,
+            titleSpacing: 0.0,
+            title: const TabBar(
+              unselectedLabelColor: Colors.grey,
+              labelColor: Colors.blue,
+              isScrollable: true,
+              tabs: [
+                Tab(
+                  text: 'All',
+                ),
+                Tab(
+                  text: 'Critical',
+                ),
+                Tab(
+                  text: 'Warning',
+                ),
+                Tab(
+                  text: 'Normal',
+                ),
+                Tab(
+                  text: 'Notice',
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              _AllAlarmsSliverList(
+                pageController: pageController,
+                initialPath: initialPath,
               ),
-              Tab(
-                text: 'Critical',
+              _CriticalAlarmsSliverList(
+                pageController: pageController,
+                initialPath: initialPath,
               ),
-              Tab(
-                text: 'Warning',
+              _WarningAlarmsSliverList(
+                pageController: pageController,
+                initialPath: initialPath,
               ),
-              Tab(
-                text: 'Normal',
+              _NormalAlarmsSliverList(
+                pageController: pageController,
+                initialPath: initialPath,
               ),
-              Tab(
-                text: 'Notice',
+              _NoticeAlarmsSliverList(
+                pageController: pageController,
+                initialPath: initialPath,
               ),
             ],
           ),
-        ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _AlarmSliverList(
-              pageController: pageController,
-              initialPath: initialPath,
-              alarmType: AlarmType.all,
-            ),
-            _AlarmSliverList(
-              pageController: pageController,
-              initialPath: initialPath,
-              alarmType: AlarmType.critical,
-            ),
-            _AlarmSliverList(
-              pageController: pageController,
-              initialPath: initialPath,
-              alarmType: AlarmType.warning,
-            ),
-            _AlarmSliverList(
-              pageController: pageController,
-              initialPath: initialPath,
-              alarmType: AlarmType.normal,
-            ),
-            _AlarmSliverList(
-              pageController: pageController,
-              initialPath: initialPath,
-              alarmType: AlarmType.notice,
-            ),
-          ],
         ),
       ),
     );
   }
 }
 
-class _AlarmSliverList extends StatelessWidget {
-  const _AlarmSliverList({
-    Key? key,
-    required this.pageController,
-    required this.alarmType,
-    required this.initialPath,
-  }) : super(key: key);
+Widget _showEmptyContent() {
+  return const Center(
+    child: Text('There are no records to show'),
+  );
+}
 
-  final AlarmType alarmType;
-  final PageController pageController;
-  final List initialPath;
-
-  @override
-  Widget build(BuildContext context) {
-    String _getDisplayName(Alarm alarmData) {
-      if (alarmData.type == 5) {
-        //a8k slot
-        if (alarmData.shelf == 0 && alarmData.slot == 1) {
-          return '${alarmData.name} [ PCM2 (L) ]';
-        } else {
-          return '${alarmData.name} [ Shelf ${alarmData.shelf} / Slot ${alarmData.slot} ]';
-        }
-      } else {
-        return alarmData.name;
-      }
+String _getDisplayName(Alarm alarmData) {
+  if (alarmData.type == 5) {
+    //a8k slot
+    if (alarmData.shelf == 0 && alarmData.slot == 1) {
+      return '${alarmData.name} [ PCM2 (L) ]';
+    } else if (alarmData.shelf != 0 && alarmData.slot == 0) {
+      return '${alarmData.name} [ Shelf ${alarmData.shelf} / FAN ]';
+    } else {
+      return '${alarmData.name} [ Shelf ${alarmData.shelf} / Slot ${alarmData.slot} ]';
     }
+  } else {
+    return alarmData.name;
+  }
+}
 
-    _alarmSliverChildBuilderDelegate(List data) {
-      return SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          print('build _alarmSliverChildBuilderDelegate : ${index}');
-          Alarm alarmData = data[index];
-          return Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: Material(
-              child: InkWell(
-                onTap: () {
-                  initialPath.clear();
-                  initialPath.addAll(alarmData.path);
-                  pageController.jumpToPage(1);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: CommonStyle.severityRectangleWidth,
-                              height: 60.0,
-                              color:
-                                  CustomStyle.severityColor[alarmData.severity],
-                            ),
-                          ],
+SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
+  List data,
+  List initialPath,
+  PageController pageController,
+) {
+  return SliverChildBuilderDelegate(
+    (BuildContext context, int index) {
+      Alarm alarmData = data[index];
+      return Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Material(
+          child: InkWell(
+            onTap: () {
+              initialPath.clear();
+              initialPath.addAll(alarmData.path);
+              context
+                  .read<RealTimeAlarmBloc>()
+                  .add(CheckDeviceStatus(alarmData.id, pageController));
+              //pageController.jumpToPage(1);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: CommonStyle.severityRectangleWidth,
+                          height: 60.0,
+                          color: CustomStyle.severityColor[alarmData.severity],
                         ),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                              child: Text(
-                                alarmData.event,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                  fontSize: CommonStyle.sizeXL,
-                                  //fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
+                          child: Text(
+                            alarmData.event,
+                            //maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: CommonStyle.sizeL,
+                              //fontWeight: FontWeight.w500,
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                              child: Text(
-                                _getDisplayName(alarmData),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
+                          child: Text(
+                            _getDisplayName(alarmData),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: CommonStyle.sizeS,
+                              //fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                alarmData.ip,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.roboto(
@@ -178,169 +225,592 @@ class _AlarmSliverList extends StatelessWidget {
                                   //fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    alarmData.ip,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
-                                      fontSize: CommonStyle.sizeS,
-                                      //fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    alarmData.receivedTime,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
-                                      fontSize: CommonStyle.sizeS,
-                                      //fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                alarmData.receivedTime,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: CommonStyle.sizeS,
+                                  //fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          );
-        },
-        childCount: data.length,
+          ),
+        ),
       );
-    }
+    },
+    childCount: data.length,
+  );
+}
 
-    Widget _showEmptyContent() {
-      return const Center(
-        child: Text('There are no records to show'),
-      );
-    }
+class _AllAlarmsSliverList extends StatefulWidget {
+  const _AllAlarmsSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
 
-    Widget _showSuccessDisplay(RealTimeAlarmState state) {
-      if (alarmType == AlarmType.all) {
-        if (state.allAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: _alarmSliverChildBuilderDelegate(state.allAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      } else if (alarmType == AlarmType.critical) {
-        if (state.criticalAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate:
-                    _alarmSliverChildBuilderDelegate(state.criticalAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      } else if (alarmType == AlarmType.warning) {
-        if (state.warningAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: _alarmSliverChildBuilderDelegate(state.warningAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      } else if (alarmType == AlarmType.normal) {
-        if (state.normalAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: _alarmSliverChildBuilderDelegate(state.normalAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      } else if (alarmType == AlarmType.notice) {
-        if (state.noticeAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: _alarmSliverChildBuilderDelegate(state.noticeAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      } else {
-        // always false, but just a default case
-        if (state.allAlarms.isNotEmpty) {
-          return CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: _alarmSliverChildBuilderDelegate(state.allAlarms),
-              )
-            ],
-          );
-        } else {
-          return _showEmptyContent();
-        }
-      }
-    }
+  final PageController pageController;
+  final List initialPath;
 
+  @override
+  State<_AllAlarmsSliverList> createState() => __AllAlarmsSliverListState();
+}
+
+class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
+  @override
+  void initState() {
+    //Use StatefulWidget and subscribe stream in order to update periodic
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AlarmPeriodicUpdated(AlarmType.all));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _AllAlarmsSliverList');
     return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
       builder: (context, state) {
-        if (state.status.isRequestInProgress) {
+        if (state.allAlarmsStatus.isRequestInProgress) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state.status.isRequestSuccess) {
+        } else if (state.allAlarmsStatus.isRequestSuccess) {
           return Container(
             color: Colors.grey.shade300,
-            child: _showSuccessDisplay(state),
+            child: state.allAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.allAlarms,
+                          widget.initialPath,
+                          widget.pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
           );
-        } else if (state.status.isRequestFailure) {
-          if (alarmType == AlarmType.all) {
-            return Center(
-              child: Text(state.allAlarms[0]),
-            );
-          } else if (alarmType == AlarmType.critical) {
-            return Center(
-              child: Text(state.criticalAlarms[0]),
-            );
-          } else if (alarmType == AlarmType.warning) {
-            return Center(
-              child: Text(state.warningAlarms[0]),
-            );
-          } else if (alarmType == AlarmType.normal) {
-            return Center(
-              child: Text(state.normalAlarms[0]),
-            );
-          } else if (alarmType == AlarmType.notice) {
-            return Center(
-              child: Text(state.noticeAlarms[0]),
-            );
-          } else {
-            return Center(
-              child: Text(state.allAlarms[0]),
-            );
-          }
+        } else if (state.allAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.allAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _CriticalAlarmsSliverList extends StatefulWidget {
+  const _CriticalAlarmsSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  State<_CriticalAlarmsSliverList> createState() =>
+      __CriticalAlarmsSliverListState();
+}
+
+class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
+  @override
+  void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AlarmPeriodicUpdated(AlarmType.critical));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _CriticalAlarmsSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.criticalAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.criticalAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.criticalAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.criticalAlarms,
+                          widget.initialPath,
+                          widget.pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.criticalAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.criticalAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _WarningAlarmsSliverList extends StatefulWidget {
+  const _WarningAlarmsSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  State<_WarningAlarmsSliverList> createState() =>
+      __WarningAlarmsSliverListState();
+}
+
+class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
+  @override
+  void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AlarmPeriodicUpdated(AlarmType.warning));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _WarningAlarmsSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.warningAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.warningAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.warningAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.warningAlarms,
+                          widget.initialPath,
+                          widget.pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.warningAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.warningAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NormalAlarmsSliverList extends StatefulWidget {
+  const _NormalAlarmsSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  State<_NormalAlarmsSliverList> createState() =>
+      __NormalAlarmsSliverListState();
+}
+
+class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
+  @override
+  void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AlarmPeriodicUpdated(AlarmType.normal));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _NormalAlarmsSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.normalAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.normalAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.normalAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.normalAlarms,
+                          widget.initialPath,
+                          widget.pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.normalAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.normalAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NoticeAlarmsSliverList extends StatefulWidget {
+  const _NoticeAlarmsSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  State<_NoticeAlarmsSliverList> createState() =>
+      __NoticeAlarmsSliverListState();
+}
+
+class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
+  @override
+  void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AlarmPeriodicUpdated(AlarmType.notice));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _NoticeAlarmsSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.noticeAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.noticeAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.noticeAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.noticeAlarms,
+                          widget.initialPath,
+                          widget.pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.noticeAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.noticeAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _AllAlarmSliverList extends StatelessWidget {
+  const _AllAlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _AllAlarmSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.allAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.allAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.allAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.allAlarms,
+                          initialPath,
+                          pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.allAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.allAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _CriticalAlarmSliverList extends StatelessWidget {
+  const _CriticalAlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _CriticalAlarmSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.criticalAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.criticalAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.criticalAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.criticalAlarms,
+                          initialPath,
+                          pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.criticalAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.criticalAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _warningAlarmSliverList extends StatelessWidget {
+  const _warningAlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _warningAlarmSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.warningAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.warningAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.warningAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.warningAlarms,
+                          initialPath,
+                          pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.warningAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.warningAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NormalAlarmSliverList extends StatelessWidget {
+  const _NormalAlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _NormalAlarmSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.normalAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.normalAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.normalAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.normalAlarms,
+                          initialPath,
+                          pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.normalAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.normalAlarms[0]),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+}
+
+class _NoticeAlarmSliverList extends StatelessWidget {
+  const _NoticeAlarmSliverList({
+    Key? key,
+    required this.pageController,
+    required this.initialPath,
+  }) : super(key: key);
+
+  final PageController pageController;
+  final List initialPath;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build _NoticeAlarmSliverList');
+    return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
+      builder: (context, state) {
+        if (state.noticeAlarmsStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.noticeAlarmsStatus.isRequestSuccess) {
+          return Container(
+            color: Colors.grey.shade300,
+            child: state.noticeAlarms.isNotEmpty
+                ? CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: _alarmSliverChildBuilderDelegate(
+                          state.noticeAlarms,
+                          initialPath,
+                          pageController,
+                        ),
+                      )
+                    ],
+                  )
+                : _showEmptyContent(),
+          );
+        } else if (state.noticeAlarmsStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.noticeAlarms[0]),
+          );
         } else {
           return const Center(
             child: CircularProgressIndicator(),
