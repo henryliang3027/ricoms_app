@@ -91,14 +91,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           directory: directory,
         ));
       } else {
-        // show current directory and childs of the last node if failed
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          data: data,
-          directory: directory,
-          deleteResultMsg: 'The Device does not respond!',
-        ));
+        // already handle in realtimealarm bloc
       }
 
       // clear path to avoid go to previous device setting page when user switch back from another page.
@@ -231,11 +224,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         directory: directory,
       ));
     } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        submissionStatus: SubmissionStatus.none,
-        data: ['Device not found!'],
-      ));
+      // already handle in realtimealarm bloc
     }
 
     //avoid user click node and dataStream trigger at the same time, reaume update periodic

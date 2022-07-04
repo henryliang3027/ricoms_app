@@ -113,8 +113,6 @@ class RootForm extends StatelessWidget {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
-        } else if (state.formStatus.isRequestFailure) {
-          _showFailureDialog(state.deleteResultMsg);
         }
       },
       child: WillPopScope(
