@@ -26,6 +26,11 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DeviceStatisticRequested>(_onDeviceStatisticRequested);
 
     add(const DeviceStatisticRequested(RequestMode.initial));
+    add(const AlarmOneDayStatisticRequested(RequestMode.initial));
+    add(const AlarmThreeDaysStatisticRequested(RequestMode.initial));
+    add(const AlarmOneWeekStatisticRequested(RequestMode.initial));
+    add(const AlarmTwoWeeksStatisticRequested(RequestMode.initial));
+    add(const AlarmOneMonthStatisticRequested(RequestMode.initial));
 
     final _deviceStatisticDataStream =
         Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
