@@ -53,6 +53,8 @@ dependencies:
   
   equatable: ^2.0.3
   dropdown_button2: ^1.4.0 # custom dropdownButton and dropdownMenuItems
+  smooth_page_indicator: ^1.0.0+2 # for dashboard piechart
+  fl_chart: ^0.55.0 # for dashboard piechart
 
 dev_dependencies:
   flutter_test:

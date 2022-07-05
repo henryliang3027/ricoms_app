@@ -2,32 +2,73 @@ part of 'dashboard_bloc.dart';
 
 class DashboardState extends Equatable {
   const DashboardState({
-    this.alarmStatisticsStatus = FormStatus.none,
+    this.alarmOneDayStatisticsStatus = FormStatus.none,
+    this.alarmThreeDaysStatisticsStatus = FormStatus.none,
+    this.alarmOneWeekStatisticsStatus = FormStatus.none,
+    this.alarmTwoWeeksStatisticsStatus = FormStatus.none,
+    this.alarmOneMonthStatisticsStatus = FormStatus.none,
     this.deviceStatisticsStatus = FormStatus.none,
-    this.alarmStatistics = const AlarmStatistics(),
+    this.alarmOneDayStatistics = const [],
+    this.alarmThreeDaysStatistics = const [],
+    this.alarmOneWeekStatistics = const [],
+    this.alarmTwoWeeksStatistics = const [],
+    this.alarmOneMonthStatistics = const [],
     this.deviceStatistics = const [],
     this.errmsg = '',
   });
 
-  final FormStatus alarmStatisticsStatus;
+  final FormStatus alarmOneDayStatisticsStatus;
+  final FormStatus alarmThreeDaysStatisticsStatus;
+  final FormStatus alarmOneWeekStatisticsStatus;
+  final FormStatus alarmTwoWeeksStatisticsStatus;
+  final FormStatus alarmOneMonthStatisticsStatus;
   final FormStatus deviceStatisticsStatus;
-  final AlarmStatistics alarmStatistics;
+  final List alarmOneDayStatistics;
+  final List alarmThreeDaysStatistics;
+  final List alarmOneWeekStatistics;
+  final List alarmTwoWeeksStatistics;
+  final List alarmOneMonthStatistics;
   final List deviceStatistics;
   final String errmsg;
 
   DashboardState copyWith({
-    FormStatus? alarmStatisticsStatus,
+    FormStatus? alarmOneDayStatisticsStatus,
+    FormStatus? alarmThreeDaysStatisticsStatus,
+    FormStatus? alarmOneWeekStatisticsStatus,
+    FormStatus? alarmTwoWeeksStatisticsStatus,
+    FormStatus? alarmOneMonthStatisticsStatus,
     FormStatus? deviceStatisticsStatus,
-    AlarmStatistics? alarmStatistics,
+    List? alarmOneDayStatistics,
+    List? alarmThreeDaysStatistics,
+    List? alarmOneWeekStatistics,
+    List? alarmTwoWeeksStatistics,
+    List? alarmOneMonthStatistics,
     List? deviceStatistics,
     String? errmsg,
   }) {
     return DashboardState(
-      alarmStatisticsStatus:
-          alarmStatisticsStatus ?? this.alarmStatisticsStatus,
+      alarmOneDayStatisticsStatus:
+          alarmOneDayStatisticsStatus ?? this.alarmOneDayStatisticsStatus,
+      alarmThreeDaysStatisticsStatus:
+          alarmThreeDaysStatisticsStatus ?? this.alarmThreeDaysStatisticsStatus,
+      alarmOneWeekStatisticsStatus:
+          alarmOneWeekStatisticsStatus ?? this.alarmOneWeekStatisticsStatus,
+      alarmTwoWeeksStatisticsStatus:
+          alarmTwoWeeksStatisticsStatus ?? this.alarmTwoWeeksStatisticsStatus,
+      alarmOneMonthStatisticsStatus:
+          alarmOneMonthStatisticsStatus ?? this.alarmOneMonthStatisticsStatus,
       deviceStatisticsStatus:
           deviceStatisticsStatus ?? this.deviceStatisticsStatus,
-      alarmStatistics: alarmStatistics ?? this.alarmStatistics,
+      alarmOneDayStatistics:
+          alarmOneDayStatistics ?? this.alarmOneDayStatistics,
+      alarmThreeDaysStatistics:
+          alarmThreeDaysStatistics ?? this.alarmThreeDaysStatistics,
+      alarmOneWeekStatistics:
+          alarmOneWeekStatistics ?? this.alarmOneWeekStatistics,
+      alarmTwoWeeksStatistics:
+          alarmTwoWeeksStatistics ?? this.alarmTwoWeeksStatistics,
+      alarmOneMonthStatistics:
+          alarmOneMonthStatistics ?? this.alarmOneMonthStatistics,
       deviceStatistics: deviceStatistics ?? this.deviceStatistics,
       errmsg: errmsg ?? this.errmsg,
     );
@@ -35,9 +76,17 @@ class DashboardState extends Equatable {
 
   @override
   List<Object?> get props => [
-        alarmStatisticsStatus,
+        alarmOneDayStatisticsStatus,
+        alarmThreeDaysStatisticsStatus,
+        alarmOneWeekStatisticsStatus,
+        alarmTwoWeeksStatisticsStatus,
+        alarmOneMonthStatisticsStatus,
         deviceStatisticsStatus,
-        alarmStatistics,
+        alarmOneDayStatistics,
+        alarmThreeDaysStatistics,
+        alarmOneWeekStatistics,
+        alarmTwoWeeksStatistics,
+        alarmOneMonthStatistics,
         deviceStatistics,
         errmsg,
       ];

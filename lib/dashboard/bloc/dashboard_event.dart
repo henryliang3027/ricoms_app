@@ -4,15 +4,55 @@ abstract class DashboardEvent extends Equatable {
   const DashboardEvent();
 }
 
-class AlarmStatisticRequested extends DashboardEvent {
-  const AlarmStatisticRequested(this.type, this.requestMode);
-  final int type;
+class AlarmOneDayStatisticRequested extends DashboardEvent {
+  const AlarmOneDayStatisticRequested(this.requestMode);
+  final RequestMode requestMode;
+
+  @override
+  List<Object?> get props => [requestMode];
+}
+
+class AlarmThreeDaysStatisticRequested extends DashboardEvent {
+  const AlarmThreeDaysStatisticRequested(this.requestMode);
+  final RequestMode requestMode;
+
+  @override
+  List<Object?> get props => [requestMode];
+}
+
+class AlarmOneWeekStatisticRequested extends DashboardEvent {
+  const AlarmOneWeekStatisticRequested(this.requestMode);
+  final RequestMode requestMode;
+
+  @override
+  List<Object?> get props => [requestMode];
+}
+
+class AlarmTwoWeeksStatisticRequested extends DashboardEvent {
+  const AlarmTwoWeeksStatisticRequested(this.requestMode);
+  final RequestMode requestMode;
+
+  @override
+  List<Object?> get props => [requestMode];
+}
+
+class AlarmOneMonthStatisticRequested extends DashboardEvent {
+  const AlarmOneMonthStatisticRequested(this.requestMode);
   final RequestMode requestMode;
 
   @override
   List<Object?> get props => [
-        type,
         requestMode,
+      ];
+}
+
+class AlarmStatisticPeriodicUpdated extends DashboardEvent {
+  const AlarmStatisticPeriodicUpdated(this.type);
+  final int type;
+
+  @override
+  List<Object?> get props => [
+        type,
       ];
 }
 

@@ -85,11 +85,11 @@ class DashboardRepository {
       if (data['code'] == '200') {
         var element = data['data'][0];
 
-        AlarmStatistics alarmStatistics = AlarmStatistics(
-          critical: element['critical'],
-          warning: element['warning'],
-          normal: element['normal'],
-        );
+        List alarmStatistics = [
+          element['critical'],
+          element['warning'],
+          element['normal'],
+        ];
 
         return [true, alarmStatistics];
       } else {
@@ -118,16 +118,4 @@ class DashboardRepository {
       }
     }
   }
-}
-
-class AlarmStatistics {
-  const AlarmStatistics({
-    this.critical = -1,
-    this.warning = -1,
-    this.normal = -1,
-  });
-
-  final int critical;
-  final int warning;
-  final int normal;
 }
