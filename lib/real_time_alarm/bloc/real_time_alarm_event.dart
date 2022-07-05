@@ -1,10 +1,5 @@
 part of 'real_time_alarm_bloc.dart';
 
-enum RequestMode {
-  initial,
-  update,
-}
-
 abstract class RealTimeAlarmEvent extends Equatable {
   const RealTimeAlarmEvent();
 }
