@@ -18,68 +18,54 @@ class DashboardForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const _WidgetTitle(title: 'Alarm Ratio'),
           Expanded(
-            child: PageView(
-              controller: _pageController,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('1 Day'),
-                    _AlarmOneDayStatisticsPieChart(),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('3 Days'),
-                    _AlarmThreeDaysStatisticsPieChart(),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('1 Week'),
-                    _AlarmOneWeekStatisticsPieChart(),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('2 Weeks'),
-                    _AlarmTwoWeeksStatisticsPieChart(),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('1 Month'),
-                    _AlarmOneMonthStatisticsPieChart(),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: 5,
-              effect: const WormEffect(
-                dotHeight: 10.0,
-                dotWidth: 10.0,
-                type: WormType.thin,
-                // strokeWidth: 5,
+            flex: 7,
+            child: Card(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                    child: _WidgetTitle(title: 'Alarm Ratio'),
+                  ),
+                  Expanded(
+                    flex: 9,
+                    child: PageView(
+                      controller: _pageController,
+                      children: const <Widget>[
+                        _AlarmOneDayStatisticsPieChart(),
+                        _AlarmThreeDaysStatisticsPieChart(),
+                        _AlarmOneWeekStatisticsPieChart(),
+                        _AlarmTwoWeeksStatisticsPieChart(),
+                        _AlarmOneMonthStatisticsPieChart(),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                    child: SmoothPageIndicator(
+                      controller: _pageController,
+                      count: 5,
+                      effect: const WormEffect(
+                        dotHeight: 10.0,
+                        dotWidth: 10.0,
+                        type: WormType.normal,
+                        // strokeWidth: 5,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          //_AlarmStatisticsPieChart(),
-          // Expanded(
-          //     flex: 0,
-          //     child: Padding(padding: EdgeInsets.symmetric(vertical: 4.0))),
-          const _WidgetTitle(title: 'Device Status'),
-          const _DeviceStatisticsGridView(),
+          const Expanded(
+            flex: 4,
+            child: Card(
+              color: Colors.white,
+              child: _DeviceStatisticsGridView(),
+            ),
+          ),
         ],
       ),
     );
@@ -99,7 +85,7 @@ class _WidgetTitle extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(
-        fontSize: CommonStyle.sizeM,
+        fontSize: CommonStyle.sizeL,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -133,35 +119,9 @@ class __AlarmOneDayStatisticsPieChartState
           );
         } else if (state.alarmOneDayStatisticsStatus.isRequestSuccess) {
           List alarmOneDayStatistics = state.alarmOneDayStatistics;
-          return Card(
-            color: Colors.white,
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                          startDegreeOffset: 270,
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 40,
-                          sections: showingSections(alarmOneDayStatistics)),
-                    ),
-                  ),
-                ),
-                _buildLegend(),
-                const SizedBox(
-                  width: 28,
-                ),
-              ],
-            ),
+          return _buildPieChart(
+            title: '1 Day',
+            alarmStatistics: alarmOneDayStatistics,
           );
         } else if (state.alarmOneDayStatisticsStatus.isRequestFailure) {
           return Center(
@@ -204,34 +164,9 @@ class __AlarmThreeDaysStatisticsPieChartState
           );
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestSuccess) {
           List alarmThreeDaysStatistics = state.alarmThreeDaysStatistics;
-          return Card(
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                          startDegreeOffset: 270,
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 40,
-                          sections: showingSections(alarmThreeDaysStatistics)),
-                    ),
-                  ),
-                ),
-                _buildLegend(),
-                const SizedBox(
-                  width: 28,
-                ),
-              ],
-            ),
+          return _buildPieChart(
+            title: '3 Days',
+            alarmStatistics: alarmThreeDaysStatistics,
           );
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestFailure) {
           return Center(
@@ -274,34 +209,9 @@ class __AlarmOneWeekStatisticsPieChartState
           );
         } else if (state.alarmOneWeekStatisticsStatus.isRequestSuccess) {
           List alarmOneWeekStatistics = state.alarmOneWeekStatistics;
-          return Card(
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                          startDegreeOffset: 270,
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 40,
-                          sections: showingSections(alarmOneWeekStatistics)),
-                    ),
-                  ),
-                ),
-                _buildLegend(),
-                const SizedBox(
-                  width: 28,
-                ),
-              ],
-            ),
+          return _buildPieChart(
+            title: '1 Week',
+            alarmStatistics: alarmOneWeekStatistics,
           );
         } else if (state.alarmOneWeekStatisticsStatus.isRequestFailure) {
           return Center(
@@ -344,34 +254,9 @@ class __AlarmTwoWeeksStatisticsPieChartState
           );
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestSuccess) {
           List alarmTwoWeeksStatistics = state.alarmTwoWeeksStatistics;
-          return Card(
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                          startDegreeOffset: 270,
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 40,
-                          sections: showingSections(alarmTwoWeeksStatistics)),
-                    ),
-                  ),
-                ),
-                _buildLegend(),
-                const SizedBox(
-                  width: 28,
-                ),
-              ],
-            ),
+          return _buildPieChart(
+            title: '2 Weeks',
+            alarmStatistics: alarmTwoWeeksStatistics,
           );
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestFailure) {
           return Center(
@@ -414,35 +299,9 @@ class __AlarmOneMonthStatisticsPieChartState
           );
         } else if (state.alarmOneMonthStatisticsStatus.isRequestSuccess) {
           List alarmOneMonthStatistics = state.alarmOneMonthStatistics;
-          return Card(
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                const SizedBox(
-                  height: 18,
-                ),
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: PieChart(
-                      PieChartData(
-                          startDegreeOffset: 270,
-                          borderData: FlBorderData(
-                            show: false,
-                          ),
-                          sectionsSpace: 0,
-                          centerSpaceRadius: 40,
-                          sections: showingSections(alarmOneMonthStatistics)),
-                    ),
-                  ),
-                ),
-                _buildLegend(),
-                const SizedBox(
-                  width: 28,
-                ),
-              ],
-            ),
+          return _buildPieChart(
+            title: '1 Month',
+            alarmStatistics: alarmOneMonthStatistics,
           );
         } else if (state.alarmOneMonthStatisticsStatus.isRequestFailure) {
           return Center(
@@ -471,12 +330,21 @@ class _DeviceStatisticsGridView extends StatelessWidget {
   ];
 
   final _gridColors = const [
-    Color(0xFFF6F6F6), // all
+    Colors.white, // all
     Color(0xffdc3545), // critical
     Color(0xffffc107), // warning
     Color(0xff28a745), // normal
-    Color(0xFF746969), // offline
-    Color(0xFFD1C6C6), //unknown
+    Color(0xFF6C757D), // offline
+    Color(0xFF6C757D), //unknown
+  ];
+
+  final _fontColors = const [
+    Colors.black, // all
+    Colors.white, // critical
+    Colors.black, // warning
+    Colors.white, // normal
+    Colors.white, // offline
+    Colors.white, //unknown
   ];
 
   @override
@@ -489,41 +357,60 @@ class _DeviceStatisticsGridView extends StatelessWidget {
           );
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
-          return Center(
-            //padding: EdgeInsets.all(6.0),
-            child: GridView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 6,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 3.0,
-                  mainAxisSpacing: 3.0,
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                  child: _WidgetTitle(title: 'Device Status'),
                 ),
-                itemBuilder: (_, int index) {
-                  return Card(
-                    color: _gridColors[index],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _gridTitles[index],
-                          style: const TextStyle(
-                            fontSize: CommonStyle.sizeL,
-                            fontWeight: FontWeight.bold,
+                GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 6,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 6.0,
+                    mainAxisSpacing: 6.0,
+                    childAspectRatio: 1.5,
+                  ),
+                  itemBuilder: (_, int index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: _gridColors[index],
+                        border: _gridColors[index] == Colors.white
+                            ? Border.all(color: Colors.black)
+                            : null,
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _gridTitles[index],
+                            style: TextStyle(
+                              color: _fontColors[index],
+                              fontSize: CommonStyle.sizeL,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          deviceStatistics[index].toString(),
-                          style: const TextStyle(
-                            fontSize: CommonStyle.sizeM,
-                            fontWeight: FontWeight.w600,
+                          Text(
+                            deviceStatistics[index].toString(),
+                            style: TextStyle(
+                              color: _fontColors[index],
+                              fontSize: CommonStyle.sizeM,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           );
         } else if (state.deviceStatisticsStatus.isRequestFailure) {
           return Center(
@@ -573,7 +460,9 @@ class Indicator extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+              fontSize: CommonStyle.sizeS,
+              fontWeight: FontWeight.w500,
+              color: textColor),
         )
       ],
     );
@@ -581,34 +470,34 @@ class Indicator extends StatelessWidget {
 }
 
 Widget _buildLegend() {
-  return Column(
+  return Row(
     mainAxisSize: MainAxisSize.max,
-    mainAxisAlignment: MainAxisAlignment.end,
-    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.center,
+    //crossAxisAlignment: CrossAxisAlignment.start,
     children: const <Widget>[
       Indicator(
         color: Color(0xffdc3545),
         text: 'Critical',
-        isSquare: true,
+        isSquare: false,
+        size: CommonStyle.sizeS,
       ),
       SizedBox(
-        height: 4,
+        width: 8,
       ),
       Indicator(
         color: Color(0xffffc107),
         text: 'Warning',
-        isSquare: true,
+        isSquare: false,
+        size: CommonStyle.sizeS,
       ),
       SizedBox(
-        height: 4,
+        width: 8,
       ),
       Indicator(
         color: Color(0xff28a745),
         text: 'Normal',
-        isSquare: true,
-      ),
-      SizedBox(
-        height: 18,
+        isSquare: false,
+        size: CommonStyle.sizeS,
       ),
     ],
   );
@@ -625,7 +514,6 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
     double percentage = (alarmStatistics[i] / totalAlarms) * 100.0;
     switch (i) {
       case 0:
-        double percentage = (alarmStatistics[i] / totalAlarms) * 100.0;
         return PieChartSectionData(
           color: Color(0xffdc3545),
           value: percentage,
@@ -671,4 +559,40 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
         );
     }
   });
+}
+
+Widget _buildPieChart({
+  required String title,
+  required List alarmStatistics,
+}) {
+  return Column(
+    // mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      _buildLegend(),
+      Expanded(
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeM,
+              ),
+            ),
+            PieChart(
+              PieChartData(
+                startDegreeOffset: 270,
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: 60,
+                sections: showingSections(alarmStatistics),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
