@@ -53,7 +53,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
                               padding: const EdgeInsets.fromLTRB(
                                   0.0, 0.0, 10.0, 0.0),
                               width: CommonStyle.severityRectangleWidth,
-                              height: 60.0,
+                              height: CommonStyle.severityRectangleHeight,
                               color: CustomStyle
                                   .severityColor[deviceHistoryData.severity],
                             ),

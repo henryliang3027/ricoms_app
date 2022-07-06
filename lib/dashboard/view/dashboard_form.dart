@@ -136,6 +136,7 @@ class __AlarmOneDayStatisticsPieChartState
           return Card(
             color: Colors.white,
             child: Row(
+              // mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 const SizedBox(
                   height: 18,
@@ -416,6 +417,7 @@ class __AlarmOneMonthStatisticsPieChartState
           return Card(
             color: Colors.white,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 const SizedBox(
                   height: 18,

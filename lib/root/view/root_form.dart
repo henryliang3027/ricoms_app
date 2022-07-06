@@ -519,16 +519,36 @@ class _NodeDirectory extends StatelessWidget {
               child: Row(
                 children: [
                   //home button
-                  IconButton(
-                    onPressed: () {
-                      context
-                          .read<RootBloc>()
-                          .add(ChildDataRequested(state.directory[0]));
-                    },
-                    icon: const Icon(Icons.home_outlined),
-                    padding: EdgeInsets.zero,
-                    visualDensity:
-                        const VisualDensity(horizontal: -4.0, vertical: -4.0),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(6.0, 2.0, 2.0, 2.0),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context
+                            .read<RootBloc>()
+                            .add(ChildDataRequested(state.directory[0]));
+                      },
+                      icon: const Icon(
+                        Icons.home_outlined,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                      label: const Text(
+                        'Home',
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white70,
+                        elevation: 0,
+                        side: const BorderSide(
+                          width: 1.0,
+                          color: Colors.black,
+                        ),
+                        visualDensity: const VisualDensity(
+                            horizontal: -4.0, vertical: -4.0),
+                      ),
+                    ),
                   ),
                   Expanded(
                     child: Padding(

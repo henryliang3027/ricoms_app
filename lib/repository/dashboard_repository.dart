@@ -85,13 +85,23 @@ class DashboardRepository {
       if (data['code'] == '200') {
         var element = data['data'][0];
 
-        List alarmStatistics = [
-          element['critical'],
-          element['warning'],
-          element['normal'],
-        ];
-
-        return [true, alarmStatistics];
+        if (element['critical'] == 0 &&
+            element['warning'] == 0 &&
+            element['normal'] == 0) {
+          List alarmStatistics = [
+            0,
+            0,
+            1,
+          ];
+          return [true, alarmStatistics];
+        } else {
+          List alarmStatistics = [
+            element['critical'],
+            element['warning'],
+            element['normal'],
+          ];
+          return [true, alarmStatistics];
+        }
       } else {
         return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
       }
