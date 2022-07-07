@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_repository.dart';
 import 'package:dio/dio.dart';
@@ -64,7 +65,7 @@ class AuthenticationRepository {
       //   print(e.requestOptions);
       //   print(e.message);
       // }
-      bool ret = await userRepository.deActivateUser(user.id);
+      bool _ = await userRepository.deActivateUser(user.id);
       _controller.add(AuthenticationStatus.unknown);
     }
   }
@@ -127,14 +128,20 @@ class AuthenticationRepository {
       _controller.add(AuthenticationStatus.unauthenticated);
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           throw Exception('Server No Response');
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           throw Exception(e.message);
         }
       } else {
@@ -152,9 +159,7 @@ class AuthenticationRepository {
     required userId,
   }) async {
     // need to call api ?
-    bool ret = await userRepository.deActivateUser(userId);
-    print('is_logout : ' + ret.toString());
-
+    bool _ = await userRepository.deActivateUser(userId);
     _controller.add(AuthenticationStatus.unauthenticated);
   }
 
@@ -195,14 +200,20 @@ class AuthenticationRepository {
         // that falls out of the range of 2xx and is also not 304.
         if (e is DioError) {
           if (e.response != null) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
+            if (kDebugMode) {
+              print(e.response!.data);
+              print(e.response!.headers);
+              print(e.response!.requestOptions);
+            }
+
             throw Exception('Server No Response');
           } else {
             // Something happened in setting up or sending the request that triggered an Error
-            print(e.requestOptions);
-            print(e.message);
+            if (kDebugMode) {
+              print(e.requestOptions);
+              print(e.message);
+            }
+
             throw Exception(e.message);
           }
         } else {

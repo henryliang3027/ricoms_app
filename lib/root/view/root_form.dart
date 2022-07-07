@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
@@ -168,7 +169,7 @@ class _DynamicTitle extends StatelessWidget {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       const String defaultTitle = 'Network';
 
-      if (state.directory.isNotEmpty) {
+      if (state.formStatus.isRequestSuccess) {
         Node node = state.directory.last;
         if (node.type == 5 || node.type == 2) {
           return Text(node.name);
@@ -187,33 +188,26 @@ class _SearchAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      if (state.directory.isNotEmpty) {
-        Node node = state.directory.last;
+    return IconButton(
+      onPressed: () async {
+        List? path = await Navigator.push(
+            context,
+            SearchPage.route(
+              context.read<AuthenticationBloc>().state.user,
+              RepositoryProvider.of<RootRepository>(
+                context,
+              ),
+              RepositoryProvider.of<DeviceRepository>(
+                context,
+              ),
+            ));
 
-        return IconButton(
-            onPressed: () async {
-              List? path = await Navigator.push(
-                  context,
-                  SearchPage.route(
-                    context.read<AuthenticationBloc>().state.user,
-                    RepositoryProvider.of<RootRepository>(
-                      context,
-                    ),
-                    RepositoryProvider.of<DeviceRepository>(
-                      context,
-                    ),
-                  ));
-
-              if (path != null) {
-                context.read<RootBloc>().add(DeviceNavigateRequested(path));
-              }
-            },
-            icon: const Icon(Icons.search));
-      } else {
-        return Center();
-      }
-    });
+        if (path != null) {
+          context.read<RootBloc>().add(DeviceNavigateRequested(path));
+        }
+      },
+      icon: const Icon(Icons.search),
+    );
   }
 }
 
@@ -223,10 +217,11 @@ class _SecondAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      if (state.directory.isNotEmpty) {
+      if (state.formStatus.isRequestSuccess) {
         Node node = state.directory.last;
         if (node.type == 5 || node.type == 2) {
-          return IconButton(onPressed: () {}, icon: Icon(Icons.star_rounded));
+          return IconButton(
+              onPressed: () {}, icon: const Icon(Icons.star_rounded));
         } else {
           return IconButton(
               onPressed: () async {
@@ -242,7 +237,7 @@ class _SecondAction extends StatelessWidget {
                     SnackBar(content: Text(result[1])),
                   );
               },
-              icon: Icon(Icons.save_alt_outlined));
+              icon: const Icon(Icons.save_alt_outlined));
         }
       } else {
         return IconButton(
@@ -259,7 +254,7 @@ class _SecondAction extends StatelessWidget {
                   SnackBar(content: Text(result[1])),
                 );
             },
-            icon: Icon(Icons.save_alt_outlined));
+            icon: const Icon(Icons.save_alt_outlined));
       }
     });
   }
@@ -271,21 +266,25 @@ class _DynamicFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      if (state.directory.isNotEmpty && state.directory.last.type == 1) {
-        // 1 is group
-        return FloatingActionButton(
-            backgroundColor: Colors.blue.shade900,
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (_) => _NodeCreationBottomMenu(
-                        superContext: context,
-                        parentNode: state.directory.last,
-                      ));
-            },
-            child: const Icon(CustomIcons.add));
+      if (state.formStatus.isRequestSuccess) {
+        if (state.directory.last.type == 1) {
+          // 1 is group
+          return FloatingActionButton(
+              backgroundColor: Colors.blue.shade900,
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (_) => _NodeCreationBottomMenu(
+                          superContext: context,
+                          parentNode: state.directory.last,
+                        ));
+              },
+              child: const Icon(CustomIcons.add));
+        } else {
+          return const Center();
+        }
       } else {
-        return Center();
+        return const Center();
       }
     });
   }
@@ -297,7 +296,9 @@ class _NodeSliverList extends StatelessWidget {
   _rootSliverChildBuilderDelegate(Node parentNode, List data) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
-        print('build _rootSliverChildBuilderDelegate : ${index}');
+        if (kDebugMode) {
+          print('build _rootSliverChildBuilderDelegate : $index');
+        }
         Node node = data[index];
         return Padding(
           padding: const EdgeInsets.all(1.0),
@@ -373,7 +374,7 @@ class _NodeSliverList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(
       builder: (context, state) {
-        if (state.directory.isNotEmpty) {
+        if (state.formStatus.isRequestSuccess) {
           if (state.directory.last.type == 1) {
             //group
             if (state.directory.last.status == 0) {
@@ -482,6 +483,10 @@ class _NodeSliverList extends StatelessWidget {
               ),
             );
           }
+        } else if (state.formStatus.isRequestFailure) {
+          return Center(
+            child: Text(state.errmsg),
+          );
         } else {
           // wait for data
           return const Center(
@@ -501,9 +506,9 @@ class _NodeDirectory extends StatelessWidget {
     final ScrollController _scrollController = ScrollController();
 
     return BlocBuilder<RootBloc, RootState>(
-      buildWhen: (previous, current) => previous.directory != current.directory,
+      //buildWhen: (previous, current) => previous.directory != current.directory,
       builder: (context, state) {
-        if (state.directory.isNotEmpty) {
+        if (state.formStatus.isRequestSuccess) {
           WidgetsBinding.instance?.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
               _scrollController.animateTo(
@@ -530,15 +535,17 @@ class _NodeDirectory extends StatelessWidget {
                       icon: const Icon(
                         Icons.home_outlined,
                         color: Colors.black,
-                        size: 20,
+                        size: 21,
                       ),
                       label: const Text(
-                        'Home',
+                        'Root',
                         style: TextStyle(
                           color: Colors.black,
+                          fontSize: CommonStyle.sizeXL,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
+                        //padding: EdgeInsets.symmetric(horizontal: 10.0),
                         primary: Colors.white70,
                         elevation: 0,
                         side: const BorderSide(
@@ -546,7 +553,9 @@ class _NodeDirectory extends StatelessWidget {
                           color: Colors.black,
                         ),
                         visualDensity: const VisualDensity(
-                            horizontal: -4.0, vertical: -4.0),
+                          horizontal: -4.0,
+                          vertical: -4.0,
+                        ),
                       ),
                     ),
                   ),
@@ -603,6 +612,7 @@ class _NodeDirectory extends StatelessWidget {
             ),
           );
         } else {
+          // if state.formStatus.isRequestFailure or isRequestInProgress
           return const Center();
         }
       },
@@ -763,7 +773,6 @@ class _NodeEditBottomMenu extends StatelessWidget {
             Navigator.pop(context);
 
             bool? result = await _showConfirmDeleteDialog(currentNode);
-            print(result);
             if (result != null) {
               result
                   ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))

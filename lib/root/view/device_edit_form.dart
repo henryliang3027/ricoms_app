@@ -207,7 +207,6 @@ class _ParentName extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                 ),
                 onChanged: (name) {
-                  print(name);
                   context.read<EditDeviceBloc>().add(NameChanged(name));
                 },
                 decoration: InputDecoration(
@@ -256,7 +255,6 @@ class _NameInput extends StatelessWidget {
                 fontSize: CommonStyle.sizeL,
               ),
               onChanged: (name) {
-                print(name);
                 context.read<EditDeviceBloc>().add(NameChanged(name));
               },
               decoration: InputDecoration(

@@ -166,7 +166,6 @@ class _ParentName extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                 ),
                 onChanged: (name) {
-                  print(name);
                   context.read<EditGroupBloc>().add(NameChanged(name));
                 },
                 decoration: InputDecoration(
@@ -212,7 +211,6 @@ class _NameInput extends StatelessWidget {
                 fontSize: CommonStyle.sizeL,
               ),
               onChanged: (name) {
-                print(name);
                 context.read<EditGroupBloc>().add(NameChanged(name));
               },
               decoration: InputDecoration(
@@ -253,7 +251,7 @@ class _DescriptionInput extends StatelessWidget {
           previous.description != current.description,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(6),
           child: SizedBox(
             width: 230,
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -328,7 +326,7 @@ class _SubmitButton extends StatelessWidget {
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return Padding(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(6),
           child: ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith(

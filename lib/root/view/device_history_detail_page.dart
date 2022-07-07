@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/app.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';

@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -102,7 +103,7 @@ class _KeywordInput extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: CommonStyle.sizeL,
                 ),
-                onChanged: (keyword) {
+                onChanged: (String? keyword) {
                   if (keyword != null) {
                     context.read<SearchBloc>().add(KeywordChanged(keyword));
                   }
@@ -170,7 +171,9 @@ class _DeviceListView extends StatelessWidget {
     _deviceSliverChildBuilderDelegate(List data) {
       return SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          print('build _deviceSliverChildBuilderDelegate : ${index}');
+          if (kDebugMode) {
+            print('build _deviceSliverChildBuilderDelegate : $index');
+          }
           SearchData searchData = data[index];
           return Padding(
             padding: const EdgeInsets.all(1.0),
@@ -217,8 +220,10 @@ class _DeviceListView extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else {
-            print('state.searchResult.runtimeType ' +
-                state.searchResult.runtimeType.toString());
+            if (kDebugMode) {
+              print('state.searchResult.runtimeType ' +
+                  state.searchResult.runtimeType.toString());
+            }
             return state.searchResult.runtimeType == List
                 ? Expanded(
                     child: CustomScrollView(

@@ -59,7 +59,6 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
       future: widget.deviceRepository.createDeviceBlock(user: widget.user),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          print(widget.node.name);
           if (snapshot.data is List) {
             tabController = TabController(
                 length: isA8KPCM2()

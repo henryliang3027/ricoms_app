@@ -43,7 +43,7 @@ class AuthenticationBloc
           final user = _authenticationRepository.userRepository
               .getActivateUser(); //get current login user, activate is true
 
-          print(user!.id);
+          // print(user!.id);
           return emit(
             user != null
                 ? AuthenticationState.authenticated(user)

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -72,8 +73,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
 
   @override
   Widget build(BuildContext context) {
-    print('build ${widget.pageName}');
-
     return BlocProvider(
       create: (context) => DeviceBloc(
         user: widget.user,
@@ -98,7 +97,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
         },
         child: BlocBuilder<DeviceBloc, DeviceState>(
           builder: (BuildContext context, state) {
-            print('trigger');
             if (state.formStatus.isRequestInProgress) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -194,12 +192,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
   bool get wantKeepAlive => false;
 }
 
@@ -291,11 +283,11 @@ class CreateEditingTool extends StatelessWidget {
                     });
                   }
 
-                  print('--------------');
-                  dataList.forEach((element) {
-                    element.forEach((key, value) => print('${key} : ${value}'));
-                  });
-                  print('--------------');
+                  if (kDebugMode) {
+                    for (var element in dataList) {
+                      element.forEach((key, value) => print('$key : $value'));
+                    }
+                  }
                   context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
 
                   //widget.isEditing = false;
@@ -322,21 +314,7 @@ class CreateEditingTool extends StatelessWidget {
             onPressed: () {
               context.read<DeviceBloc>().add(const FormStatusChanged(true));
             },
-            child: Icon(Icons.edit),
-            // const Text(
-            //   'Edit',
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //   ),
-            // ),
-            // style: ElevatedButton.styleFrom(
-            //   primary: Colors.white70,
-            //   elevation: 0,
-            //   side: const BorderSide(
-            //     width: 1.0,
-            //     color: Colors.black,
-            //   ),
-            // ),
+            child: const Icon(Icons.edit),
           );
   }
 }

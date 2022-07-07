@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 
@@ -39,7 +40,7 @@ class CustomStyle {
           return Expanded(
             flex: length,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: Container(
                 child: TextField(
                   key: Key(id),
@@ -137,7 +138,7 @@ class CustomStyle {
           return Expanded(
             flex: length,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: CustomSlider(
                 font: font,
                 isEditing: isEditing,
@@ -995,8 +996,10 @@ class _CustomSliderState extends State<CustomSlider> {
 
                             widget.sliderValues[widget.oid] = strValue;
 
-                            print(
-                                'double value: $value  String value: ${widget.sliderValues[widget.oid]}');
+                            if (kDebugMode) {
+                              print(
+                                  'double value: $value  String value: ${widget.sliderValues[widget.oid]}');
+                            }
                           }
                         : null,
                   ),
@@ -1017,7 +1020,7 @@ class _CustomSliderState extends State<CustomSlider> {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
             ],
           );
         });

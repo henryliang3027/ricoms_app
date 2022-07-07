@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
@@ -27,7 +28,9 @@ class _HomePageState extends State<HomePage> {
     final user = context.select(
       (AuthenticationBloc bloc) => bloc.state.user,
     );
-    print('UserID: ${user.id}');
+    if (kDebugMode) {
+      print('UserID: ${user.id}');
+    }
 
     return Scaffold(
       body: PageView(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -33,7 +34,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     )));
 
     _dataStreamSubscription = _dataStream.listen((count) {
-      print('Root update trigger times: ${count}');
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
       add(const ChildDataUpdated());
     });
   }
@@ -65,7 +68,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     dynamic data = await _rootRepository.getChilds(
       user: _user,
-      parent: event.parent,
+      parentId: event.parent.id,
     );
 
     List<Node> directory = [];
@@ -108,7 +111,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
           submissionStatus: SubmissionStatus.none,
-          data: [data],
+          errmsg: data,
         ));
       }
 
@@ -122,23 +125,32 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataUpdated event,
     Emitter<RootState> emit,
   ) async {
+    // Ｔhe directory is empty because of no internet and user reload the page (switch back from another page)
     dynamic data = await _rootRepository.getChilds(
-      user: _user,
-      parent: state.directory[state.directory.length - 1],
-    );
+        user: _user,
+        parentId: state.directory.isNotEmpty
+            ? state.directory[state.directory.length - 1].id
+            : 0);
 
     if (data is List) {
+      List<Node> tempDirectory = [
+        const Node(
+          id: 0,
+          type: 1,
+          name: 'Root',
+        )
+      ];
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
-        directory: state.directory,
+        directory: state.directory.isNotEmpty ? state.directory : tempDirectory,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
-        data: [data],
+        errmsg: data,
       ));
     }
   }
@@ -235,7 +247,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     for (int i = path.length - 1; i >= 0; i--) {
       dynamic data = await _rootRepository.getChilds(
         user: _user,
-        parent: directory.last,
+        parentId: directory.last.id,
       );
       if (data is List) {
         for (int j = 0; j < data.length; j++) {

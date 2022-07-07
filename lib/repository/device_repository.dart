@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class DeviceRepository {
@@ -45,14 +46,12 @@ class DeviceRepository {
 
         // build two maps -> {pagename : id} and {pagename : editable}
         for (var item in dataList) {
-          print('item: ${item}');
           _pageId[item['name']] = item['id'].toString();
           _pageEditable[item['name']] = item['edit'] == 1 ? true : false;
         }
 
         return dataList;
       } else {
-        print('ERROR');
         return '${data['code']}: The device does not respond.';
       }
     } catch (e) {
@@ -60,15 +59,21 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return 'Server No Response';
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return e.message;
         }
@@ -119,9 +124,11 @@ class DeviceRepository {
           for (int i = 0; i < dataList.length; i++) {
             for (int j = 0; j < dataList[i].length; j++) {
               if (dataList[i][j]['id'] != -1) {
-                print(dataList[i][j]['value'] +
-                    '  ' +
-                    dataList[i][j]['id'].toString());
+                if (kDebugMode) {
+                  print(dataList[i][j]['value'] +
+                      '  ' +
+                      dataList[i][j]['id'].toString());
+                }
                 dataList[i][j]['id'] = autoId;
 
                 if (dataList[i][j]['style'] == 0) {
@@ -137,7 +144,6 @@ class DeviceRepository {
 
         return data['data'];
       } else {
-        print('ERROR');
         return 'Error errno: ${data['code']}';
       }
     } catch (e) {
@@ -145,15 +151,21 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return 'Server No Response';
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return e.message;
         }
@@ -195,15 +207,21 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return [false, e.message];
         }
@@ -239,7 +257,6 @@ class DeviceRepository {
 
         return deviceInfo;
       } else {
-        print('ERROR');
         return 'Error errno: ${data['code']}';
       }
     } catch (e) {
@@ -247,15 +264,21 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return 'Server No Response';
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return e.message;
         }
@@ -300,15 +323,19 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
           //throw Exception(e.message);
           return [false, e.message];
         }
@@ -377,15 +404,19 @@ class DeviceRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
           //throw Exception('Server No Response');
           return 'Server No Response';
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
           //throw Exception(e.message);
           return e.message;
         }

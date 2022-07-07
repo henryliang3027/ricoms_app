@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
@@ -53,7 +54,9 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
 
     _dataStreamSubscription?.cancel();
     _dataStreamSubscription = dataStream.listen((count) {
-      print('${event.alarmType.toString()} trigger times: ${count}');
+      if (kDebugMode) {
+        print('${event.alarmType.toString()} trigger times: $count');
+      }
 
       if (event.alarmType == AlarmType.all) {
         add(const AllAlarmRequested(RequestMode.update));

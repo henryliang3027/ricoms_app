@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -26,8 +27,10 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     add(const DeviceDataRequested());
     _dataStreamSubscription = _dataStream.listen((count) {
-      print(
-          'Device Setting update trigger times: ${count}, current state: ${pageName} => isEditing : ${state.isEditing}');
+      if (kDebugMode) {
+        print(
+            'Device Setting update trigger times: $count, current state: $pageName => isEditing : ${state.isEditing}');
+      }
       state.isEditing == false ? add(const DeviceDataUpdateRequested()) : null;
     });
   }

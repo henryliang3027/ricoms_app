@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class DashboardRepository {
@@ -45,15 +46,21 @@ class DashboardRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return [false, e.message];
         }
@@ -110,15 +117,21 @@ class DashboardRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-          print(e.response!.requestOptions);
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions);
-          print(e.message);
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
           //throw Exception(e.message);
           return [false, e.message];
         }

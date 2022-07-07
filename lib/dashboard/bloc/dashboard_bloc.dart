@@ -37,7 +37,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     _deviceStatisticDataStreamSubscription =
         _deviceStatisticDataStream.listen((count) {
-      print('_deviceStatisticDataStream trigger times: ${count}');
+      // print('_deviceStatisticDataStream trigger times: ${count}');
       add(const DeviceStatisticRequested(RequestMode.update));
     });
   }
@@ -65,7 +65,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     _alarmStatisticDataStreamSubscription?.cancel();
     _alarmStatisticDataStreamSubscription =
         alarmStatisticDataStream.listen((count) {
-      print('alarmStatisticDataStream trigger times: ${count}');
+      // print('alarmStatisticDataStream trigger times: ${count}');
 
       if (event.type == 1) {
         add(const AlarmOneDayStatisticRequested(RequestMode.update));

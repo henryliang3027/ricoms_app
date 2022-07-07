@@ -13,7 +13,7 @@ class DashboardForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final PageController _pageController = PageController();
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,7 +43,7 @@ class DashboardForm extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
                     child: SmoothPageIndicator(
                       controller: _pageController,
                       count: 5,
@@ -358,7 +358,7 @@ class _DeviceStatisticsGridView extends StatelessWidget {
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
           return Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -367,7 +367,7 @@ class _DeviceStatisticsGridView extends StatelessWidget {
                   child: _WidgetTitle(title: 'Device Status'),
                 ),
                 GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: 6,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -505,46 +505,46 @@ Widget _buildLegend() {
 
 List<PieChartSectionData> showingSections(List alarmStatistics) {
   double totalAlarms = 0;
-  alarmStatistics.forEach((element) {
+  for (var element in alarmStatistics) {
     totalAlarms += element;
-  });
+  }
   return List.generate(3, (i) {
-    final fontSize = 12.0;
-    final radius = 50.0;
+    const fontSize = 12.0;
+    const radius = 50.0;
     double percentage = (alarmStatistics[i] / totalAlarms) * 100.0;
     switch (i) {
       case 0:
         return PieChartSectionData(
-          color: Color(0xffdc3545),
+          color: const Color(0xffdc3545),
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff)),
+              color: Color(0xffffffff)),
         );
       case 1:
         return PieChartSectionData(
-          color: Color(0xffffc107),
+          color: const Color(0xffffc107),
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff)),
+              color: Color(0xffffffff)),
         );
       case 2:
         return PieChartSectionData(
-          color: Color(0xff28a745),
+          color: const Color(0xff28a745),
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff)),
+              color: Color(0xffffffff)),
         );
       default:
         return PieChartSectionData(
@@ -552,10 +552,10 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
           value: 40,
           title: '40%',
           radius: radius,
-          titleStyle: TextStyle(
+          titleStyle: const TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: const Color(0xffffffff)),
+              color: Color(0xffffffff)),
         );
     }
   });

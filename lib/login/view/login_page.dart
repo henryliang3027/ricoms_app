@@ -7,9 +7,11 @@ import 'package:ricoms_app/login/view/login_form.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   static Route route() {
     return PageRouteBuilder<void>(
-      pageBuilder: (context, animation1, animation2) => LoginPage(),
+      pageBuilder: (context, animation1, animation2) => const LoginPage(),
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
     );

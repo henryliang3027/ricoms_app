@@ -55,7 +55,7 @@ class HomeDrawer extends StatelessWidget {
               dense: true,
               leading: const Padding(
                 padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.realtime_alarm),
+                child: Icon(CustomIcons.realtimeAlarm),
               ),
               title: const Text(
                 'Real-Time Alarm',
@@ -161,7 +161,7 @@ class HomeDrawer extends StatelessWidget {
               dense: true,
               leading: const Padding(
                 padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.change_password),
+                child: Icon(CustomIcons.changePassword),
               ),
               title: const Text(
                 'Change Password',

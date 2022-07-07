@@ -140,8 +140,8 @@ class _CustDropDownState extends State<CustDropDown>
                                                 _isAnyItemSelected = true;
                                                 _itemSelected = item.child;
                                                 _removeOverlay();
-                                                if (widget.onChanged != null)
-                                                  widget.onChanged(item.value);
+
+                                                widget.onChanged(item.value);
                                               });
                                             }
                                           },
@@ -249,6 +249,7 @@ class _CustDropDownState extends State<CustDropDown>
       return BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius)));
     }
+    return null;
   }
 }
 
@@ -256,7 +257,9 @@ class CustDropdownMenuItem<T> extends StatelessWidget {
   final T value;
   final Widget child;
 
-  const CustDropdownMenuItem({required this.value, required this.child});
+  const CustDropdownMenuItem(
+      {Key? key, required this.value, required this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
