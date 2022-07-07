@@ -2,7 +2,7 @@ part of 'root_bloc.dart';
 
 class RootState extends Equatable {
   const RootState({
-    this.formStatus = FormStatus.requestInProgress,
+    this.formStatus = FormStatus.none,
     this.submissionStatus = SubmissionStatus.none,
     this.data = const [],
     this.directory = const [],
