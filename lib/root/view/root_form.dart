@@ -526,26 +526,30 @@ class _NodeDirectory extends StatelessWidget {
                   //home button
                   Padding(
                     padding: const EdgeInsets.fromLTRB(6.0, 2.0, 2.0, 2.0),
-                    child: ElevatedButton.icon(
+                    child: ElevatedButton(
                       onPressed: () {
                         context
                             .read<RootBloc>()
                             .add(ChildDataRequested(state.directory[0]));
                       },
-                      icon: const Icon(
-                        Icons.home_outlined,
-                        color: Colors.black,
-                        size: 21,
-                      ),
-                      label: const Text(
-                        'Root',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: CommonStyle.sizeXL,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            Icons.home_outlined,
+                            color: Colors.black,
+                          ),
+                          SizedBox(width: 2.0),
+                          Text(
+                            'Root',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
                       ),
                       style: ElevatedButton.styleFrom(
-                        //padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
                         primary: Colors.white70,
                         elevation: 0,
                         side: const BorderSide(
