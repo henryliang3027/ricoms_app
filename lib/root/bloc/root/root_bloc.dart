@@ -32,21 +32,13 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       type: 1,
       name: 'Root',
     )));
-
-    _dataStreamSubscription = _dataStream.listen((count) {
-      if (kDebugMode) {
-        print('Root update trigger times: $count');
-      }
-      add(const ChildDataUpdated());
-    });
   }
 
   final User _user;
   final DeviceRepository _deviceRepository;
   final RootRepository _rootRepository;
   final List? _initialPath;
-  final _dataStream =
-      Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
   StreamSubscription<int>? _dataStreamSubscription;
 
   @override
@@ -59,8 +51,17 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
-    //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    _dataStreamSubscription?.pause();
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription?.cancel();
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      add(const ChildDataUpdated());
+    });
+
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
@@ -114,10 +115,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           errmsg: data,
         ));
       }
-
-      //avoid user click node and dataStream trigger at the same time, reaume update periodic
-
-      _dataStreamSubscription?.resume();
     }
   }
 
@@ -181,6 +178,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     DeviceDataRequested event,
     Emitter<RootState> emit,
   ) {
+    //avoid user click node and dataStream trigger at the same time, stop before Request for child
+    _dataStreamSubscription?.cancel();
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
