@@ -32,14 +32,8 @@ class DeviceHistoryDetailPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 50.0),
               ),
-              _Item(
-                labelText: 'Severity',
-                initialValue:
-                    CustomStyle.severityName[deviceHistoryData.severity] ??
-                        'Undefined',
-                fontColor:
-                    CustomStyle.severityColor[deviceHistoryData.severity] ??
-                        Colors.black,
+              _SevrtityItem(
+                initialValue: deviceHistoryData.severity,
               ),
               _Item(
                 labelText: 'Event',
@@ -58,6 +52,55 @@ class DeviceHistoryDetailPage extends StatelessWidget {
                 initialValue: deviceHistoryData.alarmDuration,
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SevrtityItem extends StatelessWidget {
+  const _SevrtityItem({
+    Key? key,
+    required this.initialValue,
+  }) : super(key: key);
+
+  final int initialValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(CommonStyle.lineSpacing),
+      child: SizedBox(
+        width: 230,
+        child: TextFormField(
+          readOnly: true,
+          // enabled: false,
+          initialValue: CustomStyle.severityName[initialValue],
+          textInputAction: TextInputAction.done,
+          style: TextStyle(
+            fontSize: CommonStyle.sizeL,
+            color: CustomStyle.severityFontColor[initialValue],
+          ),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(5),
+            disabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1.0),
+            ),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1.0),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: 1.0),
+            ),
+            isDense: true,
+            filled: true,
+            fillColor: CustomStyle.severityColor[initialValue],
+            labelText: 'Severity',
+            labelStyle: const TextStyle(
+              fontSize: CommonStyle.sizeL,
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
         ),
       ),

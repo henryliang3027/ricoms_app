@@ -29,6 +29,7 @@ class DashboardForm extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                     child: _WidgetTitle(title: 'Alarm Ratio'),
                   ),
+                  _buildLegend(),
                   Expanded(
                     flex: 9,
                     child: PageView(
@@ -85,7 +86,7 @@ class _WidgetTitle extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(
-        fontSize: CommonStyle.sizeL,
+        fontSize: CommonStyle.sizeXL,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -358,12 +359,12 @@ class _DeviceStatisticsGridView extends StatelessWidget {
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 6.0),
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
                   child: _WidgetTitle(title: 'Device Status'),
                 ),
                 GridView.builder(
@@ -372,9 +373,9 @@ class _DeviceStatisticsGridView extends StatelessWidget {
                   itemCount: 6,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 6.0,
-                    mainAxisSpacing: 6.0,
-                    childAspectRatio: 1.5,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                    childAspectRatio: 1.6,
                   ),
                   itemBuilder: (_, int index) {
                     return Container(
@@ -568,7 +569,6 @@ Widget _buildPieChart({
   return Column(
     // mainAxisAlignment: MainAxisAlignment.end,
     children: <Widget>[
-      _buildLegend(),
       Expanded(
         child: Stack(
           alignment: AlignmentDirectional.center,
@@ -577,6 +577,7 @@ Widget _buildPieChart({
               title,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeM,
+                fontWeight: FontWeight.w600,
               ),
             ),
             PieChart(

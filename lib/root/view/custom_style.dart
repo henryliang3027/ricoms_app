@@ -779,6 +779,14 @@ class CustomStyle {
     3: 'Critical', //critical
   };
 
+  static const Map<int, Color> severityFontColor = {
+    // device severity
+    0: Colors.white, //notice
+    1: Colors.white, //normal
+    2: Colors.black, //warning
+    3: Colors.white, //critical
+  };
+
   static const Map<int, Color> severityColor = {
     // device severity
     0: Color(0xff6c757d), //notice
