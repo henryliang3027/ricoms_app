@@ -6,6 +6,7 @@ import 'package:ricoms_app/login/view/login_page.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 
@@ -17,6 +18,7 @@ class App extends StatelessWidget {
     required this.rootRepository,
     required this.deviceRepository,
     required this.dashboardRepository,
+    required this.historyRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -24,6 +26,7 @@ class App extends StatelessWidget {
   final RootRepository rootRepository;
   final DeviceRepository deviceRepository;
   final DashboardRepository dashboardRepository;
+  final HistoryRepository historyRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,10 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<DashboardRepository>(
           create: (context) => dashboardRepository,
-        )
+        ),
+        RepositoryProvider<HistoryRepository>(
+          create: (context) => historyRepository,
+        ),
       ],
       child: BlocProvider(
         create: (_) => AuthenticationBloc(
