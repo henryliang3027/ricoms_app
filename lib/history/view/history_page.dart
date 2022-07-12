@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/history/bloc/history_bloc.dart';
+import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
 import 'package:ricoms_app/history/view/history_form.dart';
-import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
-import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 
 class HistoryPage extends StatefulWidget {

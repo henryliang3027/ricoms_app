@@ -33,8 +33,6 @@ class HistoryRepository {
     String historyApiPath =
         '/history/search?start_time=$startTime&end_time=$endTime&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$current&q="$queryData"';
 
-    print('historyApiPath: $historyApiPath');
-
     try {
       Response response = await _dio.get(
         historyApiPath,

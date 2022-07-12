@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/history/bloc/history_bloc.dart';
+import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
+import 'package:ricoms_app/history/view/search_page.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
@@ -93,7 +94,11 @@ class _SearchAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
-      return IconButton(onPressed: () {}, icon: const Icon(Icons.search));
+      return IconButton(
+          onPressed: () {
+            Navigator.push(context, SearchPage.route());
+          },
+          icon: const Icon(Icons.search));
     });
   }
 }
@@ -287,8 +292,6 @@ class _HistorySliverList extends StatelessWidget {
             child: Text(state.errmsg),
           );
         } else {
-          print(state.status);
-
           return const Center(
             child: CircularProgressIndicator(),
           );
