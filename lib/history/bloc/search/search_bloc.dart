@@ -87,15 +87,22 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     EndDateChanged event,
     Emitter<SearchState> emit,
   ) {
-    String date = '${state.startDate} - ${event.endDate}';
+    String startDate = state.startDate;
+    String endDate = event.endDate;
+
+    if (startDate == '') {
+      startDate = endDate;
+    }
+
+    String date = '$startDate - $endDate';
     List<String> queries = [];
     queries.addAll(state.queries); // add current queries
 
     _updateDateInQureies(queries, date);
 
     emit(state.copyWith(
-      startDate: state.startDate,
-      endDate: event.endDate,
+      startDate: startDate,
+      endDate: endDate,
       shelf: state.shelf,
       slot: state.slot,
       unsolvedOnly: state.unsolvedOnly,

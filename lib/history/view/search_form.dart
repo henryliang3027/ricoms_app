@@ -222,17 +222,17 @@ class _EndDatePicker extends StatelessWidget {
           onPressed: () async {
             String formattedStartDate = state.startDate.replaceAll('/', '');
             String formattedEndDate = state.endDate.replaceAll('/', '');
-            DateTime startDate = DateTime.parse(formattedStartDate);
-            DateTime endDate = DateTime.parse(formattedEndDate);
+            DateTime startDate = formattedStartDate == ''
+                ? DateTime.now()
+                : DateTime.parse(formattedStartDate);
+            DateTime endDate = formattedEndDate == ''
+                ? DateTime.now()
+                : DateTime.parse(formattedEndDate);
 
             DateTime? datetime = await showDatePicker(
                 context: context,
-                initialDate: startDate == ''
-                    ? DateTime.now()
-                    : endDate.isAfter(startDate)
-                        ? endDate
-                        : startDate,
-                firstDate: startDate == '' ? DateTime.now() : startDate,
+                initialDate: endDate.isAfter(startDate) ? endDate : startDate,
+                firstDate: startDate,
                 lastDate: DateTime(2050));
 
             if (datetime != null) {
