@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
+import 'package:ricoms_app/history/model/search_critria.dart';
 import 'package:ricoms_app/history/view/search_page.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
@@ -95,8 +96,13 @@ class _SearchAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
       return IconButton(
-          onPressed: () {
-            Navigator.push(context, SearchPage.route());
+          onPressed: () async {
+            var searchCriteria = await Navigator.push(
+                context, SearchPage.route(state.currentCriteria));
+
+            if (searchCriteria != null) {
+              context.read<HistoryBloc>().add(HistoryRequested(searchCriteria));
+            }
           },
           icon: const Icon(Icons.search));
     });

@@ -5,10 +5,12 @@ abstract class HistoryEvent extends Equatable {
 }
 
 class HistoryRequested extends HistoryEvent {
-  const HistoryRequested();
+  const HistoryRequested(this.searchCriteria);
+
+  final SearchCriteria searchCriteria;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [searchCriteria];
 }
 
 class CheckDeviceStatus extends HistoryEvent {

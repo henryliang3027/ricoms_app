@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:ricoms_app/history/model/search_critria.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -18,7 +20,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     on<HistoryRequested>(_onHistoryRequested);
     on<CheckDeviceStatus>(_onCheckDeviceStatus);
 
-    add(const HistoryRequested());
+    add(HistoryRequested(SearchCriteria(
+      startDate: DateFormat('yyyy/MM/dd').format(DateTime.now()).toString(),
+      endDate: DateFormat('yyyy/MM/dd').format(DateTime.now()).toString(),
+    )));
   }
 
   final User _user;
@@ -33,20 +38,39 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       status: FormStatus.requestInProgress,
     ));
 
+    String formattedQurey = '';
+    List<String> queries = event.searchCriteria.queries;
+
+    if (queries.isNotEmpty) {
+      for (int i = 0; i < queries.length - 1; i++) {
+        String formattedElement = '\"${queries[i]}\"';
+        formattedQurey = formattedQurey + formattedElement + '+';
+      }
+      formattedQurey = formattedQurey + '\"${queries[queries.length - 1]}\"';
+    }
+
     List<dynamic> result = await _historyRepository.getHistoryByFilter(
       user: _user,
+      startDate: event.searchCriteria.startDate,
+      endDate: event.searchCriteria.endDate,
+      shelf: event.searchCriteria.shelf,
+      slot: event.searchCriteria.slot,
+      unsolvedOnly: event.searchCriteria.unsolvedOnly == true ? '1' : '0',
+      queryData: formattedQurey,
     );
 
     if (result[0]) {
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         status: FormStatus.requestSuccess,
+        currentCriteria: event.searchCriteria,
         records: result[1],
       ));
     } else {
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         status: FormStatus.requestFailure,
+        currentCriteria: event.searchCriteria,
         errmsg: result[1],
       ));
     }

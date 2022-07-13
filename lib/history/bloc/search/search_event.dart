@@ -4,22 +4,22 @@ abstract class SearchEvent extends Equatable {
   const SearchEvent();
 }
 
-class StartTimeChanged extends SearchEvent {
-  const StartTimeChanged(this.startTime);
+class StartDateChanged extends SearchEvent {
+  const StartDateChanged(this.startDate);
 
-  final String startTime;
+  final String startDate;
 
   @override
-  List<Object?> get props => [startTime];
+  List<Object?> get props => [startDate];
 }
 
-class EndTimeChanged extends SearchEvent {
-  const EndTimeChanged(this.endTime);
+class EndDateChanged extends SearchEvent {
+  const EndDateChanged(this.endDate);
 
-  final String endTime;
+  final String endDate;
 
   @override
-  List<Object?> get props => [endTime];
+  List<Object?> get props => [endDate];
 }
 
 class ShelfChanged extends SearchEvent {
@@ -41,12 +41,12 @@ class SlotChanged extends SearchEvent {
 }
 
 class CurrentIssueChanged extends SearchEvent {
-  const CurrentIssueChanged(this.current);
+  const CurrentIssueChanged(this.unsolvedOnly);
 
-  final bool current;
+  final bool unsolvedOnly;
 
   @override
-  List<Object?> get props => [current];
+  List<Object?> get props => [unsolvedOnly];
 }
 
 class KeywordChanged extends SearchEvent {
@@ -58,9 +58,36 @@ class KeywordChanged extends SearchEvent {
   List<Object?> get props => [keyword];
 }
 
-class FilterChanged extends SearchEvent {
-  const FilterChanged();
+class FilterInitialized extends SearchEvent {
+  const FilterInitialized(this.searchCriteria);
+
+  final SearchCriteria searchCriteria;
+
+  @override
+  List<Object?> get props => [searchCriteria];
+}
+
+class FilterAdded extends SearchEvent {
+  const FilterAdded();
 
   @override
   List<Object?> get props => [];
+}
+
+class FilterDeleted extends SearchEvent {
+  const FilterDeleted(this.index);
+
+  final int index;
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class CriteriaSaved extends SearchEvent {
+  const CriteriaSaved(this.context);
+
+  final BuildContext context;
+
+  @override
+  List<Object?> get props => [context];
 }

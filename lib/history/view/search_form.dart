@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:ricoms_app/history/bloc/search/search_bloc.dart';
+import 'package:ricoms_app/history/model/search_critria.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class SearchForm extends StatelessWidget {
@@ -9,6 +11,7 @@ class SearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Search'),
       ),
@@ -16,13 +19,13 @@ class SearchForm extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         color: Colors.white,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
               padding: EdgeInsets.all(4.0),
             ),
-            const _KeywordInput(),
+            _KeywordInput(),
             const Padding(
               padding: EdgeInsets.all(8.0),
             ),
@@ -47,6 +50,16 @@ class SearchForm extends StatelessWidget {
             ),
             const _ShelfSelector(),
             const _SlotSelector(),
+            const _CurrentIssueCheckBox(),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            const _WidgetTitle(title: 'Applied Filter'),
+            const Padding(
+              padding: EdgeInsets.all(4.0),
+            ),
+            const _AppliedFilterList(),
+            const _SaveButton(),
           ],
         ),
       ),
@@ -64,18 +77,25 @@ class _WidgetTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: CommonStyle.sizeS,
-        fontWeight: FontWeight.w600,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: CommonStyle.sizeS,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _KeywordInput extends StatelessWidget {
-  const _KeywordInput({Key? key}) : super(key: key);
+  _KeywordInput({Key? key}) : super(key: key);
+
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +104,8 @@ class _KeywordInput extends StatelessWidget {
         builder: (context, state) {
           return SizedBox(
             child: TextFormField(
-              textInputAction: TextInputAction.done,
+              controller: _controller,
+              textInputAction: TextInputAction.search,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -92,6 +113,10 @@ class _KeywordInput extends StatelessWidget {
                 if (keyword != null) {
                   context.read<SearchBloc>().add(KeywordChanged(keyword));
                 }
+              },
+              onFieldSubmitted: (String? keyword) {
+                context.read<SearchBloc>().add(const FilterAdded());
+                _controller.clear();
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
@@ -112,12 +137,12 @@ class _KeywordInput extends StatelessWidget {
                   child: IconButton(
                     splashColor: Colors.blue.shade100,
                     iconSize: 22,
-                    //padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
                     icon: const Icon(
                       Icons.search_outlined,
                     ),
                     onPressed: () {
-                      context.read<SearchBloc>().add(const FilterChanged());
+                      context.read<SearchBloc>().add(const FilterAdded());
+                      _controller.clear();
                     },
                   ),
                 ),
@@ -137,7 +162,24 @@ class _StartDatePicker extends StatelessWidget {
       buildWhen: (previous, current) => previous.startDate != current.startDate,
       builder: (context, state) {
         return ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            String startDate = state.startDate.replaceAll('/', '');
+            DateTime? datetime = await showDatePicker(
+                context: context,
+                initialDate: startDate == ''
+                    ? DateTime.now()
+                    : DateTime.parse(startDate),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2050));
+
+            if (datetime != null) {
+              String formattedDateTime =
+                  DateFormat('yyyy/MM/dd').format(datetime).toString();
+              context
+                  .read<SearchBloc>()
+                  .add(StartDateChanged(formattedDateTime));
+            }
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -177,7 +219,28 @@ class _EndDatePicker extends StatelessWidget {
       buildWhen: (previous, current) => previous.endDate != current.endDate,
       builder: (context, state) {
         return ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            String formattedStartDate = state.startDate.replaceAll('/', '');
+            String formattedEndDate = state.endDate.replaceAll('/', '');
+            DateTime startDate = DateTime.parse(formattedStartDate);
+            DateTime endDate = DateTime.parse(formattedEndDate);
+
+            DateTime? datetime = await showDatePicker(
+                context: context,
+                initialDate: startDate == ''
+                    ? DateTime.now()
+                    : endDate.isAfter(startDate)
+                        ? endDate
+                        : startDate,
+                firstDate: startDate == '' ? DateTime.now() : startDate,
+                lastDate: DateTime(2050));
+
+            if (datetime != null) {
+              String formattedDateTime =
+                  DateFormat('yyyy/MM/dd').format(datetime).toString();
+              context.read<SearchBloc>().add(EndDateChanged(formattedDateTime));
+            }
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -314,7 +377,6 @@ class _ShelfSelector extends StatelessWidget {
         builder: (context, state) {
           return ListTile(
             title: const Text('Shelf'),
-            visualDensity: VisualDensity(vertical: -4.0, horizontal: -4.0),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -395,7 +457,6 @@ class _SlotSelector extends StatelessWidget {
         builder: (context, state) {
           return ListTile(
             title: const Text('Slot'),
-            visualDensity: VisualDensity(vertical: -4.0, horizontal: -4.0),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -418,7 +479,19 @@ class _CurrentIssueCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return BlocBuilder<SearchBloc, SearchState>(
+        buildWhen: (previous, current) =>
+            previous.unsolvedOnly != current.unsolvedOnly,
+        builder: (context, state) {
+          return CheckboxListTile(
+              title: const Text('Show open issue only'),
+              value: state.unsolvedOnly,
+              onChanged: (bool? value) {
+                context
+                    .read<SearchBloc>()
+                    .add(CurrentIssueChanged(value ?? false));
+              });
+        });
   }
 }
 
@@ -427,6 +500,61 @@ class _AppliedFilterList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return BlocBuilder<SearchBloc, SearchState>(
+        buildWhen: (previous, current) => previous.queries != current.queries,
+        builder: (context, state) {
+          return Expanded(
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 5.0,
+                //主轴间距
+                runSpacing: 8.0,
+                //副轴间距
+                alignment: WrapAlignment.start,
+                //主轴上的对齐方式
+                crossAxisAlignment: WrapCrossAlignment.start,
+                //副轴上的对齐方式
+                children: List<Widget>.generate(
+                  state.queries.length,
+                  (int index) {
+                    return InputChip(
+                      avatar: index == 0
+                          ? const Icon(Icons.calendar_month_outlined)
+                          : const Icon(Icons.tag),
+                      label: Text(state.queries[index]),
+                      onDeleted: () {
+                        context.read<SearchBloc>().add(FilterDeleted(index));
+                      },
+                    );
+                  },
+                ).toList(),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class _SaveButton extends StatelessWidget {
+  const _SaveButton({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        return Center(
+          child: ElevatedButton(
+              key: const Key('historySearchForm_save_raisedButton'),
+              child: const Text(
+                'Save Changes',
+                style: TextStyle(
+                  fontSize: CommonStyle.sizeM,
+                ),
+              ),
+              onPressed: () {
+                context.read<SearchBloc>().add(CriteriaSaved(context));
+              }),
+        );
+      },
+    );
   }
 }

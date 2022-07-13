@@ -17,9 +17,9 @@ class HistoryRepository {
 //current: 1 = show open issue only, 0 = show all alarms with given datetime
   Future<List<dynamic>> getHistoryByFilter({
     required User user,
-    String startTime = '2022/07/11',
-    String endTime = '2022/07/11',
-    String current = '0',
+    String startDate = '',
+    String endDate = '',
+    String unsolvedOnly = '0',
     String shelf = '',
     String slot = '',
     String next = '',
@@ -31,7 +31,7 @@ class HistoryRepository {
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String historyApiPath =
-        '/history/search?start_time=$startTime&end_time=$endTime&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$current&q="$queryData"';
+        '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
 
     try {
       Response response = await _dio.get(
