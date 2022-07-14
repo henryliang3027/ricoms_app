@@ -62,10 +62,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       add(const ChildDataUpdated());
     });
 
-    emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
-      submissionStatus: SubmissionStatus.none,
-    ));
+    // emit(state.copyWith(
+    //   formStatus: FormStatus.requestInProgress,
+    //   submissionStatus: SubmissionStatus.none,
+    // ));
 
     dynamic data = await _rootRepository.getChilds(
       user: _user,
