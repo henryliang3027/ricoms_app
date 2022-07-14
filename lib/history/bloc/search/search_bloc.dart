@@ -211,7 +211,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     List<String> queries = [];
     queries.addAll(state.queries); // add current queries
 
-    if (_isDateQuery(queries[0])) {
+    if (_isDateQuery(queries[event.index])) {
       queries.removeAt(event.index); // remove query by index
       emit(state.copyWith(
         startDate: '',
