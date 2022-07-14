@@ -160,7 +160,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
               initialPath.addAll(alarmData.path);
               context
                   .read<RealTimeAlarmBloc>()
-                  .add(CheckDeviceStatus(alarmData.id, pageController));
+                  .add(CheckDeviceStatus(alarmData.path, pageController));
               //pageController.jumpToPage(1);
             },
             child: Padding(

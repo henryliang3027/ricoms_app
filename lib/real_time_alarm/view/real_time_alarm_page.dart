@@ -40,6 +40,7 @@ class _RealTimeAlarmPageState extends State<RealTimeAlarmPage> {
       drawer: HomeDrawer(
         user: context.read<AuthenticationBloc>().state.user,
         pageController: widget.pageController,
+        currentPageIndex: 0,
       ),
       body: BlocProvider(
         create: (context) => RealTimeAlarmBloc(

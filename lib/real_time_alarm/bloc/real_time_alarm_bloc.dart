@@ -233,7 +233,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
   ) async {
     List<dynamic> result = await _realTimeAlarmRepository.getDeviceStatus(
       user: _user,
-      nodeId: event.nodeId,
+      path: event.path,
     );
 
     if (result[0]) {

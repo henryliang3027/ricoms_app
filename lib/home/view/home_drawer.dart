@@ -7,14 +7,62 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class HomeDrawer extends StatelessWidget {
-  const HomeDrawer({Key? key, required this.user, required this.pageController})
-      : super(key: key);
+  const HomeDrawer({
+    Key? key,
+    required this.user,
+    required this.pageController,
+    required this.currentPageIndex,
+  }) : super(key: key);
 
   final User user;
   final PageController pageController;
+  final int currentPageIndex;
 
   @override
   Widget build(BuildContext context) {
+    List<String> _listTileTitles = [
+      'Real-Time Alarm',
+      'Network',
+      'Dashboard',
+      'History',
+      'Bookmarks',
+    ];
+
+    List<IconData> _listTileIcons = [
+      CustomIcons.realtimeAlarm,
+      CustomIcons.network,
+      CustomIcons.dashboard,
+      CustomIcons.history,
+      CustomIcons.bookmarks,
+    ];
+
+    List<Widget> _buildMainListView(int currentPageIndex) {
+      return [
+        for (int i = 0; i < _listTileTitles.length; i++)
+          ListTile(
+            dense: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(
+                _listTileIcons[i],
+                color: currentPageIndex == i ? Colors.blue : Colors.black,
+              ),
+            ),
+            title: Text(
+              _listTileTitles[i],
+              style: TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: currentPageIndex == i ? Colors.blue : Colors.black,
+              ),
+            ),
+            onTap: () {
+              pageController.jumpToPage(i);
+              Navigator.pop(context);
+            },
+          ),
+      ];
+    }
+
     return SafeArea(
       child: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -51,84 +99,7 @@ class HomeDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.realtimeAlarm),
-              ),
-              title: const Text(
-                'Real-Time Alarm',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                pageController.jumpToPage(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.network),
-              ),
-              title: const Text(
-                'Network',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                pageController.jumpToPage(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.dashboard),
-              ),
-              title: const Text(
-                'Dashboard',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                pageController.jumpToPage(2);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.history),
-              ),
-              title: const Text(
-                'History',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                pageController.jumpToPage(3);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.bookmarks),
-              ),
-              title: const Text(
-                'Bookmarks',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                pageController.jumpToPage(4);
-                Navigator.pop(context);
-              },
-            ),
+            ..._buildMainListView(currentPageIndex),
             ListTile(
               dense: true,
               leading: const Padding(

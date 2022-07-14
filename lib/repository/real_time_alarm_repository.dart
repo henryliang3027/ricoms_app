@@ -112,12 +112,12 @@ class RealTimeAlarmRepository {
 
   Future<List<dynamic>> getDeviceStatus({
     required User user,
-    required int nodeId,
+    required List<int> path,
   }) async {
     _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
-    String realTimeAlarmApiPath = '/device/' + nodeId.toString();
+    String realTimeAlarmApiPath = '/device/' + path[0].toString();
 
     try {
       //404
@@ -128,7 +128,14 @@ class RealTimeAlarmRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        return [true, ''];
+        List<int> nodes = path.skip(1).toList();
+        List<dynamic> verifiedResilt =
+            await _checkPath(user: user, path: nodes);
+        if (verifiedResilt[0]) {
+          return [true, ''];
+        } else {
+          return verifiedResilt;
+        }
       } else {
         return [false, 'The device does not respond!'];
       }
@@ -158,6 +165,60 @@ class RealTimeAlarmRepository {
         return [false, e.toString()];
       }
     }
+  }
+
+  Future<List<dynamic>> _checkPath({
+    required User user,
+    required List<int> path,
+  }) async {
+    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+
+    for (int nodeId in path) {
+      String childsPath = '/net/node/' + nodeId.toString();
+
+      try {
+        //404
+        Response response = await _dio.get(childsPath);
+
+        //print(response.data.toString());
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] == '200') {
+          continue;
+        } else {
+          return [false, 'No node'];
+        }
+      } catch (e) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e is DioError) {
+          if (e.response != null) {
+            if (kDebugMode) {
+              print(e.response!.data);
+              print(e.response!.headers);
+              print(e.response!.requestOptions);
+            }
+            //throw Exception('Server No Response');
+            return [false, 'Server No Response'];
+          } else {
+            // Something happened in setting up or sending the request that triggered an Error
+            if (kDebugMode) {
+              print(e.requestOptions);
+              print(e.message);
+            }
+            //throw Exception(e.message);
+            return [false, e.message];
+          }
+        } else {
+          //throw Exception(e.toString());
+          return [false, e.toString()];
+        }
+      }
+    }
+
+    return [true, ''];
   }
 }
 
@@ -192,5 +253,5 @@ class Alarm {
   final int slot;
   final int severity;
   final int type;
-  final List path;
+  final List<int> path;
 }

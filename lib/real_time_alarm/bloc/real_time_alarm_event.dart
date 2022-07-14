@@ -64,16 +64,16 @@ class AlarmItemTapped extends RealTimeAlarmEvent {
 
 class CheckDeviceStatus extends RealTimeAlarmEvent {
   const CheckDeviceStatus(
-    this.nodeId,
+    this.path,
     this.pageController,
   );
 
-  final int nodeId;
+  final List<int> path;
   final PageController pageController;
 
   @override
   List<Object?> get props => [
-        nodeId,
+        path,
         pageController,
       ];
 }

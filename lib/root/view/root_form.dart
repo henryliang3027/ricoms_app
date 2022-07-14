@@ -143,6 +143,7 @@ class RootForm extends StatelessWidget {
           drawer: HomeDrawer(
             user: context.read<AuthenticationBloc>().state.user,
             pageController: pageController,
+            currentPageIndex: 1,
           ),
           body: Container(
             color: Colors.grey.shade300,

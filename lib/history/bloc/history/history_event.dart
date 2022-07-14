@@ -15,16 +15,16 @@ class HistoryRequested extends HistoryEvent {
 
 class CheckDeviceStatus extends HistoryEvent {
   const CheckDeviceStatus(
-    this.nodeId,
+    this.path,
     this.pageController,
   );
 
-  final int nodeId;
+  final List<int> path;
   final PageController pageController;
 
   @override
   List<Object?> get props => [
-        nodeId,
+        path,
         pageController,
       ];
 }

@@ -31,6 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
           (AuthenticationBloc bloc) => bloc.state.user,
         ),
         pageController: widget.pageController,
+        currentPageIndex: 2,
       ),
       body: BlocProvider(
         create: (context) => DashboardBloc(

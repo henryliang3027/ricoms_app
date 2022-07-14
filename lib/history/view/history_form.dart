@@ -88,6 +88,7 @@ class HistoryForm extends StatelessWidget {
             (AuthenticationBloc bloc) => bloc.state.user,
           ),
           pageController: pageController,
+          currentPageIndex: 3,
         ),
         body: _HistorySliverList(
           pageController: pageController,
@@ -377,7 +378,7 @@ class _HistoryBottomMenu extends StatelessWidget {
             Navigator.pop(context);
             context
                 .read<HistoryBloc>()
-                .add(CheckDeviceStatus(record.id, pageController));
+                .add(CheckDeviceStatus(record.path, pageController));
           },
         ),
       ],

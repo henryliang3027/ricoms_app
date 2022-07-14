@@ -28,6 +28,7 @@ class _BookmarksPageState extends State<BookmarksPage> {
           (AuthenticationBloc bloc) => bloc.state.user,
         ),
         pageController: widget.pageController,
+        currentPageIndex: 4,
       ),
       body: const Center(
         child: Text('My BookmarksPage'),

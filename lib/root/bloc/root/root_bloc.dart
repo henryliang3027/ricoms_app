@@ -62,10 +62,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       add(const ChildDataUpdated());
     });
 
-    // emit(state.copyWith(
-    //   formStatus: FormStatus.requestInProgress,
-    //   submissionStatus: SubmissionStatus.none,
-    // ));
+    emit(state.copyWith(
+      formStatus: FormStatus.requestInProgress,
+      submissionStatus: SubmissionStatus.none,
+    ));
 
     dynamic data = await _rootRepository.getChilds(
       user: _user,
@@ -87,13 +87,24 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         : null;
 
     if (_initialPath!.isNotEmpty) {
-      bool isSuccess = await _buildDirectorybyPath(directory, _initialPath!);
-      if (isSuccess) {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          submissionStatus: SubmissionStatus.none,
-          directory: directory,
-        ));
+      List<dynamic> result = await _buildDirectorybyPath(
+          directory: directory, path: _initialPath!);
+
+      if (result[0]) {
+        if (result[1] == '') {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestSuccess,
+            submissionStatus: SubmissionStatus.none,
+            directory: directory,
+          ));
+        } else {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestSuccess,
+            submissionStatus: SubmissionStatus.none,
+            directory: directory,
+            data: result[1],
+          ));
+        }
       } else {
         // already handle in realtimealarm bloc
       }
@@ -226,9 +237,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     List path = event.path;
 
-    bool isSuccess = await _buildDirectorybyPath(directory, path);
+    List<dynamic> result = await _buildDirectorybyPath(
+      directory: directory,
+      path: path,
+    );
 
-    if (isSuccess) {
+    if (result[0]) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
@@ -242,9 +256,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     _dataStreamSubscription?.resume();
   }
 
-  Future<bool> _buildDirectorybyPath(List<Node> directory, List path) async {
+  Future<List<dynamic>> _buildDirectorybyPath({
+    required List<Node> directory,
+    required List path,
+  }) async {
+    dynamic data;
+
     for (int i = path.length - 1; i >= 0; i--) {
-      dynamic data = await _rootRepository.getChilds(
+      data = await _rootRepository.getChilds(
         user: _user,
         parentId: directory.last.id,
       );
@@ -257,16 +276,25 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           }
         }
       } else {
-        return false;
+        return [false, 'No node'];
       }
     }
 
+// + 1 as root node id because path.length not consider root node id
     if (directory.length == path.length + 1) {
-      // + 1 as root node id because path.length not consider root node id
-      _deviceRepository.deviceNodeId = directory.last.id.toString();
-      return true;
+      if (directory.last.type == 2 || directory.last.type == 5) {
+        _deviceRepository.deviceNodeId = directory.last.id.toString();
+        return [true, '']; // device setting page
+      } else {
+        //get child of current node
+        data = await _rootRepository.getChilds(
+          user: _user,
+          parentId: directory.last.id,
+        );
+        return [true, data]; //
+      }
     } else {
-      return false;
+      return [false, 'No node'];
     }
   }
 }

@@ -74,9 +74,13 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     CheckDeviceStatus event,
     Emitter<HistoryState> emit,
   ) async {
+    emit(state.copyWith(
+      targetDeviceStatus: FormStatus.requestInProgress,
+    ));
+
     List<dynamic> result = await _historyRepository.getDeviceStatus(
       user: _user,
-      nodeId: event.nodeId,
+      path: event.path,
     );
 
     if (result[0]) {
