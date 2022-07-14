@@ -19,6 +19,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         super(const HistoryState()) {
     on<HistoryRequested>(_onHistoryRequested);
     on<CheckDeviceStatus>(_onCheckDeviceStatus);
+    on<HistoryRecordsExport>(_onHistoryRecordsExport);
 
     add(HistoryRequested(SearchCriteria(
       startDate: DateFormat('yyyy/MM/dd').format(DateTime.now()).toString(),
@@ -34,20 +35,13 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     Emitter<HistoryState> emit,
   ) async {
     emit(state.copyWith(
+      historyExportStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       status: FormStatus.requestInProgress,
     ));
 
-    String formattedQurey = '';
     List<String> queries = event.searchCriteria.queries;
-
-    if (queries.isNotEmpty) {
-      for (int i = 0; i < queries.length - 1; i++) {
-        String formattedElement = '\"${queries[i]}\"';
-        formattedQurey = formattedQurey + formattedElement + '+';
-      }
-      formattedQurey = formattedQurey + '\"${queries[queries.length - 1]}\"';
-    }
+    String formattedQurey = _formatQuery(queries);
 
     List<dynamic> result = await _historyRepository.getHistoryByFilter(
       user: _user,
@@ -93,5 +87,46 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         errmsg: result[1],
       ));
     }
+  }
+
+  Future<void> _onHistoryRecordsExport(
+    HistoryRecordsExport event,
+    Emitter<HistoryState> emit,
+  ) async {
+    String formattedQuery = _formatQuery(state.currentCriteria.queries);
+
+    List<dynamic> result = await _historyRepository.exportHistory(
+        user: _user,
+        startDate: state.currentCriteria.startDate,
+        endDate: state.currentCriteria.endDate,
+        shelf: state.currentCriteria.shelf,
+        slot: state.currentCriteria.slot,
+        unsolvedOnly: state.currentCriteria.unsolvedOnly == true ? '1' : '0',
+        queryData: formattedQuery);
+
+    if (result[0]) {
+      emit(state.copyWith(
+        historyExportStatus: FormStatus.requestSuccess,
+        historyExportMsg: result[1],
+      ));
+    } else {
+      emit(state.copyWith(
+        historyExportStatus: FormStatus.requestFailure,
+        historyExportMsg: result[1],
+      ));
+    }
+  }
+
+  String _formatQuery(List<String> queries) {
+    String formattedQurey = '';
+
+    if (queries.isNotEmpty) {
+      for (int i = 0; i < queries.length - 1; i++) {
+        String formattedElement = '\"${queries[i]}\"';
+        formattedQurey = formattedQurey + formattedElement + '+';
+      }
+      formattedQurey = formattedQurey + '\"${queries[queries.length - 1]}\"';
+    }
+    return formattedQurey;
   }
 }

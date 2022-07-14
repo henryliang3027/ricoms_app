@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/history/bloc/search/search_bloc.dart';
-import 'package:ricoms_app/history/model/search_critria.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class SearchForm extends StatelessWidget {

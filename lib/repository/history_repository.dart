@@ -174,14 +174,14 @@ class HistoryRepository {
 
   Future<List<dynamic>> exportHistory({
     required User user,
-    String startTime = '',
-    String endTime = '',
+    String startDate = '',
+    String endDate = '',
     String shelf = '',
     String slot = '',
     String next = '',
     String nodeId = '',
     String trapId = '',
-    String current = '0',
+    String unsolvedOnly = '0',
     String queryData = '',
   }) async {
     Dio dio = Dio();
@@ -190,7 +190,7 @@ class HistoryRepository {
     dio.options.receiveTimeout = 10000;
 
     String nodeExportApiPath =
-        '/history/export?start_time=$startTime&end_time=$endTime&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$current&q="$queryData"&node_id=$nodeId&uid=${user.id}';
+        '/history/export?start_time=$startDate&end_time=$endDate&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q="$queryData"&node_id=$nodeId&uid=${user.id}';
 
     try {
       //404

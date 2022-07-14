@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
-import 'package:ricoms_app/history/model/search_critria.dart';
+import 'package:ricoms_app/history/view/device_history_detail_page.dart';
 import 'package:ricoms_app/history/view/search_page.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
@@ -60,6 +61,14 @@ class HistoryForm extends StatelessWidget {
       listener: (context, state) {
         if (state.targetDeviceStatus.isRequestFailure) {
           _showFailureDialog(state.errmsg);
+        } else if (state.historyExportStatus.isRequestSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(content: Text(state.historyExportMsg)),
+            );
+        } else if (state.historyExportStatus.isRequestFailure) {
+          _showFailureDialog(state.historyExportMsg);
         }
       },
       child: Scaffold(
@@ -117,17 +126,7 @@ class _ExportAction extends StatelessWidget {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
       return IconButton(
           onPressed: () async {
-            List<dynamic> result =
-                await RepositoryProvider.of<HistoryRepository>(
-              context,
-            ).exportHistory(
-              user: context.read<AuthenticationBloc>().state.user,
-            );
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(result[1])),
-              );
+            context.read<HistoryBloc>().add(const HistoryRecordsExport());
           },
           icon: const Icon(Icons.save_alt_outlined));
     });
@@ -174,10 +173,17 @@ class _HistorySliverList extends StatelessWidget {
               onTap: () {
                 initialPath.clear();
                 initialPath.addAll(record.path);
-                context
-                    .read<HistoryBloc>()
-                    .add(CheckDeviceStatus(record.id, pageController));
-                //pageController.jumpToPage(1);
+                // because HistoryBloc cannot be found inside ModalBottomSheet
+                // provide HistoryBloc fo it by using BlocProvider
+                showModalBottomSheet(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                          value: context.read<HistoryBloc>(),
+                          child: _HistoryBottomMenu(
+                            record: record,
+                            pageController: pageController,
+                          ),
+                        ));
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -303,6 +309,78 @@ class _HistorySliverList extends StatelessWidget {
           );
         }
       },
+    );
+  }
+}
+
+class _HistoryBottomMenu extends StatelessWidget {
+  const _HistoryBottomMenu({
+    Key? key,
+    required this.record,
+    required this.pageController,
+  }) : super(key: key);
+
+  final Record record;
+  final PageController pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.info_outline,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Show Detail',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(context, HistoryDetailPage.route(record));
+          },
+        ),
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  CustomIcons.device,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Go to Device Setting',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            context
+                .read<HistoryBloc>()
+                .add(CheckDeviceStatus(record.id, pageController));
+          },
+        ),
+      ],
     );
   }
 }

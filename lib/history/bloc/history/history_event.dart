@@ -28,3 +28,10 @@ class CheckDeviceStatus extends HistoryEvent {
         pageController,
       ];
 }
+
+class HistoryRecordsExport extends HistoryEvent {
+  const HistoryRecordsExport();
+
+  @override
+  List<Object?> get props => [];
+}
