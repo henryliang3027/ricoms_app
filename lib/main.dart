@@ -9,10 +9,8 @@ import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/repository/user_repository.dart';
 
 Future<void> main() async {
-  // add these lines
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -20,9 +18,10 @@ Future<void> main() async {
   await Hive.initFlutter('.db');
   Hive.registerAdapter<User>(UserAdapter());
   await Hive.openBox<User>('User');
+
   runApp(
     App(
-      authenticationRepository: AuthenticationRepository(UserRepository()),
+      authenticationRepository: AuthenticationRepository(),
       realTimeAlarmRepository: RealTimeAlarmRepository(),
       rootRepository: RootRepository(),
       deviceRepository: DeviceRepository(),
