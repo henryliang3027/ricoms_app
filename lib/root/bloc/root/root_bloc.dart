@@ -26,6 +26,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<ChildDataUpdated>(_onChildDataUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
+    on<BookmarksAdded>(_onBookmarksAdded);
+    on<BookmarksDeleted>(_onBookmarksDeleted);
 
     add(const ChildDataRequested(Node(
       id: 0,
@@ -212,11 +214,62 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             directory.length)
         : null;
 
+    List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
+
+    bool isAddedToBookmarks = bookmarks.contains(event.node.id);
+
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,
       directory: directory,
+      isAddedToBookmarks: isAddedToBookmarks,
     ));
+  }
+
+  Future<void> _onBookmarksAdded(
+    BookmarksAdded event,
+    Emitter<RootState> emit,
+  ) async {
+    bool isSuccess =
+        await _rootRepository.addBookmarks(user: _user, nodeId: event.nodeId);
+
+    if (isSuccess) {
+      List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
+      bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
+
+      emit(state.copyWith(
+        isAddedToBookmarks: isAddedToBookmarks,
+        bookmarksMsg: 'Added to bookmarks',
+      ));
+    } else {
+      emit(state.copyWith(
+        bookmarksMsg:
+            'Unable to add to bookmarks, please check your account and login again.',
+      ));
+    }
+  }
+
+  Future<void> _onBookmarksDeleted(
+    BookmarksDeleted event,
+    Emitter<RootState> emit,
+  ) async {
+    bool isSuccess = await _rootRepository.deleteBookmarks(
+        user: _user, nodeId: event.nodeId);
+
+    if (isSuccess) {
+      List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
+      bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
+
+      emit(state.copyWith(
+        isAddedToBookmarks: isAddedToBookmarks,
+        bookmarksMsg: 'Removed from bookmarks',
+      ));
+    } else {
+      emit(state.copyWith(
+        bookmarksMsg:
+            'Unable to delete from bookmarks, please check your account and login again.',
+      ));
+    }
   }
 
   Future<void> _onDeviceNavigateRequested(

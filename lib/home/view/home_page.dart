@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/bookmarks/view/bookmarks.dart';
+import 'package:ricoms_app/bookmarks/view/bookmarks_page.dart';
 import 'package:ricoms_app/dashboard/view/dashboard_page.dart';
 import 'package:ricoms_app/history/view/history_page.dart';
 import 'package:ricoms_app/real_time_alarm/view/real_time_alarm_page.dart';
@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BookmarksPage(
             pageController: _pageController,
+            initialRootPath: initialRootPath,
           ),
         ],
       ),

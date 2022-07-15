@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/repository/user_repository.dart';
+import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
@@ -10,13 +10,13 @@ enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 class AuthenticationRepository {
   AuthenticationRepository();
 
-  final UserRepository userRepository = UserRepository();
+  final UserApi userApi = UserApi(); // public field
   final _controller = StreamController<AuthenticationStatus>();
 
   Stream<AuthenticationStatus> get status async* {
     //await Future<void>.delayed(const Duration(seconds: 1));
 
-    User? user = userRepository.getActivateUser();
+    User? user = userApi.getActivateUser();
 
     if (user == null) {
       yield AuthenticationStatus.unauthenticated;
@@ -52,20 +52,8 @@ class AuthenticationRepository {
         _controller.add(AuthenticationStatus.unauthenticated);
       }
     } catch (e) {
-      // if ip does not exist
-
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e.response != null) {
-      //   print(e.response!.data);
-      //   print(e.response!.headers);
-      //   print(e.response!.requestOptions);
-      // } else {
-      //   // Something happened in setting up or sending the request that triggered an Error
-      //   print(e.requestOptions);
-      //   print(e.message);
-      // }
-      bool _ = await userRepository.deActivateUser(user.id);
+      // user activated but no internet
+      bool _ = await userApi.deActivateUser(user.id);
       _controller.add(AuthenticationStatus.unknown);
     }
   }
@@ -101,18 +89,16 @@ class AuthenticationRepository {
         Response infoResponse = await dio.get(accountInformationPath);
         var infoData = jsonDecode(infoResponse.data.toString());
 
-        await userRepository.addUserByKey(
-            userId,
-            User(
-                id: userId,
-                ip: ip,
-                name: infoData['data'][0]['name'].toString(),
-                password: password,
-                email: infoData['data'][0]['email'].toString(),
-                mobile: infoData['data'][0]['mobile'].toString(),
-                tel: infoData['data'][0]['tel'].toString(),
-                ext: infoData['data'][0]['ext'].toString(),
-                isActivate: true));
+        await userApi.addUserByKey(
+          userId: userId,
+          ip: ip,
+          name: infoData['data'][0]['name'].toString(),
+          password: password,
+          email: infoData['data'][0]['email'].toString(),
+          mobile: infoData['data'][0]['mobile'].toString(),
+          tel: infoData['data'][0]['tel'].toString(),
+          ext: infoData['data'][0]['ext'].toString(),
+        );
 
         _controller.add(AuthenticationStatus.authenticated);
         return '';
@@ -159,7 +145,7 @@ class AuthenticationRepository {
     required userId,
   }) async {
     // need to call api ?
-    bool _ = await userRepository.deActivateUser(userId);
+    bool _ = await userApi.deActivateUser(userId);
     _controller.add(AuthenticationStatus.unauthenticated);
   }
 
@@ -167,7 +153,7 @@ class AuthenticationRepository {
     required String currentPassword,
     required String newPassword,
   }) async {
-    User? user = userRepository.getActivateUser();
+    User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
       dio.options.baseUrl = 'http://' + user.ip + '/aci/api';

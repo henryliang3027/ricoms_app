@@ -25,14 +25,15 @@ class UserAdapter extends TypeAdapter<User> {
       mobile: fields[5] as String,
       tel: fields[6] as String,
       ext: fields[7] as String,
-      isActivate: fields[8] as bool,
+      bookmarks: (fields[8] as List).cast<int>(),
+      isActivate: fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,6 +51,8 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(7)
       ..write(obj.ext)
       ..writeByte(8)
+      ..write(obj.bookmarks)
+      ..writeByte(9)
       ..write(obj.isActivate);
   }
 

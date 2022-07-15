@@ -9,11 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/repository/user_api.dart';
 
 class RootRepository {
   RootRepository();
-
-  //final User user;
 
   Future<dynamic> getChilds({required User user, required int parentId}) async {
     Dio dio = Dio();
@@ -665,6 +664,36 @@ class RootRepository {
         return false;
       }
     }
+  }
+
+  List<int> getBookmarks({required User user}) {
+    UserApi userApi = UserApi();
+
+    List<int> bookmarks = userApi.getBookmarksByUserId(user.id);
+
+    return bookmarks;
+  }
+
+  Future<bool> addBookmarks({
+    required User user,
+    required int nodeId,
+  }) async {
+    UserApi userApi = UserApi();
+
+    bool resdult = await userApi.addBookmarksByUserId(user.id, nodeId);
+
+    return resdult;
+  }
+
+  Future<bool> deleteBookmarks({
+    required User user,
+    required int nodeId,
+  }) async {
+    UserApi userApi = UserApi();
+
+    bool resdult = await userApi.deleteBookmarksByUserId(user.id, nodeId);
+
+    return resdult;
   }
 }
 

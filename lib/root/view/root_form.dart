@@ -222,7 +222,15 @@ class _SecondAction extends StatelessWidget {
         Node node = state.directory.last;
         if (node.type == 5 || node.type == 2) {
           return IconButton(
-              onPressed: () {}, icon: const Icon(Icons.star_rounded));
+            onPressed: () {
+              state.isAddedToBookmarks
+                  ? context.read<RootBloc>().add(BookmarksDeleted(node.id))
+                  : context.read<RootBloc>().add(BookmarksAdded(node.id));
+            },
+            icon: state.isAddedToBookmarks
+                ? const Icon(Icons.star_outlined)
+                : const Icon(Icons.star_border_outlined),
+          );
         } else {
           return IconButton(
               onPressed: () async {

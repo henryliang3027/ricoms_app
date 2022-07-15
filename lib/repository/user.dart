@@ -12,20 +12,23 @@ class User {
     required this.mobile,
     required this.tel,
     required this.ext,
+    required this.bookmarks,
     required this.isActivate,
   });
 
   const User.empty()
       : this(
-            id: '-',
-            ip: '-',
-            name: '-',
-            password: '-',
-            email: '-',
-            mobile: '-',
-            tel: '-',
-            ext: '-',
-            isActivate: false);
+          id: '-',
+          ip: '-',
+          name: '-',
+          password: '-',
+          email: '-',
+          mobile: '-',
+          tel: '-',
+          ext: '-',
+          bookmarks: const [],
+          isActivate: false,
+        );
 
   @HiveField(0)
   final String id;
@@ -52,5 +55,8 @@ class User {
   final String ext;
 
   @HiveField(8)
+  final List<int> bookmarks;
+
+  @HiveField(9)
   final bool isActivate;
 }

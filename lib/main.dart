@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:ricoms_app/app.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
       deviceRepository: DeviceRepository(),
       dashboardRepository: DashboardRepository(),
       historyRepository: HistoryRepository(),
+      bookmarksRepository: BookmarksRepository(),
     ),
   );
 }
