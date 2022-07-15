@@ -498,8 +498,10 @@ class _NodeSliverList extends StatelessWidget {
           );
         } else {
           // wait for data
-          return const Center(
-            child: CircularProgressIndicator(),
+          return const Expanded(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
       },
