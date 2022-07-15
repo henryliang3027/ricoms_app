@@ -507,7 +507,7 @@ class _NodeDirectory extends StatelessWidget {
     final ScrollController _scrollController = ScrollController();
 
     return BlocBuilder<RootBloc, RootState>(
-      //buildWhen: (previous, current) => previous.directory != current.directory,
+      buildWhen: (previous, current) => previous.directory != current.directory,
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
           WidgetsBinding.instance?.addPostFrameCallback((_) {

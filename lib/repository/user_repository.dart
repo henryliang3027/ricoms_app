@@ -6,7 +6,6 @@ class UserRepository {
   UserRepository() : _userBox = Hive.box('User');
   final Box<User> _userBox;
 
-  // get full note
   User? getActivateUser() {
     List<User> users = _userBox.values.toList();
 

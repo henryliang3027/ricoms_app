@@ -8,9 +8,9 @@ import 'package:dio/dio.dart';
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
-  AuthenticationRepository(this.userRepository);
+  AuthenticationRepository();
 
-  final UserRepository userRepository;
+  final UserRepository userRepository = UserRepository();
   final _controller = StreamController<AuthenticationStatus>();
 
   Stream<AuthenticationStatus> get status async* {
