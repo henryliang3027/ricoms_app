@@ -10,55 +10,74 @@ class SearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Search'),
       ),
       body: Container(
-        padding: const EdgeInsets.all(16.0),
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(4.0),
-            ),
-            _KeywordInput(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            const _WidgetTitle(title: 'Date'),
-            Container(
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  _StartDatePicker(),
-                  Text('-'),
-                  _EndDatePicker(),
-                ],
+            Center(
+              child: Container(
+                height: double.maxFinite,
+                padding: const EdgeInsets.all(16.0),
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(24.0),
+                      ),
+                      const _WidgetTitle(title: 'Date'),
+                      Container(
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            _StartDatePicker(),
+                            Text('-'),
+                            _EndDatePicker(),
+                          ],
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                      const _WidgetTitle(title: 'Category'),
+                      const Padding(
+                        padding: EdgeInsets.all(4.0),
+                      ),
+                      const _ShelfSelector(),
+                      const _SlotSelector(),
+                      const _CurrentIssueCheckBox(),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                      const _WidgetTitle(title: 'Applied Filter'),
+                      const Padding(
+                        padding: EdgeInsets.all(4.0),
+                      ),
+                      const _AppliedFilterList(),
+                    ],
+                  ),
+                ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _KeywordInput(),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                ),
+              ],
             ),
-            const _WidgetTitle(title: 'Category'),
-            const Padding(
-              padding: EdgeInsets.all(4.0),
-            ),
-            const _ShelfSelector(),
-            const _SlotSelector(),
-            const _CurrentIssueCheckBox(),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            const _WidgetTitle(title: 'Applied Filter'),
-            const Padding(
-              padding: EdgeInsets.all(4.0),
-            ),
-            const _AppliedFilterList(),
-            const _SaveButton(),
           ],
         ),
       ),
@@ -114,8 +133,9 @@ class _KeywordInput extends StatelessWidget {
                 }
               },
               onFieldSubmitted: (String? keyword) {
-                context.read<SearchBloc>().add(const FilterAdded());
-                _controller.clear();
+                context.read<SearchBloc>().add(CriteriaSaved(context));
+                // context.read<SearchBloc>().add(const FilterAdded());
+                // _controller.clear();
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
@@ -140,8 +160,9 @@ class _KeywordInput extends StatelessWidget {
                       Icons.search_outlined,
                     ),
                     onPressed: () {
-                      context.read<SearchBloc>().add(const FilterAdded());
-                      _controller.clear();
+                      context.read<SearchBloc>().add(CriteriaSaved(context));
+                      // context.read<SearchBloc>().add(const FilterAdded());
+                      // _controller.clear();
                     },
                   ),
                 ),
@@ -325,7 +346,7 @@ class _ShelfSelector extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: const [
@@ -411,7 +432,7 @@ class _SlotSelector extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: const [
@@ -502,58 +523,30 @@ class _AppliedFilterList extends StatelessWidget {
     return BlocBuilder<SearchBloc, SearchState>(
         buildWhen: (previous, current) => previous.queries != current.queries,
         builder: (context, state) {
-          return Expanded(
-            child: SingleChildScrollView(
-              child: Wrap(
-                spacing: 5.0,
-                //主轴间距
-                runSpacing: 8.0,
-                //副轴间距
-                alignment: WrapAlignment.start,
-                //主轴上的对齐方式
-                crossAxisAlignment: WrapCrossAlignment.start,
-                //副轴上的对齐方式
-                children: List<Widget>.generate(
-                  state.queries.length,
-                  (int index) {
-                    return InputChip(
-                      avatar: index == 0
-                          ? const Icon(Icons.calendar_month_outlined)
-                          : const Icon(Icons.tag),
-                      label: Text(state.queries[index]),
-                      onDeleted: () {
-                        context.read<SearchBloc>().add(FilterDeleted(index));
-                      },
-                    );
+          return Wrap(
+            spacing: 5.0,
+            //主轴间距
+            runSpacing: 8.0,
+            //副轴间距
+            alignment: WrapAlignment.start,
+            //主轴上的对齐方式
+            crossAxisAlignment: WrapCrossAlignment.start,
+            //副轴上的对齐方式
+            children: List<Widget>.generate(
+              state.queries.length,
+              (int index) {
+                return InputChip(
+                  avatar: index == 0
+                      ? const Icon(Icons.calendar_month_outlined)
+                      : const Icon(Icons.tag),
+                  label: Text(state.queries[index]),
+                  onDeleted: () {
+                    context.read<SearchBloc>().add(FilterDeleted(index));
                   },
-                ).toList(),
-              ),
-            ),
+                );
+              },
+            ).toList(),
           );
         });
-  }
-}
-
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        return Center(
-          child: ElevatedButton(
-              key: const Key('historySearchForm_save_raisedButton'),
-              child: const Text(
-                'Save Changes',
-                style: TextStyle(
-                  fontSize: CommonStyle.sizeM,
-                ),
-              ),
-              onPressed: () {
-                context.read<SearchBloc>().add(CriteriaSaved(context));
-              }),
-        );
-      },
-    );
   }
 }

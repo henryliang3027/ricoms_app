@@ -576,7 +576,7 @@ Widget _buildPieChart({
             Text(
               title,
               style: const TextStyle(
-                fontSize: CommonStyle.sizeM,
+                fontSize: CommonStyle.sizeL,
                 fontWeight: FontWeight.w600,
               ),
             ),

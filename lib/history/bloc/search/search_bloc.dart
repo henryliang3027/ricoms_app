@@ -19,7 +19,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<KeywordChanged>(_onKeywordChanged);
     on<CurrentIssueChanged>(_onCurrentIssueChanged);
     on<FilterInitialized>(_onFilterInitialized);
-    on<FilterAdded>(_onFilterAdded);
     on<FilterDeleted>(_onFilterDeleted);
     on<CriteriaSaved>(_onCriteriaSaved);
 
@@ -182,28 +181,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ));
   }
 
-  void _onFilterAdded(
-    FilterAdded event,
-    Emitter<SearchState> emit,
-  ) {
-    List<String> queries = [];
-    queries.addAll(state.queries); // add current queries
-
-    if (!queries.contains(state.keyword)) {
-      queries.add(state.keyword); // add new query from keyword
-    }
-
-    emit(state.copyWith(
-      startDate: state.startDate,
-      endDate: state.endDate,
-      shelf: state.shelf,
-      slot: state.slot,
-      unsolvedOnly: state.unsolvedOnly,
-      keyword: state.keyword,
-      queries: queries,
-    ));
-  }
-
   void _onFilterDeleted(
     FilterDeleted event,
     Emitter<SearchState> emit,
@@ -240,12 +217,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     CriteriaSaved event,
     Emitter<SearchState> emit,
   ) {
+    List<String> queries = [];
+    queries.addAll(state.queries); // add current queries
+
+    if (state.keyword.isNotEmpty) {
+      if (!queries.contains(state.keyword)) {
+        queries.add(state.keyword); // add new query from keyword
+      }
+    }
+
     List<String> keywordQueries = [];
-    if (state.queries.isNotEmpty) {
-      if (_isDateQuery(state.queries[0])) {
-        keywordQueries.addAll(state.queries.skip(1));
+    if (queries.isNotEmpty) {
+      if (_isDateQuery(queries[0])) {
+        keywordQueries.addAll(queries.skip(1));
       } else {
-        keywordQueries.addAll(state.queries);
+        keywordQueries.addAll(queries);
       }
     }
 
@@ -274,8 +260,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   // if query is date, it should be add/update in the first index
   void _updateDateInQureies(List<String> queries, String date) {
     if (queries.isNotEmpty) {
-      RegExp dateRegex =
-          RegExp(r'^([0-9]+\/[0-9]+\/[0-9]+ - [0-9]+\/[0-9]+\/[0-9]+)$');
       if (_isDateQuery(queries[0])) {
         //if first element is date, replace it with new date
         queries[0] = date;
