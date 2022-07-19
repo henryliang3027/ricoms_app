@@ -194,7 +194,7 @@ class _StartDatePicker extends StatelessWidget {
 
             if (datetime != null) {
               String formattedDateTime =
-                  DateFormat('yyyy/MM/dd').format(datetime).toString();
+                  DateFormat('yyyy-MM-dd').format(datetime).toString();
               context
                   .read<SearchBloc>()
                   .add(StartDateChanged(formattedDateTime));
@@ -257,7 +257,7 @@ class _EndDatePicker extends StatelessWidget {
 
             if (datetime != null) {
               String formattedDateTime =
-                  DateFormat('yyyy/MM/dd').format(datetime).toString();
+                  DateFormat('yyyy-MM-dd').format(datetime).toString();
               context.read<SearchBloc>().add(EndDateChanged(formattedDateTime));
             }
           },

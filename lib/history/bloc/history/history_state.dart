@@ -9,6 +9,7 @@ class HistoryState extends Equatable {
     this.currentCriteria = const SearchCriteria(),
     this.errmsg = '',
     this.historyExportMsg = '',
+    this.historyExportFilePath = '',
   });
 
   final List records;
@@ -18,6 +19,7 @@ class HistoryState extends Equatable {
   final SearchCriteria currentCriteria;
   final String errmsg;
   final String historyExportMsg;
+  final String historyExportFilePath;
 
   HistoryState copyWith({
     List? records,
@@ -27,6 +29,7 @@ class HistoryState extends Equatable {
     SearchCriteria? currentCriteria,
     String? errmsg,
     String? historyExportMsg,
+    String? historyExportFilePath,
   }) {
     return HistoryState(
       records: records ?? this.records,
@@ -36,6 +39,8 @@ class HistoryState extends Equatable {
       currentCriteria: currentCriteria ?? this.currentCriteria,
       errmsg: errmsg ?? this.errmsg,
       historyExportMsg: historyExportMsg ?? this.historyExportMsg,
+      historyExportFilePath:
+          historyExportFilePath ?? this.historyExportFilePath,
     );
   }
 
@@ -48,5 +53,6 @@ class HistoryState extends Equatable {
         currentCriteria,
         errmsg,
         historyExportMsg,
+        historyExportFilePath,
       ];
 }

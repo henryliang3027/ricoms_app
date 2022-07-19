@@ -58,8 +58,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     DateTime endDate = DateTime.parse(formattedEndDate);
 
     String displayStartDate =
-        DateFormat('yyyy/MM/dd').format(startDate).toString();
-    String displayEndDate = DateFormat('yyyy/MM/dd').format(endDate).toString();
+        DateFormat('yyyy-MM-dd').format(startDate).toString();
+    String displayEndDate = DateFormat('yyyy-MM-dd').format(endDate).toString();
 
     //if end date should earlier than start date, then asign start date,
     //otherwise, asign end date
@@ -249,7 +249,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   bool _isDateQuery(String query) {
     RegExp dateRegex =
-        RegExp(r'^([0-9]+\/[0-9]+\/[0-9]+ - [0-9]+\/[0-9]+\/[0-9]+)$');
+        RegExp(r'^([0-9]+-[0-9]+-[0-9]+ - [0-9]+-[0-9]+-[0-9]+)$');
     if (dateRegex.hasMatch(query)) {
       return true;
     } else {

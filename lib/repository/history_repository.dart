@@ -251,7 +251,7 @@ class HistoryRepository {
     dio.options.receiveTimeout = 10000;
 
     String nodeExportApiPath =
-        '/history/export?start_time=$startDate&end_time=$endDate&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q="$queryData"&node_id=$nodeId&uid=${user.id}';
+        '/history/export?start_time=$startDate&end_time=$endDate&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData&node_id=$nodeId&uid=${user.id}';
 
     try {
       //404
@@ -317,10 +317,10 @@ class HistoryRepository {
             } else {
               //Directory Already Existed
             }
-
-            File f = File('$externalAppFolderPath/$filename');
-            f.writeAsString(csv);
-            return [true, 'Export root data success'];
+            String fullWrittenPath = '$externalAppFolderPath/$filename';
+            File file = File(fullWrittenPath);
+            file.writeAsString(csv);
+            return [true, 'Export root data success', fullWrittenPath];
           }
         } else {
           openAppSettings();

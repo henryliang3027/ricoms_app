@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
@@ -65,7 +66,22 @@ class HistoryForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              SnackBar(content: Text(state.historyExportMsg)),
+              SnackBar(
+                content: Text(state.historyExportMsg),
+                action: SnackBarAction(
+                  label: 'Open',
+                  onPressed: () async {
+                    try {
+                      const platform =
+                          MethodChannel('com.example.ricoms_app/open_file');
+                      await platform.invokeMethod('openFile',
+                          {'filePath': state.historyExportFilePath});
+                    } on PlatformException catch (e) {
+                      _showFailureDialog(e.message.toString());
+                    }
+                  },
+                ),
+              ),
             );
         } else if (state.historyExportStatus.isRequestFailure) {
           _showFailureDialog(state.historyExportMsg);

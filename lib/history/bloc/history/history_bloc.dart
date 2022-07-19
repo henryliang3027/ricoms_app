@@ -22,8 +22,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     on<HistoryRecordsExport>(_onHistoryRecordsExport);
 
     add(HistoryRequested(SearchCriteria(
-      startDate: DateFormat('yyyy/MM/dd').format(DateTime.now()).toString(),
-      endDate: DateFormat('yyyy/MM/dd').format(DateTime.now()).toString(),
+      startDate: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
+      endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
     )));
   }
 
@@ -112,11 +112,13 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(
         historyExportStatus: FormStatus.requestSuccess,
         historyExportMsg: result[1],
+        historyExportFilePath: result[2],
       ));
     } else {
       emit(state.copyWith(
         historyExportStatus: FormStatus.requestFailure,
         historyExportMsg: result[1],
+        historyExportFilePath: '',
       ));
     }
   }
