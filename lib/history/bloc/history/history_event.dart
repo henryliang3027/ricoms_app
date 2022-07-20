@@ -13,8 +13,17 @@ class HistoryRequested extends HistoryEvent {
   List<Object?> get props => [searchCriteria];
 }
 
-class CheckDeviceStatus extends HistoryEvent {
-  const CheckDeviceStatus(
+class MoreRecordsRequested extends HistoryEvent {
+  const MoreRecordsRequested(this.startTrapId);
+
+  final int startTrapId;
+
+  @override
+  List<Object?> get props => [startTrapId];
+}
+
+class DeviceStatusChecked extends HistoryEvent {
+  const DeviceStatusChecked(
     this.path,
     this.pageController,
   );
@@ -29,8 +38,22 @@ class CheckDeviceStatus extends HistoryEvent {
       ];
 }
 
-class HistoryRecordsExport extends HistoryEvent {
-  const HistoryRecordsExport();
+class FloatingActionButtonHided extends HistoryEvent {
+  const FloatingActionButtonHided();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class FloatingActionButtonShowed extends HistoryEvent {
+  const FloatingActionButtonShowed();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class HistoryRecordsExported extends HistoryEvent {
+  const HistoryRecordsExported();
 
   @override
   List<Object?> get props => [];

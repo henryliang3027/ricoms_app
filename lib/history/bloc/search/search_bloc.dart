@@ -20,6 +20,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<CurrentIssueChanged>(_onCurrentIssueChanged);
     on<FilterInitialized>(_onFilterInitialized);
     on<FilterDeleted>(_onFilterDeleted);
+    on<FilterCleared>(_onFilterCleared);
     on<CriteriaSaved>(_onCriteriaSaved);
 
     add(FilterInitialized(_searchCriteria));
@@ -211,6 +212,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         queries: queries,
       ));
     }
+  }
+
+  void _onFilterCleared(
+    FilterCleared event,
+    Emitter<SearchState> emit,
+  ) {
+    emit(state.copyWith(
+      startDate: '',
+      endDate: '',
+      shelf: state.shelf,
+      slot: state.slot,
+      unsolvedOnly: false,
+      keyword: '',
+      queries: [],
+    ));
   }
 
   void _onCriteriaSaved(

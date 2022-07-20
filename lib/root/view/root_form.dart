@@ -493,8 +493,10 @@ class _NodeSliverList extends StatelessWidget {
             );
           }
         } else if (state.formStatus.isRequestFailure) {
-          return Center(
-            child: Text(state.errmsg),
+          return Expanded(
+            child: Center(
+              child: Text(state.errmsg),
+            ),
           );
         } else {
           // wait for data

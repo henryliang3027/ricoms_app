@@ -14,7 +14,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
-class HistoryForm extends StatelessWidget {
+class HistoryForm extends StatefulWidget {
   const HistoryForm({
     Key? key,
     required this.pageController,
@@ -25,7 +25,35 @@ class HistoryForm extends StatelessWidget {
   final List initialPath;
 
   @override
+  State<HistoryForm> createState() => _HistoryFormState();
+}
+
+class _HistoryFormState extends State<HistoryForm> {
+  late final ScrollController _scrollController = ScrollController();
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= maxScroll;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    void _onScroll() {
+      if (context.read<HistoryBloc>().state.isShowFloatingActionButton) {
+        if (!_isBottom) {
+          context.read<HistoryBloc>().add(const FloatingActionButtonHided());
+        }
+      } else {
+        if (_isBottom) {
+          context.read<HistoryBloc>().add(const FloatingActionButtonShowed());
+        }
+      }
+    }
+
+    _scrollController.addListener(_onScroll);
+
     Future<void> _showFailureDialog(String msg) async {
       return showDialog<void>(
         context: context,
@@ -85,6 +113,8 @@ class HistoryForm extends StatelessWidget {
             );
         } else if (state.historyExportStatus.isRequestFailure) {
           _showFailureDialog(state.historyExportMsg);
+        } else if (state.moreRecordsStatus.isRequestFailure) {
+          _showFailureDialog(state.moreRecordsMessage);
         }
       },
       child: Scaffold(
@@ -96,27 +126,59 @@ class HistoryForm extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
-          pageController: pageController,
+          pageController: widget.pageController,
           selectedIndex: 3,
         ),
         drawer: HomeDrawer(
           user: context.select(
             (AuthenticationBloc bloc) => bloc.state.user,
           ),
-          pageController: pageController,
+          pageController: widget.pageController,
           currentPageIndex: 3,
         ),
         body: _HistorySliverList(
-          pageController: pageController,
-          initialPath: initialPath,
+          scrollController: _scrollController,
+          pageController: widget.pageController,
+          initialPath: widget.initialPath,
         ),
+        floatingActionButton: const _HistoryFloatingActionButton(),
       ),
     );
   }
 }
 
+class _HistoryFloatingActionButton extends StatelessWidget {
+  const _HistoryFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HistoryBloc, HistoryState>(
+      buildWhen: (previous, current) =>
+          previous.isShowFloatingActionButton !=
+          current.isShowFloatingActionButton,
+      builder: (context, state) {
+        return Visibility(
+          visible: state.isShowFloatingActionButton,
+          child: FloatingActionButton(
+            onPressed: () {
+              context
+                  .read<HistoryBloc>()
+                  .add(MoreRecordsRequested(state.records.last.trap_id));
+            },
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _SearchAction extends StatelessWidget {
-  const _SearchAction({Key? key}) : super(key: key);
+  const _SearchAction({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +205,7 @@ class _ExportAction extends StatelessWidget {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
       return IconButton(
           onPressed: () async {
-            context.read<HistoryBloc>().add(const HistoryRecordsExport());
+            context.read<HistoryBloc>().add(const HistoryRecordsExported());
           },
           icon: const Icon(Icons.save_alt_outlined));
     });
@@ -153,10 +215,12 @@ class _ExportAction extends StatelessWidget {
 class _HistorySliverList extends StatelessWidget {
   const _HistorySliverList({
     Key? key,
+    required this.scrollController,
     required this.pageController,
     required this.initialPath,
   }) : super(key: key);
 
+  final ScrollController scrollController;
   final PageController pageController;
   final List initialPath;
 
@@ -186,12 +250,13 @@ class _HistorySliverList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
+            color: Colors.white,
             child: InkWell(
               onTap: () {
                 initialPath.clear();
                 initialPath.addAll(record.path);
                 // because HistoryBloc cannot be found inside ModalBottomSheet
-                // provide HistoryBloc fo it by using BlocProvider
+                // provide HistoryBloc for it by using BlocProvider
                 showModalBottomSheet(
                     context: context,
                     builder: (_) => BlocProvider.value(
@@ -304,18 +369,29 @@ class _HistorySliverList extends StatelessWidget {
           );
         } else if (state.status.isRequestSuccess) {
           return Container(
-              color: Colors.grey.shade300,
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: _historySliverChildBuilderDelegate(
-                      state.records,
-                      initialPath,
-                      pageController,
-                    ),
-                  )
-                ],
-              ));
+            color: Colors.grey.shade300,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverList(
+                  delegate: _historySliverChildBuilderDelegate(
+                    state.records,
+                    initialPath,
+                    pageController,
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return Container(
+                      height: 100,
+                      color: Colors.white,
+                    );
+                  }, childCount: 1),
+                )
+              ],
+            ),
+          );
         } else if (state.status.isRequestFailure) {
           return Center(
             child: Text(state.errmsg),
@@ -394,7 +470,7 @@ class _HistoryBottomMenu extends StatelessWidget {
             Navigator.pop(context);
             context
                 .read<HistoryBloc>()
-                .add(CheckDeviceStatus(record.path, pageController));
+                .add(DeviceStatusChecked(record.path, pageController));
           },
         ),
       ],

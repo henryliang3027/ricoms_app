@@ -45,7 +45,7 @@ class HistoryRepository {
         List<Record> recordDataList = [];
 
         for (var element in rawDataList) {
-          if (element['node_id'] != null) {
+          if (element['node_id'] != null && element['id'] != null) {
             String rawPath = element['path'];
             List<String> nodeIdList =
                 rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
@@ -67,6 +67,7 @@ class HistoryRepository {
 
             Record record = Record(
               id: element['node_id'],
+              trap_id: element['id'],
               event: element['event'] ?? '',
               value: element['value'] ?? '',
               group: element['group'] ?? '',
@@ -393,6 +394,7 @@ class HistoryRepository {
 class Record {
   const Record({
     required this.id, //device id
+    this.trap_id = -1,
     this.event = '',
     this.value = '',
     this.group = '', // device group
@@ -410,6 +412,7 @@ class Record {
   });
 
   final int id;
+  final int trap_id;
   final String event;
   final String value;
   final String group;

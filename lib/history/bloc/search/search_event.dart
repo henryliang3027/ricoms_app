@@ -83,6 +83,13 @@ class FilterDeleted extends SearchEvent {
   List<Object?> get props => [index];
 }
 
+class FilterCleared extends SearchEvent {
+  const FilterCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class CriteriaSaved extends SearchEvent {
   const CriteriaSaved(this.context);
 

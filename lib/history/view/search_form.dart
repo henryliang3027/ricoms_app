@@ -524,28 +524,38 @@ class _AppliedFilterList extends StatelessWidget {
         buildWhen: (previous, current) => previous.queries != current.queries,
         builder: (context, state) {
           return Wrap(
+            // main axis spacing
             spacing: 5.0,
-            //主轴间距
+            // cross axis spacing
             runSpacing: 8.0,
-            //副轴间距
+            // main axis alignment
             alignment: WrapAlignment.start,
-            //主轴上的对齐方式
+            // cross axis alignment
             crossAxisAlignment: WrapCrossAlignment.start,
-            //副轴上的对齐方式
-            children: List<Widget>.generate(
-              state.queries.length,
-              (int index) {
-                return InputChip(
-                  avatar: index == 0
-                      ? const Icon(Icons.calendar_month_outlined)
-                      : const Icon(Icons.tag),
-                  label: Text(state.queries[index]),
-                  onDeleted: () {
-                    context.read<SearchBloc>().add(FilterDeleted(index));
-                  },
-                );
-              },
-            ).toList(),
+            children: [
+              state.queries.isNotEmpty
+                  ? InputChip(
+                      label: const Text('Clear all filters'),
+                      onPressed: () {
+                        context.read<SearchBloc>().add(const FilterCleared());
+                      },
+                    )
+                  : Container(),
+              ...List<Widget>.generate(
+                state.queries.length,
+                (int index) {
+                  return InputChip(
+                    avatar: index == 0
+                        ? const Icon(Icons.calendar_month_outlined)
+                        : const Icon(Icons.tag),
+                    label: Text(state.queries[index]),
+                    onDeleted: () {
+                      context.read<SearchBloc>().add(FilterDeleted(index));
+                    },
+                  );
+                },
+              ).toList(),
+            ],
           );
         });
   }
