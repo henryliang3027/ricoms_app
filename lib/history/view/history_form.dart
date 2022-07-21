@@ -13,8 +13,9 @@ import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/display_style.dart';
 
-class HistoryForm extends StatefulWidget {
+class HistoryForm extends StatelessWidget {
   const HistoryForm({
     Key? key,
     required this.pageController,
@@ -25,35 +26,7 @@ class HistoryForm extends StatefulWidget {
   final List initialPath;
 
   @override
-  State<HistoryForm> createState() => _HistoryFormState();
-}
-
-class _HistoryFormState extends State<HistoryForm> {
-  late final ScrollController _scrollController = ScrollController();
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= maxScroll;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    void _onScroll() {
-      if (context.read<HistoryBloc>().state.isShowFloatingActionButton) {
-        if (!_isBottom) {
-          context.read<HistoryBloc>().add(const FloatingActionButtonHided());
-        }
-      } else {
-        if (_isBottom) {
-          context.read<HistoryBloc>().add(const FloatingActionButtonShowed());
-        }
-      }
-    }
-
-    _scrollController.addListener(_onScroll);
-
     Future<void> _showFailureDialog(String msg) async {
       return showDialog<void>(
         context: context,
@@ -126,20 +99,19 @@ class _HistoryFormState extends State<HistoryForm> {
           ],
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
-          pageController: widget.pageController,
+          pageController: pageController,
           selectedIndex: 3,
         ),
         drawer: HomeDrawer(
           user: context.select(
             (AuthenticationBloc bloc) => bloc.state.user,
           ),
-          pageController: widget.pageController,
+          pageController: pageController,
           currentPageIndex: 3,
         ),
         body: _HistorySliverList(
-          scrollController: _scrollController,
-          pageController: widget.pageController,
-          initialPath: widget.initialPath,
+          pageController: pageController,
+          initialPath: initialPath,
         ),
         floatingActionButton: const _HistoryFloatingActionButton(),
       ),
@@ -213,31 +185,14 @@ class _ExportAction extends StatelessWidget {
 }
 
 class _HistorySliverList extends StatelessWidget {
-  const _HistorySliverList({
+  _HistorySliverList({
     Key? key,
-    required this.scrollController,
     required this.pageController,
     required this.initialPath,
   }) : super(key: key);
 
-  final ScrollController scrollController;
   final PageController pageController;
   final List initialPath;
-
-  String _getDisplayName(Record record) {
-    if (record.type == 5) {
-      //a8k slot
-      if (record.shelf == 0 && record.slot == 1) {
-        return '${record.name} [ PCM2 (L) ]';
-      } else if (record.shelf != 0 && record.slot == 0) {
-        return '${record.name} [ Shelf ${record.shelf} / FAN ]';
-      } else {
-        return '${record.name} [ Shelf ${record.shelf} / Slot ${record.slot} ]';
-      }
-    } else {
-      return record.name;
-    }
-  }
 
   SliverChildBuilderDelegate _historySliverChildBuilderDelegate(
     List data,
@@ -309,7 +264,7 @@ class _HistorySliverList extends StatelessWidget {
                             padding:
                                 const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                             child: Text(
-                              _getDisplayName(record),
+                              DisplayStyle.getA8KDisplayName(record),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.roboto(
@@ -361,6 +316,29 @@ class _HistorySliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController _scrollController = ScrollController();
+
+    bool _isBottom() {
+      if (!_scrollController.hasClients) return false;
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+      return currentScroll >= maxScroll;
+    }
+
+    void _onScroll() {
+      if (context.read<HistoryBloc>().state.isShowFloatingActionButton) {
+        if (!_isBottom()) {
+          context.read<HistoryBloc>().add(const FloatingActionButtonHided());
+        }
+      } else {
+        if (_isBottom()) {
+          context.read<HistoryBloc>().add(const FloatingActionButtonShowed());
+        }
+      }
+    }
+
+    _scrollController.addListener(_onScroll);
+
     return BlocBuilder<HistoryBloc, HistoryState>(
       builder: (context, state) {
         if (state.status.isRequestInProgress) {
@@ -371,7 +349,7 @@ class _HistorySliverList extends StatelessWidget {
           return Container(
             color: Colors.grey.shade300,
             child: CustomScrollView(
-              controller: scrollController,
+              controller: _scrollController,
               slivers: [
                 SliverList(
                   delegate: _historySliverChildBuilderDelegate(

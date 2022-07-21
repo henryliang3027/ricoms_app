@@ -362,7 +362,8 @@ class _NodeSliverList extends StatelessWidget {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: DisplayStyle.getDisplayName(node, context,
+                            child: DisplayStyle.getNodeDisplayName(
+                                node, context,
                                 isLastItemOfDirectory: false),
                           ),
                         ),
@@ -599,10 +600,10 @@ class _NodeDirectory extends StatelessWidget {
                                       ChildDataRequested(state.directory[i]));
                                 },
                                 child: state.directory.length - 1 == i
-                                    ? DisplayStyle.getDisplayName(
+                                    ? DisplayStyle.getNodeDisplayName(
                                         state.directory[i], context,
                                         isLastItemOfDirectory: true)
-                                    : DisplayStyle.getDisplayName(
+                                    : DisplayStyle.getNodeDisplayName(
                                         state.directory[i], context,
                                         isLastItemOfDirectory: false),
                                 style: ElevatedButton.styleFrom(

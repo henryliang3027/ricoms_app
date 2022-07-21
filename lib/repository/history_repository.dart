@@ -242,7 +242,8 @@ class HistoryRepository {
     String slot = '',
     String next = '',
     String nodeId = '',
-    String trapId = '',
+    String startTrapId = '',
+    String endTrapId = '',
     String unsolvedOnly = '0',
     String queryData = '',
   }) async {
@@ -251,8 +252,9 @@ class HistoryRepository {
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
+    String trapIdRange = '${startTrapId}_$endTrapId';
     String nodeExportApiPath =
-        '/history/export?start_time=$startDate&end_time=$endDate&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData&node_id=$nodeId&uid=${user.id}';
+        '/history/export?start_time=$startDate&end_time=$endDate&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapIdRange&current=$unsolvedOnly&q=$queryData&node_id=$nodeId&uid=${user.id}';
 
     try {
       //404
@@ -286,9 +288,14 @@ class HistoryRepository {
       if (Platform.isIOS) {
         Directory appDocDir = await getApplicationDocumentsDirectory();
         String appDocPath = appDocDir.path;
-        File f = File('$appDocPath/$filename');
+        String fullWrittenPath = '$appDocPath/$filename';
+        File f = File(fullWrittenPath);
         f.writeAsString(csv);
-        return [true, 'Export root data success'];
+        return [
+          true,
+          'Export root data success',
+          fullWrittenPath,
+        ];
       } else if (Platform.isAndroid) {
         bool isPermit = await requestPermission();
         if (isPermit) {
@@ -321,7 +328,11 @@ class HistoryRepository {
             String fullWrittenPath = '$externalAppFolderPath/$filename';
             File file = File(fullWrittenPath);
             file.writeAsString(csv);
-            return [true, 'Export root data success', fullWrittenPath];
+            return [
+              true,
+              'Export root data success',
+              fullWrittenPath,
+            ];
           }
         } else {
           openAppSettings();

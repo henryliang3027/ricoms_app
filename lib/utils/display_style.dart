@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class DisplayStyle {
-  static Widget getDisplayName(Node node, BuildContext context,
+  static Widget getNodeDisplayName(Node node, BuildContext context,
       {bool isLastItemOfDirectory = false}) {
     //for sliver list and directory
     // display name for each row
@@ -16,14 +16,12 @@ class DisplayStyle {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style,
             children: <TextSpan>[
-              TextSpan(
+              const TextSpan(
                 text: "FAN",
                 style: TextStyle(
                   decoration: TextDecoration.underline,
                   fontSize: CommonStyle.sizeXL,
-                  color: isLastItemOfDirectory
-                      ? CustomStyle.severityColor[node.status]
-                      : Colors.blue,
+                  color: Colors.blue,
                 ),
               ),
               const TextSpan(
@@ -50,12 +48,10 @@ class DisplayStyle {
             children: <TextSpan>[
               TextSpan(
                 text: node.slot.toString().padLeft(2, '0'),
-                style: TextStyle(
+                style: const TextStyle(
                   decoration: TextDecoration.underline,
                   fontSize: CommonStyle.sizeXL,
-                  color: isLastItemOfDirectory
-                      ? CustomStyle.severityColor[node.status]
-                      : Colors.blue,
+                  color: Colors.blue,
                 ),
               ),
               const TextSpan(
@@ -137,6 +133,21 @@ class DisplayStyle {
           ],
         ),
       );
+    }
+  }
+
+  static String getA8KDisplayName(Record record) {
+    if (record.type == 5) {
+      //a8k slot
+      if (record.shelf == 0 && record.slot == 1) {
+        return '${record.name} [ PCM2 (L) ]';
+      } else if (record.shelf != 0 && record.slot == 0) {
+        return '${record.name} [ Shelf ${record.shelf} / FAN ]';
+      } else {
+        return '${record.name} [ Shelf ${record.shelf} / Slot ${record.slot} ]';
+      }
+    } else {
+      return record.name;
     }
   }
 }

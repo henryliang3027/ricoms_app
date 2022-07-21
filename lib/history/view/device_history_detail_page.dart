@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/display_style.dart';
 
 class HistoryDetailPage extends StatelessWidget {
   const HistoryDetailPage({Key? key, required this.record}) : super(key: key);
@@ -55,7 +56,7 @@ class HistoryDetailPage extends StatelessWidget {
               ),
               _Item(
                 labelText: 'Name',
-                initialValue: record.name,
+                initialValue: DisplayStyle.getA8KDisplayName(record),
               ),
               _Item(
                 labelText: 'Time Received',

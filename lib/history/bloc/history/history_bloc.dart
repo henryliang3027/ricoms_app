@@ -42,6 +42,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       targetDeviceStatus: FormStatus.none,
       moreRecordsStatus: FormStatus.none,
       status: FormStatus.requestInProgress,
+      isShowFloatingActionButton: false,
     ));
 
     List<String> queries = event.searchCriteria.queries;
@@ -173,8 +174,16 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     String formattedQuery = _formatQuery(state.currentCriteria.queries);
 
+    String startTrapId =
+        state.records.isNotEmpty ? state.records.last.trap_id.toString() : '';
+
+    String endTrapId =
+        state.records.isNotEmpty ? state.records.first.trap_id.toString() : '';
+
     List<dynamic> result = await _historyRepository.exportHistory(
         user: _user,
+        startTrapId: startTrapId,
+        endTrapId: endTrapId,
         startDate: state.currentCriteria.startDate,
         endDate: state.currentCriteria.endDate,
         shelf: state.currentCriteria.shelf,
