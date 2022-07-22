@@ -14,6 +14,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';
+import 'package:open_file/open_file.dart';
 
 class HistoryForm extends StatelessWidget {
   const HistoryForm({
@@ -72,14 +73,20 @@ class HistoryForm extends StatelessWidget {
                 action: SnackBarAction(
                   label: 'Open',
                   onPressed: () async {
-                    try {
-                      const platform =
-                          MethodChannel('com.example.ricoms_app/open_file');
-                      await platform.invokeMethod('openFile',
-                          {'filePath': state.historyExportFilePath});
-                    } on PlatformException catch (e) {
-                      _showFailureDialog(e.message.toString());
-                    }
+                    //String test = state.historyExportFilePath.split('.')[0];
+                    OpenFile.open(
+                      state.historyExportFilePath,
+                      type: 'text/comma-separated-values',
+                      uti: 'public.comma-separated-values-text',
+                    );
+                    // try {
+                    //   const platform =
+                    //       MethodChannel('com.example.ricoms_app/open_file');
+                    //   await platform.invokeMethod('openFile',
+                    //       {'filePath': state.historyExportFilePath});
+                    // } on PlatformException catch (e) {
+                    //   _showFailureDialog(e.message.toString());
+                    // }
                   },
                 ),
               ),
