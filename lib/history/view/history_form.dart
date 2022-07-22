@@ -73,20 +73,11 @@ class HistoryForm extends StatelessWidget {
                 action: SnackBarAction(
                   label: 'Open',
                   onPressed: () async {
-                    //String test = state.historyExportFilePath.split('.')[0];
                     OpenFile.open(
                       state.historyExportFilePath,
                       type: 'text/comma-separated-values',
                       uti: 'public.comma-separated-values-text',
                     );
-                    // try {
-                    //   const platform =
-                    //       MethodChannel('com.example.ricoms_app/open_file');
-                    //   await platform.invokeMethod('openFile',
-                    //       {'filePath': state.historyExportFilePath});
-                    // } on PlatformException catch (e) {
-                    //   _showFailureDialog(e.message.toString());
-                    // }
                   },
                 ),
               ),
@@ -141,6 +132,8 @@ class _HistoryFloatingActionButton extends StatelessWidget {
         return Visibility(
           visible: state.isShowFloatingActionButton,
           child: FloatingActionButton(
+            elevation: 0.0,
+            backgroundColor: const Color(0x742195F3),
             onPressed: () {
               context
                   .read<HistoryBloc>()
@@ -200,6 +193,7 @@ class _HistorySliverList extends StatelessWidget {
 
   final PageController pageController;
   final List initialPath;
+  final ScrollController _scrollController = ScrollController();
 
   SliverChildBuilderDelegate _historySliverChildBuilderDelegate(
     List data,
@@ -323,8 +317,6 @@ class _HistorySliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController _scrollController = ScrollController();
-
     bool _isBottom() {
       if (!_scrollController.hasClients) return false;
       final maxScroll = _scrollController.position.maxScrollExtent;
@@ -353,6 +345,15 @@ class _HistorySliverList extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else if (state.status.isRequestSuccess) {
+          if (state.moreRecordsStatus.isRequestSuccess) {
+            WidgetsBinding.instance?.addPostFrameCallback((_) {
+              if (_scrollController.hasClients) {
+                _scrollController.animateTo(_scrollController.offset + 20,
+                    duration: const Duration(seconds: 1), curve: Curves.ease);
+              }
+            });
+          }
+
           return Container(
             color: Colors.grey.shade300,
             child: CustomScrollView(
@@ -365,15 +366,15 @@ class _HistorySliverList extends StatelessWidget {
                     pageController,
                   ),
                 ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                    return Container(
-                      height: 100,
-                      color: Colors.white,
-                    );
-                  }, childCount: 1),
-                )
+                // SliverList(
+                //   delegate: SliverChildBuilderDelegate(
+                //       (BuildContext context, int index) {
+                //     return Container(
+                //       height: 80,
+                //       color: Colors.white,
+                //     );
+                //   }, childCount: 1),
+                // )
               ],
             ),
           );

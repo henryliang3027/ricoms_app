@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_file/open_file.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -114,6 +115,24 @@ class RootForm extends StatelessWidget {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
+        } else if (state.nodesExportStatus.isRequestSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.nodesExportMsg),
+                action: SnackBarAction(
+                  label: 'Open',
+                  onPressed: () async {
+                    OpenFile.open(
+                      state.nodesExportFilePath,
+                      type: 'text/comma-separated-values',
+                      uti: 'public.comma-separated-values-text',
+                    );
+                  },
+                ),
+              ),
+            );
         }
       },
       child: WillPopScope(
@@ -234,34 +253,14 @@ class _SecondAction extends StatelessWidget {
         } else {
           return IconButton(
               onPressed: () async {
-                List<dynamic> result =
-                    await RepositoryProvider.of<RootRepository>(
-                  context,
-                ).exportNodes(
-                  user: context.read<AuthenticationBloc>().state.user,
-                );
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(content: Text(result[1])),
-                  );
+                context.read<RootBloc>().add(const NodesExported());
               },
               icon: const Icon(Icons.save_alt_outlined));
         }
       } else {
         return IconButton(
             onPressed: () async {
-              List<dynamic> result =
-                  await RepositoryProvider.of<RootRepository>(
-                context,
-              ).exportNodes(
-                user: context.read<AuthenticationBloc>().state.user,
-              );
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(content: Text(result[1])),
-                );
+              context.read<RootBloc>().add(const NodesExported());
             },
             icon: const Icon(Icons.save_alt_outlined));
       }
@@ -279,16 +278,20 @@ class _DynamicFloatingActionButton extends StatelessWidget {
         if (state.directory.last.type == 1) {
           // 1 is group
           return FloatingActionButton(
-              backgroundColor: Colors.blue.shade900,
-              onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (_) => _NodeCreationBottomMenu(
-                          superContext: context,
-                          parentNode: state.directory.last,
-                        ));
-              },
-              child: const Icon(CustomIcons.add));
+            elevation: 0.0,
+            backgroundColor: const Color(0x742195F3),
+            onPressed: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (_) => _NodeCreationBottomMenu(
+                        superContext: context,
+                        parentNode: state.directory.last,
+                      ));
+            },
+            child: const Icon(
+              CustomIcons.add,
+            ),
+          );
         } else {
           return const Center();
         }

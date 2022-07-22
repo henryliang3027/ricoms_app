@@ -29,6 +29,13 @@ class NodeDeleted extends RootEvent {
   List<Object?> get props => [node];
 }
 
+class NodesExported extends RootEvent {
+  const NodesExported();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class DeviceDataRequested extends RootEvent {
   const DeviceDataRequested(this.node);
 

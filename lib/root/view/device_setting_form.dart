@@ -224,7 +224,8 @@ class CreateEditingTool extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
-                backgroundColor: Colors.blue.shade900,
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
                 onPressed: () {
                   List<Map<String, String>> dataList = [];
 
@@ -300,7 +301,8 @@ class CreateEditingTool extends StatelessWidget {
                 padding: EdgeInsets.all(6.0),
               ),
               FloatingActionButton(
-                  backgroundColor: Colors.blue.shade900,
+                  elevation: 0.0,
+                  backgroundColor: const Color(0x742195F3),
                   onPressed: () {
                     context
                         .read<DeviceBloc>()
@@ -310,7 +312,8 @@ class CreateEditingTool extends StatelessWidget {
             ],
           )
         : FloatingActionButton(
-            backgroundColor: Colors.blue.shade900,
+            elevation: 0.0,
+            backgroundColor: const Color(0x742195F3),
             onPressed: () {
               context.read<DeviceBloc>().add(const FormStatusChanged(true));
             },

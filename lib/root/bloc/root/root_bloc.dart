@@ -23,6 +23,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         super(const RootState()) {
     on<ChildDataRequested>(_onChildDataRequested);
     on<NodeDeleted>(_onNodeDeleted);
+    on<NodesExported>(_onNodesExported);
     on<ChildDataUpdated>(_onChildDataUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
@@ -97,12 +98,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
+            nodesExportStatus: FormStatus.none,
             directory: directory,
           ));
         } else {
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
+            nodesExportStatus: FormStatus.none,
             directory: directory,
             data: result[1],
           ));
@@ -118,6 +121,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
           submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
           data: data,
           directory: directory,
         ));
@@ -125,6 +129,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
           submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
           errmsg: data,
         ));
       }
@@ -153,6 +158,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         data: data,
         directory: state.directory.isNotEmpty ? state.directory : tempDirectory,
       ));
@@ -160,6 +166,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         errmsg: data,
       ));
     }
@@ -170,7 +177,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     emit(state.copyWith(
-        submissionStatus: SubmissionStatus.submissionInProgress));
+      nodesExportStatus: FormStatus.none,
+      submissionStatus: SubmissionStatus.submissionInProgress,
+    ));
 
     List<dynamic> msg =
         await _rootRepository.deleteNode(user: _user, currentNode: event.node);
@@ -187,6 +196,32 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
+  Future<void> _onNodesExported(
+    NodesExported event,
+    Emitter<RootState> emit,
+  ) async {
+    emit(state.copyWith(
+      submissionStatus: SubmissionStatus.none,
+      nodesExportStatus: FormStatus.requestInProgress,
+    ));
+
+    List<dynamic> result = await _rootRepository.exportNodes(user: _user);
+
+    if (result[0]) {
+      emit(state.copyWith(
+        nodesExportStatus: FormStatus.requestSuccess,
+        nodesExportMsg: result[1],
+        nodesExportFilePath: result[2],
+      ));
+    } else {
+      emit(state.copyWith(
+        nodesExportStatus: FormStatus.requestFailure,
+        nodesExportMsg: result[1],
+        nodesExportFilePath: '',
+      ));
+    }
+  }
+
   void _onDeviceDataRequested(
     DeviceDataRequested event,
     Emitter<RootState> emit,
@@ -196,6 +231,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
+      nodesExportStatus: FormStatus.none,
     ));
 
     List<Node> directory = [];
@@ -220,7 +256,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
-      submissionStatus: SubmissionStatus.none,
       directory: directory,
       isAddedToBookmarks: isAddedToBookmarks,
     ));
@@ -238,11 +273,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
 
       emit(state.copyWith(
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         isAddedToBookmarks: isAddedToBookmarks,
         bookmarksMsg: 'Added to bookmarks',
       ));
     } else {
       emit(state.copyWith(
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         bookmarksMsg:
             'Unable to add to bookmarks, please check your account and login again.',
       ));
@@ -261,11 +300,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
 
       emit(state.copyWith(
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         isAddedToBookmarks: isAddedToBookmarks,
         bookmarksMsg: 'Removed from bookmarks',
       ));
     } else {
       emit(state.copyWith(
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
         bookmarksMsg:
             'Unable to delete from bookmarks, please check your account and login again.',
       ));
@@ -279,6 +322,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     //avoid user click node and dataStream trigger at the same time, stop before Request for child
     _dataStreamSubscription?.pause();
     emit(state.copyWith(
+      nodesExportStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
     ));
@@ -298,7 +342,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     if (result[0]) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
-        submissionStatus: SubmissionStatus.none,
         directory: directory,
       ));
     } else {

@@ -562,9 +562,14 @@ class RootRepository {
       if (Platform.isIOS) {
         Directory appDocDir = await getApplicationDocumentsDirectory();
         String appDocPath = appDocDir.path;
-        File f = File('$appDocPath/$filename');
+        String fullWrittenPath = '$appDocPath/$filename';
+        File f = File(fullWrittenPath);
         f.writeAsString(csv);
-        return [true, 'Export root data success'];
+        return [
+          true,
+          'Export root data success',
+          fullWrittenPath,
+        ];
       } else if (Platform.isAndroid) {
         bool isPermit = await requestPermission();
         if (isPermit) {
@@ -594,10 +599,14 @@ class RootRepository {
             } else {
               //Directory Already Existed
             }
-
-            File f = File('$externalAppFolderPath/$filename');
-            f.writeAsString(csv);
-            return [true, 'Export root data success'];
+            String fullWrittenPath = '$externalAppFolderPath/$filename';
+            File file = File(fullWrittenPath);
+            file.writeAsString(csv);
+            return [
+              true,
+              'Export root data success',
+              fullWrittenPath,
+            ];
           }
         } else {
           openAppSettings();
