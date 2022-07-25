@@ -56,7 +56,7 @@ class HistoryDetailPage extends StatelessWidget {
               ),
               _Item(
                 labelText: 'Name',
-                initialValue: DisplayStyle.getA8KDisplayName(record),
+                initialValue: DisplayStyle.getDeviceDisplayName(record),
               ),
               _Item(
                 labelText: 'Time Received',

@@ -88,7 +88,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     List<String> queries = state.currentCriteria.queries;
     String formattedQurey = _formatQuery(queries);
 
-    List<dynamic> result = await _historyRepository.getHistoryByFilter(
+    List<dynamic> result = await _historyRepository.getMoreHistoryByFilter(
       user: _user,
       startDate: state.currentCriteria.startDate,
       endDate: state.currentCriteria.endDate,
@@ -175,21 +175,15 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     String formattedQuery = _formatQuery(state.currentCriteria.queries);
 
     String startTrapId =
-        state.records.isNotEmpty ? state.records.last.trap_id.toString() : '';
+        state.records.isNotEmpty ? state.records.last.trapId.toString() : '';
 
     String endTrapId =
-        state.records.isNotEmpty ? state.records.first.trap_id.toString() : '';
+        state.records.isNotEmpty ? state.records.first.trapId.toString() : '';
 
     List<dynamic> result = await _historyRepository.exportHistory(
-        user: _user,
-        startTrapId: startTrapId,
-        endTrapId: endTrapId,
-        startDate: state.currentCriteria.startDate,
-        endDate: state.currentCriteria.endDate,
-        shelf: state.currentCriteria.shelf,
-        slot: state.currentCriteria.slot,
-        unsolvedOnly: state.currentCriteria.unsolvedOnly == true ? '1' : '0',
-        queryData: formattedQuery);
+      user: _user,
+      records: state.records,
+    );
 
     if (result[0]) {
       emit(state.copyWith(

@@ -60,6 +60,38 @@ class HistoryForm extends StatelessWidget {
       );
     }
 
+    Future<void> _showNoMoreRecordsDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Success!',
+              style: TextStyle(
+                color: CustomStyle.severityColor[1],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<HistoryBloc, HistoryState>(
       listener: (context, state) {
         if (state.targetDeviceStatus.isRequestFailure) {
@@ -85,15 +117,14 @@ class HistoryForm extends StatelessWidget {
         } else if (state.historyExportStatus.isRequestFailure) {
           _showFailureDialog(state.historyExportMsg);
         } else if (state.moreRecordsStatus.isRequestFailure) {
-          _showFailureDialog(state.moreRecordsMessage);
+          _showNoMoreRecordsDialog(state.moreRecordsMessage);
         }
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('History'),
           actions: const [
-            _SearchAction(),
-            _ExportAction(),
+            _PopupMenu(),
           ],
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
@@ -137,7 +168,7 @@ class _HistoryFloatingActionButton extends StatelessWidget {
             onPressed: () {
               context
                   .read<HistoryBloc>()
-                  .add(MoreRecordsRequested(state.records.last.trap_id));
+                  .add(MoreRecordsRequested(state.records.last.trapId));
             },
             child: const Icon(Icons.add),
           ),
@@ -147,39 +178,77 @@ class _HistoryFloatingActionButton extends StatelessWidget {
   }
 }
 
-class _SearchAction extends StatelessWidget {
-  const _SearchAction({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
-      return IconButton(
-          onPressed: () async {
-            var searchCriteria = await Navigator.push(
-                context, SearchPage.route(state.currentCriteria));
-
-            if (searchCriteria != null) {
-              context.read<HistoryBloc>().add(HistoryRequested(searchCriteria));
-            }
-          },
-          icon: const Icon(Icons.search));
-    });
-  }
+enum Menu {
+  filter,
+  export,
 }
 
-class _ExportAction extends StatelessWidget {
-  const _ExportAction({Key? key}) : super(key: key);
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
-      return IconButton(
-          onPressed: () async {
-            context.read<HistoryBloc>().add(const HistoryRecordsExported());
-          },
-          icon: const Icon(Icons.save_alt_outlined));
+      return PopupMenuButton<Menu>(
+        onSelected: (Menu item) async {
+          switch (item) {
+            case Menu.filter:
+              var searchCriteria = await Navigator.push(
+                  context, SearchPage.route(state.currentCriteria));
+
+              if (searchCriteria != null) {
+                context
+                    .read<HistoryBloc>()
+                    .add(HistoryRequested(searchCriteria));
+              }
+              break;
+            case Menu.export:
+              context.read<HistoryBloc>().add(const HistoryRecordsExported());
+              break;
+            default:
+              break;
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+          PopupMenuItem<Menu>(
+            value: Menu.filter,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  // <-- Icon
+                  CustomIcons.filter,
+                  size: 20.0,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text('Filters'),
+              ],
+            ),
+          ),
+          PopupMenuItem<Menu>(
+            value: Menu.export,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  CustomIcons.export,
+                  size: 20.0,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text('Export'),
+              ],
+            ),
+          )
+        ],
+      );
     });
   }
 }
@@ -265,7 +334,7 @@ class _HistorySliverList extends StatelessWidget {
                             padding:
                                 const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
                             child: Text(
-                              DisplayStyle.getA8KDisplayName(record),
+                              DisplayStyle.getDeviceDisplayName(record),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.roboto(

@@ -151,8 +151,7 @@ class RootForm extends StatelessWidget {
           appBar: AppBar(
             title: const _DynamicTitle(),
             actions: const [
-              _SearchAction(),
-              _SecondAction(),
+              _PopupMenu(),
             ],
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
@@ -203,66 +202,120 @@ class _DynamicTitle extends StatelessWidget {
   }
 }
 
-class _SearchAction extends StatelessWidget {
-  const _SearchAction({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () async {
-        List? path = await Navigator.push(
-            context,
-            SearchPage.route(
-              context.read<AuthenticationBloc>().state.user,
-              RepositoryProvider.of<RootRepository>(
-                context,
-              ),
-              RepositoryProvider.of<DeviceRepository>(
-                context,
-              ),
-            ));
-
-        if (path != null) {
-          context.read<RootBloc>().add(DeviceNavigateRequested(path));
-        }
-      },
-      icon: const Icon(Icons.search),
-    );
-  }
+enum Menu {
+  search,
+  export,
+  favorite,
 }
 
-class _SecondAction extends StatelessWidget {
-  const _SecondAction({Key? key}) : super(key: key);
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       if (state.formStatus.isRequestSuccess) {
-        Node node = state.directory.last;
-        if (node.type == 5 || node.type == 2) {
-          return IconButton(
-            onPressed: () {
-              state.isAddedToBookmarks
-                  ? context.read<RootBloc>().add(BookmarksDeleted(node.id))
-                  : context.read<RootBloc>().add(BookmarksAdded(node.id));
-            },
-            icon: state.isAddedToBookmarks
-                ? const Icon(Icons.star_outlined)
-                : const Icon(Icons.star_border_outlined),
-          );
-        } else {
-          return IconButton(
-              onPressed: () async {
+        return PopupMenuButton<Menu>(
+          onSelected: (Menu item) async {
+            switch (item) {
+              case Menu.search:
+                List? path = await Navigator.push(
+                    context,
+                    SearchPage.route(
+                      context.read<AuthenticationBloc>().state.user,
+                      RepositoryProvider.of<RootRepository>(
+                        context,
+                      ),
+                      RepositoryProvider.of<DeviceRepository>(
+                        context,
+                      ),
+                    ));
+
+                if (path != null) {
+                  context.read<RootBloc>().add(DeviceNavigateRequested(path));
+                }
+                break;
+              case Menu.export:
                 context.read<RootBloc>().add(const NodesExported());
-              },
-              icon: const Icon(Icons.save_alt_outlined));
-        }
+                break;
+              case Menu.favorite:
+                state.isAddedToBookmarks
+                    ? context
+                        .read<RootBloc>()
+                        .add(BookmarksDeleted(state.directory.last.id))
+                    : context
+                        .read<RootBloc>()
+                        .add(BookmarksAdded(state.directory.last.id));
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.search,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    // <-- Icon
+                    Icons.search,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text('Search'),
+                ],
+              ),
+            ),
+            state.directory.last.type == 5 || state.directory.last.type == 2
+                ? PopupMenuItem<Menu>(
+                    value: Menu.favorite,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        state.isAddedToBookmarks
+                            ? const Icon(
+                                Icons.star_outlined,
+                                color: Colors.amber,
+                              )
+                            : const Icon(
+                                Icons.star_border_outlined,
+                                color: Colors.black,
+                              ),
+                        const SizedBox(
+                          width: 10.0,
+                        ),
+                        const Text('Favorite'),
+                      ],
+                    ),
+                  )
+                : PopupMenuItem<Menu>(
+                    value: Menu.export,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          CustomIcons.export,
+                          size: 20.0,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Text('Export'),
+                      ],
+                    ),
+                  )
+          ],
+        );
       } else {
-        return IconButton(
-            onPressed: () async {
-              context.read<RootBloc>().add(const NodesExported());
-            },
-            icon: const Icon(Icons.save_alt_outlined));
+        return Container();
       }
     });
   }

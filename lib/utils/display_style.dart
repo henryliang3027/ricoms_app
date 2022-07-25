@@ -136,7 +136,7 @@ class DisplayStyle {
     }
   }
 
-  static String getA8KDisplayName(Record record) {
+  static String getDeviceDisplayName(Record record) {
     if (record.type == 5) {
       //a8k slot
       if (record.shelf == 0 && record.slot == 1) {
@@ -147,6 +147,7 @@ class DisplayStyle {
         return '${record.name} [ Shelf ${record.shelf} / Slot ${record.slot} ]';
       }
     } else {
+      // edfa
       return record.name;
     }
   }

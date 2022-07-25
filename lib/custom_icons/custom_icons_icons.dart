@@ -47,4 +47,8 @@ class CustomIcons {
       IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData add =
       IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData filter =
+      IconData(0xe80d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData export =
+      IconData(0xe80e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
