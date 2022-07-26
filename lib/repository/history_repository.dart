@@ -9,15 +9,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
-import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 
 class HistoryRepository {
   HistoryRepository();
 
-  final Dio _dio = Dio();
+  //final Dio _dio = Dio();
 
-//current: 1 = show open issue only, 0 = show all alarms with given datetime
+  //current: 1 = show open issue only, 0 = show all alarms with given datetime
   Future<List<dynamic>> getHistoryByFilter({
     required User user,
     String startDate = '',
@@ -30,14 +29,15 @@ class HistoryRepository {
     String trapId = '',
     String queryData = '',
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
     String historyApiPath =
         '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
 
     try {
-      Response response = await _dio.get(
+      Response response = await dio.get(
         historyApiPath,
       );
 
@@ -103,19 +103,25 @@ class HistoryRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
+          print('-------------------');
+          print(e.response!.data);
+          print('-------------------');
+          print(e.response!.headers);
+          print('-------------------');
+          print(e.response!.requestOptions);
+          print('-------------------');
+
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
+
+          print('-------------------');
+          print(e.requestOptions);
+          print('-------------------');
+          print(e.message);
+          print('-------------------');
+
           //throw Exception(e.message);
           return [false, e.message];
         }
@@ -138,14 +144,15 @@ class HistoryRepository {
     String trapId = '',
     String queryData = '',
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
     String historyApiPath =
         '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
 
     try {
-      Response response = await _dio.get(
+      Response response = await dio.get(
         historyApiPath,
       );
 
@@ -238,14 +245,15 @@ class HistoryRepository {
     required User user,
     required List<int> path,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
 
     try {
       //404
-      Response response = await _dio.get(
+      Response response = await dio.get(
         realTimeAlarmApiPath,
       );
 
@@ -295,16 +303,17 @@ class HistoryRepository {
     required User user,
     required List<int> path,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
 
     for (int nodeId in path) {
       String childsPath = '/net/node/' + nodeId.toString();
 
       try {
         //404
-        Response response = await _dio.get(childsPath);
+        Response response = await dio.get(childsPath);
 
         //print(response.data.toString());
         var data = jsonDecode(response.data.toString());

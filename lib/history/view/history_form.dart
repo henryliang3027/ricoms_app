@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
@@ -278,8 +277,6 @@ class _HistorySliverList extends StatelessWidget {
             color: Colors.white,
             child: InkWell(
               onTap: () {
-                initialPath.clear();
-                initialPath.addAll(record.path);
                 // because HistoryBloc cannot be found inside ModalBottomSheet
                 // provide HistoryBloc for it by using BlocProvider
                 showModalBottomSheet(
@@ -287,6 +284,7 @@ class _HistorySliverList extends StatelessWidget {
                     builder: (_) => BlocProvider.value(
                           value: context.read<HistoryBloc>(),
                           child: _HistoryBottomMenu(
+                            initialPath: initialPath,
                             record: record,
                             pageController: pageController,
                           ),
@@ -464,10 +462,12 @@ class _HistorySliverList extends StatelessWidget {
 class _HistoryBottomMenu extends StatelessWidget {
   const _HistoryBottomMenu({
     Key? key,
+    required this.initialPath,
     required this.record,
     required this.pageController,
   }) : super(key: key);
 
+  final List initialPath;
   final Record record;
   final PageController pageController;
 
@@ -523,9 +523,11 @@ class _HistoryBottomMenu extends StatelessWidget {
           ),
           onTap: () {
             Navigator.pop(context);
-            context
-                .read<HistoryBloc>()
-                .add(DeviceStatusChecked(record.path, pageController));
+            context.read<HistoryBloc>().add(DeviceStatusChecked(
+                  initialPath,
+                  record.path,
+                  pageController,
+                ));
           },
         ),
       ],

@@ -135,6 +135,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     );
 
     if (result[0]) {
+      event.initialPath.addAll(event.path);
       event.pageController.jumpToPage(1);
     } else {
       emit(state.copyWith(
