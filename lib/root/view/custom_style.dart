@@ -386,7 +386,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.black, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.black,
+                    fontSize: font),
               ),
             ),
           ),
@@ -404,7 +406,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.blue,
+                    fontSize: font),
               ),
             ),
           ),
@@ -422,7 +426,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.green, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.green,
+                    fontSize: font),
               ),
             ),
           ),
@@ -548,7 +554,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.black, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.black,
+                    fontSize: font),
               ),
             ),
           ),
@@ -566,7 +574,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.blue,
+                    fontSize: font),
               ),
             ),
           ),
@@ -584,7 +594,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.green, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.green,
+                    fontSize: font),
               ),
             ),
           ),
@@ -602,7 +614,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.black, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.black,
+                    fontSize: font),
               ),
             ),
           ),
@@ -633,12 +647,14 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.white),
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.blue,
+                    fontSize: font),
               ),
             ),
           ),
@@ -687,12 +703,14 @@ class CustomStyle {
             child: Container(
               alignment: Alignment.centerRight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: statusColor[status],
                 border: Border.all(color: Colors.white),
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.green, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.green,
+                    fontSize: font),
               ),
             ),
           ),
@@ -710,7 +728,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.black, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.black,
+                    fontSize: font),
               ),
             ),
           ),
@@ -728,7 +748,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.blue,
+                    fontSize: font),
               ),
             ),
           ),
@@ -746,7 +768,9 @@ class CustomStyle {
               ),
               child: Text(
                 value,
-                style: TextStyle(color: Colors.green, fontSize: font),
+                style: TextStyle(
+                    color: status == 3 ? Colors.white : Colors.green,
+                    fontSize: font),
               ),
             ),
           ),
