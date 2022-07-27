@@ -25,7 +25,12 @@ class BookmarksForm extends StatelessWidget {
     return BlocListener<BookmarksBloc, BookmarksState>(
       listener: (context, state) async {},
       child: Scaffold(
-        appBar: AppBar(title: const Text('Bookmarks')),
+        appBar: AppBar(
+          title: const Text('Bookmarks'),
+          actions: const [
+            _PopupMenu(),
+          ],
+        ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,
           selectedIndex: 4,
@@ -41,6 +46,54 @@ class BookmarksForm extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+enum Menu {
+  delete,
+}
+
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BookmarksBloc, BookmarksState>(
+        builder: (context, state) {
+      return PopupMenuButton<Menu>(
+        onSelected: (Menu item) async {
+          switch (item) {
+            case Menu.delete:
+              context
+                  .read<BookmarksBloc>()
+                  .add(const BookmarksDeletedModeToggled());
+              break;
+            default:
+              break;
+          }
+        },
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+          PopupMenuItem<Menu>(
+            value: Menu.delete,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.delete_outline,
+                  size: 20.0,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Text('Delete'),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -69,10 +122,11 @@ class _DeviceSliverList extends StatelessWidget {
     }
   }
 
-  SliverChildBuilderDelegate _deviceSliverChildBuilderDelegate(
-    List data,
-    List initialPath,
-  ) {
+  SliverChildBuilderDelegate _deviceSliverChildBuilderDelegate({
+    required List data,
+    required List initialPath,
+    required bool isDeleteMode,
+  }) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         Device device = data[index];
@@ -83,6 +137,11 @@ class _DeviceSliverList extends StatelessWidget {
               onTap: () {
                 // initialPath.clear();
                 // initialPath.addAll(device.path);
+                context.read<BookmarksBloc>().add(DeviceStatusChecked(
+                      initialPath,
+                      device.path,
+                      pageController,
+                    ));
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -117,7 +176,7 @@ class _DeviceSliverList extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.roboto(
-                                fontSize: CommonStyle.sizeS,
+                                fontSize: CommonStyle.sizeL,
                                 //fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -143,6 +202,15 @@ class _DeviceSliverList extends StatelessWidget {
                         ],
                       ),
                     ),
+                    isDeleteMode
+                        ? const Icon(
+                            Icons.circle_outlined,
+                            color: Colors.amber,
+                          )
+                        : const Icon(
+                            Icons.circle_outlined,
+                            color: Colors.transparent,
+                          )
                   ],
                 ),
               ),
@@ -169,15 +237,16 @@ class _DeviceSliverList extends StatelessWidget {
                 slivers: [
                   SliverList(
                     delegate: _deviceSliverChildBuilderDelegate(
-                      state.devices,
-                      initialPath,
+                      data: state.devices,
+                      initialPath: initialPath,
+                      isDeleteMode: state.isDeleteMode,
                     ),
                   )
                 ],
               ));
         } else if (state.formStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(state.requestErrorMsg),
           );
         } else {
           return const Center(

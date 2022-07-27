@@ -53,6 +53,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2 # for dashboard piechart
   fl_chart: ^0.55.0 # for dashboard piechart
   open_file: ^3.2.1
+  json_serializable: ^6.3.1
 
 dev_dependencies:
   flutter_test:

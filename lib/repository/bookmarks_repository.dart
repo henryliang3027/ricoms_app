@@ -22,51 +22,169 @@ class BookmarksRepository {
 
     List<int> bookmarks = userApi.getBookmarksByUserId(user.id);
 
-    for (var bookmark in bookmarks) {
-      String deviceStatusApiPath = '/device/$bookmark';
+    if (bookmarks.isNotEmpty) {
+      for (var bookmark in bookmarks) {
+        String deviceStatusApiPath = '/device/$bookmark';
+
+        try {
+          //404
+          Response response = await _dio.get(
+            deviceStatusApiPath,
+          );
+
+          var data = jsonDecode(response.data.toString());
+
+          if (data['code'] == '200') {
+            var element = data['data'][0];
+
+            String rawPath = element['path'];
+            List<String> nodeIdList =
+                rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
+            List<int> path = [];
+            for (var nodeId in nodeIdList) {
+              path.add(int.parse(nodeId));
+            }
+
+            if (element['device_id'] != null) {
+              Device device = Device(
+                id: element['device_id'],
+                name: element['name'],
+                type: element['type'],
+                ip: element['ip'],
+                shelf: element['shelf'],
+                slot: element['slot'],
+                read: element['read'],
+                write: element['write'],
+                description: element['description'],
+                location: element['location'],
+                path: path,
+                moduleId: element['module_id'],
+                module: element['module'],
+                series: element['series'],
+                status: element['status'],
+              );
+
+              devices.add(device);
+            }
+          } else {
+            return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
+          }
+        } catch (e) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx and is also not 304.
+          if (e is DioError) {
+            if (e.response != null) {
+              if (kDebugMode) {
+                print(e.response!.data);
+                print(e.response!.headers);
+                print(e.response!.requestOptions);
+              }
+
+              //throw Exception('Server No Response');
+              return [false, 'Server No Response'];
+            } else {
+              // Something happened in setting up or sending the request that triggered an Error
+              if (kDebugMode) {
+                print(e.requestOptions);
+                print(e.message);
+              }
+
+              //throw Exception(e.message);
+              return [false, e.message];
+            }
+          } else {
+            //throw Exception(e.toString());
+            return [false, e.toString()];
+          }
+        }
+      }
+      return [true, devices];
+    } else {
+      return [false, 'There are no records to show'];
+    }
+  }
+
+  Future<List<dynamic>> getDeviceStatus({
+    required User user,
+    required List<int> path,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String realTimeAlarmApiPath = '/device/' + path[0].toString();
+
+    try {
+      //404
+      Response response = await dio.get(
+        realTimeAlarmApiPath,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        List<int> nodes = path.skip(1).toList();
+        List<dynamic> verifiedResilt =
+            await _checkPath(user: user, path: nodes);
+        if (verifiedResilt[0]) {
+          return [true, ''];
+        } else {
+          return verifiedResilt;
+        }
+      } else {
+        return [false, 'The device does not respond!'];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<List<dynamic>> _checkPath({
+    required User user,
+    required List<int> path,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    for (int nodeId in path) {
+      String childsPath = '/net/node/' + nodeId.toString();
 
       try {
         //404
-        Response response = await _dio.get(
-          deviceStatusApiPath,
-        );
+        Response response = await dio.get(childsPath);
 
+        //print(response.data.toString());
         var data = jsonDecode(response.data.toString());
 
         if (data['code'] == '200') {
-          var element = data['data'][0];
-
-          String rawPath = element['path'];
-          List<String> nodeIdList =
-              rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
-          List<int> path = [];
-          for (var nodeId in nodeIdList) {
-            path.add(int.parse(nodeId));
-          }
-
-          if (element['device_id'] != null) {
-            Device device = Device(
-              id: element['device_id'],
-              name: element['name'],
-              type: element['type'],
-              ip: element['ip'],
-              shelf: element['shelf'],
-              slot: element['slot'],
-              read: element['read'],
-              write: element['write'],
-              description: element['description'],
-              location: element['location'],
-              path: path,
-              moduleId: element['module_id'],
-              module: element['module'],
-              series: element['series'],
-              status: element['status'],
-            );
-
-            devices.add(device);
-          }
+          continue;
         } else {
-          return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
+          return [false, 'No node'];
         }
       } catch (e) {
         // The request was made and the server responded with a status code
@@ -78,7 +196,6 @@ class BookmarksRepository {
               print(e.response!.headers);
               print(e.response!.requestOptions);
             }
-
             //throw Exception('Server No Response');
             return [false, 'Server No Response'];
           } else {
@@ -87,7 +204,6 @@ class BookmarksRepository {
               print(e.requestOptions);
               print(e.message);
             }
-
             //throw Exception(e.message);
             return [false, e.message];
           }
@@ -97,7 +213,8 @@ class BookmarksRepository {
         }
       }
     }
-    return [true, devices];
+
+    return [true, ''];
   }
 }
 

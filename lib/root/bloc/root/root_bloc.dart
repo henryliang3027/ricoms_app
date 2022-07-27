@@ -27,8 +27,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<ChildDataUpdated>(_onChildDataUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
-    on<BookmarksAdded>(_onBookmarksAdded);
-    on<BookmarksDeleted>(_onBookmarksDeleted);
+    on<BookmarksChanged>(_onBookmarksChanged);
 
     add(const ChildDataRequested(Node(
       id: 0,
@@ -93,19 +92,25 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       List<dynamic> result = await _buildDirectorybyPath(
           directory: directory, path: _initialPath!);
 
+      bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
+
       if (result[0]) {
         if (result[1] == '') {
+          // device setting page
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
+            isAddedToBookmarks: isAddedToBookmarks,
             directory: directory,
           ));
         } else {
+          // node
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
+            isAddedToBookmarks: false,
             directory: directory,
             data: result[1],
           ));
@@ -250,9 +255,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             directory.length)
         : null;
 
-    List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
-
-    bool isAddedToBookmarks = bookmarks.contains(event.node.id);
+    bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
 
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
@@ -261,57 +264,52 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ));
   }
 
-  Future<void> _onBookmarksAdded(
-    BookmarksAdded event,
+  Future<void> _onBookmarksChanged(
+    BookmarksChanged event,
     Emitter<RootState> emit,
   ) async {
-    bool isSuccess =
-        await _rootRepository.addBookmarks(user: _user, nodeId: event.nodeId);
+    bool exists = _checkDeviceInBookmarks(event.nodeId);
 
-    if (isSuccess) {
-      List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
-      bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
+    if (exists) {
+      // delete node id
+      bool isSuccess = await _rootRepository.deleteBookmarks(
+          user: _user, nodeId: event.nodeId);
 
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        isAddedToBookmarks: isAddedToBookmarks,
-        bookmarksMsg: 'Added to bookmarks',
-      ));
+      if (isSuccess) {
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          isAddedToBookmarks: false,
+          bookmarksMsg: 'Removed from bookmarks',
+        ));
+      } else {
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          bookmarksMsg:
+              'Unable to delete from bookmarks, please check your account and login again.',
+        ));
+      }
     } else {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        bookmarksMsg:
-            'Unable to add to bookmarks, please check your account and login again.',
-      ));
-    }
-  }
+      // add node id
+      bool isSuccess =
+          await _rootRepository.addBookmarks(user: _user, nodeId: event.nodeId);
 
-  Future<void> _onBookmarksDeleted(
-    BookmarksDeleted event,
-    Emitter<RootState> emit,
-  ) async {
-    bool isSuccess = await _rootRepository.deleteBookmarks(
-        user: _user, nodeId: event.nodeId);
-
-    if (isSuccess) {
-      List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
-      bool isAddedToBookmarks = bookmarks.contains(event.nodeId);
-
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        isAddedToBookmarks: isAddedToBookmarks,
-        bookmarksMsg: 'Removed from bookmarks',
-      ));
-    } else {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        bookmarksMsg:
-            'Unable to delete from bookmarks, please check your account and login again.',
-      ));
+      if (isSuccess) {
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          isAddedToBookmarks: true,
+          bookmarksMsg: 'Added to bookmarks',
+        ));
+      } else {
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          bookmarksMsg:
+              'Unable to add to bookmarks, please check your account and login again.',
+        ));
+      }
     }
   }
 
@@ -339,9 +337,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       path: path,
     );
 
+    bool isAddedToBookmarks = _checkDeviceInBookmarks(path[0]);
+
     if (result[0]) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
+        isAddedToBookmarks: isAddedToBookmarks,
         directory: directory,
       ));
     } else {
@@ -350,6 +351,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     //avoid user click node and dataStream trigger at the same time, reaume update periodic
     _dataStreamSubscription?.resume();
+  }
+
+  bool _checkDeviceInBookmarks(int nodeId) {
+    List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
+    bool exists = bookmarks.contains(nodeId);
+    return exists;
   }
 
   Future<List<dynamic>> _buildDirectorybyPath({
@@ -376,7 +383,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
     }
 
-// + 1 as root node id because path.length not consider root node id
+    // + 1 as root node id because path.length not consider root node id
     if (directory.length == path.length + 1) {
       if (directory.last.type == 2 || directory.last.type == 5) {
         _deviceRepository.deviceNodeId = directory.last.id.toString();

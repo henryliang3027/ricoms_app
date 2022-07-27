@@ -239,13 +239,9 @@ class _PopupMenu extends StatelessWidget {
                 context.read<RootBloc>().add(const NodesExported());
                 break;
               case Menu.favorite:
-                state.isAddedToBookmarks
-                    ? context
-                        .read<RootBloc>()
-                        .add(BookmarksDeleted(state.directory.last.id))
-                    : context
-                        .read<RootBloc>()
-                        .add(BookmarksAdded(state.directory.last.id));
+                context
+                    .read<RootBloc>()
+                    .add(BookmarksChanged(state.directory.last.id));
                 break;
               default:
                 break;
