@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_page.dart';
 import 'package:ricoms_app/login/view/login_page.dart';
+import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
     required this.dashboardRepository,
     required this.historyRepository,
     required this.bookmarksRepository,
+    required this.accountRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -30,6 +32,7 @@ class App extends StatelessWidget {
   final DashboardRepository dashboardRepository;
   final HistoryRepository historyRepository;
   final BookmarksRepository bookmarksRepository;
+  final AccountRepository accountRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +58,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<BookmarksRepository>(
           create: (context) => bookmarksRepository,
+        ),
+        RepositoryProvider<AccountRepository>(
+          create: (context) => accountRepository,
         ),
       ],
       child: BlocProvider(

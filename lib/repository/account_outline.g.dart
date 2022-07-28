@@ -8,7 +8,7 @@ part of 'account_outline.dart';
 
 AccountOutline _$AccountOutlineFromJson(Map<String, dynamic> json) =>
     AccountOutline(
-      id: json['id'] as String,
+      id: json['id'] as int,
       account: json['account'] as String,
       name: json['name'] as String,
       permission: json['permission'] as String,

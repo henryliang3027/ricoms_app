@@ -16,7 +16,7 @@ class AccountRepository {
     _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
-    String accountListApiPath = '/account';
+    String accountListApiPath = '/accounts';
 
     try {
       //404

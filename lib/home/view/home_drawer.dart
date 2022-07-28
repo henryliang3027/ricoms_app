@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/account/view/account_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/change_password/view/change_password_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -45,7 +46,7 @@ class HomeDrawer extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               child: Icon(
                 _listTileIcons[i],
-                color: currentPageIndex == i ? Colors.blue : Colors.black,
+                color: currentPageIndex == i ? Colors.blue : Colors.grey,
               ),
             ),
             title: Text(
@@ -57,7 +58,7 @@ class HomeDrawer extends StatelessWidget {
             ),
             onTap: () {
               pageController.jumpToPage(i);
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
           ),
       ];
@@ -111,8 +112,7 @@ class HomeDrawer extends StatelessWidget {
                 style: TextStyle(fontSize: CommonStyle.sizeL),
               ),
               onTap: () {
-                pageController.jumpToPage(7);
-                Navigator.pop(context);
+                Navigator.push(context, AccountPage.route());
               },
             ),
             const Divider(

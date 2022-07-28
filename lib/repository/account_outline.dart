@@ -5,7 +5,7 @@ part 'account_outline.g.dart';
 @JsonSerializable()
 class AccountOutline {
   @JsonKey(name: 'id')
-  final String id;
+  final int id;
 
   @JsonKey(name: 'account')
   final String account;

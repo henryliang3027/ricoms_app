@@ -23,7 +23,7 @@ class SearchForm extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(CommonStyle.lineSpacing),
           ),
-          TypeDropDownMenu(),
+          _TypeDropDownMenu(),
           _KeywordInput(),
           _DeviceListView(),
         ],
@@ -32,8 +32,8 @@ class SearchForm extends StatelessWidget {
   }
 }
 
-class TypeDropDownMenu extends StatelessWidget {
-  const TypeDropDownMenu({Key? key}) : super(key: key);
+class _TypeDropDownMenu extends StatelessWidget {
+  const _TypeDropDownMenu({Key? key}) : super(key: key);
 
   final Map<String, int> types = const {
     'Name': 1,

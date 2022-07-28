@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ricoms_app/app.dart';
+import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
@@ -29,6 +30,7 @@ Future<void> main() async {
       dashboardRepository: DashboardRepository(),
       historyRepository: HistoryRepository(),
       bookmarksRepository: BookmarksRepository(),
+      accountRepository: AccountRepository(),
     ),
   );
 }
