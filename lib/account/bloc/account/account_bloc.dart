@@ -66,31 +66,15 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       formStatus: FormStatus.requestInProgress,
     ));
 
-    List<dynamic> result =
-        await _accountRepository.getAccountOutlineList(user: _user);
+    List<dynamic> result = await _accountRepository.getAccountByKeyword(
+      user: _user,
+      keyword: state.keyword,
+    );
 
     if (result[0]) {
-      List<AccountOutline> accountOutlineList = result[1];
-
-      List<AccountOutline> matchedAccountOutlineList = accountOutlineList
-          .where((accountOutline) =>
-              accountOutline.account
-                  .toLowerCase()
-                  .contains(state.keyword.toLowerCase()) ||
-              (accountOutline.department ?? '')
-                  .toLowerCase()
-                  .contains(state.keyword.toLowerCase()) ||
-              accountOutline.name
-                  .toLowerCase()
-                  .contains(state.keyword.toLowerCase()) ||
-              accountOutline.permission
-                  .toLowerCase()
-                  .contains(state.keyword.toLowerCase()))
-          .toList();
-
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
-        accounts: matchedAccountOutlineList,
+        accounts: result[1],
       ));
     } else {
       emit(state.copyWith(

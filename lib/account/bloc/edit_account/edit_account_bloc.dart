@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/model/account.dart';
 import 'package:ricoms_app/login/models/password.dart';
+import 'package:ricoms_app/repository/account_detail.dart';
+import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/models/name.dart';
@@ -13,9 +15,14 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   EditAccountBloc({
     required User user,
     required AccountRepository accountRepository,
+    required bool isEditing,
+    AccountOutline? accountOutline,
   })  : _user = user,
         _accountRepository = accountRepository,
+        _isEditing = isEditing,
+        _accountOutline = accountOutline,
         super(const EditAccountState()) {
+    on<AccountDetailRequested>(_onAccountDetailRequested);
     on<AccountChanged>(_onAccountChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<NameChanged>(_onNameChanged);
@@ -25,10 +32,44 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     on<MobileChanged>(_onMobileChanged);
     on<TelChanged>(_onTelChanged);
     on<ExtChanged>(_onExtChanged);
+
+    if (isEditing) {
+      if (_accountOutline != null) {
+        add(AccountDetailRequested(_accountOutline!.id));
+      }
+    }
   }
 
   final User _user;
   final AccountRepository _accountRepository;
+  final bool _isEditing;
+  final AccountOutline? _accountOutline;
+
+  Future<void> _onAccountDetailRequested(
+    AccountDetailRequested event,
+    Emitter<EditAccountState> emit,
+  ) async {
+    List<dynamic> result = await _accountRepository.getAccountDetail(
+      user: _user,
+      accountId: event.accountId,
+    );
+
+    if (result[0]) {
+      AccountDetail accountDetail = result[1];
+
+      emit(state.copyWith(
+        isEditing: true,
+        account: Account.dirty(accountDetail.account),
+        name: Name.dirty(accountDetail.name),
+        permission: int.parse(accountDetail.permission),
+        department: accountDetail.department,
+        email: accountDetail.email,
+        mobile: accountDetail.mobile,
+        tel: accountDetail.tel,
+        ext: accountDetail.ext,
+      ));
+    } else {}
+  }
 
   void _onAccountChanged(
     AccountChanged event,
@@ -37,7 +78,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final account = Account.dirty(event.account);
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         account: account,
         status: Formz.validate([
           account,
@@ -55,7 +96,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final password = Password.dirty(event.password);
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         password: password,
         status: Formz.validate([
           state.account,
@@ -73,7 +114,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final name = Name.dirty(event.name);
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         name: name,
         status: Formz.validate([
           state.account,
@@ -90,7 +131,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         permission: event.permission,
       ),
     );
@@ -102,7 +143,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         department: event.department,
       ),
     );
@@ -114,7 +155,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         email: event.email,
       ),
     );
@@ -126,7 +167,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         mobile: event.mobile,
       ),
     );
@@ -138,7 +179,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         tel: event.tel,
       ),
     );
@@ -150,9 +191,82 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
-        isInitialize: false,
+        isEditing: _isEditing,
         ext: event.ext,
       ),
     );
+  }
+
+  Future<void> _onNodeCreationSubmitted(
+    AccountCreationSubmitted event,
+    Emitter<EditAccountState> emit,
+  ) async {
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
+      // List<dynamic> msg = await _accountRepository.createNode(
+      //   user: _user,
+      //   parentId: _parentNode.id,
+      //   type: _type,
+      //   name: state.name.value,
+      //   description: state.description,
+      //   deviceIP: state.deviceIP.value,
+      //   read: state.read,
+      //   write: state.write,
+      //   location: state.location,
+      // );
+
+      // if (msg[0]) {
+      //   emit(state.copyWith(
+      //     isInitController: false,
+      //     isTestConnection: false,
+      //     msg: msg[1],
+      //     status: FormzStatus.submissionSuccess,
+      //   ));
+      // } else {
+      //   emit(state.copyWith(
+      //     isInitController: false,
+      //     isTestConnection: false,
+      //     msg: msg[1],
+      //     status: FormzStatus.submissionFailure,
+      //   ));
+      // }
+    }
+  }
+
+  Future<void> _onNodeUpdateSubmitted(
+    AccountUpdateSubmitted event,
+    Emitter<EditAccountState> emit,
+  ) async {
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
+      // List<dynamic> msg = await _rootRepository.updateNode(
+      //   user: _user,
+      //   currentNode: state.currentNode!,
+      //   name: state.name.value,
+      //   description: state.description,
+      //   deviceIP: state.deviceIP.value,
+      //   read: state.read,
+      //   write: state.write,
+      //   location: state.location,
+      // );
+
+      // if (msg[0]) {
+      //   emit(state.copyWith(
+      //     isInitController: false,
+      //     isTestConnection: false,
+      //     msg: msg[1],
+      //     status: FormzStatus.submissionSuccess,
+      //   ));
+      // } else {
+      //   emit(state.copyWith(
+      //     isInitController: false,
+      //     isTestConnection: false,
+      //     msg: msg[1],
+      //     status: FormzStatus.submissionFailure,
+      //   ));
+      // }
+    }
   }
 }

@@ -25,6 +25,11 @@ class PasswordChanged extends EditAccountEvent {
   List<Object> get props => [password];
 }
 
+// handle password visibility
+class PasswordVisibilityChanged extends EditAccountEvent {
+  const PasswordVisibilityChanged();
+}
+
 class NameChanged extends EditAccountEvent {
   const NameChanged(this.name);
 
@@ -88,6 +93,19 @@ class ExtChanged extends EditAccountEvent {
   List<Object> get props => [ext];
 }
 
-class AccountSubmitted extends EditAccountEvent {
-  const AccountSubmitted();
+class AccountDetailRequested extends EditAccountEvent {
+  const AccountDetailRequested(this.accountId);
+
+  final int accountId;
+
+  @override
+  List<Object> get props => [accountId];
+}
+
+class AccountCreationSubmitted extends EditAccountEvent {
+  const AccountCreationSubmitted();
+}
+
+class AccountUpdateSubmitted extends EditAccountEvent {
+  const AccountUpdateSubmitted();
 }

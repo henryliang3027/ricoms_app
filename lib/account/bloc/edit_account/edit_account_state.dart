@@ -3,9 +3,10 @@ part of 'edit_account_bloc.dart';
 class EditAccountState extends Equatable {
   const EditAccountState({
     this.status = FormzStatus.pure,
-    this.isInitialize = false,
+    this.isEditing = false,
     this.account = const Account.pure(),
     this.password = const Password.pure(),
+    this.passwordVisibility = false,
     this.name = const Name.pure(),
     this.permission = 3,
     this.department = '',
@@ -13,25 +14,29 @@ class EditAccountState extends Equatable {
     this.mobile = '',
     this.tel = '',
     this.ext = '',
+    this.submissionMsg = '',
   });
 
   final FormzStatus status;
-  final bool isInitialize;
+  final bool isEditing;
   final Account account;
   final Password password;
   final Name name;
+  final bool passwordVisibility;
   final int permission;
   final String department;
   final String email;
   final String mobile;
   final String tel;
   final String ext;
+  final String submissionMsg;
 
   EditAccountState copyWith({
     FormzStatus? status,
-    bool? isInitialize,
+    bool? isEditing,
     Account? account,
     Password? password,
+    bool? passwordVisibility,
     Name? name,
     int? permission,
     String? department,
@@ -39,12 +44,14 @@ class EditAccountState extends Equatable {
     String? mobile,
     String? tel,
     String? ext,
+    String? submissionMsg,
   }) {
     return EditAccountState(
       status: status ?? this.status,
-      isInitialize: isInitialize ?? this.isInitialize,
+      isEditing: isEditing ?? this.isEditing,
       account: account ?? this.account,
       password: password ?? this.password,
+      passwordVisibility: passwordVisibility ?? this.passwordVisibility,
       name: name ?? this.name,
       permission: permission ?? this.permission,
       department: department ?? this.department,
@@ -52,15 +59,17 @@ class EditAccountState extends Equatable {
       mobile: mobile ?? this.mobile,
       tel: tel ?? this.tel,
       ext: ext ?? this.ext,
+      submissionMsg: submissionMsg ?? this.submissionMsg,
     );
   }
 
   @override
   List<Object?> get props => [
         status,
-        isInitialize,
+        isEditing,
         account,
         password,
+        passwordVisibility,
         name,
         permission,
         department,
@@ -68,5 +77,6 @@ class EditAccountState extends Equatable {
         mobile,
         tel,
         ext,
+        submissionMsg,
       ];
 }

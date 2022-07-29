@@ -5,6 +5,7 @@ import 'package:ricoms_app/account/bloc/account/account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_page.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class AccountForm extends StatelessWidget {
@@ -80,8 +81,6 @@ class _KeywordInput extends StatelessWidget {
               },
               onFieldSubmitted: (String? keyword) {
                 context.read<AccountBloc>().add(const AccountSearched());
-                // context.read<SearchBloc>().add(const FilterAdded());
-                // _controller.clear();
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
@@ -141,7 +140,16 @@ class _AccountSliverList extends StatelessWidget {
           child: Material(
             color: Colors.white,
             child: InkWell(
-              onTap: () {},
+              onLongPress: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (_) => _AccountEditBottomMenu(
+                    superContext:
+                        context, //pass this context contain AccountBloc so that BottomMenu can use it to call AccountDeleted event
+                    accountOutline: accountOutline,
+                  ),
+                );
+              },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -264,8 +272,11 @@ class _AccountSliverList extends StatelessWidget {
             ),
           );
         } else if (state.formStatus.isRequestFailure) {
-          return Center(
-            child: Text(state.requestErrorMsg),
+          return Container(
+            color: Colors.grey.shade300,
+            child: Center(
+              child: Text(state.requestErrorMsg),
+            ),
           );
         } else {
           return const Center(
@@ -273,6 +284,151 @@ class _AccountSliverList extends StatelessWidget {
           );
         }
       },
+    );
+  }
+}
+
+class _AccountEditBottomMenu extends StatelessWidget {
+  const _AccountEditBottomMenu({
+    Key? key,
+    required this.superContext,
+    required this.accountOutline,
+  }) : super(key: key);
+
+  final BuildContext superContext;
+  final AccountOutline accountOutline;
+
+  @override
+  Widget build(BuildContext context) {
+    Future<bool?> _showConfirmDeleteDialog(
+        AccountOutline accountOutline) async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete Account'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: 'Are you sure you want to delete ',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        TextSpan(
+                          text: accountOutline.account,
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' ?',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Yes, delete it!',
+                  style: TextStyle(
+                    color: CustomStyle.severityColor[3],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return Wrap(
+      children: [
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.edit,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Edit',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                AccountEditPage.route(
+                  isEditing: true,
+                  accountOutline: accountOutline,
+                ));
+          },
+        ),
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.delete,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          title: const Text(
+            'Delete',
+            style: TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () async {
+            Navigator.pop(context);
+
+            bool? result = await _showConfirmDeleteDialog(accountOutline);
+            if (result != null) {
+              // result
+              //     ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
+              //     : null;
+            }
+          },
+        ),
+      ],
     );
   }
 }
