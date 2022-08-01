@@ -224,6 +224,7 @@ class CreateEditingTool extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
+                heroTag: null,
                 elevation: 0.0,
                 backgroundColor: const Color(0x742195F3),
                 onPressed: () {
@@ -301,6 +302,7 @@ class CreateEditingTool extends StatelessWidget {
                 padding: EdgeInsets.all(6.0),
               ),
               FloatingActionButton(
+                  heroTag: null,
                   elevation: 0.0,
                   backgroundColor: const Color(0x742195F3),
                   onPressed: () {

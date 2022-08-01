@@ -157,4 +157,34 @@ class UserApi {
       return false;
     }
   }
+
+  // delete user device bookmarks
+  Future<bool> deleteMultipleBookmarksByUserId(
+      String userId, List<int> nodeIds) async {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      List<int> newBookmarks = [];
+      newBookmarks.addAll(user.bookmarks);
+      newBookmarks.removeWhere((id) => nodeIds.contains(id));
+
+      User updatedUser = User(
+        id: user.id,
+        ip: user.ip,
+        name: user.name,
+        password: user.password,
+        email: user.email,
+        mobile: user.mobile,
+        tel: user.tel,
+        ext: user.ext,
+        bookmarks: newBookmarks,
+        isActivate: true,
+      );
+      await _userBox.put(userId, updatedUser);
+
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

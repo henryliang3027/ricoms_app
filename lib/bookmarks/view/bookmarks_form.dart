@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/bloc/bookmarks_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 
 class BookmarksForm extends StatelessWidget {
   const BookmarksForm({
@@ -22,27 +24,72 @@ class BookmarksForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<BookmarksBloc, BookmarksState>(
-      listener: (context, state) async {},
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Bookmarks'),
-          actions: const [
-            _PopupMenu(),
-          ],
-        ),
-        bottomNavigationBar: HomeBottomNavigationBar(
-          pageController: pageController,
-          selectedIndex: 4,
-        ),
-        drawer: HomeDrawer(
-          user: context.read<AuthenticationBloc>().state.user,
-          pageController: pageController,
-          currentPageIndex: 4,
-        ),
-        body: _DeviceSliverList(
-          pageController: pageController,
-          initialPath: initialPath,
+      listener: (context, state) async {
+        if (state.targetDeviceStatus.isRequestFailure) {
+          _showFailureDialog(state.targetDeviceMsg);
+        } else if (state.deviceDeleteStatus.isRequestFailure) {
+          _showFailureDialog(state.deleteResultMsg);
+        }
+      },
+      child: WillPopScope(
+        onWillPop: () async {
+          bool? isExit = await CommonWidget.showExitAppDialog(context: context);
+          return isExit ?? false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Bookmarks'),
+            actions: const [
+              _PopupMenu(),
+            ],
+          ),
+          bottomNavigationBar: HomeBottomNavigationBar(
+            pageController: pageController,
+            selectedIndex: 4,
+          ),
+          drawer: HomeDrawer(
+            user: context.read<AuthenticationBloc>().state.user,
+            pageController: pageController,
+            currentPageIndex: 4,
+          ),
+          body: _DeviceSliverList(
+            pageController: pageController,
+            initialPath: initialPath,
+          ),
+          floatingActionButton: const _BookmarksFloatingActionButton(),
         ),
       ),
     );
@@ -66,7 +113,7 @@ class _PopupMenu extends StatelessWidget {
             case Menu.delete:
               context
                   .read<BookmarksBloc>()
-                  .add(const BookmarksDeletedModeToggled());
+                  .add(const BookmarksDeletedModeEnabled());
               break;
             default:
               break;
@@ -126,6 +173,7 @@ class _DeviceSliverList extends StatelessWidget {
     required List data,
     required List initialPath,
     required bool isDeleteMode,
+    required List<Device> selectedDevices,
   }) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
@@ -135,13 +183,17 @@ class _DeviceSliverList extends StatelessWidget {
           child: Material(
             child: InkWell(
               onTap: () {
-                // initialPath.clear();
-                // initialPath.addAll(device.path);
-                context.read<BookmarksBloc>().add(DeviceStatusChecked(
-                      initialPath,
-                      device.path,
-                      pageController,
-                    ));
+                if (isDeleteMode) {
+                  context
+                      .read<BookmarksBloc>()
+                      .add(BookmarksItemToggled(device));
+                } else {
+                  context.read<BookmarksBloc>().add(DeviceStatusChecked(
+                        initialPath,
+                        device.path,
+                        pageController,
+                      ));
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -203,10 +255,15 @@ class _DeviceSliverList extends StatelessWidget {
                       ),
                     ),
                     isDeleteMode
-                        ? const Icon(
-                            Icons.circle_outlined,
-                            color: Colors.amber,
-                          )
+                        ? selectedDevices.contains(device)
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: Colors.amber,
+                              )
+                            : const Icon(
+                                Icons.circle_outlined,
+                                color: Colors.amber,
+                              )
                         : const Icon(
                             Icons.circle_outlined,
                             color: Colors.transparent,
@@ -240,6 +297,7 @@ class _DeviceSliverList extends StatelessWidget {
                       data: state.devices,
                       initialPath: initialPath,
                       isDeleteMode: state.isDeleteMode,
+                      selectedDevices: state.selectedDevices,
                     ),
                   )
                 ],
@@ -255,5 +313,60 @@ class _DeviceSliverList extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+class _BookmarksFloatingActionButton extends StatelessWidget {
+  const _BookmarksFloatingActionButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BookmarksBloc, BookmarksState>(
+        buildWhen: (previous, current) =>
+            previous.isDeleteMode != current.isDeleteMode,
+        builder: (context, state) {
+          if (state.formStatus.isRequestSuccess) {
+            if (state.isDeleteMode) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () {
+                      context
+                          .read<BookmarksBloc>()
+                          .add(const BookmarksDeleted());
+                    },
+                    child: const Icon(
+                      CustomIcons.check,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () {
+                      context
+                          .read<BookmarksBloc>()
+                          .add(const BookmarksDeletedModeDisabled());
+                    },
+                    child: const Icon(
+                      CustomIcons.cancel,
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center();
+            }
+          } else {
+            return const Center();
+          }
+        });
   }
 }

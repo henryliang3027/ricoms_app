@@ -16,7 +16,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         _bookmarksRepository = bookmarksRepository,
         super(const BookmarksState()) {
     on<BookmarksRequested>(_onBookmarksRequested);
-    on<BookmarksDeletedModeToggled>(_onBookmarksDeletedModeToggled);
+    on<BookmarksDeletedModeEnabled>(_onBookmarksDeletedModeEnabled);
+    on<BookmarksDeletedModeDisabled>(_onBookmarksDeletedModeDisabled);
+    on<BookmarksDeleted>(_onBookmarksDeleted);
+    on<BookmarksItemToggled>(_onBookmarksItemToggled);
     on<DeviceStatusChecked>(_onDeviceStatusChecked);
 
     add(const BookmarksRequested());
@@ -31,6 +34,8 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   ) async {
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
     ));
 
     List<dynamic> result = await _bookmarksRepository.getBookmarks(user: _user);
@@ -48,12 +53,94 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     }
   }
 
-  void _onBookmarksDeletedModeToggled(
-    BookmarksDeletedModeToggled event,
+  void _onBookmarksDeletedModeEnabled(
+    BookmarksDeletedModeEnabled event,
     Emitter<BookmarksState> emit,
   ) {
     emit(state.copyWith(
-      isDeleteMode: !state.isDeleteMode,
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      isDeleteMode: true,
+    ));
+  }
+
+  void _onBookmarksDeletedModeDisabled(
+    BookmarksDeletedModeDisabled event,
+    Emitter<BookmarksState> emit,
+  ) {
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      selectedDevices: const [],
+      isDeleteMode: false,
+    ));
+  }
+
+  Future<void> _onBookmarksDeleted(
+    BookmarksDeleted event,
+    Emitter<BookmarksState> emit,
+  ) async {
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      formStatus: FormStatus.requestInProgress,
+    ));
+
+    List<dynamic> resultOfDelete = await _bookmarksRepository.deleteDevices(
+      user: _user,
+      devices: state.selectedDevices,
+    );
+
+    if (resultOfDelete[0]) {
+      List<dynamic> resultOfRetrieve =
+          await _bookmarksRepository.getBookmarks(user: _user);
+
+      if (resultOfRetrieve[0]) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          deviceDeleteStatus: FormStatus.requestSuccess,
+          devices: resultOfRetrieve[1],
+          selectedDevices: const [],
+          isDeleteMode: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          deviceDeleteStatus: FormStatus.requestFailure,
+          deleteResultMsg: resultOfRetrieve[1],
+          selectedDevices: const [],
+          isDeleteMode: false,
+        ));
+      }
+    } else {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestFailure,
+        deviceDeleteStatus: FormStatus.requestFailure,
+        deleteResultMsg: resultOfDelete[1],
+        selectedDevices: const [],
+        isDeleteMode: false,
+      ));
+    }
+  }
+
+  Future<void> _onBookmarksItemToggled(
+    BookmarksItemToggled event,
+    Emitter<BookmarksState> emit,
+  ) async {
+    List<Device> selectedDevices = [];
+
+    selectedDevices.addAll(state.selectedDevices);
+
+    if (selectedDevices.contains(event.device)) {
+      selectedDevices.remove(event.device);
+    } else {
+      selectedDevices.add(event.device);
+    }
+
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      selectedDevices: selectedDevices,
     ));
   }
 
@@ -62,6 +149,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     Emitter<BookmarksState> emit,
   ) async {
     emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.requestInProgress,
       isDeleteMode: false,
     ));

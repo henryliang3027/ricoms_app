@@ -1,73 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/dashboard/bloc/dashboard_bloc.dart';
+import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
+import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class DashboardForm extends StatelessWidget {
-  const DashboardForm({Key? key}) : super(key: key);
+  const DashboardForm({Key? key, required this.pageController})
+      : super(key: key);
+
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
-    final PageController _pageController = PageController();
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 7,
-            child: Card(
-              color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-                    child: _WidgetTitle(title: 'Alarm Ratio'),
-                  ),
-                  _buildLegend(),
-                  Expanded(
-                    flex: 9,
-                    child: PageView(
-                      controller: _pageController,
-                      children: const <Widget>[
-                        _AlarmOneDayStatisticsPieChart(),
-                        _AlarmThreeDaysStatisticsPieChart(),
-                        _AlarmOneWeekStatisticsPieChart(),
-                        _AlarmTwoWeeksStatisticsPieChart(),
-                        _AlarmOneMonthStatisticsPieChart(),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                    child: SmoothPageIndicator(
-                      controller: _pageController,
-                      count: 5,
-                      effect: const WormEffect(
-                        dotHeight: 10.0,
-                        dotWidth: 10.0,
-                        type: WormType.normal,
-                        // strokeWidth: 5,
+    final PageController _pieChartPageController = PageController();
+    return WillPopScope(
+      onWillPop: () async {
+        bool? isExit = await CommonWidget.showExitAppDialog(context: context);
+        return isExit ?? false;
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Dashboard')),
+        bottomNavigationBar: HomeBottomNavigationBar(
+          pageController: pageController,
+          selectedIndex: 2,
+        ),
+        drawer: HomeDrawer(
+          user: context.read<AuthenticationBloc>().state.user,
+          pageController: pageController,
+          currentPageIndex: 2,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 7,
+                child: Card(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                        child: _WidgetTitle(title: 'Alarm Ratio'),
                       ),
-                    ),
+                      _buildLegend(),
+                      Expanded(
+                        flex: 9,
+                        child: PageView(
+                          controller: _pieChartPageController,
+                          children: const <Widget>[
+                            _AlarmOneDayStatisticsPieChart(),
+                            _AlarmThreeDaysStatisticsPieChart(),
+                            _AlarmOneWeekStatisticsPieChart(),
+                            _AlarmTwoWeeksStatisticsPieChart(),
+                            _AlarmOneMonthStatisticsPieChart(),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                        child: SmoothPageIndicator(
+                          controller: _pieChartPageController,
+                          count: 5,
+                          effect: const WormEffect(
+                            dotHeight: 10.0,
+                            dotWidth: 10.0,
+                            type: WormType.normal,
+                            // strokeWidth: 5,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+              const Expanded(
+                flex: 4,
+                child: Card(
+                  color: Colors.white,
+                  child: _DeviceStatisticsGridView(),
+                ),
+              ),
+            ],
           ),
-          const Expanded(
-            flex: 4,
-            child: Card(
-              color: Colors.white,
-              child: _DeviceStatisticsGridView(),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

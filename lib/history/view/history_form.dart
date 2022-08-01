@@ -12,6 +12,7 @@ import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:open_file/open_file.dart';
 
@@ -119,29 +120,35 @@ class HistoryForm extends StatelessWidget {
           _showNoMoreRecordsDialog(state.moreRecordsMessage);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('History'),
-          actions: const [
-            _PopupMenu(),
-          ],
-        ),
-        bottomNavigationBar: HomeBottomNavigationBar(
-          pageController: pageController,
-          selectedIndex: 3,
-        ),
-        drawer: HomeDrawer(
-          user: context.select(
-            (AuthenticationBloc bloc) => bloc.state.user,
+      child: WillPopScope(
+        onWillPop: () async {
+          bool? isExit = await CommonWidget.showExitAppDialog(context: context);
+          return isExit ?? false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('History'),
+            actions: const [
+              _PopupMenu(),
+            ],
           ),
-          pageController: pageController,
-          currentPageIndex: 3,
+          bottomNavigationBar: HomeBottomNavigationBar(
+            pageController: pageController,
+            selectedIndex: 3,
+          ),
+          drawer: HomeDrawer(
+            user: context.select(
+              (AuthenticationBloc bloc) => bloc.state.user,
+            ),
+            pageController: pageController,
+            currentPageIndex: 3,
+          ),
+          body: _HistorySliverList(
+            pageController: pageController,
+            initialPath: initialPath,
+          ),
+          floatingActionButton: const _HistoryFloatingActionButton(),
         ),
-        body: _HistorySliverList(
-          pageController: pageController,
-          initialPath: initialPath,
-        ),
-        floatingActionButton: const _HistoryFloatingActionButton(),
       ),
     );
   }

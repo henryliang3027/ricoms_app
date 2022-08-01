@@ -47,7 +47,7 @@ class BookmarksRepository {
 
             if (element['device_id'] != null) {
               Device device = Device(
-                id: element['device_id'],
+                id: bookmark,
                 name: element['name'],
                 type: element['type'],
                 ip: element['ip'],
@@ -101,6 +101,28 @@ class BookmarksRepository {
       return [true, devices];
     } else {
       return [false, 'There are no records to show'];
+    }
+  }
+
+  Future<List<dynamic>> deleteDevices({
+    required User user,
+    required List<Device> devices,
+  }) async {
+    UserApi userApi = UserApi();
+
+    List<int> nodeIds = [];
+
+    for (Device device in devices) {
+      nodeIds.add(device.id);
+    }
+
+    bool isSuccess =
+        await userApi.deleteMultipleBookmarksByUserId(user.id, nodeIds);
+
+    if (isSuccess) {
+      return [true, ''];
+    } else {
+      return [false, 'Your account id does not exist.'];
     }
   }
 

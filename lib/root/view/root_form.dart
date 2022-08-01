@@ -16,6 +16,7 @@ import 'package:ricoms_app/root/view/device_setting_page.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 
 class RootForm extends StatelessWidget {
@@ -144,7 +145,9 @@ class RootForm extends StatelessWidget {
                 .add(ChildDataRequested(_directory[_directory.length - 2]));
             return false;
           } else {
-            return true;
+            bool? isExit =
+                await CommonWidget.showExitAppDialog(context: context);
+            return isExit ?? false;
           }
         },
         child: Scaffold(

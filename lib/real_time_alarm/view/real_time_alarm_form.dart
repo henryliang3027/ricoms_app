@@ -7,6 +7,7 @@ import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 
 class RealTimeAlarmForm extends StatelessWidget {
   const RealTimeAlarmForm({
@@ -58,63 +59,69 @@ class RealTimeAlarmForm extends StatelessWidget {
           _showFailureDialog(state.errmsg);
         }
       },
-      child: DefaultTabController(
-        length: 5,
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.white,
+      child: WillPopScope(
+        onWillPop: () async {
+          bool? isExit = await CommonWidget.showExitAppDialog(context: context);
+          return isExit ?? false;
+        },
+        child: DefaultTabController(
+          length: 5,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.white,
 
-            //title: Text(widget.node.name),
-            centerTitle: true,
-            titleSpacing: 0.0,
-            title: const TabBar(
-              unselectedLabelColor: Colors.grey,
-              labelColor: Colors.blue,
-              isScrollable: true,
-              tabs: [
-                Tab(
-                  text: 'All',
+              //title: Text(widget.node.name),
+              centerTitle: true,
+              titleSpacing: 0.0,
+              title: const TabBar(
+                unselectedLabelColor: Colors.grey,
+                labelColor: Colors.blue,
+                isScrollable: true,
+                tabs: [
+                  Tab(
+                    text: 'All',
+                  ),
+                  Tab(
+                    text: 'Critical',
+                  ),
+                  Tab(
+                    text: 'Warning',
+                  ),
+                  Tab(
+                    text: 'Normal',
+                  ),
+                  Tab(
+                    text: 'Notice',
+                  ),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _AllAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
                 ),
-                Tab(
-                  text: 'Critical',
+                _CriticalAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
                 ),
-                Tab(
-                  text: 'Warning',
+                _WarningAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
                 ),
-                Tab(
-                  text: 'Normal',
+                _NormalAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
                 ),
-                Tab(
-                  text: 'Notice',
+                _NoticeAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
                 ),
               ],
             ),
-          ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _AllAlarmsSliverList(
-                pageController: pageController,
-                initialPath: initialPath,
-              ),
-              _CriticalAlarmsSliverList(
-                pageController: pageController,
-                initialPath: initialPath,
-              ),
-              _WarningAlarmsSliverList(
-                pageController: pageController,
-                initialPath: initialPath,
-              ),
-              _NormalAlarmsSliverList(
-                pageController: pageController,
-                initialPath: initialPath,
-              ),
-              _NoticeAlarmsSliverList(
-                pageController: pageController,
-                initialPath: initialPath,
-              ),
-            ],
           ),
         ),
       ),

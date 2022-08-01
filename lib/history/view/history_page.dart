@@ -5,21 +5,14 @@ import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
 import 'package:ricoms_app/history/view/history_form.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 
-class HistoryPage extends StatefulWidget {
+class HistoryPage extends StatelessWidget {
   const HistoryPage({
     Key? key,
     required this.pageController,
     required this.initialRootPath,
   }) : super(key: key);
-
   final PageController pageController;
   final List initialRootPath;
-
-  @override
-  State<HistoryPage> createState() => _HistoryPageState();
-}
-
-class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -28,8 +21,8 @@ class _HistoryPageState extends State<HistoryPage> {
         historyRepository: RepositoryProvider.of<HistoryRepository>(context),
       ),
       child: HistoryForm(
-        pageController: widget.pageController,
-        initialPath: widget.initialRootPath,
+        pageController: pageController,
+        initialPath: initialRootPath,
       ),
     );
   }

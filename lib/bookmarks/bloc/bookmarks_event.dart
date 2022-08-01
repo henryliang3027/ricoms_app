@@ -11,20 +11,27 @@ class BookmarksRequested extends BookmarksEvent {
   List<Object?> get props => [];
 }
 
-class BookmarksDeletedModeToggled extends BookmarksEvent {
-  const BookmarksDeletedModeToggled();
+class BookmarksDeletedModeEnabled extends BookmarksEvent {
+  const BookmarksDeletedModeEnabled();
 
   @override
   List<Object?> get props => [];
 }
 
-class BookmarksNodeSelected extends BookmarksEvent {
-  const BookmarksNodeSelected(this.nodeId);
-
-  final int nodeId;
+class BookmarksDeletedModeDisabled extends BookmarksEvent {
+  const BookmarksDeletedModeDisabled();
 
   @override
-  List<Object?> get props => [nodeId];
+  List<Object?> get props => [];
+}
+
+class BookmarksItemToggled extends BookmarksEvent {
+  const BookmarksItemToggled(this.device);
+
+  final Device device;
+
+  @override
+  List<Object?> get props => [device];
 }
 
 class BookmarksAllNodeSelected extends BookmarksEvent {
@@ -35,12 +42,10 @@ class BookmarksAllNodeSelected extends BookmarksEvent {
 }
 
 class BookmarksDeleted extends BookmarksEvent {
-  const BookmarksDeleted(this.nodeIds);
-
-  final List<int> nodeIds;
+  const BookmarksDeleted();
 
   @override
-  List<Object?> get props => [nodeIds];
+  List<Object?> get props => [];
 }
 
 class DeviceStatusChecked extends BookmarksEvent {
