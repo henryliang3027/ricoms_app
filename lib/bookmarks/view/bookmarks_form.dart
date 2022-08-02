@@ -98,6 +98,8 @@ class BookmarksForm extends StatelessWidget {
 
 enum Menu {
   delete,
+  select_all,
+  deselect_all,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -107,39 +109,98 @@ class _PopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarksBloc, BookmarksState>(
         builder: (context, state) {
-      return PopupMenuButton<Menu>(
-        onSelected: (Menu item) async {
-          switch (item) {
-            case Menu.delete:
-              context
-                  .read<BookmarksBloc>()
-                  .add(const BookmarksDeletedModeEnabled());
-              break;
-            default:
-              break;
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-          PopupMenuItem<Menu>(
-            value: Menu.delete,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.delete_outline,
-                  size: 20.0,
-                  color: Colors.black,
-                ),
-                SizedBox(
-                  width: 10.0,
-                ),
-                Text('Delete'),
-              ],
+      if (state.isDeleteMode) {
+        return PopupMenuButton<Menu>(
+          onSelected: (Menu item) async {
+            switch (item) {
+              case Menu.select_all:
+                context
+                    .read<BookmarksBloc>()
+                    .add(const BookmarksAllItemSelected());
+                break;
+              case Menu.deselect_all:
+                context
+                    .read<BookmarksBloc>()
+                    .add(const BookmarksAllItemDeselected());
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.select_all,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.select_all_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text('Select all'),
+                ],
+              ),
             ),
-          ),
-        ],
-      );
+            PopupMenuItem<Menu>(
+              value: Menu.deselect_all,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.deselect_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text('Deselect all'),
+                ],
+              ),
+            ),
+          ],
+        );
+      } else {
+        return PopupMenuButton<Menu>(
+          onSelected: (Menu item) async {
+            switch (item) {
+              case Menu.delete:
+                context
+                    .read<BookmarksBloc>()
+                    .add(const BookmarksDeletedModeEnabled());
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.delete,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.delete_outline,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text('Delete'),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
     });
   }
 }

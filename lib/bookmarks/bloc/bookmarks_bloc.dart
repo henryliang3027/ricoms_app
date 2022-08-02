@@ -20,6 +20,8 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     on<BookmarksDeletedModeDisabled>(_onBookmarksDeletedModeDisabled);
     on<BookmarksDeleted>(_onBookmarksDeleted);
     on<BookmarksItemToggled>(_onBookmarksItemToggled);
+    on<BookmarksAllItemSelected>(_onBookmarksAllItemSelected);
+    on<BookmarksAllItemDeselected>(_onBookmarksAllItemDeselected);
     on<DeviceStatusChecked>(_onDeviceStatusChecked);
 
     add(const BookmarksRequested());
@@ -106,8 +108,8 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       } else {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
-          deviceDeleteStatus: FormStatus.requestFailure,
-          deleteResultMsg: resultOfRetrieve[1],
+          deviceDeleteStatus: FormStatus.requestSuccess,
+          requestErrorMsg: resultOfRetrieve[1],
           selectedDevices: const [],
           isDeleteMode: false,
         ));
@@ -123,10 +125,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     }
   }
 
-  Future<void> _onBookmarksItemToggled(
+  void _onBookmarksItemToggled(
     BookmarksItemToggled event,
     Emitter<BookmarksState> emit,
-  ) async {
+  ) {
     List<Device> selectedDevices = [];
 
     selectedDevices.addAll(state.selectedDevices);
@@ -141,6 +143,31 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       selectedDevices: selectedDevices,
+    ));
+  }
+
+  void _onBookmarksAllItemSelected(
+    BookmarksAllItemSelected event,
+    Emitter<BookmarksState> emit,
+  ) {
+    List<Device> selectedDevices = [];
+    selectedDevices.addAll(state.devices);
+
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      selectedDevices: selectedDevices,
+    ));
+  }
+
+  void _onBookmarksAllItemDeselected(
+    BookmarksAllItemDeselected event,
+    Emitter<BookmarksState> emit,
+  ) {
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      selectedDevices: const [],
     ));
   }
 

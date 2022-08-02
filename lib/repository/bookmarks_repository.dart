@@ -34,7 +34,7 @@ class BookmarksRepository {
 
           var data = jsonDecode(response.data.toString());
 
-          if (data['code'] == '200') {
+          if (data['code'] == '200' || data['code'] == '404') {
             var element = data['data'][0];
 
             String rawPath = element['path'];
@@ -67,7 +67,7 @@ class BookmarksRepository {
               devices.add(device);
             }
           } else {
-            return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
+            return [false, 'Error: ${data['code']} msg: ${data['msg']}'];
           }
         } catch (e) {
           // The request was made and the server responded with a status code
