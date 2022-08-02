@@ -3,7 +3,8 @@ part of 'edit_account_bloc.dart';
 class EditAccountState extends Equatable {
   const EditAccountState({
     this.status = FormzStatus.pure,
-    this.isEditing = false,
+    this.submissionStatus = SubmissionStatus.none,
+    this.isInitController = false,
     this.account = const Account.pure(),
     this.password = const Password.pure(),
     this.passwordVisibility = false,
@@ -18,7 +19,8 @@ class EditAccountState extends Equatable {
   });
 
   final FormzStatus status;
-  final bool isEditing;
+  final SubmissionStatus submissionStatus;
+  final bool isInitController;
   final Account account;
   final Password password;
   final Name name;
@@ -33,7 +35,8 @@ class EditAccountState extends Equatable {
 
   EditAccountState copyWith({
     FormzStatus? status,
-    bool? isEditing,
+    SubmissionStatus? submissionStatus,
+    bool? isInitController,
     Account? account,
     Password? password,
     bool? passwordVisibility,
@@ -48,7 +51,8 @@ class EditAccountState extends Equatable {
   }) {
     return EditAccountState(
       status: status ?? this.status,
-      isEditing: isEditing ?? this.isEditing,
+      submissionStatus: submissionStatus ?? this.submissionStatus,
+      isInitController: isInitController ?? this.isInitController,
       account: account ?? this.account,
       password: password ?? this.password,
       passwordVisibility: passwordVisibility ?? this.passwordVisibility,
@@ -66,7 +70,8 @@ class EditAccountState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        isEditing,
+        submissionStatus,
+        isInitController,
         account,
         password,
         passwordVisibility,

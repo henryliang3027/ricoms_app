@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/bloc/edit_account/edit_account_bloc.dart';
+import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class AccountEditForm extends StatelessWidget {
-  const AccountEditForm({Key? key}) : super(key: key);
+  const AccountEditForm({
+    Key? key,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,7 @@ class AccountEditForm extends StatelessWidget {
     TextEditingController _telController = TextEditingController();
     TextEditingController _extController = TextEditingController();
 
-    Future<void> _showInProgressDialog(bool isEditing) async {
+    Future<void> _showInProgressDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -36,7 +42,6 @@ class AccountEditForm extends StatelessWidget {
     }
 
     Future<void> _showSuccessDialog(
-      bool isEditing,
       String msg,
     ) async {
       return showDialog<void>(
@@ -64,8 +69,44 @@ class AccountEditForm extends StatelessWidget {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
+                  if (isEditing) {
+                    Navigator.of(context).pop(); // pop dialog
+                  } else {
+                    Navigator.of(context).pop(); // pop dialog
+                    Navigator.of(context).pop(); // pop form
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
                   Navigator.of(context).pop(); // pop dialog
-                  Navigator.of(context).pop(); // pop form
                 },
               ),
             ],
@@ -77,11 +118,12 @@ class AccountEditForm extends StatelessWidget {
     return BlocListener<EditAccountBloc, EditAccountState>(
       listener: (context, state) async {
         if (state.status.isSubmissionInProgress) {
-          await _showInProgressDialog(state.isEditing);
-        } else if (state.status.isSubmissionSuccess) {
-          Navigator.of(context).pop();
-          _showSuccessDialog(state.isEditing, state.submissionMsg);
-        } else if (state.isEditing) {
+          await _showInProgressDialog();
+        } else if (state.submissionStatus.isSubmissionSuccess) {
+          _showSuccessDialog(state.submissionMsg);
+        } else if (state.submissionStatus.isSubmissionFailure) {
+          _showFailureDialog(state.submissionMsg);
+        } else if (state.isInitController) {
           _accountController.text = state.account.value;
           _nameController.text = state.name.value;
           _departmentController.text = state.department;
@@ -91,42 +133,51 @@ class AccountEditForm extends StatelessWidget {
           _extController.text = state.ext;
         }
       },
-      child: Container(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 30.0),
-              ),
-              _AccountInput(
-                accountController: _accountController,
-              ),
-              const _PasswordInput(),
-              _NameInput(
-                nameController: _nameController,
-              ),
-              const _PermissionDropDownMenu(),
-              _DepartmentInput(
-                departmentController: _departmentController,
-              ),
-              _EmailInput(
-                emailController: _emailController,
-              ),
-              _MobileInput(
-                mobileController: _mobileController,
-              ),
-              _TelInput(
-                telController: _telController,
-              ),
-              _ExtInput(
-                extController: _extController,
-              ),
-              const _SaveButton(),
-            ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: isEditing
+              ? const Text('Edit Account')
+              : const Text('Add Account'),
+        ),
+        body: Container(
+          height: double.maxFinite,
+          width: double.maxFinite,
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 30.0),
+                ),
+                _AccountInput(
+                  accountController: _accountController,
+                ),
+                const _PasswordInput(),
+                _NameInput(
+                  nameController: _nameController,
+                ),
+                const _PermissionDropDownMenu(),
+                _DepartmentInput(
+                  departmentController: _departmentController,
+                ),
+                _EmailInput(
+                  emailController: _emailController,
+                ),
+                _MobileInput(
+                  mobileController: _mobileController,
+                ),
+                _TelInput(
+                  telController: _telController,
+                ),
+                _ExtInput(
+                  extController: _extController,
+                ),
+                _SaveButton(
+                  isEditing: isEditing,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -593,14 +644,17 @@ class _ExtInput extends StatelessWidget {
 }
 
 class _SaveButton extends StatelessWidget {
-  const _SaveButton({Key? key}) : super(key: key);
+  const _SaveButton({
+    Key? key,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditAccountBloc, EditAccountState>(
-      buildWhen: (previous, current) =>
-          previous.isEditing != current.isEditing ||
-          previous.status != current.status,
+      buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(CommonStyle.lineSpacing),
@@ -618,32 +672,36 @@ class _SaveButton extends StatelessWidget {
               ),
             ),
             key: const Key('accountEditForm_submit_raisedButton'),
-            child: state.isEditing
-                ? const Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: CommonStyle.sizeM,
-                    ),
+            child: state.submissionStatus.isSubmissionInProgress
+                ? const Center(
+                    child: CircularProgressIndicator(),
                   )
-                : const Text(
-                    'Create',
-                    style: TextStyle(
-                      fontSize: CommonStyle.sizeM,
-                    ),
-                  ),
-            onPressed: state.isEditing
+                : isEditing
+                    ? const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: CommonStyle.sizeM,
+                        ),
+                      )
+                    : const Text(
+                        'Create',
+                        style: TextStyle(
+                          fontSize: CommonStyle.sizeM,
+                        ),
+                      ),
+            onPressed: isEditing
                 ? state.status.isValidated
                     ? () {
-                        // context
-                        //     .read<EditAccountBloc>()
-                        //     .add(const NodeUpdateSubmitted());
+                        context
+                            .read<EditAccountBloc>()
+                            .add(const AccountUpdateSubmitted());
                       }
                     : null
                 : state.status.isValidated
                     ? () {
-                        // context
-                        //     .read<EditAccountBloc>()
-                        //     .add(const NodeCreationSubmitted());
+                        context
+                            .read<EditAccountBloc>()
+                            .add(const AccountCreationSubmitted());
                       }
                     : null,
           ),

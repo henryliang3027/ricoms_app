@@ -36,14 +36,7 @@ class AccountEditPage extends StatelessWidget {
         isEditing: isEditing,
         accountOutline: accountOutline,
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: isEditing
-              ? const Text('Edit Account')
-              : const Text('Add Account'),
-        ),
-        body: const AccountEditForm(),
-      ),
+      child: AccountEditForm(isEditing: isEditing),
     );
   }
 }

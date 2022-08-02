@@ -16,6 +16,7 @@ AccountDetail _$AccountDetailFromJson(Map<String, dynamic> json) =>
       mobile: json['mobile'] as String?,
       tel: json['tel'] as String?,
       ext: json['ext'] as String?,
+      password: json['pwd'] as String?,
     );
 
 Map<String, dynamic> _$AccountDetailToJson(AccountDetail instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$AccountDetailToJson(AccountDetail instance) =>
       'mobile': instance.mobile,
       'tel': instance.tel,
       'ext': instance.ext,
+      'pwd': instance.password,
     };

@@ -156,4 +156,221 @@ class AccountRepository {
       }
     }
   }
+
+  Future<List<dynamic>> createAccount({
+    required User user,
+    required String account,
+    required String password,
+    required String name,
+    required int permission,
+    String? department,
+    String? email,
+    String? mobile,
+    String? tel,
+    String? ext,
+  }) async {
+    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String createAccountApiPath = '/accounts';
+
+    try {
+      AccountDetail accountDetail = AccountDetail(
+        account: account,
+        name: name,
+        permission:
+            permission.toString(), // int type digit to string type digit
+        department: department,
+        email: email,
+        mobile: mobile,
+        tel: tel,
+        ext: ext,
+        password: password,
+      );
+
+      Map<String, dynamic> requestData = accountDetail.toJson();
+      requestData['uid'] = user.id;
+
+      Response response = await _dio.post(
+        createAccountApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, data['msg']];
+      } else {
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<List<dynamic>> updateAccount({
+    required User user,
+    required int accountId,
+    required String account,
+    required String password,
+    required String name,
+    required int permission,
+    String? department,
+    String? email,
+    String? mobile,
+    String? tel,
+    String? ext,
+  }) async {
+    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String updateAccountApiPath = '/accounts/$accountId';
+
+    try {
+      AccountDetail accountDetail = AccountDetail(
+        account: account,
+        name: name,
+        permission:
+            permission.toString(), // int type digit to string type digit
+        department: department,
+        email: email,
+        mobile: mobile,
+        tel: tel,
+        ext: ext,
+        password: password,
+      );
+
+      Map<String, dynamic> requestData = accountDetail.toJson();
+      requestData['uid'] = user.id;
+
+      Response response = await _dio.put(
+        updateAccountApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, data['msg']];
+      } else {
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
+  Future<List<dynamic>> deleteAccount({
+    required User user,
+    required int accountId,
+  }) async {
+    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String deleteAccountApiPath = '/accounts/$accountId';
+
+    try {
+      Map<String, dynamic> requestData = {
+        'account_id': accountId,
+        'uid': user.id,
+      };
+
+      Response response = await _dio.delete(
+        deleteAccountApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, data['msg']];
+      } else {
+        return [false, data['msg']];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
 }
+
+const Map<int, String> permissionTypes = {
+  3: 'Operator',
+  2: 'Administrator',
+  4: 'User',
+  5: 'Disabled',
+};

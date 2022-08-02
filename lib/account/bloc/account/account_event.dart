@@ -24,5 +24,14 @@ class KeywordChanged extends AccountEvent {
   final String keyword;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [keyword];
+}
+
+class AccountDeleted extends AccountEvent {
+  const AccountDeleted(this.accountId);
+
+  final int accountId;
+
+  @override
+  List<Object?> get props => [accountId];
 }

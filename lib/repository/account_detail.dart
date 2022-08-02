@@ -28,6 +28,9 @@ class AccountDetail {
   @JsonKey(name: 'ext')
   final String? ext;
 
+  @JsonKey(name: 'pwd')
+  final String? password;
+
   AccountDetail({
     required this.account,
     required this.name,
@@ -37,6 +40,7 @@ class AccountDetail {
     this.mobile,
     this.tel,
     this.ext,
+    this.password,
   });
 
   /// Connect the generated [_$AccountDetailFromJson] function to the `fromJson`

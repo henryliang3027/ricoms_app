@@ -13,27 +13,100 @@ class AccountForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('Account'),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: _KeywordInput(),
+    Future<void> _showSuccessDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Deleted',
+              style: TextStyle(
+                color: CustomStyle.severityColor[1],
+              ),
             ),
-            Expanded(
-              child: _AccountSliverList(),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
             ),
-          ],
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return BlocListener<AccountBloc, AccountState>(
+      listener: (context, state) {
+        if (state.deleteStatus.isSubmissionSuccess) {
+          _showSuccessDialog(state.deleteMsg);
+        } else if (state.deleteStatus.isSubmissionFailure) {
+          _showFailureDialog(state.deleteMsg);
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: const Text('Account'),
         ),
+        body: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: _KeywordInput(),
+              ),
+              Expanded(
+                child: _AccountSliverList(),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: const _AccountFloatingActionButton(),
       ),
-      floatingActionButton: const _AccountFloatingActionButton(),
     );
   }
 }
@@ -422,9 +495,11 @@ class _AccountEditBottomMenu extends StatelessWidget {
 
             bool? result = await _showConfirmDeleteDialog(accountOutline);
             if (result != null) {
-              // result
-              //     ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
-              //     : null;
+              result
+                  ? superContext
+                      .read<AccountBloc>()
+                      .add(AccountDeleted(accountOutline.id))
+                  : null;
             }
           },
         ),

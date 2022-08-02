@@ -18,6 +18,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountRequested>(_onAccountRequested);
     on<KeywordChanged>(_onKeywordChanged);
     on<AccountSearched>(_onAccountSearched);
+    on<AccountDeleted>(_onAccountDeleted);
 
     add(const AccountRequested());
   }
@@ -31,6 +32,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   ) async {
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
+      deleteStatus: SubmissionStatus.none,
     ));
 
     List<dynamic> result =
@@ -54,6 +56,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Emitter<AccountState> emit,
   ) {
     emit(state.copyWith(
+      deleteStatus: SubmissionStatus.none,
       keyword: event.keyword,
     ));
   }
@@ -63,6 +66,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Emitter<AccountState> emit,
   ) async {
     emit(state.copyWith(
+      deleteStatus: SubmissionStatus.none,
       formStatus: FormStatus.requestInProgress,
     ));
 
@@ -80,6 +84,46 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         requestErrorMsg: result[1],
+      ));
+    }
+  }
+
+  Future<void> _onAccountDeleted(
+    AccountDeleted event,
+    Emitter<AccountState> emit,
+  ) async {
+    emit(state.copyWith(
+      deleteStatus: SubmissionStatus.submissionInProgress,
+    ));
+
+    List<dynamic> resultOfDelete = await _accountRepository.deleteAccount(
+      user: _user,
+      accountId: event.accountId,
+    );
+
+    if (resultOfDelete[0]) {
+      List<dynamic> resultOfRetrieve =
+          await _accountRepository.getAccountOutlineList(user: _user);
+
+      if (resultOfRetrieve[0]) {
+        emit(state.copyWith(
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          formStatus: FormStatus.requestSuccess,
+          accounts: resultOfRetrieve[1],
+          deleteMsg: resultOfDelete[1],
+        ));
+      } else {
+        emit(state.copyWith(
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          formStatus: FormStatus.requestFailure,
+          requestErrorMsg: resultOfRetrieve[1],
+          deleteMsg: resultOfDelete[1],
+        ));
+      }
+    } else {
+      emit(state.copyWith(
+        deleteStatus: SubmissionStatus.submissionFailure,
+        deleteMsg: resultOfDelete[1],
       ));
     }
   }
