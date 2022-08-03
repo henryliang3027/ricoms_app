@@ -290,7 +290,7 @@ class RootRepository {
       if (data['code'] == '200') {
         return [true, 'create node success'];
       } else if (data['code'] == '204') {
-        return [true, 'The device is unconnedted and unsupported.'];
+        return [true, 'The device is unconnected and unsupported.'];
       } else {
         return [false, data['msg']];
       }

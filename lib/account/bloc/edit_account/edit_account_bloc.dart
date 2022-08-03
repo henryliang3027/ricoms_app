@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/model/account.dart';
+import 'package:ricoms_app/account/model/email.dart';
 import 'package:ricoms_app/login/models/password.dart';
 import 'package:ricoms_app/repository/account_detail.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
@@ -67,7 +68,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         name: Name.dirty(accountDetail.name),
         permission: int.parse(accountDetail.permission),
         department: accountDetail.department,
-        email: accountDetail.email,
+        email: Email.dirty(accountDetail.email ?? ''),
         mobile: accountDetail.mobile,
         tel: accountDetail.tel,
         ext: accountDetail.ext,
@@ -82,12 +83,14 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final account = Account.dirty(event.account);
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         account: account,
         status: Formz.validate([
           account,
           state.password,
           state.name,
+          state.email,
         ]),
       ),
     );
@@ -100,12 +103,14 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final password = Password.dirty(event.password);
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         password: password,
         status: Formz.validate([
           state.account,
           password,
           state.name,
+          state.email,
         ]),
       ),
     );
@@ -117,6 +122,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         passwordVisibility: !state.passwordVisibility,
       ),
@@ -130,12 +136,14 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     final name = Name.dirty(event.name);
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         name: name,
         status: Formz.validate([
           state.account,
           state.password,
           name,
+          state.email,
         ]),
       ),
     );
@@ -147,6 +155,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         permission: event.permission,
       ),
@@ -159,6 +168,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         department: event.department,
       ),
@@ -169,10 +179,18 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     EmailChanged event,
     Emitter<EditAccountState> emit,
   ) {
+    final email = Email.dirty(event.email);
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
-        email: event.email,
+        email: email,
+        status: Formz.validate([
+          state.account,
+          state.password,
+          state.name,
+          email,
+        ]),
       ),
     );
   }
@@ -183,6 +201,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         mobile: event.mobile,
       ),
@@ -195,6 +214,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         tel: event.tel,
       ),
@@ -207,6 +227,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
   ) {
     emit(
       state.copyWith(
+        submissionStatus: SubmissionStatus.none,
         isInitController: false,
         ext: event.ext,
       ),
@@ -229,7 +250,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         name: state.name.value,
         permission: state.permission,
         department: state.department,
-        email: state.email,
+        email: state.email.value,
         mobile: state.mobile,
         tel: state.tel,
         ext: state.ext,
@@ -267,7 +288,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         name: state.name.value,
         permission: state.permission,
         department: state.department,
-        email: state.email,
+        email: state.email.value,
         mobile: state.mobile,
         tel: state.tel,
         ext: state.ext,

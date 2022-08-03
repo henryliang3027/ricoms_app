@@ -11,13 +11,6 @@ class AccountRequested extends AccountEvent {
   List<Object?> get props => [];
 }
 
-// class AccountSearched extends AccountEvent {
-//   const AccountSearched();
-
-//   @override
-//   List<Object?> get props => [];
-// }
-
 class KeywordChanged extends AccountEvent {
   const KeywordChanged(this.keyword);
 

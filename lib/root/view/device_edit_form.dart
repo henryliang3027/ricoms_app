@@ -678,6 +678,7 @@ class _SaveButton extends StatelessWidget {
             onPressed: state.isEditing
                 ? state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditDeviceBloc>()
                             .add(const NodeUpdateSubmitted());
@@ -685,6 +686,7 @@ class _SaveButton extends StatelessWidget {
                     : null
                 : state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditDeviceBloc>()
                             .add(const NodeCreationSubmitted());

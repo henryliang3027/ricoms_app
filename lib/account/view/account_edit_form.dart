@@ -127,7 +127,7 @@ class AccountEditForm extends StatelessWidget {
           _accountController.text = state.account.value;
           _nameController.text = state.name.value;
           _departmentController.text = state.department;
-          _emailController.text = state.email;
+          _emailController.text = state.email.value;
           _mobileController.text = state.mobile;
           _telController.text = state.tel;
           _extController.text = state.ext;
@@ -508,6 +508,10 @@ class _EmailInput extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText:
+                    state.email.invalid ? 'Invalid email address.' : null,
               ),
             ),
           ),
@@ -699,6 +703,7 @@ class _SaveButton extends StatelessWidget {
             onPressed: isEditing
                 ? state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditAccountBloc>()
                             .add(const AccountUpdateSubmitted());
@@ -706,6 +711,7 @@ class _SaveButton extends StatelessWidget {
                     : null
                 : state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditAccountBloc>()
                             .add(const AccountCreationSubmitted());

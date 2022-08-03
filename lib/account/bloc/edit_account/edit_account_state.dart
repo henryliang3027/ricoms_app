@@ -13,7 +13,7 @@ class EditAccountState extends Equatable {
     this.name = const Name.pure(),
     this.permission = 3,
     this.department = '',
-    this.email = '',
+    this.email = const Email.pure(),
     this.mobile = '',
     this.tel = '',
     this.ext = '',
@@ -30,7 +30,7 @@ class EditAccountState extends Equatable {
   final bool passwordVisibility;
   final int permission;
   final String department;
-  final String email;
+  final Email email;
   final String mobile;
   final String tel;
   final String ext;
@@ -47,7 +47,7 @@ class EditAccountState extends Equatable {
     Name? name,
     int? permission,
     String? department,
-    String? email,
+    Email? email,
     String? mobile,
     String? tel,
     String? ext,

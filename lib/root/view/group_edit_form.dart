@@ -357,6 +357,7 @@ class _SubmitButton extends StatelessWidget {
             onPressed: state.isEditing
                 ? state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditGroupBloc>()
                             .add(const NodeUpdateSubmitted());
@@ -364,6 +365,7 @@ class _SubmitButton extends StatelessWidget {
                     : null
                 : state.status.isValidated
                     ? () {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<EditGroupBloc>()
                             .add(const NodeCreationSubmitted());
