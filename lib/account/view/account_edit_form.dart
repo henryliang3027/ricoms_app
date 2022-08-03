@@ -491,6 +491,7 @@ class _EmailInput extends StatelessWidget {
               key: const Key('emailEditForm_emailInput_textField'),
               controller: emailController,
               textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.emailAddress,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -540,6 +541,7 @@ class _MobileInput extends StatelessWidget {
               key: const Key('mobileEditForm_mobileInput_textField'),
               controller: mobileController,
               textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.phone,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -584,6 +586,7 @@ class _TelInput extends StatelessWidget {
               key: const Key('telEditForm_telInput_textField'),
               controller: telController,
               textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.phone,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -628,6 +631,7 @@ class _ExtInput extends StatelessWidget {
               key: const Key('extEditForm_extInput_textField'),
               controller: extController,
               textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.phone,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
