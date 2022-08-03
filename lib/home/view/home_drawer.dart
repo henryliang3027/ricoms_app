@@ -58,7 +58,7 @@ class HomeDrawer extends StatelessWidget {
             ),
             onTap: () {
               pageController.jumpToPage(i);
-              //Navigator.pop(context);
+              Navigator.pop(context); //close drawer
             },
           ),
       ];
