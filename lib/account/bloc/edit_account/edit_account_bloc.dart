@@ -237,6 +237,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
 
       if (result[0]) {
         emit(state.copyWith(
+          isModify: true,
           submissionStatus: SubmissionStatus.submissionSuccess,
           submissionMsg: result[1],
         ));
@@ -274,6 +275,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
 
       if (result[0]) {
         emit(state.copyWith(
+          isModify: true,
           submissionStatus: SubmissionStatus.submissionSuccess,
           submissionMsg: result[1],
         ));

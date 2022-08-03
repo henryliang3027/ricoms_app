@@ -13,6 +13,7 @@ class AccountRepository {
 
   Future<List<dynamic>> getAccountOutlineList({
     required User user,
+    String? keyword,
   }) async {
     _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
@@ -32,8 +33,35 @@ class AccountRepository {
             data['data'].map((element) => AccountOutline.fromJson(element)));
 
         if (accountOutlineList.isNotEmpty) {
-          return [true, accountOutlineList];
+          if (keyword != null && keyword.isNotEmpty) {
+            List<AccountOutline> matchedAccountOutlineList = accountOutlineList
+                .where((accountOutline) =>
+                    accountOutline.account
+                        .toLowerCase()
+                        .contains(keyword.toLowerCase()) ||
+                    (accountOutline.department ?? '')
+                        .toLowerCase()
+                        .contains(keyword.toLowerCase()) ||
+                    accountOutline.name
+                        .toLowerCase()
+                        .contains(keyword.toLowerCase()) ||
+                    accountOutline.permission
+                        .toLowerCase()
+                        .contains(keyword.toLowerCase()))
+                .toList();
+
+            if (matchedAccountOutlineList.isNotEmpty) {
+              return [true, matchedAccountOutlineList];
+            } else {
+              // search but no account matched keyword
+              return [false, 'There are no records to show'];
+            }
+          } else {
+            //return all accounts if keyword is empty
+            return [true, accountOutlineList];
+          }
         } else {
+          // request for all but get no account
           return [false, 'There are no records to show'];
         }
       } else {
@@ -66,39 +94,6 @@ class AccountRepository {
         //throw Exception(e.toString());
         return [false, e.toString()];
       }
-    }
-  }
-
-  Future<List<dynamic>> getAccountByKeyword({
-    required User user,
-    required String keyword,
-  }) async {
-    List<dynamic> result = await getAccountOutlineList(user: user);
-
-    if (result[0]) {
-      List<AccountOutline> matchedAccountOutlineList = result[1]
-          .where((accountOutline) =>
-              accountOutline.account
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()) ||
-              (accountOutline.department ?? '')
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()) ||
-              accountOutline.name
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()) ||
-              accountOutline.permission
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()))
-          .toList();
-
-      if (matchedAccountOutlineList.isNotEmpty) {
-        return [true, matchedAccountOutlineList];
-      } else {
-        return [false, 'There are no records to show'];
-      }
-    } else {
-      return [false, result[1]];
     }
   }
 
@@ -367,10 +362,3 @@ class AccountRepository {
     }
   }
 }
-
-const Map<int, String> permissionTypes = {
-  3: 'Operator',
-  2: 'Administrator',
-  4: 'User',
-  5: 'Disabled',
-};

@@ -123,8 +123,15 @@ class _AccountFloatingActionButton extends StatelessWidget {
         return FloatingActionButton(
           elevation: 0.0,
           backgroundColor: const Color(0x742195F3),
-          onPressed: () {
-            Navigator.push(context, AccountEditPage.route(isEditing: false));
+          onPressed: () async {
+            bool? isModify = await Navigator.push(
+                context, AccountEditPage.route(isEditing: false));
+
+            if (isModify != null) {
+              if (isModify) {
+                context.read<AccountBloc>().add(const AccountRequested());
+              }
+            }
           },
           child: const Icon(Icons.add),
         );
@@ -153,7 +160,7 @@ class _KeywordInput extends StatelessWidget {
                 }
               },
               onFieldSubmitted: (String? keyword) {
-                context.read<AccountBloc>().add(const AccountSearched());
+                context.read<AccountBloc>().add(const AccountRequested());
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
@@ -178,15 +185,7 @@ class _KeywordInput extends StatelessWidget {
                       Icons.search_outlined,
                     ),
                     onPressed: () {
-                      state.keyword.isNotEmpty
-                          ? context
-                              .read<AccountBloc>()
-                              .add(const AccountSearched())
-                          : context
-                              .read<AccountBloc>()
-                              .add(const AccountRequested());
-                      // context.read<SearchBloc>().add(const FilterAdded());
-                      // _controller.clear();
+                      context.read<AccountBloc>().add(const AccountRequested());
                     },
                   ),
                 ),
@@ -459,14 +458,20 @@ class _AccountEditBottomMenu extends StatelessWidget {
             'Edit',
             style: TextStyle(fontSize: CommonStyle.sizeM),
           ),
-          onTap: () {
+          onTap: () async {
             Navigator.pop(context);
-            Navigator.push(
+            bool? isModify = await Navigator.push(
                 context,
                 AccountEditPage.route(
                   isEditing: true,
                   accountOutline: accountOutline,
                 ));
+
+            if (isModify != null) {
+              if (isModify) {
+                superContext.read<AccountBloc>().add(const AccountRequested());
+              }
+            }
           },
         ),
         ListTile(

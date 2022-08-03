@@ -59,11 +59,13 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     BookmarksDeletedModeEnabled event,
     Emitter<BookmarksState> emit,
   ) {
-    emit(state.copyWith(
-      deviceDeleteStatus: FormStatus.none,
-      targetDeviceStatus: FormStatus.none,
-      isDeleteMode: true,
-    ));
+    if (state.devices.isNotEmpty) {
+      emit(state.copyWith(
+        deviceDeleteStatus: FormStatus.none,
+        targetDeviceStatus: FormStatus.none,
+        isDeleteMode: true,
+      ));
+    }
   }
 
   void _onBookmarksDeletedModeDisabled(

@@ -2,6 +2,8 @@ part of 'edit_account_bloc.dart';
 
 class EditAccountState extends Equatable {
   const EditAccountState({
+    this.isModify = false,
+    //determine whether account form should be update or not
     this.status = FormzStatus.pure,
     this.submissionStatus = SubmissionStatus.none,
     this.isInitController = false,
@@ -18,6 +20,7 @@ class EditAccountState extends Equatable {
     this.submissionMsg = '',
   });
 
+  final bool isModify;
   final FormzStatus status;
   final SubmissionStatus submissionStatus;
   final bool isInitController;
@@ -34,6 +37,7 @@ class EditAccountState extends Equatable {
   final String submissionMsg;
 
   EditAccountState copyWith({
+    bool? isModify,
     FormzStatus? status,
     SubmissionStatus? submissionStatus,
     bool? isInitController,
@@ -50,6 +54,7 @@ class EditAccountState extends Equatable {
     String? submissionMsg,
   }) {
     return EditAccountState(
+      isModify: isModify ?? this.isModify,
       status: status ?? this.status,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       isInitController: isInitController ?? this.isInitController,
@@ -69,6 +74,7 @@ class EditAccountState extends Equatable {
 
   @override
   List<Object?> get props => [
+        isModify,
         status,
         submissionStatus,
         isInitController,

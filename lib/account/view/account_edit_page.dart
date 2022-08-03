@@ -13,7 +13,7 @@ class AccountEditPage extends StatelessWidget {
     this.accountOutline,
   }) : super(key: key);
 
-  static Route route({
+  static Route<bool> route({
     required bool isEditing,
     AccountOutline? accountOutline,
   }) {

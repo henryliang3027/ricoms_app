@@ -73,7 +73,7 @@ class AccountEditForm extends StatelessWidget {
                     Navigator.of(context).pop(); // pop dialog
                   } else {
                     Navigator.of(context).pop(); // pop dialog
-                    Navigator.of(context).pop(); // pop form
+                    Navigator.of(context).pop(true); // pop form
                   }
                 },
               ),
@@ -133,50 +133,57 @@ class AccountEditForm extends StatelessWidget {
           _extController.text = state.ext;
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: isEditing
-              ? const Text('Edit Account')
-              : const Text('Add Account'),
-        ),
-        body: Container(
-          height: double.maxFinite,
-          width: double.maxFinite,
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 30.0),
-                ),
-                _AccountInput(
-                  accountController: _accountController,
-                ),
-                const _PasswordInput(),
-                _NameInput(
-                  nameController: _nameController,
-                ),
-                const _PermissionDropDownMenu(),
-                _DepartmentInput(
-                  departmentController: _departmentController,
-                ),
-                _EmailInput(
-                  emailController: _emailController,
-                ),
-                _MobileInput(
-                  mobileController: _mobileController,
-                ),
-                _TelInput(
-                  telController: _telController,
-                ),
-                _ExtInput(
-                  extController: _extController,
-                ),
-                _SaveButton(
-                  isEditing: isEditing,
-                ),
-              ],
+      child: WillPopScope(
+        onWillPop: () async {
+          bool isModify = context.read<EditAccountBloc>().state.isModify;
+          Navigator.of(context).pop(isModify);
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: isEditing
+                ? const Text('Edit Account')
+                : const Text('Add Account'),
+          ),
+          body: Container(
+            height: double.maxFinite,
+            width: double.maxFinite,
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30.0),
+                  ),
+                  _AccountInput(
+                    accountController: _accountController,
+                  ),
+                  const _PasswordInput(),
+                  _NameInput(
+                    nameController: _nameController,
+                  ),
+                  const _PermissionDropDownMenu(),
+                  _DepartmentInput(
+                    departmentController: _departmentController,
+                  ),
+                  _EmailInput(
+                    emailController: _emailController,
+                  ),
+                  _MobileInput(
+                    mobileController: _mobileController,
+                  ),
+                  _TelInput(
+                    telController: _telController,
+                  ),
+                  _ExtInput(
+                    extController: _extController,
+                  ),
+                  _SaveButton(
+                    isEditing: isEditing,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

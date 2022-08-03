@@ -382,6 +382,57 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<bool?> _showConfirmDeleteDialog(List<Device> devices) async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete Account'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: const <TextSpan>[
+                        TextSpan(
+                          text:
+                              'Are you sure you want to delete selected bookmarks ?',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  'Yes, delete it!',
+                  style: TextStyle(
+                    color: CustomStyle.severityColor[3],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocBuilder<BookmarksBloc, BookmarksState>(
         buildWhen: (previous, current) =>
             previous.isDeleteMode != current.isDeleteMode,
@@ -395,10 +446,16 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
                     heroTag: null,
                     elevation: 0.0,
                     backgroundColor: const Color(0x742195F3),
-                    onPressed: () {
-                      context
-                          .read<BookmarksBloc>()
-                          .add(const BookmarksDeleted());
+                    onPressed: () async {
+                      bool? result =
+                          await _showConfirmDeleteDialog(state.devices);
+                      if (result != null) {
+                        result
+                            ? context
+                                .read<BookmarksBloc>()
+                                .add(const BookmarksDeleted())
+                            : null;
+                      }
                     },
                     child: const Icon(
                       CustomIcons.check,

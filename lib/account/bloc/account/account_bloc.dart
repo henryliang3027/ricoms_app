@@ -17,7 +17,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         super(const AccountState()) {
     on<AccountRequested>(_onAccountRequested);
     on<KeywordChanged>(_onKeywordChanged);
-    on<AccountSearched>(_onAccountSearched);
     on<AccountDeleted>(_onAccountDeleted);
 
     add(const AccountRequested());
@@ -35,8 +34,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       deleteStatus: SubmissionStatus.none,
     ));
 
-    List<dynamic> result =
-        await _accountRepository.getAccountOutlineList(user: _user);
+    List<dynamic> result = await _accountRepository.getAccountOutlineList(
+      user: _user,
+      keyword: state.keyword,
+    );
 
     if (result[0]) {
       emit(state.copyWith(
@@ -61,32 +62,32 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     ));
   }
 
-  Future<void> _onAccountSearched(
-    AccountSearched event,
-    Emitter<AccountState> emit,
-  ) async {
-    emit(state.copyWith(
-      deleteStatus: SubmissionStatus.none,
-      formStatus: FormStatus.requestInProgress,
-    ));
+  // Future<void> _onAccountSearched(
+  //   AccountSearched event,
+  //   Emitter<AccountState> emit,
+  // ) async {
+  //   emit(state.copyWith(
+  //     deleteStatus: SubmissionStatus.none,
+  //     formStatus: FormStatus.requestInProgress,
+  //   ));
 
-    List<dynamic> result = await _accountRepository.getAccountByKeyword(
-      user: _user,
-      keyword: state.keyword,
-    );
+  //   List<dynamic> result = await _accountRepository.getAccountByKeyword(
+  //     user: _user,
+  //     keyword: state.keyword,
+  //   );
 
-    if (result[0]) {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        accounts: result[1],
-      ));
-    } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        requestErrorMsg: result[1],
-      ));
-    }
-  }
+  //   if (result[0]) {
+  //     emit(state.copyWith(
+  //       formStatus: FormStatus.requestSuccess,
+  //       accounts: result[1],
+  //     ));
+  //   } else {
+  //     emit(state.copyWith(
+  //       formStatus: FormStatus.requestFailure,
+  //       requestErrorMsg: result[1],
+  //     ));
+  //   }
+  // }
 
   Future<void> _onAccountDeleted(
     AccountDeleted event,
@@ -103,7 +104,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
     if (resultOfDelete[0]) {
       List<dynamic> resultOfRetrieve =
-          await _accountRepository.getAccountOutlineList(user: _user);
+          await _accountRepository.getAccountOutlineList(
+        user: _user,
+        keyword: state.keyword,
+      );
 
       if (resultOfRetrieve[0]) {
         emit(state.copyWith(
