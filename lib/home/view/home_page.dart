@@ -28,8 +28,16 @@ class _HomePageState extends State<HomePage> {
     final user = context.select(
       (AuthenticationBloc bloc) => bloc.state.user,
     );
+
+    final userFunctions = context.select(
+      (AuthenticationBloc bloc) => bloc.state.userFunctions,
+    );
     if (kDebugMode) {
       print('UserID: ${user.id}');
+
+      for (var item in userFunctions) {
+        print('${item.name} ${item.type} ${item.status}');
+      }
     }
 
     return Scaffold(

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
+import 'package:ricoms_app/repository/user_function.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
@@ -212,6 +213,73 @@ class AuthenticationRepository {
     } else {
       //print('User dose not exist when logout');
       return 'User dose not exist when logout';
+    }
+  }
+
+  Future<List<dynamic>> getUserFunctions({
+    String? functionId,
+  }) async {
+    User? user = userApi.getActivateUser();
+    if (user != null) {
+      Dio dio = Dio();
+      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      dio.options.connectTimeout = 10000; //10s
+      dio.options.receiveTimeout = 10000;
+
+      String userFunctionPath;
+
+      if (functionId != null) {
+        userFunctionPath = '/account/' + user.id + '/func/' + functionId;
+      } else {
+        userFunctionPath = '/account/' + user.id + '/func';
+      }
+
+      try {
+        //404
+        Response response = await dio.get(
+          userFunctionPath,
+        );
+
+        //print(response.data.toString());
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] == '200') {
+          List<UserFunction> userFunctions = List<UserFunction>.from(
+              data['data']['user_func']
+                  .map((element) => UserFunction.fromJson(element)));
+
+          return [true, userFunctions];
+        } else {
+          return [false, 'Failed to get user function'];
+        }
+      } catch (e) {
+        // if ip does not exist
+
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e is DioError) {
+          if (e.response != null) {
+            if (kDebugMode) {
+              print(e.response!.data);
+              print(e.response!.headers);
+              print(e.response!.requestOptions);
+            }
+            return [false, 'Server No Response'];
+          } else {
+            // Something happened in setting up or sending the request that triggered an Error
+            if (kDebugMode) {
+              print(e.requestOptions);
+              print(e.message);
+            }
+
+            return [false, e.message];
+          }
+        } else {
+          return [false, e.toString()];
+        }
+      }
+    } else {
+      return [false, 'User does not exist'];
     }
   }
 

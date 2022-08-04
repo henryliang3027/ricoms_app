@@ -19,6 +19,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //set System UI to white (top status bar clock, notitificationicon, battery icon, wifi icon etc.)
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     Future<void> _showConnectionLostDialog(
         BuildContext context, String errmsg) async {
       return showDialog<void>(
@@ -59,7 +62,7 @@ class LoginPage extends StatelessWidget {
     }
 
     //final mq = MediaQueryData.fromWindow(window);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

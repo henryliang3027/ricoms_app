@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/repository/user_function.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -40,15 +42,31 @@ class AuthenticationBloc
         case AuthenticationStatus.unauthenticated:
           return emit(const AuthenticationState.unauthenticated(errmsg: ''));
         case AuthenticationStatus.authenticated:
-          final user = _authenticationRepository.userApi
-              .getActivateUser(); //get current login user, activate is true
 
-          // print(user!.id);
-          return emit(
-            user != null
-                ? AuthenticationState.authenticated(user)
-                : const AuthenticationState.unauthenticated(errmsg: ''),
-          );
+          //get current login user, activate is true
+          final user = _authenticationRepository.userApi.getActivateUser();
+          final result = await _authenticationRepository.getUserFunctions();
+          if (user != null) {
+            if (result[0]) {
+              // get user function success
+              List<UserFunction> userFunctions = result[1];
+              return emit(AuthenticationState.authenticated(
+                user,
+                userFunctions,
+              ));
+            } else {
+              // get user function failed, emit errmsg
+              return emit(
+                AuthenticationState.unauthenticated(errmsg: result[1]),
+              );
+            }
+          } else {
+            //get user failed
+            return emit(
+              const AuthenticationState.unauthenticated(errmsg: ''),
+            );
+          }
+
         case AuthenticationStatus.unknown:
           return emit(const AuthenticationState.unauthenticated(
               errmsg:
