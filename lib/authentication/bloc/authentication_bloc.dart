@@ -43,21 +43,10 @@ class AuthenticationBloc
 
           //get current login user, activate is true
           final user = _authenticationRepository.userApi.getActivateUser();
-          final result = await _authenticationRepository.getUserFunctions();
           if (user != null) {
-            if (result[0]) {
-              // get user function success
-              List<UserFunction> userFunctions = result[1];
-              return emit(AuthenticationState.authenticated(
-                user,
-                userFunctions,
-              ));
-            } else {
-              // get user function failed, emit errmsg
-              return emit(
-                AuthenticationState.unauthenticated(errmsg: result[1]),
-              );
-            }
+            return emit(AuthenticationState.authenticated(
+              user,
+            ));
           } else {
             //get user failed
             return emit(

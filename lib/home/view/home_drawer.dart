@@ -5,7 +5,6 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/change_password/view/change_password_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/repository/user_function.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -22,13 +21,6 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<UserFunction> userFunctions =
-        context.read<AuthenticationBloc>().state.userFunctions;
-
-    for (var item in userFunctions) {
-      print('${item.name} ${item.status}');
-    }
-
     List<String> _listTileTitles = [
       'Real-Time Alarm',
       'Network',
