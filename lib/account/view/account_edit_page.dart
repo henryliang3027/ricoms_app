@@ -36,7 +36,10 @@ class AccountEditPage extends StatelessWidget {
         isEditing: isEditing,
         accountOutline: accountOutline,
       ),
-      child: AccountEditForm(isEditing: isEditing),
+      child: AccountEditForm(
+        isEditing: isEditing,
+        accountOutline: accountOutline,
+      ),
     );
   }
 }

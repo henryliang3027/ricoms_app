@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/account/bloc/account/account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_page.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
@@ -207,10 +208,14 @@ class _AccountSliverList extends StatelessWidget {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         AccountOutline accountOutline = data[index];
+        int currentUserId =
+            int.parse(context.read<AuthenticationBloc>().state.user.id);
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
-            color: Colors.white,
+            color: currentUserId == accountOutline.id
+                ? const Color(0xffb8daff)
+                : Colors.white,
             child: InkWell(
               onLongPress: () {
                 showModalBottomSheet(
@@ -372,6 +377,9 @@ class _AccountEditBottomMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int currentUserId =
+        int.parse(superContext.read<AuthenticationBloc>().state.user.id);
+
     Future<bool?> _showConfirmDeleteDialog(
         AccountOutline accountOutline) async {
       return showDialog<bool>(
@@ -474,40 +482,42 @@ class _AccountEditBottomMenu extends StatelessWidget {
             }
           },
         ),
-        ListTile(
-          dense: true,
-          leading: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300, shape: BoxShape.circle),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 24.0,
-                height: 24.0,
-                child: Icon(
-                  Icons.delete,
-                  size: 20.0,
+        currentUserId == accountOutline.id
+            ? Container()
+            : ListTile(
+                dense: true,
+                leading: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300, shape: BoxShape.circle),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: Icon(
+                        Icons.delete,
+                        size: 20.0,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          title: const Text(
-            'Delete',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
-          ),
-          onTap: () async {
-            Navigator.pop(context);
+                title: const Text(
+                  'Delete',
+                  style: TextStyle(fontSize: CommonStyle.sizeM),
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
 
-            bool? result = await _showConfirmDeleteDialog(accountOutline);
-            if (result != null) {
-              result
-                  ? superContext
-                      .read<AccountBloc>()
-                      .add(AccountDeleted(accountOutline.id))
-                  : null;
-            }
-          },
-        ),
+                  bool? result = await _showConfirmDeleteDialog(accountOutline);
+                  if (result != null) {
+                    result
+                        ? superContext
+                            .read<AccountBloc>()
+                            .add(AccountDeleted(accountOutline.id))
+                        : null;
+                  }
+                },
+              ),
       ],
     );
   }

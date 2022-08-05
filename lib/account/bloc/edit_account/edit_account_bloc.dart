@@ -38,7 +38,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     on<AccountCreationSubmitted>(_onAccountCreationSubmitted);
     on<AccountUpdateSubmitted>(_onAccountUpdateSubmitted);
 
-    if (isEditing) {
+    if (_isEditing) {
       if (_accountOutline != null) {
         add(AccountDetailRequested(_accountOutline!.id));
       }

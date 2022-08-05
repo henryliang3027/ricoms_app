@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/bloc/edit_account/edit_account_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -10,10 +12,14 @@ import 'package:ricoms_app/utils/common_style.dart';
 class AccountEditForm extends StatelessWidget {
   const AccountEditForm({
     Key? key,
-    required this.isEditing,
-  }) : super(key: key);
+    required bool isEditing,
+    AccountOutline? accountOutline,
+  })  : _isEditing = isEditing,
+        _accountOutline = accountOutline,
+        super(key: key);
 
-  final bool isEditing;
+  final bool _isEditing;
+  final AccountOutline? _accountOutline;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +55,7 @@ class AccountEditForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: isEditing
+            title: _isEditing
                 ? Text(
                     'Saved!',
                     style: TextStyle(color: CustomStyle.severityColor[1]),
@@ -69,7 +75,7 @@ class AccountEditForm extends StatelessWidget {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  if (isEditing) {
+                  if (_isEditing) {
                     Navigator.of(context).pop(); // pop dialog
                   } else {
                     Navigator.of(context).pop(); // pop dialog
@@ -141,7 +147,7 @@ class AccountEditForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: isEditing
+            title: _isEditing
                 ? const Text('Edit Account')
                 : const Text('Add Account'),
           ),
@@ -163,7 +169,10 @@ class AccountEditForm extends StatelessWidget {
                   _NameInput(
                     nameController: _nameController,
                   ),
-                  const _PermissionDropDownMenu(),
+                  _PermissionDropDownMenu(
+                    isEditing: _isEditing,
+                    accountOutline: _accountOutline,
+                  ),
                   _DepartmentInput(
                     departmentController: _departmentController,
                   ),
@@ -180,7 +189,7 @@ class AccountEditForm extends StatelessWidget {
                     extController: _extController,
                   ),
                   _SaveButton(
-                    isEditing: isEditing,
+                    isEditing: _isEditing,
                   ),
                 ],
               ),
@@ -362,7 +371,16 @@ class _NameInput extends StatelessWidget {
 }
 
 class _PermissionDropDownMenu extends StatelessWidget {
-  const _PermissionDropDownMenu({Key? key}) : super(key: key);
+  const _PermissionDropDownMenu({
+    Key? key,
+    required bool isEditing,
+    AccountOutline? accountOutline,
+  })  : _isEditing = isEditing,
+        _accountOutline = accountOutline,
+        super(key: key);
+
+  final bool _isEditing;
+  final AccountOutline? _accountOutline;
 
   final Map<String, int> types = const {
     'Operator': 3,
@@ -373,6 +391,13 @@ class _PermissionDropDownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int currentUserId =
+        int.parse(context.read<AuthenticationBloc>().state.user.id);
+
+    bool _isMatchCurrentUser() {
+      return _isEditing && currentUserId == _accountOutline!.id;
+    }
+
     return BlocBuilder<EditAccountBloc, EditAccountState>(
         buildWhen: (previous, current) =>
             previous.permission != current.permission,
@@ -381,21 +406,23 @@ class _PermissionDropDownMenu extends StatelessWidget {
             padding: const EdgeInsets.all(CommonStyle.lineSpacing),
             child: SizedBox(
               width: 230,
-              child: DropdownButtonFormField2(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2(
                   alignment: AlignmentDirectional.centerEnd,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(5),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey.shade700,
-                      ),
-                      borderRadius: BorderRadius.circular(4.0),
+                  buttonPadding: const EdgeInsets.only(left: 5, right: 5),
+                  buttonHeight: 34,
+                  buttonDecoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey.shade700,
                     ),
+                    borderRadius: BorderRadius.circular(4.0),
+                    color: _isMatchCurrentUser()
+                        ? Colors.grey.shade500
+                        : Colors.white,
                   ),
-                  //isDense: true,
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
+                  iconDisabledColor: Colors.grey.shade700,
                   value: state.permission,
                   items: [
                     for (String k in types.keys)
@@ -404,20 +431,26 @@ class _PermissionDropDownMenu extends StatelessWidget {
                         child: Text(
                           k,
                           textAlign: TextAlign.left,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: CommonStyle.sizeL,
-                            color: Colors.black,
+                            color: _isMatchCurrentUser()
+                                ? Colors.grey.shade700
+                                : Colors.black,
                           ),
                         ),
                       )
                   ],
-                  onChanged: (int? value) {
-                    if (value != null) {
-                      context
-                          .read<EditAccountBloc>()
-                          .add(PermissionChanged(value));
-                    }
-                  }),
+                  onChanged: _isMatchCurrentUser()
+                      ? null
+                      : (int? value) {
+                          if (value != null) {
+                            context
+                                .read<EditAccountBloc>()
+                                .add(PermissionChanged(value));
+                          }
+                        },
+                ),
+              ),
             ),
           );
         });

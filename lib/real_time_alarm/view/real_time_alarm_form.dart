@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
+import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -64,63 +67,75 @@ class RealTimeAlarmForm extends StatelessWidget {
           bool? isExit = await CommonWidget.showExitAppDialog(context: context);
           return isExit ?? false;
         },
-        child: DefaultTabController(
-          length: 5,
-          child: Scaffold(
-            appBar: AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.white,
+        child: Scaffold(
+          appBar: AppBar(title: const Text('Real-Time Alarm')),
+          bottomNavigationBar: HomeBottomNavigationBar(
+            pageController: pageController,
+            selectedIndex: 0,
+          ),
+          drawer: HomeDrawer(
+            user: context.read<AuthenticationBloc>().state.user,
+            pageController: pageController,
+            currentPageIndex: 0,
+          ),
+          body: DefaultTabController(
+            length: 5,
+            child: Scaffold(
+              appBar: AppBar(
+                elevation: 0.0,
+                backgroundColor: Colors.white,
 
-              //title: Text(widget.node.name),
-              centerTitle: true,
-              titleSpacing: 0.0,
-              title: const TabBar(
-                unselectedLabelColor: Colors.grey,
-                labelColor: Colors.blue,
-                isScrollable: true,
-                tabs: [
-                  Tab(
-                    text: 'All',
+                //title: Text(widget.node.name),
+                centerTitle: true,
+                titleSpacing: 0.0,
+                title: const TabBar(
+                  unselectedLabelColor: Colors.grey,
+                  labelColor: Colors.blue,
+                  isScrollable: true,
+                  tabs: [
+                    Tab(
+                      text: 'All',
+                    ),
+                    Tab(
+                      text: 'Critical',
+                    ),
+                    Tab(
+                      text: 'Warning',
+                    ),
+                    Tab(
+                      text: 'Normal',
+                    ),
+                    Tab(
+                      text: 'Notice',
+                    ),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _AllAlarmsSliverList(
+                    pageController: pageController,
+                    initialPath: initialPath,
                   ),
-                  Tab(
-                    text: 'Critical',
+                  _CriticalAlarmsSliverList(
+                    pageController: pageController,
+                    initialPath: initialPath,
                   ),
-                  Tab(
-                    text: 'Warning',
+                  _WarningAlarmsSliverList(
+                    pageController: pageController,
+                    initialPath: initialPath,
                   ),
-                  Tab(
-                    text: 'Normal',
+                  _NormalAlarmsSliverList(
+                    pageController: pageController,
+                    initialPath: initialPath,
                   ),
-                  Tab(
-                    text: 'Notice',
+                  _NoticeAlarmsSliverList(
+                    pageController: pageController,
+                    initialPath: initialPath,
                   ),
                 ],
               ),
-            ),
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _AllAlarmsSliverList(
-                  pageController: pageController,
-                  initialPath: initialPath,
-                ),
-                _CriticalAlarmsSliverList(
-                  pageController: pageController,
-                  initialPath: initialPath,
-                ),
-                _WarningAlarmsSliverList(
-                  pageController: pageController,
-                  initialPath: initialPath,
-                ),
-                _NormalAlarmsSliverList(
-                  pageController: pageController,
-                  initialPath: initialPath,
-                ),
-                _NoticeAlarmsSliverList(
-                  pageController: pageController,
-                  initialPath: initialPath,
-                ),
-              ],
             ),
           ),
         ),

@@ -35,15 +35,14 @@ class DashboardForm extends StatelessWidget {
           pageController: pageController,
           currentPageIndex: 2,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Card(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Card(
                   color: Colors.white,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -53,8 +52,8 @@ class DashboardForm extends StatelessWidget {
                         child: _WidgetTitle(title: 'Alarm Ratio'),
                       ),
                       _buildLegend(),
-                      Expanded(
-                        flex: 9,
+                      SizedBox(
+                        height: 250,
                         child: PageView(
                           controller: _pieChartPageController,
                           children: const <Widget>[
@@ -82,15 +81,9 @@ class DashboardForm extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              const Expanded(
-                flex: 4,
-                child: Card(
-                  color: Colors.white,
-                  child: _DeviceStatisticsGridView(),
-                ),
-              ),
-            ],
+                const _DeviceStatisticsGridView(),
+              ],
+            ),
           ),
         ),
       ),
@@ -383,59 +376,66 @@ class _DeviceStatisticsGridView extends StatelessWidget {
           );
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-                  child: _WidgetTitle(title: 'Device Status'),
-                ),
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 6,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    childAspectRatio: 1.6,
-                  ),
-                  itemBuilder: (_, int index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: _gridColors[index],
-                        border: _gridColors[index] == Colors.white
-                            ? Border.all(color: Colors.black)
-                            : null,
-                        borderRadius: BorderRadius.circular(6.0),
+          return SizedBox(
+            height: 200,
+            child: Card(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+                      child: _WidgetTitle(title: 'Device Status'),
+                    ),
+                    GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 6,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                        childAspectRatio: 1.6,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            _gridTitles[index],
-                            style: TextStyle(
-                              color: _fontColors[index],
-                              fontSize: CommonStyle.sizeL,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      itemBuilder: (_, int index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: _gridColors[index],
+                            border: _gridColors[index] == Colors.white
+                                ? Border.all(color: Colors.black)
+                                : null,
+                            borderRadius: BorderRadius.circular(6.0),
                           ),
-                          Text(
-                            deviceStatistics[index].toString(),
-                            style: TextStyle(
-                              color: _fontColors[index],
-                              fontSize: CommonStyle.sizeM,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _gridTitles[index],
+                                style: TextStyle(
+                                  color: _fontColors[index],
+                                  fontSize: CommonStyle.sizeL,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                deviceStatistics[index].toString(),
+                                style: TextStyle(
+                                  color: _fontColors[index],
+                                  fontSize: CommonStyle.sizeM,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         } else if (state.deviceStatisticsStatus.isRequestFailure) {
