@@ -248,7 +248,13 @@ class AuthenticationRepository {
               data['data']['user_func']
                   .map((element) => UserFunction.fromJson(element)));
 
-          return [true, userFunctions];
+          Map<int, bool> userFunctionMap = {};
+          for (UserFunction element in userFunctions) {
+            bool userFunctionStatus = element.status == 1 ? true : false;
+            userFunctionMap[element.functionId] = userFunctionStatus;
+          }
+
+          return [true, userFunctionMap];
         } else {
           return [false, 'Failed to get user function'];
         }

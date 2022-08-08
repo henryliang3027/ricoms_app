@@ -4,6 +4,7 @@ class AuthenticationState extends Equatable {
   const AuthenticationState._({
     this.status = AuthenticationStatus.unknown,
     this.user = const User.empty(),
+    this.userFunctionMap = const {},
     this.errmsg = '',
   });
 
@@ -11,9 +12,11 @@ class AuthenticationState extends Equatable {
 
   const AuthenticationState.authenticated(
     User user,
+    Map<int, bool> userFunctionMap,
   ) : this._(
           status: AuthenticationStatus.authenticated,
           user: user,
+          userFunctionMap: userFunctionMap,
         );
 
   const AuthenticationState.unauthenticated({
@@ -25,10 +28,16 @@ class AuthenticationState extends Equatable {
 
   final AuthenticationStatus status;
   final User user;
+  final Map<int, bool> userFunctionMap;
 
   // lost connection after login, pop message if auto login failed
   final String errmsg;
 
   @override
-  List<Object> get props => [status, user];
+  List<Object> get props => [
+        status,
+        user,
+        userFunctionMap,
+        errmsg,
+      ];
 }

@@ -383,8 +383,8 @@ class _PermissionDropDownMenu extends StatelessWidget {
   final AccountOutline? _accountOutline;
 
   final Map<String, int> types = const {
-    'Operator': 3,
     'Administrator': 2,
+    'Operator': 3,
     'User': 4,
     'Disabled': 5,
   };

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -73,6 +74,9 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
 
   @override
   Widget build(BuildContext context) {
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
+
     return BlocProvider(
       create: (context) => DeviceBloc(
         user: widget.user,
@@ -165,17 +169,19 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                     ),
                   ),
                 ),
-                floatingActionButton: state.editable
-                    ? CreateEditingTool(
-                        isEditing: state.isEditing,
-                        pageName: widget.pageName,
-                        checkBoxValues: widget.checkBoxValues,
-                        textFieldControllers: widget.textFieldControllers,
-                        radioButtonValues: widget.radioButtonValues,
-                        sliderValues: widget.sliderValues,
-                        dropDownMenuValues: widget.dropDownMenuValues,
-                        controllerInitValues: widget.controllerInitValues,
-                      )
+                floatingActionButton: _userFunctionMap[13]
+                    ? state.editable
+                        ? CreateEditingTool(
+                            isEditing: state.isEditing,
+                            pageName: widget.pageName,
+                            checkBoxValues: widget.checkBoxValues,
+                            textFieldControllers: widget.textFieldControllers,
+                            radioButtonValues: widget.radioButtonValues,
+                            sliderValues: widget.sliderValues,
+                            dropDownMenuValues: widget.dropDownMenuValues,
+                            controllerInitValues: widget.controllerInitValues,
+                          )
+                        : null
                     : null,
               );
             } else {

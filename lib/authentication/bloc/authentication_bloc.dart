@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/repository/user_function.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -41,14 +40,27 @@ class AuthenticationBloc
           return emit(const AuthenticationState.unauthenticated(errmsg: ''));
         case AuthenticationStatus.authenticated:
 
-          //get current login user, activate is true
+          //get current login user which activate flag is true
           final user = _authenticationRepository.userApi.getActivateUser();
+          final resultOfUserFunctions =
+              await _authenticationRepository.getUserFunctions();
+
           if (user != null) {
-            return emit(AuthenticationState.authenticated(
-              user,
-            ));
+            if (resultOfUserFunctions[0]) {
+              final Map<int, bool> userFunctionMap = resultOfUserFunctions[1];
+              return emit(AuthenticationState.authenticated(
+                user,
+                userFunctionMap,
+              ));
+            } else {
+              return emit(
+                //get user function failed
+                AuthenticationState.unauthenticated(
+                    errmsg: resultOfUserFunctions[1]),
+              );
+            }
           } else {
-            //get user failed
+            //user does not exist
             return emit(
               const AuthenticationState.unauthenticated(errmsg: ''),
             );

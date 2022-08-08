@@ -8,7 +8,7 @@ class EditAccountState extends Equatable {
     this.submissionStatus = SubmissionStatus.none,
     this.isInitController = false,
     this.account = const Account.pure(),
-    this.password = const Password.pure(),
+    this.password = const AccountPassword.pure(),
     this.passwordVisibility = false,
     this.name = const Name.pure(),
     this.permission = 3,
@@ -25,7 +25,7 @@ class EditAccountState extends Equatable {
   final SubmissionStatus submissionStatus;
   final bool isInitController;
   final Account account;
-  final Password password;
+  final AccountPassword password;
   final Name name;
   final bool passwordVisibility;
   final int permission;
@@ -42,7 +42,7 @@ class EditAccountState extends Equatable {
     SubmissionStatus? submissionStatus,
     bool? isInitController,
     Account? account,
-    Password? password,
+    AccountPassword? password,
     bool? passwordVisibility,
     Name? name,
     int? permission,

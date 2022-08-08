@@ -21,6 +21,9 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
+
     List<String> _listTileTitles = [
       'Real-Time Alarm',
       'Network',
@@ -101,20 +104,22 @@ class HomeDrawer extends StatelessWidget {
               ),
             ),
             ..._buildMainListView(currentPageIndex),
-            ListTile(
-              dense: true,
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.account),
-              ),
-              title: const Text(
-                'Account',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
-              ),
-              onTap: () {
-                Navigator.push(context, AccountPage.route());
-              },
-            ),
+            _userFunctionMap[5]
+                ? ListTile(
+                    dense: true,
+                    leading: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Icon(CustomIcons.account),
+                    ),
+                    title: const Text(
+                      'Account',
+                      style: TextStyle(fontSize: CommonStyle.sizeL),
+                    ),
+                    onTap: () {
+                      Navigator.push(context, AccountPage.route());
+                    },
+                  )
+                : Container(),
             const Divider(
               height: 0.0,
             ),

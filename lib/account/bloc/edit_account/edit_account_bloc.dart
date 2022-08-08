@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/model/account.dart';
+import 'package:ricoms_app/account/model/account_password.dart';
 import 'package:ricoms_app/account/model/email.dart';
-import 'package:ricoms_app/login/models/password.dart';
 import 'package:ricoms_app/repository/account_detail.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
@@ -61,17 +61,27 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
 
     if (result[0]) {
       AccountDetail accountDetail = result[1];
+      final Account account = Account.dirty(accountDetail.account);
+      final Name name = Name.dirty(accountDetail.name);
+      final int permission = int.parse(accountDetail.permission);
+      final Email email = Email.dirty(accountDetail.email ?? '');
 
       emit(state.copyWith(
         isInitController: true,
-        account: Account.dirty(accountDetail.account),
-        name: Name.dirty(accountDetail.name),
-        permission: int.parse(accountDetail.permission),
+        account: account,
+        name: name,
+        permission: permission,
         department: accountDetail.department,
-        email: Email.dirty(accountDetail.email ?? ''),
+        email: email,
         mobile: accountDetail.mobile,
         tel: accountDetail.tel,
         ext: accountDetail.ext,
+        status: Formz.validate([
+          account,
+          state.password,
+          name,
+          email,
+        ]),
       ));
     } else {}
   }
@@ -100,7 +110,7 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     PasswordChanged event,
     Emitter<EditAccountState> emit,
   ) {
-    final password = Password.dirty(event.password);
+    final password = AccountPassword.dirty(event.password);
     emit(
       state.copyWith(
         submissionStatus: SubmissionStatus.none,

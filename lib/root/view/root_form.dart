@@ -325,25 +325,30 @@ class _DynamicFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
+
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       if (state.formStatus.isRequestSuccess) {
         if (state.directory.last.type == 1) {
           // 1 is group
-          return FloatingActionButton(
-            elevation: 0.0,
-            backgroundColor: const Color(0x742195F3),
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (_) => _NodeCreationBottomMenu(
-                        superContext: context,
-                        parentNode: state.directory.last,
-                      ));
-            },
-            child: const Icon(
-              CustomIcons.add,
-            ),
-          );
+          return _userFunctionMap[8]
+              ? FloatingActionButton(
+                  elevation: 0.0,
+                  backgroundColor: const Color(0x742195F3),
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (_) => _NodeCreationBottomMenu(
+                              superContext: context,
+                              parentNode: state.directory.last,
+                            ));
+                  },
+                  child: const Icon(
+                    CustomIcons.add,
+                  ),
+                )
+              : const Center();
         } else {
           return const Center();
         }
@@ -357,7 +362,12 @@ class _DynamicFloatingActionButton extends StatelessWidget {
 class _NodeSliverList extends StatelessWidget {
   const _NodeSliverList({Key? key}) : super(key: key);
 
-  _rootSliverChildBuilderDelegate(Node parentNode, List data) {
+  _rootSliverChildBuilderDelegate(
+    Node parentNode,
+    List data,
+    bool enabledEdit,
+    bool enabledDelete,
+  ) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         if (kDebugMode) {
@@ -378,14 +388,19 @@ class _NodeSliverList extends StatelessWidget {
               },
               onLongPress: () {
                 if (node.type == 1 || node.type == 2 || node.type == 3) {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => _NodeEditBottomMenu(
+                  if (enabledEdit || enabledDelete) {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (_) => _NodeEditBottomMenu(
                         superContext:
                             context, //pass this context contain RootBloc so that BottomMenu can use it to call NodeDeleted event
                         parentNode: parentNode,
-                        currentNode: node),
-                  );
+                        currentNode: node,
+                        enabledEdit: enabledEdit,
+                        enabledDelete: enabledDelete,
+                      ),
+                    );
+                  }
                 }
               },
               child: Padding(
@@ -437,6 +452,8 @@ class _NodeSliverList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
     return BlocBuilder<RootBloc, RootState>(
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
@@ -455,7 +472,11 @@ class _NodeSliverList extends StatelessWidget {
                 slivers: [
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
-                          state.directory.last, state.data))
+                    state.directory.last,
+                    state.data,
+                    _userFunctionMap[9],
+                    _userFunctionMap[10],
+                  ))
                 ],
               ),
             );
@@ -494,7 +515,11 @@ class _NodeSliverList extends StatelessWidget {
                 slivers: [
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
-                          state.directory.last, state.data))
+                    state.directory.last,
+                    state.data,
+                    _userFunctionMap[9],
+                    _userFunctionMap[10],
+                  ))
                 ],
               ),
             );
@@ -513,7 +538,11 @@ class _NodeSliverList extends StatelessWidget {
                 slivers: [
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
-                          state.directory.last, state.data))
+                    state.directory.last,
+                    state.data,
+                    _userFunctionMap[9],
+                    _userFunctionMap[10],
+                  ))
                 ],
               ),
             );
@@ -543,7 +572,11 @@ class _NodeSliverList extends StatelessWidget {
                 slivers: [
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
-                          state.directory.last, state.data))
+                    state.directory.last,
+                    state.data,
+                    _userFunctionMap[9],
+                    _userFunctionMap[10],
+                  ))
                 ],
               ),
             );
@@ -699,11 +732,15 @@ class _NodeEditBottomMenu extends StatelessWidget {
     required this.superContext,
     required this.parentNode,
     required this.currentNode,
+    required this.enabledEdit,
+    required this.enabledDelete,
   }) : super(key: key);
 
   final BuildContext superContext;
   final Node parentNode;
   final Node currentNode;
+  final bool enabledEdit;
+  final enabledDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -772,87 +809,95 @@ class _NodeEditBottomMenu extends StatelessWidget {
       );
     }
 
+    Widget _buildEditListTile() {
+      return ListTile(
+        dense: true,
+        leading: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey.shade300, shape: BoxShape.circle),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 24.0,
+              height: 24.0,
+              child: Icon(
+                Icons.edit,
+              ),
+            ),
+          ),
+        ),
+        title: const Text(
+          'Edit',
+          style: TextStyle(fontSize: CommonStyle.sizeM),
+        ),
+        onTap: () {
+          Navigator.pop(context);
+          if (currentNode.type == 2 || currentNode.type == 3) {
+            //device or a8k
+            Navigator.push(
+                context,
+                DeviceEditPage.route(
+                    user: context.read<AuthenticationBloc>().state.user,
+                    rootRepository:
+                        RepositoryProvider.of<RootRepository>(superContext),
+                    parentNode: parentNode,
+                    isEditing: true,
+                    currentNode: currentNode));
+          } else if (currentNode.type == 1) {
+            //group
+            Navigator.push(
+                context,
+                GroupEditPage.route(
+                    user: context.read<AuthenticationBloc>().state.user,
+                    rootRepository:
+                        RepositoryProvider.of<RootRepository>(superContext),
+                    parentNode: parentNode,
+                    isEditing: true,
+                    currentNode: currentNode));
+          }
+        },
+      );
+    }
+
+    Widget _buildDeleteListTile() {
+      return ListTile(
+        dense: true,
+        leading: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey.shade300, shape: BoxShape.circle),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 24.0,
+              height: 24.0,
+              child: Icon(
+                Icons.delete,
+                size: 20.0,
+              ),
+            ),
+          ),
+        ),
+        title: const Text(
+          'Delete',
+          style: TextStyle(fontSize: CommonStyle.sizeM),
+        ),
+        onTap: () async {
+          Navigator.pop(context);
+
+          bool? result = await _showConfirmDeleteDialog(currentNode);
+          if (result != null) {
+            result
+                ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
+                : null;
+          }
+        },
+      );
+    }
+
     return Wrap(
       children: [
-        ListTile(
-          dense: true,
-          leading: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300, shape: BoxShape.circle),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 24.0,
-                height: 24.0,
-                child: Icon(
-                  Icons.edit,
-                ),
-              ),
-            ),
-          ),
-          title: const Text(
-            'Edit',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
-          ),
-          onTap: () {
-            Navigator.pop(context);
-            if (currentNode.type == 2 || currentNode.type == 3) {
-              //device or a8k
-              Navigator.push(
-                  context,
-                  DeviceEditPage.route(
-                      user: context.read<AuthenticationBloc>().state.user,
-                      rootRepository:
-                          RepositoryProvider.of<RootRepository>(superContext),
-                      parentNode: parentNode,
-                      isEditing: true,
-                      currentNode: currentNode));
-            } else if (currentNode.type == 1) {
-              //group
-              Navigator.push(
-                  context,
-                  GroupEditPage.route(
-                      user: context.read<AuthenticationBloc>().state.user,
-                      rootRepository:
-                          RepositoryProvider.of<RootRepository>(superContext),
-                      parentNode: parentNode,
-                      isEditing: true,
-                      currentNode: currentNode));
-            }
-          },
-        ),
-        ListTile(
-          dense: true,
-          leading: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300, shape: BoxShape.circle),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 24.0,
-                height: 24.0,
-                child: Icon(
-                  Icons.delete,
-                  size: 20.0,
-                ),
-              ),
-            ),
-          ),
-          title: const Text(
-            'Delete',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
-          ),
-          onTap: () async {
-            Navigator.pop(context);
-
-            bool? result = await _showConfirmDeleteDialog(currentNode);
-            if (result != null) {
-              result
-                  ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
-                  : null;
-            }
-          },
-        ),
+        enabledEdit ? _buildEditListTile() : Container(),
+        enabledDelete ? _buildDeleteListTile() : Container(),
       ],
     );
   }

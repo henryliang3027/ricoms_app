@@ -7,19 +7,11 @@ class UserFunction {
   @JsonKey(name: 'func_id')
   final int functionId;
 
-  @JsonKey(name: 'name')
-  final String name;
-
-  @JsonKey(name: 'type')
-  final String type;
-
   @JsonKey(name: 'status')
   final int status;
 
   UserFunction({
     required this.functionId,
-    required this.name,
-    required this.type,
     required this.status,
   });
 
