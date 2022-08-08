@@ -17,14 +17,35 @@ class AuthenticationBloc
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(AuthenticationStatusChanged(status)),
     );
+
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _permissionStatusSubscription = dataStream.listen((event) async {
+      var result = await _authenticationRepository.checkUserPermission();
+
+      print('permission change: ${result[1]}');
+
+      if (result[0]) {
+        if (result[1]) {
+          if (state.status == AuthenticationStatus.authenticated) {
+            add(const AuthenticationStatusChanged(
+                AuthenticationStatus.unauthenticated));
+          }
+        }
+      }
+    });
   }
 
   final AuthenticationRepository _authenticationRepository;
   late StreamSubscription<AuthenticationStatus>
       _authenticationStatusSubscription;
 
+  late StreamSubscription<int> _permissionStatusSubscription;
+
   @override
   Future<void> close() {
+    _permissionStatusSubscription.cancel();
     _authenticationStatusSubscription.cancel();
     _authenticationRepository.dispose();
     return super.close();
@@ -39,7 +60,6 @@ class AuthenticationBloc
         case AuthenticationStatus.unauthenticated:
           return emit(const AuthenticationState.unauthenticated(errmsg: ''));
         case AuthenticationStatus.authenticated:
-
           //get current login user which activate flag is true
           final user = _authenticationRepository.userApi.getActivateUser();
           final resultOfUserFunctions =

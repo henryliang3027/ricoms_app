@@ -234,6 +234,68 @@ class AuthenticationRepository {
     }
   }
 
+  Future<List<dynamic>> checkUserPermission() async {
+    User? user = userApi.getActivateUser();
+    if (user != null) {
+      Dio dio = Dio();
+      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      dio.options.connectTimeout = 10000; //10s
+      dio.options.receiveTimeout = 10000;
+
+      String accountInformationPath =
+          'http://' + user.ip + '/aci/api/accounts/' + user.id;
+
+      try {
+        //404
+        Response response = await dio.get(
+          accountInformationPath,
+        );
+
+        //print(response.data.toString());
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] == '200') {
+          String permission = data['data'][0]['permission'];
+
+          if (user.permission == permission) {
+            return [true, false];
+          } else {
+            return [true, true];
+          }
+        } else {
+          return [false, 'Failed to get user permission'];
+        }
+      } catch (e) {
+        // if ip does not exist
+
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e is DioError) {
+          if (e.response != null) {
+            if (kDebugMode) {
+              print(e.response!.data);
+              print(e.response!.headers);
+              print(e.response!.requestOptions);
+            }
+            return [false, 'Server No Response'];
+          } else {
+            // Something happened in setting up or sending the request that triggered an Error
+            if (kDebugMode) {
+              print(e.requestOptions);
+              print(e.message);
+            }
+
+            return [false, e.message];
+          }
+        } else {
+          return [false, e.toString()];
+        }
+      }
+    } else {
+      return [false, 'User does not exist'];
+    }
+  }
+
   Future<List<dynamic>> getUserFunctions({
     String? functionId,
   }) async {
