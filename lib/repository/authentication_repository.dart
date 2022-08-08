@@ -15,8 +15,6 @@ class AuthenticationRepository {
   final _controller = StreamController<AuthenticationStatus>();
 
   Stream<AuthenticationStatus> get status async* {
-    //await Future<void>.delayed(const Duration(seconds: 1));
-
     User? user = userApi.getActivateUser();
 
     if (user == null) {
@@ -47,6 +45,25 @@ class AuthenticationRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
+        String userId = data['data']['uid'].toString();
+        String accountInformationPath =
+            'http://' + user.ip + '/aci/api/accounts/' + userId;
+
+        Response infoResponse = await dio.get(accountInformationPath);
+        var infoData = jsonDecode(infoResponse.data.toString());
+
+        await userApi.addUserByKey(
+          userId: userId,
+          ip: user.ip,
+          name: infoData['data'][0]['name'].toString(),
+          password: user.password,
+          permission: infoData['data'][0]['permission'].toString(),
+          email: infoData['data'][0]['email'].toString(),
+          mobile: infoData['data'][0]['mobile'].toString(),
+          tel: infoData['data'][0]['tel'].toString(),
+          ext: infoData['data'][0]['ext'].toString(),
+        );
+
         _controller.add(AuthenticationStatus.authenticated);
       } else {
         // username or password has changed on website
@@ -85,7 +102,7 @@ class AuthenticationRepository {
         // accunt and password are correct
         String userId = data['data']['uid'].toString();
         String accountInformationPath =
-            'http://' + ip + '/aci/api/account/' + userId;
+            'http://' + ip + '/aci/api/accounts/' + userId;
 
         Response infoResponse = await dio.get(accountInformationPath);
         var infoData = jsonDecode(infoResponse.data.toString());
@@ -95,6 +112,7 @@ class AuthenticationRepository {
           ip: ip,
           name: infoData['data'][0]['name'].toString(),
           password: password,
+          permission: infoData['data'][0]['permission'].toString(),
           email: infoData['data'][0]['email'].toString(),
           mobile: infoData['data'][0]['mobile'].toString(),
           tel: infoData['data'][0]['tel'].toString(),

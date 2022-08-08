@@ -8,6 +8,7 @@ class User {
     required this.ip,
     required this.name,
     required this.password,
+    required this.permission,
     required this.email,
     required this.mobile,
     required this.tel,
@@ -22,6 +23,7 @@ class User {
           ip: '-',
           name: '-',
           password: '-',
+          permission: '-',
           email: '-',
           mobile: '-',
           tel: '-',
@@ -43,20 +45,23 @@ class User {
   final String password;
 
   @HiveField(4)
-  final String email;
+  final String permission;
 
   @HiveField(5)
-  final String mobile;
+  final String email;
 
   @HiveField(6)
-  final String tel;
+  final String mobile;
 
   @HiveField(7)
-  final String ext;
+  final String tel;
 
   @HiveField(8)
-  final List<int> bookmarks;
+  final String ext;
 
   @HiveField(9)
+  final List<int> bookmarks;
+
+  @HiveField(10)
   final bool isActivate;
 }

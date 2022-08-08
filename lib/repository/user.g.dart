@@ -21,19 +21,20 @@ class UserAdapter extends TypeAdapter<User> {
       ip: fields[1] as String,
       name: fields[2] as String,
       password: fields[3] as String,
-      email: fields[4] as String,
-      mobile: fields[5] as String,
-      tel: fields[6] as String,
-      ext: fields[7] as String,
-      bookmarks: (fields[8] as List).cast<int>(),
-      isActivate: fields[9] as bool,
+      permission: fields[4] as String,
+      email: fields[5] as String,
+      mobile: fields[6] as String,
+      tel: fields[7] as String,
+      ext: fields[8] as String,
+      bookmarks: (fields[9] as List).cast<int>(),
+      isActivate: fields[10] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -43,16 +44,18 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(3)
       ..write(obj.password)
       ..writeByte(4)
-      ..write(obj.email)
+      ..write(obj.permission)
       ..writeByte(5)
-      ..write(obj.mobile)
+      ..write(obj.email)
       ..writeByte(6)
-      ..write(obj.tel)
+      ..write(obj.mobile)
       ..writeByte(7)
-      ..write(obj.ext)
+      ..write(obj.tel)
       ..writeByte(8)
-      ..write(obj.bookmarks)
+      ..write(obj.ext)
       ..writeByte(9)
+      ..write(obj.bookmarks)
+      ..writeByte(10)
       ..write(obj.isActivate);
   }
 
