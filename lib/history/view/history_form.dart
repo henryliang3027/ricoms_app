@@ -281,7 +281,7 @@ class _HistorySliverList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
-            color: Colors.white,
+            color: index.isEven ? Colors.grey.shade100 : Colors.white,
             child: InkWell(
               onTap: () {
                 // because HistoryBloc cannot be found inside ModalBottomSheet

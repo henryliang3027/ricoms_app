@@ -84,8 +84,6 @@ class RealTimeAlarmForm extends StatelessWidget {
               appBar: AppBar(
                 elevation: 0.0,
                 backgroundColor: Colors.white,
-
-                //title: Text(widget.node.name),
                 centerTitle: true,
                 titleSpacing: 0.0,
                 title: const TabBar(
@@ -176,6 +174,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
       return Padding(
         padding: const EdgeInsets.all(1.0),
         child: Material(
+          color: index.isEven ? Colors.grey.shade100 : Colors.white,
           child: InkWell(
             onTap: () {
               initialPath.clear();
@@ -183,7 +182,6 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
               context
                   .read<RealTimeAlarmBloc>()
                   .add(CheckDeviceStatus(alarmData.path, pageController));
-              //pageController.jumpToPage(1);
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

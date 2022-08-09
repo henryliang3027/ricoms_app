@@ -28,87 +28,83 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
+            color: index.isEven ? Colors.grey.shade100 : Colors.white,
             child: InkWell(
               onTap: () {
                 Navigator.push(
                     context, DeviceHistoryDetailPage.route(deviceHistoryData));
               },
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(
-                                  0.0, 0.0, 10.0, 0.0),
-                              width: CommonStyle.severityRectangleWidth,
-                              height: CommonStyle.severityRectangleHeight,
-                              color: CustomStyle
-                                  .severityColor[deviceHistoryData.severity],
-                            ),
-                          ],
-                        ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding:
+                                const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                            width: CommonStyle.severityRectangleWidth,
+                            height: CommonStyle.severityRectangleHeight,
+                            color: CustomStyle
+                                .severityColor[deviceHistoryData.severity],
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        flex: 8,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10.0, 0.0, 10.0, 2.0),
-                              child: Text(
-                                deviceHistoryData.event,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 18.0,
-                                  //fontWeight: FontWeight.w500,
-                                ),
+                    ),
+                    Expanded(
+                      flex: 8,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 2.0),
+                            child: Text(
+                              deviceHistoryData.event,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.roboto(
+                                fontSize: 18.0,
+                                //fontWeight: FontWeight.w500,
                               ),
                             ),
-                            deviceHistoryData.clearTime.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10.0, 0.0, 10.0, 0.0),
-                                    child: Text(
-                                      'Clear Time: ${deviceHistoryData.clearTime}',
-                                      style: GoogleFonts.roboto(
-                                        fontSize: 12.0,
-                                        //fontWeight: FontWeight.w600,
-                                        color: Colors.grey.shade400,
-                                      ),
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10.0, 0.0, 10.0, 0.0),
-                                    child: Text(
-                                      'Time Received: ${deviceHistoryData.timeReceived}',
-                                      style: GoogleFonts.roboto(
-                                        fontSize: 12.0,
-                                        //fontWeight: FontWeight.w600,
-                                        color: Colors.grey.shade400,
-                                      ),
+                          ),
+                          deviceHistoryData.clearTime.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 10.0, 0.0),
+                                  child: Text(
+                                    'Clear Time: ${deviceHistoryData.clearTime}',
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 12.0,
+                                      //fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade400,
                                     ),
                                   ),
-                          ],
-                        ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 10.0, 0.0),
+                                  child: Text(
+                                    'Time Received: ${deviceHistoryData.timeReceived}',
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 12.0,
+                                      //fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -242,6 +242,7 @@ class _DeviceSliverList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
+            color: index.isEven ? Colors.grey.shade100 : Colors.white,
             child: InkWell(
               onTap: () {
                 if (isDeleteMode) {

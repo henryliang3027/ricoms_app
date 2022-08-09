@@ -215,7 +215,9 @@ class _AccountSliverList extends StatelessWidget {
           child: Material(
             color: currentUserId == accountOutline.id
                 ? const Color(0xffb8daff)
-                : Colors.white,
+                : index.isEven
+                    ? Colors.grey.shade100
+                    : Colors.white,
             child: InkWell(
               onLongPress: () {
                 showModalBottomSheet(

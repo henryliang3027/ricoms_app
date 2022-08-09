@@ -377,7 +377,7 @@ class _DeviceStatisticsGridView extends StatelessWidget {
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
           return SizedBox(
-            height: 200,
+            height: 240,
             child: Card(
               color: Colors.white,
               child: Padding(
