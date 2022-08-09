@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -10,25 +11,10 @@ class DeviceSettingPage extends StatefulWidget {
   const DeviceSettingPage({
     Key? key,
     required this.user,
-    required this.deviceRepository,
     required this.node,
   }) : super(key: key);
 
-  static Route route(
-    User user,
-    DeviceRepository deviceRepository,
-    Node node,
-  ) {
-    return MaterialPageRoute(
-        builder: (_) => DeviceSettingPage(
-              user: user,
-              deviceRepository: deviceRepository,
-              node: node,
-            ));
-  }
-
   final User user;
-  final DeviceRepository deviceRepository;
   final Node node;
 
   @override
@@ -55,8 +41,10 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
 
   @override
   Widget build(BuildContext context) {
+    DeviceRepository deviceRepository =
+        RepositoryProvider.of<DeviceRepository>(context);
     return FutureBuilder(
-      future: widget.deviceRepository.createDeviceBlock(user: widget.user),
+      future: deviceRepository.createDeviceBlock(user: widget.user),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data is List) {
@@ -96,7 +84,6 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                     for (var item in snapshot.data) ...[
                       DeviceSettingForm(
                         user: widget.user,
-                        deviceRepository: widget.deviceRepository,
                         pageName: item['name'],
                       )
                     ],
@@ -104,13 +91,11 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                     for (var item in snapshot.data) ...[
                       DeviceSettingForm(
                         user: widget.user,
-                        deviceRepository: widget.deviceRepository,
                         pageName: item['name'],
                       )
                     ],
                     DeviceHistoryForm(
                       user: widget.user,
-                      deviceRepository: widget.deviceRepository,
                     ),
                   ],
                 ],

@@ -494,9 +494,6 @@ class _NodeSliverList extends StatelessWidget {
             return Expanded(
               child: DeviceSettingPage(
                 user: context.read<AuthenticationBloc>().state.user,
-                deviceRepository: RepositoryProvider.of<DeviceRepository>(
-                  context,
-                ),
                 node: state.directory.last,
               ),
             );
@@ -560,24 +557,13 @@ class _NodeSliverList extends StatelessWidget {
             return Expanded(
               child: DeviceSettingPage(
                 user: context.read<AuthenticationBloc>().state.user,
-                deviceRepository: RepositoryProvider.of<DeviceRepository>(
-                  context,
-                ),
                 node: state.directory.last,
               ),
             );
           } else {
-            return Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                      delegate: _rootSliverChildBuilderDelegate(
-                    state.directory.last,
-                    state.data,
-                    _userFunctionMap[9],
-                    _userFunctionMap[10],
-                  ))
-                ],
+            return const Expanded(
+              child: Center(
+                child: Text('Undefined device type.'),
               ),
             );
           }
@@ -740,7 +726,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
   final Node parentNode;
   final Node currentNode;
   final bool enabledEdit;
-  final enabledDelete;
+  final bool enabledDelete;
 
   @override
   Widget build(BuildContext context) {

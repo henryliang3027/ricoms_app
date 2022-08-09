@@ -16,15 +16,6 @@ class RootPage extends StatefulWidget {
   final PageController pageController;
   final List initialRootPath;
 
-  // static Route route(PageController pageController, List? initialPath) {
-  //   return MaterialPageRoute(
-  //     builder: (context) => RootPage(
-  //       pageController: pageController,
-  //       initialPath: initialPath,
-  //     ),
-  //   );
-  // }
-
   @override
   State<RootPage> createState() => _RootPageState();
 }

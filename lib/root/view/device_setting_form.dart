@@ -13,12 +13,10 @@ class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm({
     Key? key,
     required this.user,
-    required this.deviceRepository,
     required this.pageName,
   }) : super(key: key);
 
   final User user;
-  final DeviceRepository deviceRepository;
   final String pageName;
   final Map<String, bool> checkBoxValues = <String, bool>{};
   final Map<String, TextEditingController> textFieldControllers =
@@ -27,8 +25,6 @@ class DeviceSettingForm extends StatefulWidget {
   final Map<String, String> sliderValues = <String, String>{};
   final Map<String, String> dropDownMenuValues = <String, String>{};
   final Map<String, String> controllerInitValues = <String, String>{};
-
-  late bool isEditing = false;
 
   @override
   State<DeviceSettingForm> createState() => _DeviceSettingFormState();
@@ -77,20 +73,18 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
+    DeviceRepository deviceRepository =
+        RepositoryProvider.of<DeviceRepository>(context);
+
     return BlocProvider(
       create: (context) => DeviceBloc(
         user: widget.user,
-        deviceRepository: widget.deviceRepository,
+        deviceRepository: deviceRepository,
         pageName: widget.pageName,
       ),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
           if (state.submissionStatus.isSubmissionInProgress) {
-            // ScaffoldMessenger.of(context)
-            //   ..hideCurrentSnackBar()
-            //   ..showSnackBar(
-            //     const SnackBar(content: Text('Update, Please login again')),
-            //   );
             await _showInProgressDialog();
           } else if (state.submissionStatus.isSubmissionFailure ||
               state.submissionStatus.isSubmissionSuccess) {
