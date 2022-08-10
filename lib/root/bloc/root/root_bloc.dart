@@ -95,6 +95,17 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
       bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
 
+      final dataStream =
+          Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+      _dataStreamSubscription?.cancel();
+      _dataStreamSubscription = dataStream.listen((count) {
+        if (kDebugMode) {
+          print('Root update trigger times: $count');
+        }
+        add(const NodeDirectoryUpdated());
+      });
+
       if (result[0]) {
         if (result[1] == '') {
           // device setting page
@@ -264,6 +275,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
       add(const NodeDirectoryUpdated());
     });
+
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       directory: directory,
@@ -386,6 +398,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(path[0]);
 
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      add(const NodeDirectoryUpdated());
+    });
+
     if (result[0]) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
@@ -398,7 +420,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
 
     //avoid user click node and dataStream trigger at the same time, reaume update periodic
-    _dataStreamSubscription?.resume();
+    //_dataStreamSubscription?.resume();
   }
 
   bool _checkDeviceInBookmarks(int nodeId) {
