@@ -322,6 +322,57 @@ class RootRepository {
     }
   }
 
+  Future<List<dynamic>> getDeviceName({
+    required User user,
+    required int deviceId,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String devicePath = '/net/node/' + deviceId.toString();
+
+    try {
+      Response response = await dio.get(devicePath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        String name = data['data'][0]['name'];
+
+        return [true, name];
+      } else {
+        return [false, 'Error errno: ${data['code']}'];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+          //throw Exception('Server No Response');
+          return [false, 'Server No Response'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+          //throw Exception(e.message);
+          return [false, e.message];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, e.toString()];
+      }
+    }
+  }
+
   Future<List<dynamic>> connectDevice({
     required User user,
     required int currentNodeID,

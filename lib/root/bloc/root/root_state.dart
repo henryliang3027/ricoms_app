@@ -13,6 +13,7 @@ class RootState extends Equatable {
     this.errmsg = '',
     this.bookmarksMsg = '',
     this.nodesExportMsg = '',
+    this.isDeviceSettingPage = false,
   });
 
   final FormStatus formStatus;
@@ -26,6 +27,7 @@ class RootState extends Equatable {
   final String errmsg;
   final String bookmarksMsg;
   final String nodesExportMsg;
+  final bool isDeviceSettingPage;
 
   RootState copyWith({
     FormStatus? formStatus,
@@ -39,6 +41,7 @@ class RootState extends Equatable {
     String? errmsg,
     String? bookmarksMsg,
     String? nodesExportMsg,
+    bool? isDeviceSettingPage,
   }) {
     return RootState(
       formStatus: formStatus ?? this.formStatus,
@@ -52,6 +55,7 @@ class RootState extends Equatable {
       errmsg: errmsg ?? this.errmsg,
       bookmarksMsg: bookmarksMsg ?? this.bookmarksMsg,
       nodesExportMsg: nodesExportMsg ?? this.nodesExportMsg,
+      isDeviceSettingPage: isDeviceSettingPage ?? this.isDeviceSettingPage,
     );
   }
 
@@ -68,5 +72,6 @@ class RootState extends Equatable {
         errmsg,
         bookmarksMsg,
         nodesExportMsg,
+        isDeviceSettingPage,
       ];
 }

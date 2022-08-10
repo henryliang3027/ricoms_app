@@ -25,6 +25,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<ChildDataUpdated>(_onChildDataUpdated);
+    on<NodeDirectoryUpdated>(_onNodeDirectoryUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
@@ -103,6 +104,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             nodesExportStatus: FormStatus.none,
             isAddedToBookmarks: isAddedToBookmarks,
             directory: directory,
+            isDeviceSettingPage: false,
           ));
         } else {
           // node
@@ -113,6 +115,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             isAddedToBookmarks: false,
             directory: directory,
             data: result[1],
+            isDeviceSettingPage: false,
           ));
         }
       } else {
@@ -146,33 +149,28 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     // Ｔhe directory is empty because of no internet and user reload the page (switch back from another page)
-    dynamic data = await _rootRepository.getChilds(
+    var resultOfChilds = await _rootRepository.getChilds(
         user: _user,
         parentId: state.directory.isNotEmpty
             ? state.directory[state.directory.length - 1].id
             : 0);
 
-    if (data is List) {
-      List<Node> tempDirectory = [
-        const Node(
-          id: 0,
-          type: 1,
-          name: 'Root',
-        )
-      ];
+    if (resultOfChilds is List) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
-        data: data,
-        directory: state.directory.isNotEmpty ? state.directory : tempDirectory,
+        data: resultOfChilds,
+        directory: state.directory,
+        isDeviceSettingPage: false,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
-        errmsg: data,
+        errmsg: resultOfChilds,
+        isDeviceSettingPage: false,
       ));
     }
   }
@@ -257,11 +255,60 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
 
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      add(const NodeDirectoryUpdated());
+    });
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       directory: directory,
       isAddedToBookmarks: isAddedToBookmarks,
     ));
+  }
+
+  Future<void> _onNodeDirectoryUpdated(
+    NodeDirectoryUpdated event,
+    Emitter<RootState> emit,
+  ) async {
+    var resultOfDeviceName = await _rootRepository.getDeviceName(
+        user: _user, deviceId: state.directory.last.id);
+
+    if (resultOfDeviceName[0]) {
+      if (resultOfDeviceName[1] != state.directory.last.name) {
+        List<Node> directory = [];
+
+        Node lastNode = Node(
+          id: state.directory.last.id,
+          name: resultOfDeviceName[1],
+          type: state.directory.last.type,
+          teg: state.directory.last.teg,
+          path: state.directory.last.path,
+          shelf: state.directory.last.shelf,
+          slot: state.directory.last.slot,
+          status: state.directory.last.status,
+          sort: state.directory.last.sort,
+          info: state.directory.last.info,
+        );
+
+        for (int i = 0; i < state.directory.length - 1; i++) {
+          directory.add(state.directory[i]);
+        }
+        directory.add(lastNode);
+
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          // submissionStatus: SubmissionStatus.none,
+          // nodesExportStatus: FormStatus.none,
+          directory: directory,
+          isDeviceSettingPage: true,
+        ));
+      }
+    } else {}
   }
 
   Future<void> _onBookmarksChanged(
@@ -344,6 +391,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         formStatus: FormStatus.requestSuccess,
         isAddedToBookmarks: isAddedToBookmarks,
         directory: directory,
+        isDeviceSettingPage: true,
       ));
     } else {
       // already handle in realtimealarm bloc

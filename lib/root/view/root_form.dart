@@ -455,6 +455,7 @@ class _NodeSliverList extends StatelessWidget {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
     return BlocBuilder<RootBloc, RootState>(
+      buildWhen: (previous, current) => current.isDeviceSettingPage == false,
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
           if (state.directory.last.type == 1) {
