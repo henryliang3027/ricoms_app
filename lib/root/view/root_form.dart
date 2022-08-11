@@ -172,7 +172,7 @@ class RootForm extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 _NodeDirectory(),
-                _NodeSliverList(),
+                _NodeContent(),
               ],
             ),
           ),
@@ -359,6 +359,37 @@ class _DynamicFloatingActionButton extends StatelessWidget {
   }
 }
 
+class _NodeContent extends StatelessWidget {
+  const _NodeContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RootBloc, RootState>(
+        buildWhen: (previous, current) =>
+            previous.directory.length != current.directory.length,
+        builder: (context, state) {
+          if (state.directory.isNotEmpty) {
+            if (state.directory.last.type == 2 ||
+                state.directory.last.type == 5) {
+              return Expanded(
+                child: DeviceSettingPage(
+                  user: context.read<AuthenticationBloc>().state.user,
+                  node: state.directory.last,
+                ),
+              );
+            } else {
+              return const _NodeSliverList();
+            }
+          } else {
+            return const Expanded(
+                child: Center(
+              child: CircularProgressIndicator(),
+            ));
+          }
+        });
+  }
+}
+
 class _NodeSliverList extends StatelessWidget {
   const _NodeSliverList({Key? key}) : super(key: key);
 
@@ -455,6 +486,7 @@ class _NodeSliverList extends StatelessWidget {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
     return BlocBuilder<RootBloc, RootState>(
+      buildWhen: (previous, current) => previous.data != current.data,
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
           if (state.directory.last.type == 1) {
@@ -478,23 +510,6 @@ class _NodeSliverList extends StatelessWidget {
                     _userFunctionMap[10],
                   ))
                 ],
-              ),
-            );
-          } else if (state.directory.last.type == 2) {
-            //edfa device
-
-            if (state.directory.last.status == 0) {
-              return const Expanded(
-                child: Center(
-                  child: Text('The device does not respond.'),
-                ),
-              );
-            }
-
-            return Expanded(
-              child: DeviceSettingPage(
-                user: context.read<AuthenticationBloc>().state.user,
-                node: state.directory.last,
               ),
             );
           } else if (state.directory.last.type == 3) {
@@ -541,23 +556,6 @@ class _NodeSliverList extends StatelessWidget {
                     _userFunctionMap[10],
                   ))
                 ],
-              ),
-            );
-          } else if (state.directory.last.type == 5) {
-            // a8k slot
-
-            if (state.directory.last.status == 0) {
-              return Expanded(
-                child: Center(
-                  child: Text(
-                      'No module in slot ${state.directory.last.slot.toString()}, please try another.'),
-                ),
-              );
-            }
-            return Expanded(
-              child: DeviceSettingPage(
-                user: context.read<AuthenticationBloc>().state.user,
-                node: state.directory.last,
               ),
             );
           } else {

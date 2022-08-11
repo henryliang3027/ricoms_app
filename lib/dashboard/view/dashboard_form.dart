@@ -18,7 +18,6 @@ class DashboardForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PageController _pieChartPageController = PageController();
     return WillPopScope(
       onWillPop: () async {
         bool? isExit = await CommonWidget.showExitAppDialog(context: context);
@@ -41,51 +40,61 @@ class DashboardForm extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Card(
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-                        child: _WidgetTitle(title: 'Alarm Ratio'),
-                      ),
-                      _buildLegend(),
-                      SizedBox(
-                        height: 250,
-                        child: PageView(
-                          controller: _pieChartPageController,
-                          children: const <Widget>[
-                            _AlarmOneDayStatisticsPieChart(),
-                            _AlarmThreeDaysStatisticsPieChart(),
-                            _AlarmOneWeekStatisticsPieChart(),
-                            _AlarmTwoWeeksStatisticsPieChart(),
-                            _AlarmOneMonthStatisticsPieChart(),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
-                        child: SmoothPageIndicator(
-                          controller: _pieChartPageController,
-                          count: 5,
-                          effect: const WormEffect(
-                            dotHeight: 10.0,
-                            dotWidth: 10.0,
-                            type: WormType.normal,
-                            // strokeWidth: 5,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const _DeviceStatisticsGridView(),
+              children: const [
+                _PieChartPageViewCard(),
+                _DeviceStatisticsCard(),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PieChartPageViewCard extends StatelessWidget {
+  const _PieChartPageViewCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final PageController _pieChartPageController = PageController();
+    return Card(
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+            child: _WidgetTitle(title: 'Alarm Ratio'),
+          ),
+          _buildLegend(),
+          SizedBox(
+            height: 250,
+            child: PageView(
+              controller: _pieChartPageController,
+              children: const <Widget>[
+                _AlarmOneDayStatisticsPieChart(),
+                _AlarmThreeDaysStatisticsPieChart(),
+                _AlarmOneWeekStatisticsPieChart(),
+                _AlarmTwoWeeksStatisticsPieChart(),
+                _AlarmOneMonthStatisticsPieChart(),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+            child: SmoothPageIndicator(
+              controller: _pieChartPageController,
+              count: 5,
+              effect: const WormEffect(
+                dotHeight: 10.0,
+                dotWidth: 10.0,
+                type: WormType.normal,
+                // strokeWidth: 5,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -336,6 +345,30 @@ class __AlarmOneMonthStatisticsPieChartState
   }
 }
 
+class _DeviceStatisticsCard extends StatelessWidget {
+  const _DeviceStatisticsCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+              child: _WidgetTitle(title: 'Device Status'),
+            ),
+            _DeviceStatisticsGridView(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _DeviceStatisticsGridView extends StatelessWidget {
   const _DeviceStatisticsGridView({Key? key}) : super(key: key);
 
@@ -376,67 +409,48 @@ class _DeviceStatisticsGridView extends StatelessWidget {
           );
         } else if (state.deviceStatisticsStatus.isRequestSuccess) {
           List deviceStatistics = state.deviceStatistics;
-          return SizedBox(
-            height: 240,
-            child: Card(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
+          return GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 6,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 1.6,
+            ),
+            itemBuilder: (_, int index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: _gridColors[index],
+                  border: _gridColors[index] == Colors.white
+                      ? Border.all(color: Colors.black)
+                      : null,
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-                      child: _WidgetTitle(title: 'Device Status'),
-                    ),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: 6,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 10.0,
-                        mainAxisSpacing: 10.0,
-                        childAspectRatio: 1.6,
+                    Text(
+                      _gridTitles[index],
+                      style: TextStyle(
+                        color: _fontColors[index],
+                        fontSize: CommonStyle.sizeL,
+                        fontWeight: FontWeight.bold,
                       ),
-                      itemBuilder: (_, int index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: _gridColors[index],
-                            border: _gridColors[index] == Colors.white
-                                ? Border.all(color: Colors.black)
-                                : null,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                _gridTitles[index],
-                                style: TextStyle(
-                                  color: _fontColors[index],
-                                  fontSize: CommonStyle.sizeL,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                deviceStatistics[index].toString(),
-                                style: TextStyle(
-                                  color: _fontColors[index],
-                                  fontSize: CommonStyle.sizeM,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                    ),
+                    Text(
+                      deviceStatistics[index].toString(),
+                      style: TextStyle(
+                        color: _fontColors[index],
+                        fontSize: CommonStyle.sizeM,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ),
+              );
+            },
           );
         } else if (state.deviceStatisticsStatus.isRequestFailure) {
           return Center(
