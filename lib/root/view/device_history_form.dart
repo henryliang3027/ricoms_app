@@ -11,9 +11,11 @@ class DeviceHistoryForm extends StatefulWidget {
   const DeviceHistoryForm({
     Key? key,
     required this.user,
+    required this.nodeId,
   }) : super(key: key);
 
   final User user;
+  final int nodeId;
 
   @override
   State<DeviceHistoryForm> createState() => _DeviceHistoryFormState();
@@ -119,7 +121,10 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
     DeviceRepository deviceRepository =
         RepositoryProvider.of<DeviceRepository>(context);
     return FutureBuilder(
-      future: deviceRepository.getDeviceHistory(user: widget.user),
+      future: deviceRepository.getDeviceHistory(
+        user: widget.user,
+        nodeId: widget.nodeId,
+      ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data is List) {

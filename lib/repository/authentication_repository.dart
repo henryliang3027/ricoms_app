@@ -130,7 +130,7 @@ class AuthenticationRepository {
 
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      _controller.add(AuthenticationStatus.unauthenticated);
+      //_controller.add(AuthenticationStatus.unauthenticated);
       if (e is DioError) {
         if (e.response != null) {
           if (kDebugMode) {

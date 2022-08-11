@@ -7,30 +7,15 @@ import 'package:ricoms_app/repository/user.dart';
 class DeviceRepository {
   DeviceRepository();
 
-  //final User user;
-  String _nodeId = '';
-
-  final Map<String, String> _pageId = <String, String>{};
-  final Map<String, bool> _pageEditable = <String, bool>{};
-
-  set deviceNodeId(String nodeId) {
-    _nodeId = nodeId;
-  }
-
-  bool isEditable(String pageName) {
-    if (_pageEditable[pageName] == null) {
-      return false; // page not exist
-    } else {
-      return _pageEditable[pageName]!;
-    }
-  }
-
-  Future<dynamic> createDeviceBlock({required User user}) async {
+  Future<dynamic> createDeviceBlock({
+    required User user,
+    required int nodeId,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceStatusPath = '/device/' + _nodeId + '/block';
+    String deviceStatusPath = '/device/' + nodeId.toString() + '/block';
 
     try {
       //404
@@ -41,16 +26,22 @@ class DeviceRepository {
 
       if (data['code'] == '200') {
         List dataList = data['data'];
+        List<DeviceBlock> deviceBlocks = [];
 
         dataList.removeWhere((element) => element['mobile'] == 0);
 
         // build two maps -> {pagename : id} and {pagename : editable}
         for (var item in dataList) {
-          _pageId[item['name']] = item['id'].toString();
-          _pageEditable[item['name']] = item['edit'] == 1 ? true : false;
+          DeviceBlock deviceBlock = DeviceBlock(
+            id: item['id'],
+            name: item['name'],
+            editable: item['edit'] == 1 ? true : false,
+          );
+
+          deviceBlocks.add(deviceBlock);
         }
 
-        return dataList;
+        return deviceBlocks;
       } else {
         return '${data['code']}: The device does not respond.';
       }
@@ -84,19 +75,22 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDevicePage(
-      {required User user, required String pageName}) async {
+  Future<dynamic> getDevicePage({
+    required User user,
+    required int nodeId,
+    required int pageId,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
-    if (_pageId[pageName] == null) {
-      return 'Page id does not exist! please look up block and give a page id';
-    }
+    // if (_pageId[pageName] == null) {
+    //   return 'Page id does not exist! please look up block and give a page id';
+    // }
 
     String deviceThresholdPath =
-        '/device/' + _nodeId + '/block/' + _pageId[pageName]!;
+        '/device/' + nodeId.toString() + '/block/' + pageId.toString();
 
     try {
       //404
@@ -110,11 +104,15 @@ class DeviceRepository {
         //print(data['data'][0]);
         List dataList = data['data'];
 
-        if (pageName == 'Description') {
+        if (pageId == 200) {
+          // description
           //make different id value because textfield ids are the same in json
           int autoId = 9998;
 
-          var deviceInfo = await getDeviceDescription(user: user);
+          var deviceInfo = await getDeviceDescription(
+            user: user,
+            nodeId: nodeId,
+          );
 
           if (deviceInfo.runtimeType is String) {
             return deviceInfo;
@@ -176,13 +174,16 @@ class DeviceRepository {
     }
   }
 
-  Future<List<dynamic>> setDeviceParams(
-      {required User user, required List<Map<String, String>> params}) async {
+  Future<List<dynamic>> setDeviceParams({
+    required User user,
+    required int nodeId,
+    required List<Map<String, String>> params,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceWritingPath = '/device/' + _nodeId + '/write';
+    String deviceWritingPath = '/device/' + nodeId.toString() + '/write';
 
     try {
       Map<String, dynamic> requestData = {
@@ -232,13 +233,16 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceDescription({required User user}) async {
+  Future<dynamic> getDeviceDescription({
+    required User user,
+    required int nodeId,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
-    String deviceDescriptionPath = '/device/' + _nodeId;
+    String deviceDescriptionPath = '/device/' + nodeId.toString();
 
     try {
       //404
@@ -291,6 +295,7 @@ class DeviceRepository {
 
   Future<List<dynamic>> setDeviceDescription({
     required User user,
+    required int nodeId,
     required String name,
     required String description,
   }) async {
@@ -298,7 +303,7 @@ class DeviceRepository {
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String deviceDescriptionPath = '/device/' + _nodeId;
+    String deviceDescriptionPath = '/device/' + nodeId.toString();
     try {
       Map<String, dynamic> requestData = {
         'uid': user.id,
@@ -346,14 +351,17 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceHistory({required User user}) async {
+  Future<dynamic> getDeviceHistory({
+    required User user,
+    required int nodeId,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceStatusPath =
         '/history/search?start_time=&end_time=&shelf=&slot=&next=&trap_id=&current=0&q=&node_id=' +
-            _nodeId;
+            nodeId.toString();
 
     try {
       //404
@@ -426,6 +434,18 @@ class DeviceRepository {
       }
     }
   }
+}
+
+class DeviceBlock {
+  const DeviceBlock({
+    required this.id,
+    required this.name,
+    required this.editable,
+  });
+
+  final int id;
+  final String name;
+  final bool editable;
 }
 
 class DeviceHistoryData {

@@ -251,7 +251,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     List<Node> directory = [];
     directory.addAll(state.directory);
 
-    _deviceRepository.deviceNodeId = event.node.id.toString();
+    //_deviceRepository.deviceNodeId = event.node.id.toString();
 
     !directory.contains(event.node) ? directory.add(event.node) : null;
     int currentIndex =
@@ -456,7 +456,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     // + 1 as root node id because path.length not consider root node id
     if (directory.length == path.length + 1) {
       if (directory.last.type == 2 || directory.last.type == 5) {
-        _deviceRepository.deviceNodeId = directory.last.id.toString();
+        //_deviceRepository.deviceNodeId = directory.last.id.toString();
         return [true, '']; // device setting page
       } else {
         //get child of current node

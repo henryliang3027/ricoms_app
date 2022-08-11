@@ -14,10 +14,12 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   DeviceBloc({
     required User user,
     required DeviceRepository deviceRepository,
-    required String pageName,
+    required int nodeId,
+    required DeviceBlock deviceBlock,
   })  : _user = user,
         _deviceRepository = deviceRepository,
-        _pageName = pageName,
+        _nodeId = nodeId,
+        _deviceBlock = deviceBlock,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceDataUpdateRequested>(_onDeviceDataUpdateRequested);
@@ -29,7 +31,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     _dataStreamSubscription = _dataStream.listen((count) {
       if (kDebugMode) {
         print(
-            'Device Setting update trigger times: $count, current state: $pageName => isEditing : ${state.isEditing}');
+            'Device Setting update trigger times: $count, current state: ${_deviceBlock.name} => isEditing : ${state.isEditing}');
       }
       state.isEditing == false ? add(const DeviceDataUpdateRequested()) : null;
     });
@@ -37,7 +39,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
   final User _user;
   final DeviceRepository _deviceRepository;
-  final String _pageName;
+  final int _nodeId;
+  final DeviceBlock _deviceBlock;
+
   final _dataStream =
       Stream<int>.periodic(const Duration(seconds: 5), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
@@ -58,23 +62,25 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
-      pageName: _pageName,
+      nodeId: _nodeId,
+      pageId: _deviceBlock.id,
     );
-    bool isEditable = _deviceRepository.isEditable(_pageName);
+
+    //bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
-        editable: isEditable,
+        editable: _deviceBlock.editable,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
         data: [data],
-        editable: isEditable,
+        editable: _deviceBlock.editable,
       ));
     }
   }
@@ -89,23 +95,24 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
-      pageName: _pageName,
+      nodeId: _nodeId,
+      pageId: _deviceBlock.id,
     );
-    bool isEditable = _deviceRepository.isEditable(_pageName);
+    // bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
-        editable: isEditable,
+        editable: _deviceBlock.editable,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
         data: [data],
-        editable: isEditable,
+        editable: _deviceBlock.editable,
       ));
     }
   }
@@ -137,17 +144,19 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         submissionStatus: SubmissionStatus.submissionInProgress));
 
     List result = [];
-    if (_pageName == 'Description') {
+    if (_deviceBlock.name == 'Description') {
       String name = event.param[0]['value']!;
       String description = event.param[1]['value']!;
       result = await _deviceRepository.setDeviceDescription(
         user: _user,
+        nodeId: _nodeId,
         name: name,
         description: description,
       );
     } else {
       result = await _deviceRepository.setDeviceParams(
         user: _user,
+        nodeId: _nodeId,
         params: event.param,
       );
     }

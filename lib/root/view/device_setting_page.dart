@@ -44,22 +44,22 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
     DeviceRepository deviceRepository =
         RepositoryProvider.of<DeviceRepository>(context);
     return FutureBuilder(
-      future: deviceRepository.createDeviceBlock(user: widget.user),
+      future: deviceRepository.createDeviceBlock(
+        user: widget.user,
+        nodeId: widget.node.id,
+      ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data is List) {
+          if (snapshot.data is List<DeviceBlock>) {
+            List<DeviceBlock> deviceBlocks = snapshot.data;
             tabController = TabController(
-                length: isA8KPCM2()
-                    ? (snapshot.data as List).length
-                    : (snapshot.data as List).length + 1,
+                length:
+                    isA8KPCM2() ? deviceBlocks.length : deviceBlocks.length + 1,
                 vsync: this);
             return Scaffold(
               appBar: AppBar(
-                //shape: Border(bottom: BorderSide(color: Colors.black)),
                 elevation: 0.0,
                 backgroundColor: Colors.white,
-
-                //title: Text(widget.node.name),
                 centerTitle: true,
                 titleSpacing: 0.0,
                 title: TabBar(
@@ -68,9 +68,11 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                   isScrollable: true,
                   tabs: [
                     if (isA8KPCM2()) ...[
-                      for (var item in snapshot.data) Tab(text: item['name']),
+                      for (DeviceBlock deviceBlock in deviceBlocks)
+                        Tab(text: deviceBlock.name),
                     ] else ...[
-                      for (var item in snapshot.data) Tab(text: item['name']),
+                      for (DeviceBlock deviceBlock in deviceBlocks)
+                        Tab(text: deviceBlock.name),
                       const Tab(text: 'History')
                     ]
                   ],
@@ -81,21 +83,24 @@ class _DeviceSettingPageState extends State<DeviceSettingPage>
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   if (isA8KPCM2()) ...[
-                    for (var item in snapshot.data) ...[
+                    for (DeviceBlock deviceBlock in deviceBlocks) ...[
                       DeviceSettingForm(
                         user: widget.user,
-                        pageName: item['name'],
+                        deviceBlock: deviceBlock,
+                        nodeId: widget.node.id,
                       )
                     ],
                   ] else ...[
-                    for (var item in snapshot.data) ...[
+                    for (DeviceBlock deviceBlock in deviceBlocks) ...[
                       DeviceSettingForm(
                         user: widget.user,
-                        pageName: item['name'],
+                        deviceBlock: deviceBlock,
+                        nodeId: widget.node.id,
                       )
                     ],
                     DeviceHistoryForm(
                       user: widget.user,
+                      nodeId: widget.node.id,
                     ),
                   ],
                 ],

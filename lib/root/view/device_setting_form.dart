@@ -13,11 +13,13 @@ class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm({
     Key? key,
     required this.user,
-    required this.pageName,
+    required this.nodeId,
+    required this.deviceBlock,
   }) : super(key: key);
 
   final User user;
-  final String pageName;
+  final DeviceBlock deviceBlock;
+  final int nodeId;
   final Map<String, bool> checkBoxValues = <String, bool>{};
   final Map<String, TextEditingController> textFieldControllers =
       <String, TextEditingController>{};
@@ -80,7 +82,8 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       create: (context) => DeviceBloc(
         user: widget.user,
         deviceRepository: deviceRepository,
-        pageName: widget.pageName,
+        nodeId: widget.nodeId,
+        deviceBlock: widget.deviceBlock,
       ),
       child: BlocListener<DeviceBloc, DeviceState>(
         listener: (context, state) async {
@@ -167,7 +170,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                     ? state.editable
                         ? CreateEditingTool(
                             isEditing: state.isEditing,
-                            pageName: widget.pageName,
+                            pageName: widget.deviceBlock.name,
                             checkBoxValues: widget.checkBoxValues,
                             textFieldControllers: widget.textFieldControllers,
                             radioButtonValues: widget.radioButtonValues,
