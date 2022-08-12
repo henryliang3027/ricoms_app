@@ -6,7 +6,6 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 
 class CustomStyle {
   static Widget getBox(
-    int style,
     dynamic e, {
     bool isEditing = false,
     Map<String, bool>? checkBoxValues,
@@ -16,6 +15,7 @@ class CustomStyle {
     Map<String, String>? dropDownMenuValues,
     Map<String, String>? controllerInitValues,
   }) {
+    int style = e['style'] ?? -1;
     int length = e['length'] ?? 1;
     int height = e['height'] ?? 15;
     String value = e['value'] ?? '';
@@ -41,31 +41,27 @@ class CustomStyle {
             flex: length,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
-              child: Container(
-                child: TextField(
-                  key: Key(id),
-                  controller: textFieldControllers[id],
-                  textAlign: TextAlign.center,
-                  enabled: _enabled,
-                  style: TextStyle(fontSize: font),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _enabled ? Colors.white : Colors.grey.shade300,
-                    //isDense: true,
-                    //contentPadding: EdgeInsets.all(0.0),
-                    isCollapsed: true,
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    disabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
+              child: TextField(
+                key: Key(id),
+                controller: textFieldControllers[id],
+                textAlign: TextAlign.center,
+                enabled: _enabled,
+                style: TextStyle(fontSize: font),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: _enabled ? Colors.white : Colors.grey.shade300,
+                  isCollapsed: true,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
                   ),
                 ),
               ),

@@ -137,7 +137,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                                     children: [
                                       for (var e in item) ...[
                                         CustomStyle.getBox(
-                                          e['style'],
                                           e,
                                           isEditing: state.isEditing,
                                           checkBoxValues: widget.checkBoxValues,
