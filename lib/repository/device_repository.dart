@@ -43,7 +43,7 @@ class DeviceRepository {
 
         return deviceBlocks;
       } else {
-        return '${data['code']}: The device does not respond.';
+        return 'The device does not respond.';
       }
     } catch (e) {
       // The request was made and the server responded with a status code
