@@ -12,74 +12,72 @@ class SearchForm extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Search'),
+        title: const Text('Filters'),
       ),
-      body: Container(
-        child: Stack(
-          children: [
-            Center(
-              child: Container(
-                height: double.maxFinite,
-                padding: const EdgeInsets.all(16.0),
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(24.0),
+      body: Stack(
+        children: [
+          Center(
+            child: Container(
+              height: double.maxFinite,
+              padding: const EdgeInsets.all(16.0),
+              color: Colors.white,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(24.0),
+                    ),
+                    const _WidgetTitle(title: 'Date'),
+                    Container(
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          _StartDatePicker(),
+                          Text('-'),
+                          _EndDatePicker(),
+                        ],
                       ),
-                      const _WidgetTitle(title: 'Date'),
-                      Container(
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            _StartDatePicker(),
-                            Text('-'),
-                            _EndDatePicker(),
-                          ],
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                      ),
-                      const _WidgetTitle(title: 'Category'),
-                      const Padding(
-                        padding: EdgeInsets.all(4.0),
-                      ),
-                      const _ShelfSelector(),
-                      const _SlotSelector(),
-                      const _CurrentIssueCheckBox(),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                      ),
-                      const _WidgetTitle(title: 'Applied Filter'),
-                      const Padding(
-                        padding: EdgeInsets.all(4.0),
-                      ),
-                      const _AppliedFilterList(),
-                    ],
-                  ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                    ),
+                    const _WidgetTitle(title: 'Category'),
+                    const Padding(
+                      padding: EdgeInsets.all(4.0),
+                    ),
+                    const _ShelfSelector(),
+                    const _SlotSelector(),
+                    const _CurrentIssueCheckBox(),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                    ),
+                    const _WidgetTitle(title: 'Applied Filter'),
+                    const Padding(
+                      padding: EdgeInsets.all(4.0),
+                    ),
+                    const _AppliedFilterList(),
+                  ],
                 ),
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: _KeywordInput(),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _KeywordInput(),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

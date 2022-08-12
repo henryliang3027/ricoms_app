@@ -98,8 +98,8 @@ class BookmarksForm extends StatelessWidget {
 
 enum Menu {
   delete,
-  select_all,
-  deselect_all,
+  selectAll,
+  deselectAll,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -113,12 +113,12 @@ class _PopupMenu extends StatelessWidget {
         return PopupMenuButton<Menu>(
           onSelected: (Menu item) async {
             switch (item) {
-              case Menu.select_all:
+              case Menu.selectAll:
                 context
                     .read<BookmarksBloc>()
                     .add(const BookmarksAllItemSelected());
                 break;
-              case Menu.deselect_all:
+              case Menu.deselectAll:
                 context
                     .read<BookmarksBloc>()
                     .add(const BookmarksAllItemDeselected());
@@ -129,7 +129,7 @@ class _PopupMenu extends StatelessWidget {
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
             PopupMenuItem<Menu>(
-              value: Menu.select_all,
+              value: Menu.selectAll,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -147,7 +147,7 @@ class _PopupMenu extends StatelessWidget {
               ),
             ),
             PopupMenuItem<Menu>(
-              value: Menu.deselect_all,
+              value: Menu.deselectAll,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,

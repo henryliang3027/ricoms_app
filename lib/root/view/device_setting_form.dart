@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
-import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
@@ -12,12 +11,10 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm({
     Key? key,
-    required this.user,
     required this.nodeId,
     required this.deviceBlock,
   }) : super(key: key);
 
-  final User user;
   final DeviceBlock deviceBlock;
   final int nodeId;
   final Map<String, bool> checkBoxValues = <String, bool>{};
@@ -75,120 +72,109 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
-    DeviceRepository deviceRepository =
-        RepositoryProvider.of<DeviceRepository>(context);
-
-    return BlocProvider(
-      create: (context) => DeviceBloc(
-        user: widget.user,
-        deviceRepository: deviceRepository,
-        nodeId: widget.nodeId,
-        deviceBlock: widget.deviceBlock,
-      ),
-      child: BlocListener<DeviceBloc, DeviceState>(
-        listener: (context, state) async {
-          if (state.submissionStatus.isSubmissionInProgress) {
-            await _showInProgressDialog();
-          } else if (state.submissionStatus.isSubmissionFailure ||
-              state.submissionStatus.isSubmissionSuccess) {
-            Navigator.of(context).pop();
-            _showCompleteDialog(state.saveResultMsg);
-            context.read<DeviceBloc>().add(const DeviceDataRequested());
-          }
-        },
-        child: BlocBuilder<DeviceBloc, DeviceState>(
-          builder: (BuildContext context, state) {
-            if (state.formStatus.isRequestInProgress) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state.formStatus.isRequestSuccess ||
-                state.formStatus.isUpdating) {
-              // fetch new values and reset the values in all controllers and init value map
-              // ex: set the value from 1 to 2
-              // if you don't update init value map, the value is still 1
-              // when you set to 1 again, the value will be consider as not change and will not be write to the device
-              if (state.formStatus.isUpdating) {
-                widget.controllerInitValues.clear();
-                widget.sliderValues.clear();
-                widget.textFieldControllers.clear();
-                widget.radioButtonValues.clear();
-                widget.checkBoxValues.clear();
-                widget.dropDownMenuValues.clear();
-              }
-              return Scaffold(
-                body: Container(
-                  width: double.maxFinite,
-                  height: double.maxFinite,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                for (var item in state.data) ...[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      for (var e in item) ...[
-                                        CustomStyle.getBox(
-                                          e,
-                                          isEditing: state.isEditing,
-                                          checkBoxValues: widget.checkBoxValues,
-                                          textFieldControllers:
-                                              widget.textFieldControllers,
-                                          radioButtonValues:
-                                              widget.radioButtonValues,
-                                          sliderValues: widget.sliderValues,
-                                          dropDownMenuValues:
-                                              widget.dropDownMenuValues,
-                                          controllerInitValues:
-                                              widget.controllerInitValues,
-                                        ),
-                                      ]
-                                    ],
-                                  )
-                                ],
-                                const SizedBox(
-                                  height: 120,
-                                ),
+    return BlocListener<DeviceBloc, DeviceState>(
+      listener: (context, state) async {
+        if (state.submissionStatus.isSubmissionInProgress) {
+          await _showInProgressDialog();
+        } else if (state.submissionStatus.isSubmissionFailure ||
+            state.submissionStatus.isSubmissionSuccess) {
+          Navigator.of(context).pop();
+          _showCompleteDialog(state.saveResultMsg);
+          context.read<DeviceBloc>().add(const DeviceDataRequested());
+        }
+      },
+      child: BlocBuilder<DeviceBloc, DeviceState>(
+        builder: (BuildContext context, state) {
+          if (state.formStatus.isRequestInProgress) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state.formStatus.isRequestSuccess ||
+              state.formStatus.isUpdating) {
+            // fetch new values and reset the values in all controllers and init value map
+            // ex: set the value from 1 to 2
+            // if you don't update init value map, the value is still 1
+            // when you set to 1 again, the value will be consider as not change and will not be write to the device
+            if (state.formStatus.isUpdating) {
+              widget.controllerInitValues.clear();
+              widget.sliderValues.clear();
+              widget.textFieldControllers.clear();
+              widget.radioButtonValues.clear();
+              widget.checkBoxValues.clear();
+              widget.dropDownMenuValues.clear();
+            }
+            return Scaffold(
+              body: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              for (var item in state.data) ...[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var e in item) ...[
+                                      CustomStyle.getBox(
+                                        e,
+                                        isEditing: state.isEditing,
+                                        checkBoxValues: widget.checkBoxValues,
+                                        textFieldControllers:
+                                            widget.textFieldControllers,
+                                        radioButtonValues:
+                                            widget.radioButtonValues,
+                                        sliderValues: widget.sliderValues,
+                                        dropDownMenuValues:
+                                            widget.dropDownMenuValues,
+                                        controllerInitValues:
+                                            widget.controllerInitValues,
+                                      ),
+                                    ]
+                                  ],
+                                )
                               ],
-                            ),
+                              const SizedBox(
+                                height: 120,
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                floatingActionButton: _userFunctionMap[13]
-                    ? state.editable
-                        ? CreateEditingTool(
-                            isEditing: state.isEditing,
-                            pageName: widget.deviceBlock.name,
-                            checkBoxValues: widget.checkBoxValues,
-                            textFieldControllers: widget.textFieldControllers,
-                            radioButtonValues: widget.radioButtonValues,
-                            sliderValues: widget.sliderValues,
-                            dropDownMenuValues: widget.dropDownMenuValues,
-                            controllerInitValues: widget.controllerInitValues,
-                          )
-                        : null
-                    : null,
-              );
-            } else {
-              //FormStatus.requestFailure
-              String errnsg = state.data[0];
-              return Center(
-                child: Text(errnsg),
-              );
-            }
-          },
-        ),
+              ),
+              floatingActionButton: _userFunctionMap[13]
+                  ? state.editable
+                      ? CreateEditingTool(
+                          isEditing: state.isEditing,
+                          pageName: widget.deviceBlock.name,
+                          checkBoxValues: widget.checkBoxValues,
+                          textFieldControllers: widget.textFieldControllers,
+                          radioButtonValues: widget.radioButtonValues,
+                          sliderValues: widget.sliderValues,
+                          dropDownMenuValues: widget.dropDownMenuValues,
+                          controllerInitValues: widget.controllerInitValues,
+                        )
+                      : null
+                  : null,
+            );
+          } else {
+            //FormStatus.requestFailure
+            String errnsg = state.data[0];
+            return Center(
+              child: Text(errnsg),
+            );
+          }
+        },
       ),
     );
   }

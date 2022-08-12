@@ -34,17 +34,17 @@ class DashboardForm extends StatelessWidget {
           pageController: pageController,
           currentPageIndex: 2,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                _PieChartPageViewCard(),
-                _DeviceStatisticsCard(),
-              ],
-            ),
+        body: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Expanded(
+                child: _PieChartPageViewCard(),
+              ),
+              _DeviceStatisticsCard(),
+            ],
           ),
         ),
       ),
@@ -68,8 +68,8 @@ class _PieChartPageViewCard extends StatelessWidget {
             child: _WidgetTitle(title: 'Alarm Ratio'),
           ),
           _buildLegend(),
-          SizedBox(
-            height: 250,
+          Expanded(
+            //height: 250,
             child: PageView(
               controller: _pieChartPageController,
               children: const <Widget>[
@@ -619,15 +619,18 @@ Widget _buildPieChart({
                 fontWeight: FontWeight.w600,
               ),
             ),
-            PieChart(
-              PieChartData(
-                startDegreeOffset: 270,
-                borderData: FlBorderData(
-                  show: false,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: PieChart(
+                PieChartData(
+                  startDegreeOffset: 270,
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  sectionsSpace: 0,
+                  //centerSpaceRadius: 60,
+                  sections: showingSections(alarmStatistics),
                 ),
-                sectionsSpace: 0,
-                centerSpaceRadius: 60,
-                sections: showingSections(alarmStatistics),
               ),
             ),
           ],

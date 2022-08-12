@@ -173,14 +173,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     HistoryRecordsExported event,
     Emitter<HistoryState> emit,
   ) async {
-    String formattedQuery = _formatQuery(state.currentCriteria.queries);
-
-    String startTrapId =
-        state.records.isNotEmpty ? state.records.last.trapId.toString() : '';
-
-    String endTrapId =
-        state.records.isNotEmpty ? state.records.first.trapId.toString() : '';
-
     List<dynamic> result = await _historyRepository.exportHistory(
       user: _user,
       records: state.records,

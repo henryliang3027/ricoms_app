@@ -12,7 +12,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
-import 'package:ricoms_app/root/view/device_setting_page.dart';
+import 'package:ricoms_app/root/view/device_setting_tabbar.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -372,8 +372,7 @@ class _NodeContent extends StatelessWidget {
             if (state.directory.last.type == 2 ||
                 state.directory.last.type == 5) {
               return Expanded(
-                child: DeviceSettingPage(
-                  user: context.read<AuthenticationBloc>().state.user,
+                child: DeviceSettingTabBar(
                   node: state.directory.last,
                 ),
               );

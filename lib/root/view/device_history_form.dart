@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
@@ -10,11 +11,9 @@ import 'package:ricoms_app/utils/common_style.dart';
 class DeviceHistoryForm extends StatefulWidget {
   const DeviceHistoryForm({
     Key? key,
-    required this.user,
     required this.nodeId,
   }) : super(key: key);
 
-  final User user;
   final int nodeId;
 
   @override
@@ -122,7 +121,7 @@ class _DeviceHistoryFormState extends State<DeviceHistoryForm> {
         RepositoryProvider.of<DeviceRepository>(context);
     return FutureBuilder(
       future: deviceRepository.getDeviceHistory(
-        user: widget.user,
+        user: context.read<AuthenticationBloc>().state.user,
         nodeId: widget.nodeId,
       ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
