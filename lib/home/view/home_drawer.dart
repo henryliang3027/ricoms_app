@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/account/view/account_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/change_password/view/change_password_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
