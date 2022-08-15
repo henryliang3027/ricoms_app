@@ -17,6 +17,8 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
+  // final dir = Directory('/data/user/0/com.example.ricoms_app/app_flutter/.db');
+  // dir.deleteSync(recursive: true);
   await Hive.initFlutter('.db');
   Hive.registerAdapter<User>(UserAdapter());
   await Hive.openBox<User>('User');

@@ -4,13 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/account/bloc/account/account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
+import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class AccountForm extends StatelessWidget {
-  const AccountForm({Key? key}) : super(key: key);
+  const AccountForm({
+    Key? key,
+    required this.pageController,
+  }) : super(key: key);
+
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +97,15 @@ class AccountForm extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Account'),
+        ),
+        bottomNavigationBar: HomeBottomNavigationBar(
+          pageController: pageController,
+          selectedIndex: 0, // No need to show button, set an useless index
+        ),
+        drawer: HomeDrawer(
+          user: context.read<AuthenticationBloc>().state.user,
+          pageController: pageController,
+          currentPageIndex: 5,
         ),
         body: Container(
           color: Colors.white,

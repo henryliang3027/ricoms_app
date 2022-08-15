@@ -40,6 +40,18 @@ class HomeDrawer extends StatelessWidget {
       CustomIcons.bookmarks,
     ];
 
+    List<String> _extraListTileTitles = [
+      'Account',
+    ];
+
+    List<IconData> _extraListTileIcons = [
+      CustomIcons.account,
+    ];
+
+    List<int> _extraListFunctionPermissions = [
+      5,
+    ];
+
     List<Widget> _buildMainListView(int currentPageIndex) {
       return [
         for (int i = 0; i < _listTileTitles.length; i++)
@@ -65,6 +77,44 @@ class HomeDrawer extends StatelessWidget {
             },
           ),
       ];
+    }
+
+    List<Widget> _buildExtraListView(int currentPageIndex) {
+      List<Widget> extraListTile = [];
+
+      for (int i = 0; i < _extraListTileTitles.length; i++) {
+        if (_userFunctionMap[_extraListFunctionPermissions[i]]) {
+          int pageIndex = _listTileTitles.length;
+          ListTile listTile = ListTile(
+            dense: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(
+                _extraListTileIcons[i],
+                color:
+                    currentPageIndex == pageIndex ? Colors.blue : Colors.grey,
+              ),
+            ),
+            title: Text(
+              _extraListTileTitles[i],
+              style: TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color:
+                    currentPageIndex == pageIndex ? Colors.blue : Colors.black,
+              ),
+            ),
+            onTap: () {
+              pageController.jumpToPage(pageIndex);
+              Navigator.pop(context); //close drawer
+            },
+          );
+          extraListTile.add(listTile);
+        } else {
+          continue;
+        }
+      }
+
+      return extraListTile;
     }
 
     return SafeArea(
@@ -104,22 +154,7 @@ class HomeDrawer extends StatelessWidget {
               ),
             ),
             ..._buildMainListView(currentPageIndex),
-            _userFunctionMap[5]
-                ? ListTile(
-                    dense: true,
-                    leading: const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Icon(CustomIcons.account),
-                    ),
-                    title: const Text(
-                      'Account',
-                      style: TextStyle(fontSize: CommonStyle.sizeL),
-                    ),
-                    onTap: () {
-                      Navigator.push(context, AccountPage.route());
-                    },
-                  )
-                : Container(),
+            ..._buildExtraListView(currentPageIndex),
             const Divider(
               height: 0.0,
             ),
