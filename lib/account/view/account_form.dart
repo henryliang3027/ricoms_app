@@ -100,7 +100,7 @@ class AccountForm extends StatelessWidget {
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,
-          selectedIndex: 0, // No need to show button, set an useless index
+          selectedIndex: 5, // No need to show button, set an useless index
         ),
         drawer: HomeDrawer(
           user: context.read<AuthenticationBloc>().state.user,

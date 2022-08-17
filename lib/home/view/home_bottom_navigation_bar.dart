@@ -45,8 +45,12 @@ class HomeBottomNavigationBar extends StatelessWidget {
           label: 'Bookmarks',
         ),
       ],
-      currentIndex: selectedIndex,
-      selectedItemColor: Theme.of(context).primaryColor,
+      //if current page is account which is not list in bottom navigation bar, make all items grey color
+      //assign a useless 0 as currentIndex for account page
+      currentIndex: selectedIndex >= 5 ? 0 : selectedIndex,
+      selectedItemColor: selectedIndex >= 5
+          ? Theme.of(context).hintColor
+          : Theme.of(context).primaryColor,
       unselectedItemColor: Theme.of(context).hintColor,
       onTap: _onBottomItemTapped,
     );
