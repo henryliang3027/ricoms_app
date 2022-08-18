@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:csv/csv.dart';
-import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';
+import 'package:ricoms_app/utils/storage_permission.dart';
 
 class HistoryRepository {
   HistoryRepository();
@@ -463,35 +463,6 @@ class HistoryRepository {
         false,
         'write file failed, export function not implement on ${Platform.operatingSystem} '
       ];
-    }
-  }
-
-  Future<bool> requestPermission() async {
-    var androidInfo = await DeviceInfoPlugin().androidInfo;
-    int sdkInt = androidInfo.version.sdkInt;
-    //print("sdk version " + sdkInt.toString());
-    if (sdkInt <= 28) {
-      // Android 9 or older
-      PermissionStatus storagePermission = await Permission.storage.request();
-      if (storagePermission.isGranted) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      //sdk 29, 30, (31-32), 33 Android 10, 11, 12, 13
-      PermissionStatus storagePermission = await Permission.storage.request();
-      PermissionStatus accessMediaLocationPermission =
-          await Permission.accessMediaLocation.request();
-      PermissionStatus manageExternalStoragePermission =
-          await Permission.manageExternalStorage.request();
-      if (storagePermission.isGranted &&
-          accessMediaLocationPermission.isGranted &&
-          manageExternalStoragePermission.isGranted) {
-        return true;
-      } else {
-        return false;
-      }
     }
   }
 }
