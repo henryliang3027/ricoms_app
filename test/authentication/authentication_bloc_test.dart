@@ -30,7 +30,6 @@ Future<void> main() async {
     authenticationRepository = MockAuthenticationRepository();
     when(() => authenticationRepository.status)
         .thenAnswer((_) => const Stream.empty());
-    when(() => authenticationRepository.userApi).thenAnswer((_) => mockUserApi);
   });
 
   group('AuthenticationBloc', () {
@@ -65,11 +64,10 @@ Future<void> main() async {
         );
         when(() => authenticationRepository.userApi)
             .thenAnswer((_) => mockUserApi);
-        when(() => authenticationRepository.userApi.getActivateUser())
-            .thenAnswer((_) => user);
+        when(() => mockUserApi.getActivateUser()).thenAnswer((_) => user);
         when(
           () => authenticationRepository.getUserFunctions(),
-        ).thenAnswer((_) async => []);
+        ).thenAnswer((_) async => [true, <int, bool>{}]);
       },
       build: () => AuthenticationBloc(
         authenticationRepository: authenticationRepository,
