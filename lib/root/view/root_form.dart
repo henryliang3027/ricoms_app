@@ -364,28 +364,32 @@ class _NodeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RootBloc, RootState>(
-        buildWhen: (previous, current) =>
-            previous.directory.length != current.directory.length,
-        builder: (context, state) {
-          if (state.directory.isNotEmpty) {
-            if (state.directory.last.type == 2 ||
-                state.directory.last.type == 5) {
-              return Expanded(
-                child: DeviceSettingTabBar(
-                  node: state.directory.last,
-                ),
-              );
-            } else {
-              return const _NodeSliverList();
-            }
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      if (state.formStatus.isRequestSuccess) {
+        if (state.directory.isNotEmpty) {
+          if (state.directory.last.type == 2 ||
+              state.directory.last.type == 5) {
+            return Expanded(
+              child: DeviceSettingTabBar(
+                node: state.directory.last,
+              ),
+            );
           } else {
-            return const Expanded(
-                child: Center(
-              child: CircularProgressIndicator(),
-            ));
+            return const _NodeSliverList();
           }
-        });
+        } else {
+          return const Expanded(
+            child: Center(),
+          );
+        }
+      } else {
+        return const Expanded(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+    });
   }
 }
 
@@ -594,7 +598,7 @@ class _NodeDirectory extends StatelessWidget {
       buildWhen: (previous, current) => previous.directory != current.directory,
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
               _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,

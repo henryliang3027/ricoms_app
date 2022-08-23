@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -14,7 +15,12 @@ class LoginForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Error'),
+            title: const Text(
+              CustomErrTitle.commonErrTitle,
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[

@@ -14,8 +14,8 @@ class AuthenticationBloc
         super(const AuthenticationState.unknown()) {
     on<AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
-    _authenticationStatusSubscription = _authenticationRepository.status.listen(
-      (status) => add(AuthenticationStatusChanged(status)),
+    _authenticationStatusSubscription = _authenticationRepository.report.listen(
+      (report) => add(AuthenticationStatusChanged(report)),
     );
 
     final dataStream =
@@ -29,8 +29,9 @@ class AuthenticationBloc
       if (result[0]) {
         if (result[1]) {
           if (state.status == AuthenticationStatus.authenticated) {
-            add(const AuthenticationStatusChanged(
-                AuthenticationStatus.unauthenticated));
+            add(const AuthenticationStatusChanged(AuthenticationReport(
+              status: AuthenticationStatus.unauthenticated,
+            )));
           }
         }
       }
@@ -38,7 +39,7 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _authenticationRepository;
-  late StreamSubscription<AuthenticationStatus>
+  late StreamSubscription<AuthenticationReport>
       _authenticationStatusSubscription;
 
   late StreamSubscription<int> _permissionStatusSubscription;
@@ -56,40 +57,17 @@ class AuthenticationBloc
     Emitter<AuthenticationState> emit,
   ) async {
     {
-      switch (event.status) {
+      switch (event.report.status) {
         case AuthenticationStatus.unauthenticated:
-          return emit(const AuthenticationState.unauthenticated(errmsg: ''));
+          return emit(AuthenticationState.unauthenticated(
+            msgTitle: event.report.msgTitle,
+            msg: event.report.msg,
+          ));
         case AuthenticationStatus.authenticated:
-          //get current login user which activate flag is true
-          final user = _authenticationRepository.userApi.getActivateUser();
-          final resultOfUserFunctions =
-              await _authenticationRepository.getUserFunctions();
-
-          if (user != null) {
-            if (resultOfUserFunctions[0]) {
-              final Map<int, bool> userFunctionMap = resultOfUserFunctions[1];
-              return emit(AuthenticationState.authenticated(
-                user,
-                userFunctionMap,
-              ));
-            } else {
-              return emit(
-                //get user function failed
-                AuthenticationState.unauthenticated(
-                    errmsg: resultOfUserFunctions[1]),
-              );
-            }
-          } else {
-            //user does not exist
-            return emit(
-              const AuthenticationState.unauthenticated(errmsg: ''),
-            );
-          }
-
-        case AuthenticationStatus.unknown:
-          return emit(const AuthenticationState.unauthenticated(
-              errmsg:
-                  'Please try to login again. Make sure you are on the same domain as the server.'));
+          return emit(AuthenticationState.authenticated(
+            event.report.user,
+            event.report.userFunction,
+          ));
       }
     }
   }

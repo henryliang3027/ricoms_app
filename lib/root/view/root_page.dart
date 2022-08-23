@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/root/view/root_form.dart';
@@ -27,7 +26,6 @@ class _RootPageState extends State<RootPage> {
       create: (context) => RootBloc(
         user: context.read<AuthenticationBloc>().state.user,
         rootRepository: RepositoryProvider.of<RootRepository>(context),
-        deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
         initialPath: widget.initialRootPath,
       ),
       child: RootForm(pageController: widget.pageController),

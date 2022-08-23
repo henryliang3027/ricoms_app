@@ -2,10 +2,11 @@ part of 'authentication_bloc.dart';
 
 class AuthenticationState extends Equatable {
   const AuthenticationState._({
-    this.status = AuthenticationStatus.unknown,
+    this.status = AuthenticationStatus.unauthenticated,
     this.user = const User.empty(),
     this.userFunctionMap = const {},
-    this.errmsg = '',
+    this.msgTitle = '',
+    this.msg = '',
   });
 
   const AuthenticationState.unknown() : this._();
@@ -20,24 +21,26 @@ class AuthenticationState extends Equatable {
         );
 
   const AuthenticationState.unauthenticated({
-    required String errmsg,
+    required String msgTitle,
+    required String msg,
   }) : this._(
           status: AuthenticationStatus.unauthenticated,
-          errmsg: errmsg,
+          msgTitle: msgTitle,
+          msg: msg,
         );
 
   final AuthenticationStatus status;
   final User user;
   final Map<int, bool> userFunctionMap;
-
-  // lost connection after login, pop message if auto login failed
-  final String errmsg;
+  final String msgTitle;
+  final String msg;
 
   @override
   List<Object> get props => [
         status,
         user,
         userFunctionMap,
-        errmsg,
+        msgTitle,
+        msg,
       ];
 }

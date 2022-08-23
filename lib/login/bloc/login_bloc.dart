@@ -74,24 +74,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     if (state.status.isValidated) {
-      //LoginState.FormzStatus
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
-      try {
-        String errmsg = await _authenticationRepository.logIn(
-          ip: state.ip.value,
-          username: state.username.value,
-          password: state.password.value,
-        );
+      List<dynamic> resultOfLogIn = await _authenticationRepository.logIn(
+        ip: state.ip.value,
+        username: state.username.value,
+        password: state.password.value,
+      );
 
-        if (errmsg == '') {
-          emit(state.copyWith(status: FormzStatus.submissionSuccess));
-        } else {
-          emit(state.copyWith(
-              status: FormzStatus.submissionFailure, errmsg: errmsg));
-        }
-      } catch (e) {
+      if (!resultOfLogIn[0]) {
+        String errmsg = resultOfLogIn[1];
         emit(state.copyWith(
-            status: FormzStatus.submissionFailure, errmsg: e.toString()));
+            status: FormzStatus.submissionFailure, errmsg: errmsg));
       }
     }
   }

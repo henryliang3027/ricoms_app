@@ -5,20 +5,40 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user_function.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum AuthenticationStatus { authenticated, unauthenticated }
+
+class AuthenticationReport {
+  const AuthenticationReport({
+    required this.status,
+    this.user = const User.empty(),
+    this.userFunction = const {},
+    this.msgTitle = '',
+    this.msg = '',
+  });
+
+  final AuthenticationStatus status;
+  final User user;
+  final Map<int, bool> userFunction;
+  final String msgTitle;
+  final String msg;
+}
 
 class AuthenticationRepository {
   AuthenticationRepository();
 
   final UserApi userApi = UserApi(); // public field
-  final _controller = StreamController<AuthenticationStatus>();
+  final _controller = StreamController<AuthenticationReport>();
 
-  Stream<AuthenticationStatus> get status async* {
+  Stream<AuthenticationReport> get report async* {
     User? user = userApi.getActivateUser();
 
     if (user == null) {
-      yield AuthenticationStatus.unauthenticated;
+      yield const AuthenticationReport(
+        status: AuthenticationStatus.unauthenticated,
+        msg: '',
+      );
     } else {
       await autoLogIn(user: user);
     }
@@ -46,37 +66,63 @@ class AuthenticationRepository {
 
       if (data['code'] == '200') {
         String userId = data['data']['uid'].toString();
-        String accountInformationPath =
-            'http://' + user.ip + '/aci/api/accounts/' + userId;
 
-        Response infoResponse = await dio.get(accountInformationPath);
-        var infoData = jsonDecode(infoResponse.data.toString());
-
-        await userApi.addUserByKey(
-          userId: userId,
+        List resultOfUserInfo = await setUserInfo(
           ip: user.ip,
-          name: infoData['data'][0]['name'].toString(),
+          userId: userId,
           password: user.password,
-          permission: infoData['data'][0]['permission'].toString(),
-          email: infoData['data'][0]['email'].toString(),
-          mobile: infoData['data'][0]['mobile'].toString(),
-          tel: infoData['data'][0]['tel'].toString(),
-          ext: infoData['data'][0]['ext'].toString(),
         );
 
-        _controller.add(AuthenticationStatus.authenticated);
+        if (resultOfUserInfo[0]) {
+          final List resultOfUserFunctions = await getUserFunctions();
+          if (resultOfUserFunctions[0]) {
+            Map<int, bool> userFunction = resultOfUserFunctions[1];
+            _controller.add(AuthenticationReport(
+              status: AuthenticationStatus.authenticated,
+              user: user,
+              userFunction: userFunction,
+            ));
+          } else {
+            //maybe receive 'Failed to get user function' from server
+            bool _ = await userApi.deActivateUser(user.id);
+            _controller.add(AuthenticationReport(
+              status: AuthenticationStatus.unauthenticated,
+              msgTitle: CustomErrTitle.commonErrTitle,
+              msg: resultOfUserFunctions[1],
+            ));
+          }
+        } else {
+          //maybe receive 'invalid User' message from server
+          bool _ = await userApi.deActivateUser(user.id);
+          _controller.add(AuthenticationReport(
+            status: AuthenticationStatus.unauthenticated,
+            msgTitle: CustomErrTitle.commonErrTitle,
+            msg: resultOfUserInfo[1],
+          ));
+        }
       } else {
         // username or password has changed on website
-        _controller.add(AuthenticationStatus.unauthenticated);
+        bool _ = await userApi.deActivateUser(user.id);
+        _controller.add(AuthenticationReport(
+          status: AuthenticationStatus.unauthenticated,
+          msgTitle: CustomErrTitle.commonErrTitle,
+          msg: data['msg'],
+        ));
       }
     } catch (e) {
-      // user activated but no internet
+      // user activated but no internet connection
       bool _ = await userApi.deActivateUser(user.id);
-      _controller.add(AuthenticationStatus.unknown);
+      _controller.add(
+        const AuthenticationReport(
+          status: AuthenticationStatus.unauthenticated,
+          msgTitle: CustomErrTitle.lostConnectionTitle,
+          msg: CustomErrMsg.lostConnectionMsg,
+        ),
+      );
     }
   }
 
-  Future<String> logIn({
+  Future<List<dynamic>> logIn({
     required String ip,
     required String username,
     required String password,
@@ -101,29 +147,72 @@ class AuthenticationRepository {
         //print(data);
         // accunt and password are correct
         String userId = data['data']['uid'].toString();
-        String accountInformationPath =
-            'http://' + ip + '/aci/api/accounts/' + userId;
 
-        Response infoResponse = await dio.get(accountInformationPath);
-        var infoData = jsonDecode(infoResponse.data.toString());
-
-        await userApi.addUserByKey(
-          userId: userId,
+        List resultOfUserInfo = await setUserInfo(
           ip: ip,
-          name: infoData['data'][0]['name'].toString(),
+          userId: userId,
           password: password,
-          permission: infoData['data'][0]['permission'].toString(),
-          email: infoData['data'][0]['email'].toString(),
-          mobile: infoData['data'][0]['mobile'].toString(),
-          tel: infoData['data'][0]['tel'].toString(),
-          ext: infoData['data'][0]['ext'].toString(),
         );
 
-        _controller.add(AuthenticationStatus.authenticated);
-        return '';
+        if (resultOfUserInfo[0]) {
+          final List resultOfUserFunctions = await getUserFunctions();
+          if (resultOfUserFunctions[0]) {
+            Map<int, bool> userFunction = resultOfUserFunctions[1];
+            User? user = userApi.getActivateUser();
+
+            if (user != null) {
+              _controller.add(AuthenticationReport(
+                status: AuthenticationStatus.authenticated,
+                user: user,
+                userFunction: userFunction,
+              ));
+
+              return [true];
+            } else {
+              // _controller.add(const AuthenticationReport(
+              //   status: AuthenticationStatus.unauthenticated,
+              //   msg: 'failed to get activated user from local database.',
+              // ));
+
+              return [
+                false,
+                CustomErrMsg.getActivatedUserErrMsg,
+              ];
+            }
+          } else {
+            //maybe receive 'Failed to get user function' from server
+            // _controller.add(AuthenticationReport(
+            //   status: AuthenticationStatus.unauthenticated,
+            //   msg: resultOfUserFunctions[1],
+            // ));
+
+            return [
+              false,
+              resultOfUserFunctions[1],
+            ];
+          }
+        } else {
+          //may receive invalid User message from server
+          // _controller.add(AuthenticationReport(
+          //   status: AuthenticationStatus.unauthenticated,
+          //   msg: resultOfUserInfo[1],
+          // ));
+
+          return [
+            false,
+            resultOfUserInfo[1],
+          ];
+        }
       } else {
-        _controller.add(AuthenticationStatus.unauthenticated);
-        return data['msg'];
+        // _controller.add(AuthenticationReport(
+        //   status: AuthenticationStatus.unauthenticated,
+        //   msg: data['msg'],
+        // ));
+
+        return [
+          false,
+          data['msg'],
+        ];
       }
     } catch (e) {
       // if ip does not exist
@@ -139,7 +228,15 @@ class AuthenticationRepository {
             print(e.response!.requestOptions);
           }
 
-          throw Exception('Server No Response');
+          // _controller.add(const AuthenticationReport(
+          //   status: AuthenticationStatus.unauthenticated,
+          //   msg: 'Server no response',
+          // ));
+
+          return [
+            false,
+            'Server no response',
+          ];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
           if (kDebugMode) {
@@ -147,17 +244,28 @@ class AuthenticationRepository {
             print(e.message);
           }
 
-          throw Exception(e.message);
+          // _controller.add(AuthenticationReport(
+          //   status: AuthenticationStatus.unauthenticated,
+          //   msg: e.message,
+          // ));
+
+          return [
+            false,
+            e.message,
+          ];
         }
       } else {
-        throw Exception(e.toString());
+        // _controller.add(AuthenticationReport(
+        //   status: AuthenticationStatus.unauthenticated,
+        //   msg: e.toString(),
+        // ));
+
+        return [
+          false,
+          e.toString(),
+        ];
       }
     }
-
-    // await Future.delayed(
-    //   const Duration(milliseconds: 300),
-    //   () => _controller.add(AuthenticationStatus.authenticated),
-    // );
   }
 
   Future<void> logOut({
@@ -165,7 +273,9 @@ class AuthenticationRepository {
   }) async {
     // need to call api ?
     bool _ = await userApi.deActivateUser(userId);
-    _controller.add(AuthenticationStatus.unauthenticated);
+    _controller.add(const AuthenticationReport(
+      status: AuthenticationStatus.unauthenticated,
+    ));
   }
 
   Future<String> changePassword({
@@ -231,6 +341,73 @@ class AuthenticationRepository {
     } else {
       //print('User dose not exist when logout');
       return 'User dose not exist when logout';
+    }
+  }
+
+  Future<List<dynamic>> setUserInfo({
+    required String ip,
+    required String userId,
+    required String password,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    if (userId == '0') {
+      // system admin
+      await userApi.addUserByKey(
+        userId: userId,
+        ip: ip,
+        name: 'support@admin',
+        password: password,
+        permission: '2',
+        email: '',
+        mobile: '',
+        tel: '',
+        ext: '',
+      );
+      return [true];
+    } else {
+      String accountInformationPath =
+          'http://' + ip + '/aci/api/accounts/' + userId;
+      try {
+        Response response = await dio.get(
+          accountInformationPath,
+        );
+
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] == '200') {
+          Response infoResponse = await dio.get(accountInformationPath);
+          var infoData = jsonDecode(infoResponse.data.toString());
+
+          await userApi.addUserByKey(
+            userId: userId,
+            ip: ip,
+            name: infoData['data'][0]['name'].toString(),
+            password: password,
+            permission: infoData['data'][0]['permission'].toString(),
+            email: infoData['data'][0]['email'].toString(),
+            mobile: infoData['data'][0]['mobile'].toString(),
+            tel: infoData['data'][0]['tel'].toString(),
+            ext: infoData['data'][0]['ext'].toString(),
+          );
+          return [true];
+        } else {
+          return [false, data['msg']];
+        }
+      } catch (e) {
+        // if ip does not exist
+
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e is DioError) {
+          return [false, e.message];
+        } else {
+          return [false, e.toString()];
+        }
+      }
     }
   }
 

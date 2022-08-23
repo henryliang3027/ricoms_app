@@ -22,14 +22,22 @@ class LoginPage extends StatelessWidget {
     //set System UI to white (top status bar clock, notitificationicon, battery icon, wifi icon etc.)
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-    Future<void> _showConnectionLostDialog(
-        BuildContext context, String errmsg) async {
+    Future<void> _showAutoLoginFailedDialog(
+      BuildContext context,
+      String errTitle,
+      String errmsg,
+    ) async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Lost connection to server'),
+            title: Text(
+              errTitle,
+              style: const TextStyle(
+                color: Colors.red,
+              ),
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -50,15 +58,17 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    final String errmsg = context.select(
-      (AuthenticationBloc bloc) => bloc.state.errmsg,
-    );
+    final String errTitle = context.read<AuthenticationBloc>().state.msgTitle;
+    final String errmsg = context.read<AuthenticationBloc>().state.msg;
 
     if (errmsg != '') {
       Future.delayed(
           Duration.zero,
-          () => _showConnectionLostDialog(context,
-              errmsg)); //dialog should be call after finish building layout
+          () => _showAutoLoginFailedDialog(
+                context,
+                errTitle,
+                errmsg,
+              )); //dialog should be call after finish building layout
     }
 
     //final mq = MediaQueryData.fromWindow(window);

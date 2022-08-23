@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -14,11 +13,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
     required User user,
     required RootRepository rootRepository,
-    required DeviceRepository deviceRepository,
     required List initialPath,
   })  : _user = user,
         _rootRepository = rootRepository,
-        _deviceRepository = deviceRepository,
         _initialPath = initialPath,
         super(const RootState()) {
     on<ChildDataRequested>(_onChildDataRequested);
@@ -38,7 +35,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   }
 
   final User _user;
-  final DeviceRepository _deviceRepository;
   final RootRepository _rootRepository;
   final List? _initialPath;
 
@@ -115,7 +111,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             nodesExportStatus: FormStatus.none,
             isAddedToBookmarks: isAddedToBookmarks,
             directory: directory,
-            isDeviceSettingPage: false,
           ));
         } else {
           // node
@@ -126,7 +121,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             isAddedToBookmarks: false,
             directory: directory,
             data: result[1],
-            isDeviceSettingPage: false,
           ));
         }
       } else {
@@ -173,7 +167,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         nodesExportStatus: FormStatus.none,
         data: resultOfChilds,
         directory: state.directory,
-        isDeviceSettingPage: false,
       ));
     } else {
       emit(state.copyWith(
@@ -181,7 +174,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
         errmsg: resultOfChilds,
-        isDeviceSettingPage: false,
       ));
     }
   }
@@ -317,7 +309,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           // submissionStatus: SubmissionStatus.none,
           // nodesExportStatus: FormStatus.none,
           directory: directory,
-          isDeviceSettingPage: true,
         ));
       }
     } else {}
@@ -409,12 +400,22 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     });
 
     if (result[0]) {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        isAddedToBookmarks: isAddedToBookmarks,
-        directory: directory,
-        isDeviceSettingPage: true,
-      ));
+      if (result[1] is List) {
+        // node
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          isAddedToBookmarks: isAddedToBookmarks,
+          directory: directory,
+          data: result[1],
+        ));
+      } else {
+        // device setting page
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          isAddedToBookmarks: isAddedToBookmarks,
+          directory: directory,
+        ));
+      }
     } else {
       // already handle in realtimealarm bloc
     }
@@ -433,16 +434,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     required List<Node> directory,
     required List path,
   }) async {
-    dynamic data;
+    dynamic childs;
 
     for (int i = path.length - 1; i >= 0; i--) {
-      data = await _rootRepository.getChilds(
+      childs = await _rootRepository.getChilds(
         user: _user,
         parentId: directory.last.id,
       );
-      if (data is List) {
-        for (int j = 0; j < data.length; j++) {
-          Node node = data[j];
+      if (childs is List) {
+        for (int j = 0; j < childs.length; j++) {
+          Node node = childs[j];
 
           if (node.id == path[i]) {
             directory.add(node);
@@ -460,11 +461,11 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         return [true, '']; // device setting page
       } else {
         //get child of current node
-        data = await _rootRepository.getChilds(
+        childs = await _rootRepository.getChilds(
           user: _user,
           parentId: directory.last.id,
         );
-        return [true, data]; //
+        return [true, childs]; //
       }
     } else {
       return [false, 'No node'];
