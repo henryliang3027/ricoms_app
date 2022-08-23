@@ -10,6 +10,7 @@ import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class AccountForm extends StatelessWidget {
@@ -94,36 +95,42 @@ class AccountForm extends StatelessWidget {
           _showFailureDialog(state.deleteMsg);
         }
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: const Text('Account'),
-        ),
-        bottomNavigationBar: HomeBottomNavigationBar(
-          pageController: pageController,
-          selectedIndex: 5, // No need to show button, set an useless index
-        ),
-        drawer: HomeDrawer(
-          user: context.read<AuthenticationBloc>().state.user,
-          pageController: pageController,
-          currentPageIndex: 5,
-        ),
-        body: Container(
-          color: Colors.white,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: _KeywordInput(),
-              ),
-              Expanded(
-                child: _AccountSliverList(),
-              ),
-            ],
+      child: WillPopScope(
+        onWillPop: () async {
+          bool? isExit = await CommonWidget.showExitAppDialog(context: context);
+          return isExit ?? false;
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            title: const Text('Account'),
           ),
+          bottomNavigationBar: HomeBottomNavigationBar(
+            pageController: pageController,
+            selectedIndex: 5, // No need to show button, set an useless index
+          ),
+          drawer: HomeDrawer(
+            user: context.read<AuthenticationBloc>().state.user,
+            pageController: pageController,
+            currentPageIndex: 5,
+          ),
+          body: Container(
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: _KeywordInput(),
+                ),
+                Expanded(
+                  child: _AccountSliverList(),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: const _AccountFloatingActionButton(),
         ),
-        floatingActionButton: const _AccountFloatingActionButton(),
       ),
     );
   }
