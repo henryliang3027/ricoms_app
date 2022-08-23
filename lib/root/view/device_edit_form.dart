@@ -4,6 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:ricoms_app/root/bloc/edit_device/edit_device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class DeviceEditForm extends StatelessWidget {
   const DeviceEditForm({Key? key}) : super(key: key);
@@ -79,8 +80,10 @@ class DeviceEditForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error',
-                style: TextStyle(color: CustomStyle.severityColor[3])),
+            title: Text(
+              CustomErrTitle.commonErrTitle,
+              style: TextStyle(color: CustomStyle.severityColor[3]),
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[

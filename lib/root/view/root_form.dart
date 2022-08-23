@@ -17,6 +17,7 @@ import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 
 class RootForm extends StatelessWidget {
@@ -81,7 +82,7 @@ class RootForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Error',
+              CustomErrTitle.commonErrTitle,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),

@@ -10,6 +10,7 @@ import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class AccountForm extends StatelessWidget {
   const AccountForm({
@@ -60,7 +61,7 @@ class AccountForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Error',
+              CustomErrTitle.commonErrTitle,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),

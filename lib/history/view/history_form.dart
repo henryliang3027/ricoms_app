@@ -13,6 +13,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:open_file/open_file.dart';
 
@@ -35,7 +36,7 @@ class HistoryForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Error',
+              CustomErrTitle.commonErrTitle,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),
