@@ -7,6 +7,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm({
@@ -37,7 +38,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return const AlertDialog(
-          title: Text('Setting up...'),
+          title: Text('Setting up'),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             CircularProgressIndicator(),
@@ -47,13 +48,50 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
     );
   }
 
-  Future<void> _showCompleteDialog(String msg) async {
+  Future<void> _showSuccessDialog(String msg) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(msg),
+          title: Text(
+            msg,
+            style: TextStyle(
+              color: CustomStyle.severityColor[1],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // pop dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showFailureDialog(String msg) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            CustomErrTitle.commonErrTitle,
+            style: TextStyle(
+              color: CustomStyle.severityColor[3],
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('OK'),
@@ -76,10 +114,13 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
           await _showInProgressDialog();
-        } else if (state.submissionStatus.isSubmissionFailure ||
-            state.submissionStatus.isSubmissionSuccess) {
+        } else if (state.submissionStatus.isSubmissionSuccess) {
           Navigator.of(context).pop();
-          _showCompleteDialog(state.saveResultMsg);
+          _showSuccessDialog(state.saveResultMsg);
+          context.read<DeviceBloc>().add(const DeviceDataRequested());
+        } else if (state.submissionStatus.isSubmissionFailure) {
+          Navigator.of(context).pop();
+          _showFailureDialog(state.saveResultMsg);
           context.read<DeviceBloc>().add(const DeviceDataRequested());
         }
       },

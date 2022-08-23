@@ -181,8 +181,8 @@ class DeviceRepository {
   }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
+    dio.options.connectTimeout = 120000; //120s
+    dio.options.receiveTimeout = 120000;
     String deviceWritingPath = '/device/' + nodeId.toString() + '/write';
 
     try {
@@ -201,7 +201,7 @@ class DeviceRepository {
       if (data['code'] == '200') {
         return [true, 'Setup completed!'];
       } else {
-        return [false, 'Setup Failed! errno: ${data['code']}'];
+        return [false, 'Setting failed.'];
       }
     } catch (e) {
       // The request was made and the server responded with a status code
