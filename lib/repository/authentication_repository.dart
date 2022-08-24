@@ -58,7 +58,7 @@ class AuthenticationRepository {
       //404
       Response response = await dio.post(
         loginPath,
-        data: {'account': user.name, 'pwd': user.password},
+        data: {'account': user.account, 'pwd': user.password},
       );
 
       //print(response.data.toString());
@@ -70,6 +70,7 @@ class AuthenticationRepository {
         List resultOfUserInfo = await setUserInfo(
           ip: user.ip,
           userId: userId,
+          account: user.account,
           password: user.password,
         );
 
@@ -124,7 +125,7 @@ class AuthenticationRepository {
 
   Future<List<dynamic>> logIn({
     required String ip,
-    required String username,
+    required String account,
     required String password,
   }) async {
     Dio dio = Dio();
@@ -137,7 +138,7 @@ class AuthenticationRepository {
       //404
       Response response = await dio.post(
         loginPath,
-        data: {'account': username, 'pwd': password},
+        data: {'account': account, 'pwd': password},
       );
 
       //print(response.data.toString());
@@ -151,6 +152,7 @@ class AuthenticationRepository {
         List resultOfUserInfo = await setUserInfo(
           ip: ip,
           userId: userId,
+          account: account,
           password: password,
         );
 
@@ -347,6 +349,7 @@ class AuthenticationRepository {
   Future<List<dynamic>> setUserInfo({
     required String ip,
     required String userId,
+    required String account,
     required String password,
   }) async {
     Dio dio = Dio();
@@ -359,7 +362,8 @@ class AuthenticationRepository {
       await userApi.addUserByKey(
         userId: userId,
         ip: ip,
-        name: 'support@admin',
+        name: '',
+        account: account,
         password: password,
         permission: '2',
         email: '',
@@ -386,6 +390,7 @@ class AuthenticationRepository {
             userId: userId,
             ip: ip,
             name: infoData['data'][0]['name'].toString(),
+            account: account,
             password: password,
             permission: infoData['data'][0]['permission'].toString(),
             email: infoData['data'][0]['email'].toString(),

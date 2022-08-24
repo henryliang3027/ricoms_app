@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 part 'authentication_event.dart';
@@ -24,7 +25,9 @@ class AuthenticationBloc
     _permissionStatusSubscription = dataStream.listen((event) async {
       var result = await _authenticationRepository.checkUserPermission();
 
-      print('permission change: ${result[1]}');
+      if (kDebugMode) {
+        print('permission change: ${result[1]}');
+      }
 
       if (result[0]) {
         if (result[1]) {

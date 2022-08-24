@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
-import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_history_detail_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';

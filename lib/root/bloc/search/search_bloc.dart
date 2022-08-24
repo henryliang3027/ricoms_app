@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -12,10 +11,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required User user,
     required RootRepository rootRepository,
-    required DeviceRepository deviceRepository,
   })  : _user = user,
         _rootRepository = rootRepository,
-        _deviceRepository = deviceRepository,
         super(const SearchState()) {
     on<SearchTypeChanged>(_onSearchTypeChanged);
     on<KeywordChanged>(_onKeywordChanged);
@@ -24,7 +21,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   final User _user;
   final RootRepository _rootRepository;
-  final DeviceRepository _deviceRepository;
 
   void _onSearchTypeChanged(
     SearchTypeChanged event,

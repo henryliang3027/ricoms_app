@@ -77,7 +77,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
       List<dynamic> resultOfLogIn = await _authenticationRepository.logIn(
         ip: state.ip.value,
-        username: state.username.value,
+        account: state.username.value,
         password: state.password.value,
       );
 

@@ -6,7 +6,6 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
@@ -228,9 +227,6 @@ class _PopupMenu extends StatelessWidget {
                     SearchPage.route(
                       context.read<AuthenticationBloc>().state.user,
                       RepositoryProvider.of<RootRepository>(
-                        context,
-                      ),
-                      RepositoryProvider.of<DeviceRepository>(
                         context,
                       ),
                     ));

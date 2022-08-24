@@ -103,24 +103,28 @@ class HistoryRepository {
       // that falls out of the range of 2xx and is also not 304.
       if (e is DioError) {
         if (e.response != null) {
-          print('-------------------');
-          print(e.response!.data);
-          print('-------------------');
-          print(e.response!.headers);
-          print('-------------------');
-          print(e.response!.requestOptions);
-          print('-------------------');
+          if (kDebugMode) {
+            print('-------------------');
+            print(e.response!.data);
+            print('-------------------');
+            print(e.response!.headers);
+            print('-------------------');
+            print(e.response!.requestOptions);
+            print('-------------------');
+          }
 
           //throw Exception('Server No Response');
           return [false, 'Server No Response'];
         } else {
           // Something happened in setting up or sending the request that triggered an Error
 
-          print('-------------------');
-          print(e.requestOptions);
-          print('-------------------');
-          print(e.message);
-          print('-------------------');
+          if (kDebugMode) {
+            print('-------------------');
+            print(e.requestOptions);
+            print('-------------------');
+            print(e.message);
+            print('-------------------');
+          }
 
           //throw Exception(e.message);
           return [false, e.message];
