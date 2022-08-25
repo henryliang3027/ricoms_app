@@ -16,6 +16,7 @@ import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:open_file/open_file.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HistoryForm extends StatelessWidget {
   const HistoryForm({
@@ -128,7 +129,7 @@ class HistoryForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('History'),
+            title: Text(AppLocalizations.of(context)!.history),
             actions: const [
               _PopupMenu(),
             ],

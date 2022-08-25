@@ -12,6 +12,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountForm extends StatelessWidget {
   const AccountForm({
@@ -103,7 +104,7 @@ class AccountForm extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: const Text('Account'),
+            title: Text(AppLocalizations.of(context)!.account),
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,

@@ -4,6 +4,7 @@ import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
 import 'package:ricoms_app/change_password/view/change_password_form.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordPage extends StatelessWidget {
   const ChangePasswordPage({
@@ -13,8 +14,6 @@ class ChangePasswordPage extends StatelessWidget {
   static Route route() {
     return MaterialPageRoute(builder: (_) => const ChangePasswordPage());
   }
-
-  final String _title = 'Change Password';
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class ChangePasswordPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
-            _title,
+            AppLocalizations.of(context)!.changePassword,
             style: const TextStyle(fontSize: CommonStyle.sizeXXL),
           ),
         ),

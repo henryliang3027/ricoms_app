@@ -5,6 +5,7 @@ import 'package:ricoms_app/change_password/view/change_password_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({
@@ -24,11 +25,11 @@ class HomeDrawer extends StatelessWidget {
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
     List<String> _listTileTitles = [
-      'Real-Time Alarm',
-      'Network',
-      'Dashboard',
-      'History',
-      'Bookmarks',
+      AppLocalizations.of(context)!.realTimeAlarm,
+      AppLocalizations.of(context)!.network,
+      AppLocalizations.of(context)!.dashboard,
+      AppLocalizations.of(context)!.history,
+      AppLocalizations.of(context)!.bookmarks,
     ];
 
     List<IconData> _listTileIcons = [
@@ -40,7 +41,7 @@ class HomeDrawer extends StatelessWidget {
     ];
 
     List<String> _extraListTileTitles = [
-      'Account',
+      AppLocalizations.of(context)!.account,
     ];
 
     List<IconData> _extraListTileIcons = [
@@ -157,11 +158,11 @@ class HomeDrawer extends StatelessWidget {
             const Divider(
               height: 0.0,
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 2.0, 2.0, 0.0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 2.0, 2.0, 0.0),
               child: Text(
-                'Setting',
-                style: TextStyle(
+                AppLocalizations.of(context)!.setting,
+                style: const TextStyle(
                   color: Colors.blue,
                   fontSize: CommonStyle.sizeS,
                 ),
@@ -173,9 +174,9 @@ class HomeDrawer extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 child: Icon(CustomIcons.changePassword),
               ),
-              title: const Text(
-                'Change Password',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
+              title: Text(
+                AppLocalizations.of(context)!.changePassword,
+                style: const TextStyle(fontSize: CommonStyle.sizeL),
               ),
               onTap: () async {
                 bool actionResult =
@@ -196,9 +197,9 @@ class HomeDrawer extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 child: Icon(CustomIcons.logout),
               ),
-              title: const Text(
-                'Logout',
-                style: TextStyle(fontSize: CommonStyle.sizeL),
+              title: Text(
+                AppLocalizations.of(context)!.logout,
+                style: const TextStyle(fontSize: CommonStyle.sizeL),
               ),
               onTap: () {
                 context

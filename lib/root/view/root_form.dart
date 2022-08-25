@@ -18,6 +18,7 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RootForm extends StatelessWidget {
   const RootForm({Key? key, required this.pageController}) : super(key: key);
@@ -189,17 +190,17 @@ class _DynamicTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      const String defaultTitle = 'Network';
+      String defaultTitle = AppLocalizations.of(context)!.network;
 
       if (state.formStatus.isRequestSuccess) {
         Node node = state.directory.last;
         if (node.type == 5 || node.type == 2) {
           return Text(node.name);
         } else {
-          return const Text(defaultTitle);
+          return Text(defaultTitle);
         }
       } else {
-        return const Text(defaultTitle);
+        return Text(defaultTitle);
       }
     });
   }

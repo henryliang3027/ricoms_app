@@ -12,6 +12,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookmarksForm extends StatelessWidget {
   const BookmarksForm({
@@ -72,7 +73,7 @@ class BookmarksForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Bookmarks'),
+            title: Text(AppLocalizations.of(context)!.bookmarks),
             actions: const [
               _PopupMenu(),
             ],

@@ -9,6 +9,7 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashboardForm extends StatelessWidget {
   const DashboardForm({Key? key, required this.pageController})
@@ -24,7 +25,9 @@ class DashboardForm extends StatelessWidget {
         return isExit ?? false;
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Dashboard')),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.dashboard),
+        ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,
           selectedIndex: 2,

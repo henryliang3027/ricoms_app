@@ -1,6 +1,46 @@
 {
     "realTimeAlarm": "Real-Time Alarm",
     "@realTimeAlarm": {
-      "description": "Real-Time Alarm app bar title"
+      "description": "App bar title and drawer item text"
+    },
+
+    "network": "Network",
+    "@network": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "dashboard": "Dashboard",
+    "@dashboard": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "history": "History",
+    "@history": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "bookmarks": "Bookmarks",
+    "@bookmarks": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "account": "Account",
+    "@account": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "changePassword": "Change Password",
+    "@changePassword": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "logout": "Logout",
+    "@logout": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "setting": "Setting",
+    "@setting": {
+      "description": "Drawer divider title"
     }
 }
