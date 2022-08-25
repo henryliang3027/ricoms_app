@@ -1,0 +1,6 @@
+{
+    "realTimeAlarm": "Real-Time Alarm",
+    "@realTimeAlarm": {
+      "description": "Real-Time Alarm app bar title"
+    }
+}

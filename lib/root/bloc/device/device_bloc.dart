@@ -89,9 +89,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     DeviceDataUpdateRequested event,
     Emitter<DeviceState> emit,
   ) async {
-    emit(state.copyWith(
-      formStatus: FormStatus.updating,
-    ));
+    // emit(state.copyWith(
+    //   formStatus: FormStatus.updating,
+    // ));
 
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
@@ -102,7 +102,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     if (data is List) {
       emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
+        formStatus: FormStatus.updating,
         submissionStatus: SubmissionStatus.none,
         data: data,
         editable: _deviceBlock.editable,

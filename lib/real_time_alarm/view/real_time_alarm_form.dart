@@ -12,6 +12,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RealTimeAlarmForm extends StatelessWidget {
   const RealTimeAlarmForm({
@@ -69,7 +70,10 @@ class RealTimeAlarmForm extends StatelessWidget {
           return isExit ?? false;
         },
         child: Scaffold(
-          appBar: AppBar(title: const Text('Real-Time Alarm')),
+          appBar: AppBar(
+              title: Text(
+            AppLocalizations.of(context)!.realTimeAlarm,
+          )),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,
             selectedIndex: 0,

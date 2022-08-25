@@ -11,6 +11,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -88,6 +89,8 @@ class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: _navigatorKey,
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

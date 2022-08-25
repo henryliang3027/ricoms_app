@@ -110,6 +110,78 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
+    Widget _buildBody({
+      required List<dynamic> data,
+      required bool isEditing,
+    }) {
+      return Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      for (var item in data) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (var e in item) ...[
+                              CustomStyle.getBox(
+                                e,
+                                isEditing: isEditing,
+                                checkBoxValues: widget.checkBoxValues,
+                                textFieldControllers:
+                                    widget.textFieldControllers,
+                                radioButtonValues: widget.radioButtonValues,
+                                sliderValues: widget.sliderValues,
+                                dropDownMenuValues: widget.dropDownMenuValues,
+                                controllerInitValues:
+                                    widget.controllerInitValues,
+                              ),
+                            ]
+                          ],
+                        )
+                      ],
+                      const SizedBox(
+                        height: 120,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget? _buildFloatingActionButton({
+      required bool editable,
+      required bool isEditing,
+    }) {
+      return _userFunctionMap[13]
+          ? editable
+              ? CreateEditingTool(
+                  isEditing: isEditing,
+                  pageName: widget.deviceBlock.name,
+                  checkBoxValues: widget.checkBoxValues,
+                  textFieldControllers: widget.textFieldControllers,
+                  radioButtonValues: widget.radioButtonValues,
+                  sliderValues: widget.sliderValues,
+                  dropDownMenuValues: widget.dropDownMenuValues,
+                  controllerInitValues: widget.controllerInitValues,
+                )
+              : null
+          : null;
+    }
+
     return BlocListener<DeviceBloc, DeviceState>(
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
@@ -130,84 +202,37 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state.formStatus.isRequestSuccess ||
-              state.formStatus.isUpdating) {
+          } else if (state.formStatus.isUpdating) {
             // fetch new values and reset the values in all controllers and init value map
             // ex: set the value from 1 to 2
             // if you don't update init value map, the value is still 1
             // when you set to 1 again, the value will be consider as not change and will not be write to the device
-            if (state.formStatus.isUpdating) {
-              widget.controllerInitValues.clear();
-              widget.sliderValues.clear();
-              widget.textFieldControllers.clear();
-              widget.radioButtonValues.clear();
-              widget.checkBoxValues.clear();
-              widget.dropDownMenuValues.clear();
-            }
+            widget.controllerInitValues.clear();
+            widget.sliderValues.clear();
+            widget.textFieldControllers.clear();
+            widget.radioButtonValues.clear();
+            widget.checkBoxValues.clear();
+            widget.dropDownMenuValues.clear();
+
             return Scaffold(
-              body: Container(
-                width: double.maxFinite,
-                height: double.maxFinite,
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for (var item in state.data) ...[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (var e in item) ...[
-                                      CustomStyle.getBox(
-                                        e,
-                                        isEditing: state.isEditing,
-                                        checkBoxValues: widget.checkBoxValues,
-                                        textFieldControllers:
-                                            widget.textFieldControllers,
-                                        radioButtonValues:
-                                            widget.radioButtonValues,
-                                        sliderValues: widget.sliderValues,
-                                        dropDownMenuValues:
-                                            widget.dropDownMenuValues,
-                                        controllerInitValues:
-                                            widget.controllerInitValues,
-                                      ),
-                                    ]
-                                  ],
-                                )
-                              ],
-                              const SizedBox(
-                                height: 120,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                body: _buildBody(
+                  data: state.data,
+                  isEditing: state.isEditing,
                 ),
-              ),
-              floatingActionButton: _userFunctionMap[13]
-                  ? state.editable
-                      ? CreateEditingTool(
-                          isEditing: state.isEditing,
-                          pageName: widget.deviceBlock.name,
-                          checkBoxValues: widget.checkBoxValues,
-                          textFieldControllers: widget.textFieldControllers,
-                          radioButtonValues: widget.radioButtonValues,
-                          sliderValues: widget.sliderValues,
-                          dropDownMenuValues: widget.dropDownMenuValues,
-                          controllerInitValues: widget.controllerInitValues,
-                        )
-                      : null
-                  : null,
-            );
+                floatingActionButton: _buildFloatingActionButton(
+                  editable: state.editable,
+                  isEditing: state.isEditing,
+                ));
+          } else if (state.formStatus.isRequestSuccess) {
+            return Scaffold(
+                body: _buildBody(
+                  data: state.data,
+                  isEditing: state.isEditing,
+                ),
+                floatingActionButton: _buildFloatingActionButton(
+                  editable: state.editable,
+                  isEditing: state.isEditing,
+                ));
           } else {
             //FormStatus.requestFailure
             String errnsg = state.data[0];
