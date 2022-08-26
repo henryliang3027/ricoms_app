@@ -80,6 +80,64 @@ class RootRepository {
     }
   }
 
+  // check  device online or offline
+  Future<List<dynamic>> checkDeviceConnectionStatus({
+    required User user,
+    required int deviceId,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    // if (_pageId[pageName] == null) {
+    //   return 'Page id does not exist! please look up block and give a page id';
+    // }
+
+    String deviceBlockPath = '/device/' + deviceId.toString() + '/block';
+
+    try {
+      //404
+      Response response = await dio.get(deviceBlockPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, 'online'];
+      } else {
+        return [false, 'offline'];
+      }
+    } catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e is DioError) {
+        if (e.response != null) {
+          if (kDebugMode) {
+            print(e.response!.data);
+            print(e.response!.headers);
+            print(e.response!.requestOptions);
+          }
+
+          //throw Exception('Server No Response');
+          return [false, 'offline'];
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          if (kDebugMode) {
+            print(e.requestOptions);
+            print(e.message);
+          }
+
+          //throw Exception(e.message);
+          return [false, 'offline'];
+        }
+      } else {
+        //throw Exception(e.toString());
+        return [false, 'offline'];
+      }
+    }
+  }
+
   Future<dynamic> getNodeInfo({required User user, required int nodeId}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';

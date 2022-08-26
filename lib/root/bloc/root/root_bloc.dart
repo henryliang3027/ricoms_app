@@ -275,43 +275,62 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ));
   }
 
+  // When current form has device setting page
   Future<void> _onNodeDirectoryUpdated(
     NodeDirectoryUpdated event,
     Emitter<RootState> emit,
   ) async {
-    var resultOfDeviceName = await _rootRepository.getDeviceName(
-        user: _user, deviceId: state.directory.last.id);
+    var resultOfDeviceConnectionStatus =
+        await _rootRepository.checkDeviceConnectionStatus(
+            user: _user, deviceId: state.directory.last.id);
 
-    if (resultOfDeviceName[0]) {
-      if (resultOfDeviceName[1] != state.directory.last.name) {
-        List<Node> directory = [];
-
-        Node lastNode = Node(
-          id: state.directory.last.id,
-          name: resultOfDeviceName[1],
-          type: state.directory.last.type,
-          teg: state.directory.last.teg,
-          path: state.directory.last.path,
-          shelf: state.directory.last.shelf,
-          slot: state.directory.last.slot,
-          status: state.directory.last.status,
-          sort: state.directory.last.sort,
-          info: state.directory.last.info,
-        );
-
-        for (int i = 0; i < state.directory.length - 1; i++) {
-          directory.add(state.directory[i]);
-        }
-        directory.add(lastNode);
-
+    if (resultOfDeviceConnectionStatus[0]) {
+      if (state.formStatus.isRequestFailure) {
+        //if current formStatus isRequestFailure, refresh device page content
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
-          // submissionStatus: SubmissionStatus.none,
-          // nodesExportStatus: FormStatus.none,
-          directory: directory,
+          directory: state.directory,
         ));
+      } else {
+        // if device is still online, check if device name has been changed
+        var resultOfDeviceName = await _rootRepository.getDeviceName(
+            user: _user, deviceId: state.directory.last.id);
+
+        if (resultOfDeviceName[0]) {
+          if (resultOfDeviceName[1] != state.directory.last.name) {
+            List<Node> directory = [];
+
+            Node lastNode = Node(
+              id: state.directory.last.id,
+              name: resultOfDeviceName[1],
+              type: state.directory.last.type,
+              teg: state.directory.last.teg,
+              path: state.directory.last.path,
+              shelf: state.directory.last.shelf,
+              slot: state.directory.last.slot,
+              status: state.directory.last.status,
+              sort: state.directory.last.sort,
+              info: state.directory.last.info,
+            );
+
+            for (int i = 0; i < state.directory.length - 1; i++) {
+              directory.add(state.directory[i]);
+            }
+            directory.add(lastNode);
+
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              directory: directory,
+            ));
+          }
+        } else {}
       }
-    } else {}
+    } else {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestFailure,
+        directory: state.directory,
+      ));
+    }
   }
 
   Future<void> _onBookmarksChanged(

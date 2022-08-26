@@ -236,8 +236,24 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
           } else {
             //FormStatus.requestFailure
             String errnsg = state.data[0];
-            return Center(
-              child: Text(errnsg),
+            return Expanded(
+              child: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.warning_rounded,
+                      size: 200,
+                      color: Color(0xffffc107),
+                    ),
+                    Text('The device does not respond.'),
+                    SizedBox(height: 40.0),
+                  ],
+                ),
+              ),
             );
           }
         },
