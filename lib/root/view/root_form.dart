@@ -363,70 +363,43 @@ class _NodeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      if (state.directory.isNotEmpty) {
+      if (state.formStatus.isRequestSuccess) {
         if (state.directory.last.type == 2 || state.directory.last.type == 5) {
-          if (state.formStatus.isRequestSuccess) {
-            return Expanded(
-              child: DeviceSettingTabBar(
-                node: state.directory.last,
-              ),
-            );
-          } else if (state.formStatus.isRequestFailure) {
-            if (state.directory.last.type == 5) {
-              return Expanded(
-                child: Container(
-                  width: double.maxFinite,
-                  height: double.maxFinite,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.warning_rounded,
-                        size: 200,
-                        color: Color(0xffffc107),
-                      ),
-                      Text(
-                          'No module in the slot ${state.directory.last.slot.toString()}, please try another.'),
-                      const SizedBox(height: 40.0),
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return Expanded(
-                child: Container(
-                  width: double.maxFinite,
-                  height: double.maxFinite,
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.warning_rounded,
-                        size: 200,
-                        color: Color(0xffffc107),
-                      ),
-                      Text('The device does not respond.'),
-                      SizedBox(height: 40.0),
-                    ],
-                  ),
-                ),
-              );
-            }
-          } else {
-            return const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+          return Expanded(
+            child: DeviceSettingTabBar(
+              node: state.directory.last,
+            ),
+          );
         } else {
           return const _NodeSliverList();
         }
+      } else if (state.formStatus.isRequestFailure) {
+        return Expanded(
+          child: Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  state.errmsg,
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
+          ),
+        );
       } else {
         return const Expanded(
-          child: Center(),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       }
     });

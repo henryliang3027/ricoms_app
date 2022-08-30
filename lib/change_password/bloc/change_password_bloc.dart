@@ -42,7 +42,10 @@ class ChangePasswordBloc
     Emitter<ChangePasswordState> emit,
   ) {
     emit(state.copyWith(
-        currentPasswordVisibility: !state.currentPasswordVisibility));
+      status: Formz.validate(
+          [state.currentPassword, state.newPassword, state.confirmPassword]),
+      currentPasswordVisibility: !state.currentPasswordVisibility,
+    ));
   }
 
   void _onNewPasswordChanged(
@@ -63,7 +66,11 @@ class ChangePasswordBloc
     NewPasswordVisibilityChanged event,
     Emitter<ChangePasswordState> emit,
   ) {
-    emit(state.copyWith(newPasswordVisibility: !state.newPasswordVisibility));
+    emit(state.copyWith(
+      status: Formz.validate(
+          [state.currentPassword, state.newPassword, state.confirmPassword]),
+      newPasswordVisibility: !state.newPasswordVisibility,
+    ));
   }
 
   void _onConfirmPasswordChanged(
@@ -85,7 +92,10 @@ class ChangePasswordBloc
     Emitter<ChangePasswordState> emit,
   ) {
     emit(state.copyWith(
-        confirmPasswordVisibility: !state.confirmPasswordVisibility));
+      status: Formz.validate(
+          [state.currentPassword, state.newPassword, state.confirmPassword]),
+      confirmPasswordVisibility: !state.confirmPasswordVisibility,
+    ));
   }
 
   Future<void> _onPasswordSubmmited(
@@ -103,20 +113,16 @@ class ChangePasswordBloc
             errmsg: errmsg, status: FormzStatus.submissionFailure));
       } else {
         // new password is the same as confirm password
-        try {
-          String errmsg = await _authenticationRepository.changePassword(
-              currentPassword: state.currentPassword.value,
-              newPassword: state.newPassword.value);
 
-          if (errmsg == '') {
-            emit(state.copyWith(status: FormzStatus.submissionSuccess));
-          } else {
-            emit(state.copyWith(
-                errmsg: errmsg, status: FormzStatus.submissionFailure));
-          }
-        } catch (e) {
+        String errmsg = await _authenticationRepository.changePassword(
+            currentPassword: state.currentPassword.value,
+            newPassword: state.newPassword.value);
+
+        if (errmsg == '') {
+          emit(state.copyWith(status: FormzStatus.submissionSuccess));
+        } else {
           emit(state.copyWith(
-              errmsg: e.toString(), status: FormzStatus.submissionFailure));
+              errmsg: errmsg, status: FormzStatus.submissionFailure));
         }
       }
     }

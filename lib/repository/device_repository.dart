@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class DeviceRepository {
   DeviceRepository();
@@ -45,33 +46,8 @@ class DeviceRepository {
       } else {
         return 'The device does not respond.';
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
+    } on DioError catch (e) {
+      return CustomErrMsg.connectionFailed;
     }
   }
 
@@ -144,33 +120,8 @@ class DeviceRepository {
       } else {
         return 'Error errno: ${data['code']}';
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
+    } on DioError catch (e) {
+      return CustomErrMsg.connectionFailed;
     }
   }
 
@@ -203,33 +154,8 @@ class DeviceRepository {
       } else {
         return [false, 'Setting failed.'];
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-
-          //throw Exception('Server No Response');
-          return [false, 'Server No Response'];
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-
-          //throw Exception(e.message);
-          return [false, e.message];
-        }
-      } else {
-        //throw Exception(e.toString());
-        return [false, e.toString()];
-      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
     }
   }
 
@@ -263,33 +189,8 @@ class DeviceRepository {
       } else {
         return 'Error errno: ${data['code']}';
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
+    } on DioError catch (e) {
+      return CustomErrMsg.connectionFailed;
     }
   }
 
@@ -323,31 +224,8 @@ class DeviceRepository {
       } else {
         return [false, 'Setup Failed! errno: ${data['code']}'];
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-          //throw Exception('Server No Response');
-          return [false, 'Server No Response'];
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-          //throw Exception(e.message);
-          return [false, e.message];
-        }
-      } else {
-        //throw Exception(e.toString());
-        return [false, e.toString()];
-      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
     }
   }
 
@@ -407,31 +285,8 @@ class DeviceRepository {
       } else {
         return 'There are no records to show';
       }
-    } catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-          //throw Exception('Server No Response');
-          return 'Server No Response';
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-          //throw Exception(e.message);
-          return e.message;
-        }
-      } else {
-        //throw Exception(e.toString());
-        return e.toString();
-      }
+    } on DioError catch (e) {
+      return CustomErrMsg.connectionFailed;
     }
   }
 }

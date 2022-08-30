@@ -22,7 +22,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<ChildDataUpdated>(_onChildDataUpdated);
-    on<NodeDirectoryUpdated>(_onNodeDirectoryUpdated);
+    on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
@@ -99,7 +99,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         if (kDebugMode) {
           print('Root update trigger times: $count');
         }
-        add(const NodeDirectoryUpdated());
+        add(const DeviceTypeNodeUpdated());
       });
 
       if (result[0]) {
@@ -154,11 +154,23 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     // Ｔhe directory is empty because of no internet and user reload the page (switch back from another page)
+
+    List<Node> directory = [];
+
+    if (state.directory.isNotEmpty) {
+      directory.addAll(state.directory);
+    } else {
+      directory.add(const Node(
+        id: 0,
+        type: 1,
+        name: 'Root',
+      ));
+    }
+
     var resultOfChilds = await _rootRepository.getChilds(
-        user: _user,
-        parentId: state.directory.isNotEmpty
-            ? state.directory[state.directory.length - 1].id
-            : 0);
+      user: _user,
+      parentId: directory[directory.length - 1].id,
+    );
 
     if (resultOfChilds is List) {
       emit(state.copyWith(
@@ -166,7 +178,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
         data: resultOfChilds,
-        directory: state.directory,
+        directory: directory,
       ));
     } else {
       emit(state.copyWith(
@@ -265,7 +277,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       if (kDebugMode) {
         print('Root update trigger times: $count');
       }
-      add(const NodeDirectoryUpdated());
+      add(const DeviceTypeNodeUpdated());
     });
 
     emit(state.copyWith(
@@ -276,8 +288,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   }
 
   // When current form has device setting page
-  Future<void> _onNodeDirectoryUpdated(
-    NodeDirectoryUpdated event,
+  Future<void> _onDeviceTypeNodeUpdated(
+    DeviceTypeNodeUpdated event,
     Emitter<RootState> emit,
   ) async {
     var resultOfDeviceConnectionStatus =
@@ -326,10 +338,28 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         } else {}
       }
     } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        directory: state.directory,
-      ));
+      if (resultOfDeviceConnectionStatus[1] == 'offline') {
+        if (state.directory.last.type == 5) {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestFailure,
+            directory: state.directory,
+            errmsg:
+                'No module in the slot ${state.directory.last.slot.toString()}, please try another.',
+          ));
+        } else {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestFailure,
+            directory: state.directory,
+            errmsg: 'The device does not respond.',
+          ));
+        }
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          directory: state.directory,
+          errmsg: resultOfDeviceConnectionStatus[1],
+        ));
+      }
     }
   }
 
@@ -415,7 +445,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       if (kDebugMode) {
         print('Root update trigger times: $count');
       }
-      add(const NodeDirectoryUpdated());
+      add(const DeviceTypeNodeUpdated());
     });
 
     if (result[0]) {

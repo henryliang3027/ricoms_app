@@ -20,8 +20,8 @@ class ChildDataUpdated extends RootEvent {
   List<Object?> get props => [];
 }
 
-class NodeDirectoryUpdated extends RootEvent {
-  const NodeDirectoryUpdated();
+class DeviceTypeNodeUpdated extends RootEvent {
+  const DeviceTypeNodeUpdated();
 
   @override
   List<Object?> get props => [];

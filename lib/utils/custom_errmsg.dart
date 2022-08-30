@@ -3,6 +3,8 @@ class CustomErrMsg {
       'Please try to login again. Make sure you are on the same domain as the server.';
   static const String getActivatedUserErrMsg =
       'Failed to get activated user from local database.';
+
+  static const String connectionFailed = 'Connection failed!';
 }
 
 class CustomErrTitle {

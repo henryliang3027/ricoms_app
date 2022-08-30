@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
@@ -216,57 +215,11 @@ class AuthenticationRepository {
           data['msg'],
         ];
       }
-    } catch (e) {
-      // if ip does not exist
-
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      //_controller.add(AuthenticationStatus.unauthenticated);
-      if (e is DioError) {
-        if (e.response != null) {
-          if (kDebugMode) {
-            print(e.response!.data);
-            print(e.response!.headers);
-            print(e.response!.requestOptions);
-          }
-
-          // _controller.add(const AuthenticationReport(
-          //   status: AuthenticationStatus.unauthenticated,
-          //   msg: 'Server no response',
-          // ));
-
-          return [
-            false,
-            'Server no response',
-          ];
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          if (kDebugMode) {
-            print(e.requestOptions);
-            print(e.message);
-          }
-
-          // _controller.add(AuthenticationReport(
-          //   status: AuthenticationStatus.unauthenticated,
-          //   msg: e.message,
-          // ));
-
-          return [
-            false,
-            e.message,
-          ];
-        }
-      } else {
-        // _controller.add(AuthenticationReport(
-        //   status: AuthenticationStatus.unauthenticated,
-        //   msg: e.toString(),
-        // ));
-
-        return [
-          false,
-          e.toString(),
-        ];
-      }
+    } on DioError catch (e) {
+      return [
+        false,
+        CustomErrMsg.connectionFailed,
+      ];
     }
   }
 
@@ -310,35 +263,8 @@ class AuthenticationRepository {
         } else {
           return data['msg'];
         }
-      } catch (e) {
-        // if ip does not exist
-
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e is DioError) {
-          if (e.response != null) {
-            if (kDebugMode) {
-              print(e.response!.data);
-              print(e.response!.headers);
-              print(e.response!.requestOptions);
-            }
-
-            throw Exception('Server No Response');
-          } else {
-            // Something happened in setting up or sending the request that triggered an Error
-            if (kDebugMode) {
-              print(e.requestOptions);
-              print(e.message);
-            }
-
-            throw Exception(e.message);
-          }
-        } else {
-          throw Exception(e.toString());
-        }
-
-        //print('CPE: $e');
-
+      } on DioError catch (e) {
+        return CustomErrMsg.connectionFailed;
       }
     } else {
       //print('User dose not exist when logout');
@@ -402,16 +328,8 @@ class AuthenticationRepository {
         } else {
           return [false, data['msg']];
         }
-      } catch (e) {
-        // if ip does not exist
-
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e is DioError) {
-          return [false, e.message];
-        } else {
-          return [false, e.toString()];
-        }
+      } on DioError catch (e) {
+        return [false, CustomErrMsg.connectionFailed];
       }
     }
   }
@@ -428,12 +346,10 @@ class AuthenticationRepository {
           'http://' + user.ip + '/aci/api/accounts/' + user.id;
 
       try {
-        //404
         Response response = await dio.get(
           accountInformationPath,
         );
 
-        //print(response.data.toString());
         var data = jsonDecode(response.data.toString());
 
         if (data['code'] == '200') {
@@ -447,31 +363,8 @@ class AuthenticationRepository {
         } else {
           return [false, 'Failed to get user permission'];
         }
-      } catch (e) {
-        // if ip does not exist
-
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e is DioError) {
-          if (e.response != null) {
-            if (kDebugMode) {
-              print(e.response!.data);
-              print(e.response!.headers);
-              print(e.response!.requestOptions);
-            }
-            return [false, 'Server No Response'];
-          } else {
-            // Something happened in setting up or sending the request that triggered an Error
-            if (kDebugMode) {
-              print(e.requestOptions);
-              print(e.message);
-            }
-
-            return [false, e.message];
-          }
-        } else {
-          return [false, e.toString()];
-        }
+      } on DioError catch (e) {
+        return [false, CustomErrMsg.connectionFailed];
       }
     } else {
       return [false, 'User does not exist'];
@@ -520,31 +413,8 @@ class AuthenticationRepository {
         } else {
           return [false, 'Failed to get user function'];
         }
-      } catch (e) {
-        // if ip does not exist
-
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e is DioError) {
-          if (e.response != null) {
-            if (kDebugMode) {
-              print(e.response!.data);
-              print(e.response!.headers);
-              print(e.response!.requestOptions);
-            }
-            return [false, 'Server No Response'];
-          } else {
-            // Something happened in setting up or sending the request that triggered an Error
-            if (kDebugMode) {
-              print(e.requestOptions);
-              print(e.message);
-            }
-
-            return [false, e.message];
-          }
-        } else {
-          return [false, e.toString()];
-        }
+      } on DioError catch (e) {
+        return [false, CustomErrMsg.connectionFailed];
       }
     } else {
       return [false, 'User does not exist'];

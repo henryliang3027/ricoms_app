@@ -234,8 +234,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                   isEditing: state.isEditing,
                 ));
           } else {
-            //FormStatus.requestFailure
-            String errnsg = state.data[0];
             return Expanded(
               child: Container(
                 width: double.maxFinite,

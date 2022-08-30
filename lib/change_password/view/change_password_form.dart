@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
+import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class ChangePasswordForm extends StatelessWidget {
   const ChangePasswordForm({Key? key}) : super(key: key);
@@ -15,7 +17,12 @@ class ChangePasswordForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Update'),
+            title: Text(
+              'Update',
+              style: TextStyle(
+                color: CustomStyle.severityColor[1],
+              ),
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: const <Widget>[
@@ -42,7 +49,10 @@ class ChangePasswordForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Error'),
+            title: Text(CustomErrTitle.commonErrTitle,
+                style: TextStyle(
+                  color: CustomStyle.severityColor[3],
+                )),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -297,18 +307,6 @@ class _SaveButton extends StatelessWidget {
         return state.status.isSubmissionInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed)) {
-                        return Colors.blue;
-                      } else if (states.contains(MaterialState.disabled)) {
-                        return Colors.grey;
-                      }
-                      return null; // Use the component's default.
-                    },
-                  ),
-                ),
                 key: const Key('changePasswordForm_save_raisedButton'),
                 child: const Text(
                   'Update',
