@@ -35,12 +35,8 @@ class HistoryDetailPage extends StatelessWidget {
                 initialValue: record.severity,
               ),
               _Item(
-                labelText: 'Event',
-                initialValue: record.event,
-              ),
-              _Item(
-                labelText: 'Value',
-                initialValue: record.value,
+                labelText: 'Time Received',
+                initialValue: record.receivedTime,
               ),
               _Item(
                 labelText: 'IP',
@@ -59,8 +55,12 @@ class HistoryDetailPage extends StatelessWidget {
                 initialValue: DisplayStyle.getDeviceDisplayName(record),
               ),
               _Item(
-                labelText: 'Time Received',
-                initialValue: record.receivedTime,
+                labelText: 'Event',
+                initialValue: record.event,
+              ),
+              _Item(
+                labelText: 'Value',
+                initialValue: record.value,
               ),
               _Item(
                 labelText: 'Clear Time',

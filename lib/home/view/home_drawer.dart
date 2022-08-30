@@ -126,32 +126,42 @@ class HomeDrawer extends StatelessWidget {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            SizedBox(
-              height: 120,
-              child: DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.white12,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    //Padding(padding: EdgeInsets.only(top: 10.0)),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 66.0),
-                      child: Image(
-                        image: AssetImage('assets/RICOMS.PNG'),
-                      ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  //Padding(padding: EdgeInsets.only(top: 10.0)),
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 66.0),
+                    child: Image(
+                      image: AssetImage('assets/RICOMS.PNG'),
                     ),
-                    const Padding(padding: EdgeInsets.only(top: 6.0)),
-                    Text(user.name,
-                        style: const TextStyle(
-                          fontSize: CommonStyle.sizeXL,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ],
-                ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 6.0)),
+                  Text(
+                    user.name,
+                    style: const TextStyle(
+                      fontSize: CommonStyle.sizeXL,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 6.0)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      Text(
+                        CommonStyle.version,
+                        style: TextStyle(fontSize: CommonStyle.sizeS),
+                      ),
+                    ],
+                  )
+                ],
               ),
+            ),
+            const Divider(
+              height: 0.0,
             ),
             ..._buildMainListView(currentPageIndex),
             ..._buildExtraListView(currentPageIndex),
@@ -209,13 +219,6 @@ class HomeDrawer extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(2.0, 40.0, 2.0, 40.0),
-            ),
-            const Center(
-              //padding: EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 0.0),
-              child: Text(
-                CommonStyle.version,
-                style: TextStyle(fontSize: CommonStyle.sizeS),
-              ),
             ),
           ],
         ),

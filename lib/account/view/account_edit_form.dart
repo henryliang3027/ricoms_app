@@ -287,7 +287,7 @@ class _PasswordInput extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 counterText: '',
-                hintText: 'Current password',
+                hintText: 'Password',
                 hintStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -298,7 +298,7 @@ class _PasswordInput extends StatelessWidget {
                     ? 'Password must be between 4-32 characters.'
                     : null,
                 suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
+                    maxHeight: 28, maxWidth: 28, minHeight: 28, minWidth: 28),
                 suffixIcon: IconButton(
                   iconSize: 22,
                   padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
@@ -411,7 +411,7 @@ class _PermissionDropDownMenu extends StatelessWidget {
                 child: DropdownButton2(
                   alignment: AlignmentDirectional.centerEnd,
                   buttonPadding: const EdgeInsets.only(left: 5, right: 5),
-                  buttonHeight: 34,
+                  buttonHeight: 32,
                   buttonDecoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.grey.shade700,
