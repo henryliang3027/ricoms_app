@@ -229,7 +229,7 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceHistory({
+  Future<List<dynamic>> getDeviceHistory({
     required User user,
     required int nodeId,
   }) async {
@@ -268,6 +268,7 @@ class DeviceRepository {
           if (event != null) {
             if (event.isNotEmpty) {
               DeviceHistoryData deviceHistoryData = DeviceHistoryData(
+                trapId: element['id'],
                 event: event,
                 severity: element['status'],
                 timeReceived: element['start_time'],
@@ -278,15 +279,78 @@ class DeviceRepository {
             }
           }
         }
-
         deviceHistoryDataList
             .sort((b, a) => a.timeReceived.compareTo(b.timeReceived));
-        return deviceHistoryDataList;
+
+        return [true, deviceHistoryDataList];
       } else {
-        return 'There are no records to show';
+        return [false, 'There are no records to show'];
       }
     } on DioError catch (e) {
-      return CustomErrMsg.connectionFailed;
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  Future<List<dynamic>> getMoreDeviceHistory({
+    required User user,
+    required int nodeId,
+    required int trapId,
+    required String next,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String deviceStatusPath =
+        '/history/search?start_time=&end_time=&shelf=&slot=&next=$next&trap_id=${trapId.toString()}&current=0&q=&node_id=${nodeId.toString()}';
+
+    try {
+      //404
+      Response response = await dio.get(deviceStatusPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        List rawdataList = data['data']['result'];
+        List<DeviceHistoryData> deviceHistoryDataList = [];
+
+        for (var element in rawdataList) {
+          String? event = element['event'];
+          String? alarmDuration = element['period_time'];
+          String? fixedAlarmDuration;
+
+          if (alarmDuration != null) {
+            List<String> units;
+            units = alarmDuration.split(' ');
+            units.removeWhere((element) => element.isEmpty);
+
+            fixedAlarmDuration = units.join(' ');
+          }
+
+          if (event != null) {
+            if (event.isNotEmpty) {
+              DeviceHistoryData deviceHistoryData = DeviceHistoryData(
+                trapId: element['id'],
+                event: event,
+                severity: element['status'],
+                timeReceived: element['start_time'],
+                clearTime: element['clear_time'] ?? '',
+                alarmDuration: fixedAlarmDuration ?? '',
+              );
+              deviceHistoryDataList.add(deviceHistoryData);
+            }
+          }
+        }
+        deviceHistoryDataList
+            .sort((b, a) => a.timeReceived.compareTo(b.timeReceived));
+
+        return [true, deviceHistoryDataList];
+      } else {
+        return [false, 'No more result.'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
     }
   }
 }
@@ -305,6 +369,7 @@ class DeviceBlock {
 
 class DeviceHistoryData {
   const DeviceHistoryData({
+    required this.trapId,
     required this.event,
     this.severity = -1,
     this.timeReceived = '',
@@ -314,6 +379,7 @@ class DeviceHistoryData {
 
   final int severity;
   final String event;
+  final int trapId;
   final String timeReceived;
   final String clearTime;
   final String alarmDuration;

@@ -5,6 +5,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/device_history_form.dart';
+import 'package:ricoms_app/root/view/device_history_page.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
@@ -81,7 +82,9 @@ class DeviceSettingTabBar extends StatelessWidget {
                           nodeId: node.id,
                         )
                       ],
-                      DeviceHistoryForm(
+                      DeviceHistoryPage(
+                        user: context.read<AuthenticationBloc>().state.user,
+                        deviceRepository: deviceRepository,
                         nodeId: node.id,
                       ),
                     ],
