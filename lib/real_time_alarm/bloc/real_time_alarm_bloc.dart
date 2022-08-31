@@ -231,12 +231,17 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     CheckDeviceStatus event,
     Emitter<RealTimeAlarmState> emit,
   ) async {
+    emit(state.copyWith(
+      targetDeviceStatus: FormStatus.requestInProgress,
+    ));
+
     List<dynamic> result = await _realTimeAlarmRepository.getDeviceStatus(
       user: _user,
       path: event.path,
     );
 
     if (result[0]) {
+      event.initialPath.addAll(event.path);
       event.pageController.jumpToPage(1);
     } else {
       emit(state.copyWith(

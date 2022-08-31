@@ -182,11 +182,11 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
           color: index.isEven ? Colors.grey.shade100 : Colors.white,
           child: InkWell(
             onTap: () {
-              initialPath.clear();
-              initialPath.addAll(alarmData.path);
-              context
-                  .read<RealTimeAlarmBloc>()
-                  .add(CheckDeviceStatus(alarmData.path, pageController));
+              context.read<RealTimeAlarmBloc>().add(CheckDeviceStatus(
+                    initialPath,
+                    alarmData.path,
+                    pageController,
+                  ));
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

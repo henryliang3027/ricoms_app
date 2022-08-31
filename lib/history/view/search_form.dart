@@ -335,7 +335,7 @@ class _ShelfSelector extends StatelessWidget {
         BuildContext buildContext, String initialValue) async {
       return showDialog<void>(
         context: buildContext,
-        barrierDismissible: true, // user must tap button!
+        barrierDismissible: true,
         builder: (_) {
           return Dialog(
             shape: const RoundedRectangleBorder(
@@ -421,7 +421,7 @@ class _SlotSelector extends StatelessWidget {
         BuildContext buildContext, String initialValue) async {
       return showDialog<void>(
         context: buildContext,
-        barrierDismissible: true, // user must tap button!
+        barrierDismissible: true,
         builder: (_) {
           return Dialog(
             shape: const RoundedRectangleBorder(
