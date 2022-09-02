@@ -39,5 +39,19 @@
     "connect": "確認模組",
     "cancel": "取消",
     "create": "建立",
-    "save": "儲存"
+    "save": "儲存",
+
+    "alarmRatio": "告警百分比",
+    "deviceStatus": "裝置狀態",
+    "allDeviceStatus": "全部裝置",
+    "criticalDeviceStatus": "危急裝置",
+    "warningDeviceStatus": "警告裝置",
+    "normalDeviceStatus": "正常裝置",
+    "offlineDeviceStatus": "離線裝置",
+    "unknownDeviceStatus": "未知裝置",
+    "oneDay": "一天",
+    "threeDays": "三天",
+    "oneWeek": "一週",
+    "twoWeeks": "兩週",
+    "oneMonth": "一個月"
 }

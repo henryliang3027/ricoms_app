@@ -66,11 +66,13 @@ class _PieChartPageViewCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-            child: _WidgetTitle(title: 'Alarm Ratio'),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+            child: _WidgetTitle(
+              title: AppLocalizations.of(context)!.alarmRatio,
+            ),
           ),
-          _buildLegend(),
+          _buildLegend(context),
           Expanded(
             //height: 250,
             child: PageView(
@@ -151,7 +153,7 @@ class __AlarmOneDayStatisticsPieChartState
         } else if (state.alarmOneDayStatisticsStatus.isRequestSuccess) {
           List alarmOneDayStatistics = state.alarmOneDayStatistics;
           return _buildPieChart(
-            title: '1 Day',
+            title: AppLocalizations.of(context)!.oneDay,
             alarmStatistics: alarmOneDayStatistics,
           );
         } else if (state.alarmOneDayStatisticsStatus.isRequestFailure) {
@@ -196,7 +198,7 @@ class __AlarmThreeDaysStatisticsPieChartState
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestSuccess) {
           List alarmThreeDaysStatistics = state.alarmThreeDaysStatistics;
           return _buildPieChart(
-            title: '3 Days',
+            title: AppLocalizations.of(context)!.threeDays,
             alarmStatistics: alarmThreeDaysStatistics,
           );
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestFailure) {
@@ -241,7 +243,7 @@ class __AlarmOneWeekStatisticsPieChartState
         } else if (state.alarmOneWeekStatisticsStatus.isRequestSuccess) {
           List alarmOneWeekStatistics = state.alarmOneWeekStatistics;
           return _buildPieChart(
-            title: '1 Week',
+            title: AppLocalizations.of(context)!.oneWeek,
             alarmStatistics: alarmOneWeekStatistics,
           );
         } else if (state.alarmOneWeekStatisticsStatus.isRequestFailure) {
@@ -286,7 +288,7 @@ class __AlarmTwoWeeksStatisticsPieChartState
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestSuccess) {
           List alarmTwoWeeksStatistics = state.alarmTwoWeeksStatistics;
           return _buildPieChart(
-            title: '2 Weeks',
+            title: AppLocalizations.of(context)!.twoWeeks,
             alarmStatistics: alarmTwoWeeksStatistics,
           );
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestFailure) {
@@ -331,7 +333,7 @@ class __AlarmOneMonthStatisticsPieChartState
         } else if (state.alarmOneMonthStatisticsStatus.isRequestSuccess) {
           List alarmOneMonthStatistics = state.alarmOneMonthStatistics;
           return _buildPieChart(
-            title: '1 Month',
+            title: AppLocalizations.of(context)!.oneMonth,
             alarmStatistics: alarmOneMonthStatistics,
           );
         } else if (state.alarmOneMonthStatisticsStatus.isRequestFailure) {
@@ -359,12 +361,14 @@ class _DeviceStatisticsCard extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
-              child: _WidgetTitle(title: 'Device Status'),
+              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0),
+              child: _WidgetTitle(
+                title: AppLocalizations.of(context)!.deviceStatus,
+              ),
             ),
-            _DeviceStatisticsGridView(),
+            const _DeviceStatisticsGridView(),
           ],
         ),
       ),
@@ -374,15 +378,6 @@ class _DeviceStatisticsCard extends StatelessWidget {
 
 class _DeviceStatisticsGridView extends StatelessWidget {
   const _DeviceStatisticsGridView({Key? key}) : super(key: key);
-
-  final _gridTitles = const [
-    'All',
-    'Critical',
-    'Warning',
-    'Normal',
-    'Offline',
-    'Unknown',
-  ];
 
   final _gridColors = const [
     Colors.white, // all
@@ -404,6 +399,15 @@ class _DeviceStatisticsGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _gridTitles = [
+      AppLocalizations.of(context)!.allDeviceStatus,
+      AppLocalizations.of(context)!.criticalDeviceStatus,
+      AppLocalizations.of(context)!.warningDeviceStatus,
+      AppLocalizations.of(context)!.normalDeviceStatus,
+      AppLocalizations.of(context)!.offlineDeviceStatus,
+      AppLocalizations.of(context)!.unknownDeviceStatus,
+    ];
+
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
         if (state.deviceStatisticsStatus.isRequestInProgress) {
@@ -512,33 +516,33 @@ class Indicator extends StatelessWidget {
   }
 }
 
-Widget _buildLegend() {
+Widget _buildLegend(BuildContext context) {
   return Row(
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.center,
     //crossAxisAlignment: CrossAxisAlignment.start,
-    children: const <Widget>[
+    children: <Widget>[
       Indicator(
-        color: Color(0xffdc3545),
-        text: 'Critical',
+        color: const Color(0xffdc3545),
+        text: AppLocalizations.of(context)!.critical,
         isSquare: false,
         size: CommonStyle.sizeS,
       ),
-      SizedBox(
+      const SizedBox(
         width: 8,
       ),
       Indicator(
-        color: Color(0xffffc107),
-        text: 'Warning',
+        color: const Color(0xffffc107),
+        text: AppLocalizations.of(context)!.warning,
         isSquare: false,
         size: CommonStyle.sizeS,
       ),
-      SizedBox(
+      const SizedBox(
         width: 8,
       ),
       Indicator(
-        color: Color(0xff28a745),
-        text: 'Normal',
+        color: const Color(0xff28a745),
+        text: AppLocalizations.of(context)!.normal,
         isSquare: false,
         size: CommonStyle.sizeS,
       ),

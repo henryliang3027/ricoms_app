@@ -188,5 +188,70 @@
     "save": "Save",
     "@all": {
       "description": "save"
+    },
+
+    "alarmRatio": "Alarm Ratio",
+    "@all": {
+      "description": "dashboard alarm ratio"
+    },
+
+    "deviceStatus": "Device Status",
+    "@all": {
+      "description": "dashboard device status"
+    },
+
+    "allDeviceStatus": "All",
+    "@all": {
+      "description": "dashboard all device status"
+    },
+
+    "criticalDeviceStatus": "Critical",
+    "@all": {
+      "description": "dashboard critical device status"
+    },
+
+    "warningDeviceStatus": "Warning",
+    "@all": {
+      "description": "dashboard warning device status"
+    },
+
+    "normalDeviceStatus": "Normal",
+    "@all": {
+      "description": "dashboard normal device status"
+    },
+
+    "offlineDeviceStatus": "Offline",
+    "@all": {
+      "description": "dashboard offline device status"
+    },
+
+    "unknownDeviceStatus": "Unknown",
+    "@all": {
+      "description": "dashboard unknown device status"
+    },
+
+    "oneDay": "1 Day",
+    "@all": {
+      "description": "dashboard alarm ratio 1 day"
+    },
+
+    "threeDays": "3 Days",
+    "@all": {
+      "description": "dashboard alarm ratio 3 days"
+    },
+
+    "oneWeek": "1 Week",
+    "@all": {
+      "description": "dashboard alarm ratio 1 week"
+    },
+
+    "twoWeeks": "2 Weeks",
+    "@all": {
+      "description": "dashboard alarm ratio 2 weeks"
+    },
+
+    "oneMonth": "1 Month",
+    "@all": {
+      "description": "dashboard alarm ratio 1 month"
     }
 }
