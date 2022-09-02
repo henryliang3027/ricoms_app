@@ -5,6 +5,7 @@ import 'package:ricoms_app/root/bloc/edit_group/edit_group_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupEditForm extends StatelessWidget {
   const GroupEditForm({Key? key}) : super(key: key);
@@ -163,7 +164,9 @@ class _ParentName extends StatelessWidget {
               child: TextFormField(
                 key: const Key('groupEditForm_parentNameInput_textField'),
                 enabled: false,
-                initialValue: state.parentName,
+                initialValue: state.parentName == 'Root'
+                    ? AppLocalizations.of(context)!.root
+                    : state.parentName,
                 textInputAction: TextInputAction.done,
                 style: const TextStyle(
                   fontSize: CommonStyle.sizeL,
@@ -179,7 +182,7 @@ class _ParentName extends StatelessWidget {
                   isDense: true,
                   filled: true,
                   fillColor: Colors.grey.shade100,
-                  labelText: 'Parent',
+                  labelText: AppLocalizations.of(context)!.parent,
                   labelStyle: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                   ),
@@ -222,7 +225,7 @@ class _NameInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Name',
+                labelText: AppLocalizations.of(context)!.name,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -277,7 +280,7 @@ class _DescriptionInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Description',
+                labelText: AppLocalizations.of(context)!.description,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -308,9 +311,9 @@ class _CancelButton extends StatelessWidget {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           key: const Key('groupEditForm_cancel_raisedButton'),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(
               fontSize: CommonStyle.sizeM,
               color: Colors.black,
             ),
@@ -345,15 +348,15 @@ class _SubmitButton extends StatelessWidget {
             ),
             key: const Key('groupEditForm_submit_raisedButton'),
             child: state.isEditing
-                ? const Text(
-                    'Save',
-                    style: TextStyle(
+                ? Text(
+                    AppLocalizations.of(context)!.save,
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeM,
                     ),
                   )
-                : const Text(
-                    'Create',
-                    style: TextStyle(
+                : Text(
+                    AppLocalizations.of(context)!.create,
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeM,
                     ),
                   ),

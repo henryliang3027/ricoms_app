@@ -254,17 +254,18 @@ class _PopupMenu extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    // <-- Icon
+                children: [
+                  const Icon(
                     Icons.search,
                     size: 20.0,
                     color: Colors.black,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10.0,
                   ),
-                  Text('Search'),
+                  Text(
+                    AppLocalizations.of(context)!.search,
+                  ),
                 ],
               ),
             ),
@@ -287,7 +288,9 @@ class _PopupMenu extends StatelessWidget {
                         const SizedBox(
                           width: 10.0,
                         ),
-                        const Text('Favorite'),
+                        Text(
+                          AppLocalizations.of(context)!.favorite,
+                        ),
                       ],
                     ),
                   )
@@ -296,16 +299,18 @@ class _PopupMenu extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
+                      children: [
+                        const Icon(
                           CustomIcons.export,
                           size: 20.0,
                           color: Colors.black,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10.0,
                         ),
-                        Text('Export'),
+                        Text(
+                          AppLocalizations.of(context)!.export,
+                        ),
                       ],
                     ),
                   )
@@ -664,15 +669,15 @@ class _NodeDirectory extends StatelessWidget {
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.home_outlined,
                             color: Colors.black,
                           ),
-                          SizedBox(width: 2.0),
+                          const SizedBox(width: 2.0),
                           Text(
-                            'Root',
-                            style: TextStyle(
+                            AppLocalizations.of(context)!.root,
+                            style: const TextStyle(
                               color: Colors.black,
                             ),
                           )
@@ -854,9 +859,9 @@ class _NodeEditBottomMenu extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
-          'Edit',
-          style: TextStyle(fontSize: CommonStyle.sizeM),
+        title: Text(
+          AppLocalizations.of(context)!.edit,
+          style: const TextStyle(fontSize: CommonStyle.sizeM),
         ),
         onTap: () {
           Navigator.pop(context);
@@ -905,9 +910,9 @@ class _NodeEditBottomMenu extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
-          'Delete',
-          style: TextStyle(fontSize: CommonStyle.sizeM),
+        title: Text(
+          AppLocalizations.of(context)!.delete,
+          style: const TextStyle(fontSize: CommonStyle.sizeM),
         ),
         onTap: () async {
           Navigator.pop(context);
@@ -961,9 +966,9 @@ class _NodeCreationBottomMenu extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            'Group',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
+          title: Text(
+            AppLocalizations.of(context)!.group,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -995,9 +1000,9 @@ class _NodeCreationBottomMenu extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            'Device',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
+          title: Text(
+            AppLocalizations.of(context)!.device,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
           ),
           onTap: () {
             Navigator.pop(context);

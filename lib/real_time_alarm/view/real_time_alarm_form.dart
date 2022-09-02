@@ -91,25 +91,25 @@ class RealTimeAlarmForm extends StatelessWidget {
                 backgroundColor: Colors.white,
                 centerTitle: true,
                 titleSpacing: 0.0,
-                title: const TabBar(
+                title: TabBar(
                   unselectedLabelColor: Colors.grey,
                   labelColor: Colors.blue,
                   isScrollable: true,
                   tabs: [
                     Tab(
-                      text: 'All',
+                      text: AppLocalizations.of(context)!.all,
                     ),
                     Tab(
-                      text: 'Critical',
+                      text: AppLocalizations.of(context)!.critical,
                     ),
                     Tab(
-                      text: 'Warning',
+                      text: AppLocalizations.of(context)!.warning,
                     ),
                     Tab(
-                      text: 'Normal',
+                      text: AppLocalizations.of(context)!.normal,
                     ),
                     Tab(
-                      text: 'Notice',
+                      text: AppLocalizations.of(context)!.notice,
                     ),
                   ],
                 ),

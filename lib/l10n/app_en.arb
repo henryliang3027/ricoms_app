@@ -42,5 +42,151 @@
     "setting": "Setting",
     "@setting": {
       "description": "Drawer divider title"
+    },
+
+
+    "all": "All",
+    "@all": {
+      "description": "real-time alarm tabbar name"
+    },
+
+    "critical": "Critical",
+    "@all": {
+      "description": "alarm severity"
+    },
+
+    "warning": "Warning",
+    "@all": {
+      "description": "alarm severity"
+    },
+
+    "normal": "Normal",
+    "@all": {
+      "description": "alarm severity"
+    },
+
+    "notice": "Notice",
+    "@all": {
+      "description": "alarm severity"
+    },
+
+    "root": "Root",
+    "@all": {
+      "description": "root"
+    },
+
+    "group": "Group",
+    "@all": {
+      "description": "add group"
+    },
+
+    "device": "Device",
+    "@all": {
+      "description": "add device"
+    },
+
+    "edit": "Edit",
+    "@all": {
+      "description": "edit"
+    },
+
+    "delete": "Delete",
+    "@all": {
+      "description": "delete"
+    },
+
+    "search": "Search",
+    "@all": {
+      "description": "search"
+    },
+
+    "export": "Export",
+    "@all": {
+      "description": "device status export or hisstory export"
+    },
+
+    "favorite": "Favorite",
+    "@all": {
+      "description": "add to bookmarks"
+    },
+
+    "addGroup": "Add Group",
+    "@all": {
+      "description": "add group"
+    },
+
+    "addDevice": "Add Device",
+    "@all": {
+      "description": "add device"
+    },
+
+    "editGroup": "edit Group",
+    "@all": {
+      "description": "edit group"
+    },
+
+    "editDevice": "edit Device",
+    "@all": {
+      "description": "edit device"
+    },
+
+    "parent": "Parent",
+    "@all": {
+      "description": "parent node"
+    },
+
+    "name": "Name",
+    "@all": {
+      "description": "name"
+    },
+
+    "description": "Description",
+    "@all": {
+      "description": "description"
+    },
+
+    "ip": "IP",
+    "@all": {
+      "description": "ip"
+    },
+
+    "read": "Read",
+    "@all": {
+      "description": "device read permission"
+    },
+
+    "write": "Write",
+    "@all": {
+      "description": "device write permission"
+    },
+
+    "location": "Location",
+    "@all": {
+      "description": "device location"
+    },
+
+    "moduleSeries": "Module Series",
+    "@all": {
+      "description": "moldule series"
+    },
+
+    "connect": "Connect",
+    "@all": {
+      "description": "connect device"
+    },
+
+    "cancel": "Cancel",
+    "@all": {
+      "description": "cancel"
+    },
+
+    "create": "Create",
+    "@all": {
+      "description": "create"
+    },
+
+    "save": "Save",
+    "@all": {
+      "description": "save"
     }
 }

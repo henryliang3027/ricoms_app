@@ -4,6 +4,7 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/edit_group/edit_group_bloc.dart';
 import 'package:ricoms_app/root/view/group_edit_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupEditPage extends StatelessWidget {
   const GroupEditPage({
@@ -50,8 +51,9 @@ class GroupEditPage extends StatelessWidget {
         child: Scaffold(
           //resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title:
-                isEditing ? const Text('Edit Group') : const Text('Add Group'),
+            title: isEditing
+                ? Text(AppLocalizations.of(context)!.editGroup)
+                : Text(AppLocalizations.of(context)!.addGroup),
           ),
           body: const GroupEditForm(),
         ));

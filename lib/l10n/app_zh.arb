@@ -7,5 +7,37 @@
     "account": "帳號",
     "changePassword": "修改密碼",
     "logout": "登出",
-    "setting": "設定"
+    "setting": "設定",
+
+    "all": "全部",
+    "critical": "危急",
+    "warning": "警告",
+    "normal": "正常",
+    "notice": "通知",
+
+    "root": "根節點",
+    "group": "群組",
+    "device": "裝置",
+    "edit": "編輯",
+    "delete": "刪除",
+    "search": "搜尋",
+    "export": "匯出",
+    "favorite": "加入書籤",
+
+    "addGroup": "新增群組",
+    "addDevice": "新增裝置",
+    "editGroup": "編輯群組",
+    "editDevice": "編輯裝置",
+    "parent": "所屬群組",
+    "name": "名稱",
+    "description": "描述",
+    "ip": "IP",
+    "read": "讀取",
+    "write": "寫入",
+    "location": "地點",
+    "moduleSeries": "系列模組",
+    "connect": "確認模組",
+    "cancel": "取消",
+    "create": "建立",
+    "save": "儲存"
 }

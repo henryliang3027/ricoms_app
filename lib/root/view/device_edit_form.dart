@@ -5,6 +5,7 @@ import 'package:ricoms_app/root/bloc/edit_device/edit_device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceEditForm extends StatelessWidget {
   const DeviceEditForm({Key? key}) : super(key: key);
@@ -204,7 +205,9 @@ class _ParentName extends StatelessWidget {
               child: TextFormField(
                 key: const Key('deviceEditForm_parentNameInput_textField'),
                 enabled: false,
-                initialValue: state.parentName,
+                initialValue: state.parentName == 'Root'
+                    ? AppLocalizations.of(context)!.root
+                    : state.parentName,
                 textInputAction: TextInputAction.done,
                 style: const TextStyle(
                   fontSize: CommonStyle.sizeL,
@@ -220,7 +223,7 @@ class _ParentName extends StatelessWidget {
                   isDense: true,
                   filled: true,
                   fillColor: Colors.grey.shade100,
-                  labelText: 'Parent',
+                  labelText: AppLocalizations.of(context)!.parent,
                   labelStyle: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                   ),
@@ -266,7 +269,7 @@ class _NameInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Name',
+                labelText: AppLocalizations.of(context)!.name,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -318,7 +321,7 @@ class _DeviceIPInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'IP',
+                labelText: AppLocalizations.of(context)!.ip,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -369,7 +372,7 @@ class _ReadInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Read',
+                labelText: AppLocalizations.of(context)!.read,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -416,7 +419,7 @@ class _WriteInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Write',
+                labelText: AppLocalizations.of(context)!.write,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -440,8 +443,8 @@ class _ModuleSeries extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EditDeviceBloc, EditDeviceState>(
         buildWhen: (previous, current) =>
-            previous.currentNode!.info!.module !=
-            current.currentNode!.info!.module,
+            previous.currentNode?.info?.module !=
+            current.currentNode?.info?.module,
         builder: (context, state) {
           return state.isEditing
               ? Padding(
@@ -475,7 +478,8 @@ class _ModuleSeries extends StatelessWidget {
                               isDense: true,
                               filled: true,
                               fillColor: Colors.grey.shade100,
-                              labelText: 'Module Series',
+                              labelText:
+                                  AppLocalizations.of(context)!.moduleSeries,
                               labelStyle: const TextStyle(
                                 fontSize: CommonStyle.sizeL,
                               ),
@@ -484,21 +488,20 @@ class _ModuleSeries extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: CustomStyle.severityColor[0],
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: const VisualDensity(
-                                vertical: -1.0,
-                              ),
-                            ),
+                                primary: CustomStyle.severityColor[0],
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: const VisualDensity(
+                                  vertical: -1.0,
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: CommonStyle.sizeM,
+                                )),
                             key: const Key(
                                 'deviceEditForm_connection_test_raisedButton'),
-                            child: const Text(
-                              'Connect',
-                              style: TextStyle(
-                                fontSize: CommonStyle.sizeM,
-                              ),
+                            child: Text(
+                              AppLocalizations.of(context)!.connect,
                             ),
                             onPressed: () {
                               context
@@ -553,7 +556,7 @@ class _DescriptionInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Description',
+                labelText: AppLocalizations.of(context)!.description,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -598,7 +601,7 @@ class _LocationInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Location',
+                labelText: AppLocalizations.of(context)!.location,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -629,9 +632,9 @@ class _CancelButton extends StatelessWidget {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           key: const Key('deviceEditForm_cancel_raisedButton'),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(
               fontSize: CommonStyle.sizeM,
               color: Colors.black,
             ),
@@ -666,15 +669,15 @@ class _SaveButton extends StatelessWidget {
             ),
             key: const Key('deviceEditForm_submit_raisedButton'),
             child: state.isEditing
-                ? const Text(
-                    'Save',
-                    style: TextStyle(
+                ? Text(
+                    AppLocalizations.of(context)!.save,
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeM,
                     ),
                   )
-                : const Text(
-                    'Create',
-                    style: TextStyle(
+                : Text(
+                    AppLocalizations.of(context)!.create,
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeM,
                     ),
                   ),

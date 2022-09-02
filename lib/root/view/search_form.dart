@@ -7,6 +7,7 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/search/search_bloc.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchForm extends StatelessWidget {
   const SearchForm({Key? key}) : super(key: key);
@@ -15,7 +16,9 @@ class SearchForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search'),
+        title: Text(
+          AppLocalizations.of(context)!.search,
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -35,15 +38,15 @@ class SearchForm extends StatelessWidget {
 class _TypeDropDownMenu extends StatelessWidget {
   const _TypeDropDownMenu({Key? key}) : super(key: key);
 
-  final Map<String, int> types = const {
-    'Name': 1,
-    'Description': 2,
-    'IP': 3,
-    'Location': 4,
-  };
-
   @override
   Widget build(BuildContext context) {
+    final Map<String, int> types = {
+      AppLocalizations.of(context)!.name: 1,
+      AppLocalizations.of(context)!.description: 2,
+      AppLocalizations.of(context)!.ip: 3,
+      AppLocalizations.of(context)!.location: 4,
+    };
+
     return BlocBuilder<SearchBloc, SearchState>(
         buildWhen: (previous, current) => previous.type != current.type,
         builder: (context, state) {
@@ -116,7 +119,7 @@ class _KeywordInput extends StatelessWidget {
                   isDense: true,
                   filled: true,
                   fillColor: Colors.white,
-                  labelText: 'Search here...',
+                  labelText: AppLocalizations.of(context)!.search,
                   labelStyle: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                   ),
