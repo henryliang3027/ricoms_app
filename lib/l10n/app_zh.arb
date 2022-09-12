@@ -53,5 +53,9 @@
     "threeDays": "三天",
     "oneWeek": "一週",
     "twoWeeks": "兩週",
-    "oneMonth": "一個月"
+    "oneMonth": "一個月",
+
+    "settingUpDialog": "設定中",
+    "DeletedDialog": "刪除成功",
+    "ErrorDialog": "錯誤"
 }

@@ -193,7 +193,7 @@ class _HistorySliverList extends StatelessWidget {
           );
         } else if (state.status.isRequestSuccess) {
           if (state.moreRecordsStatus.isRequestSuccess) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance?.addPostFrameCallback((_) {
               if (_scrollController.hasClients) {
                 _scrollController.animateTo(_scrollController.offset + 20,
                     duration: const Duration(seconds: 1), curve: Curves.ease);

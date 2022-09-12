@@ -114,7 +114,8 @@ class RootRepository {
     }
   }
 
-  Future<dynamic> getNodeInfo({required User user, required int nodeId}) async {
+  Future<List<dynamic>> getNodeInfo(
+      {required User user, required int nodeId}) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -146,36 +147,12 @@ class RootRepository {
           series: rawData['series'] ?? '',
         );
 
-        return info;
+        return [true, info];
       } else {
-        return 'Error errno: ${data['code']}';
+        return [false, 'Error errno: ${data['code']}'];
       }
     } on DioError catch (e) {
-      return CustomErrMsg.connectionFailed;
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return 'Server No Response';
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return e.message;
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return Future.error(e.toString());
-      // }
+      return [false, CustomErrMsg.connectionFailed];
     }
   }
 
@@ -739,21 +716,50 @@ class RootRepository {
     }
   }
 
-  List<int> getBookmarks({required User user}) {
+  List<DeviceMeta> getBookmarks({required User user}) {
     UserApi userApi = UserApi();
 
-    List<int> bookmarks = userApi.getBookmarksByUserId(user.id);
+    List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
 
     return bookmarks;
   }
 
   Future<bool> addBookmarks({
     required User user,
-    required int nodeId,
+    required Node node,
   }) async {
     UserApi userApi = UserApi();
 
-    bool resdult = await userApi.addBookmarksByUserId(user.id, nodeId);
+    List<dynamic> resultOfNodeInfo =
+        await getNodeInfo(user: user, nodeId: node.id);
+
+    String deviceIp = '-';
+    List<int> path = [];
+
+    if (resultOfNodeInfo[0]) {
+      Info info = resultOfNodeInfo[1];
+      deviceIp = info.ip;
+    } else {
+      deviceIp = '-';
+    }
+
+    List<String> nodeIdList =
+        node.path.split(',').where((raw) => raw.isNotEmpty).toList();
+    for (var nodeId in nodeIdList) {
+      path.add(int.parse(nodeId));
+    }
+
+    DeviceMeta deviceMeta = DeviceMeta(
+      id: node.id,
+      name: node.name,
+      type: node.type,
+      ip: deviceIp,
+      shelf: node.shelf,
+      slot: node.slot,
+      path: path,
+    );
+
+    bool resdult = await userApi.addBookmarksByUserId(user.id, deviceMeta);
 
     return resdult;
   }

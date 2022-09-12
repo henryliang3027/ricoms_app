@@ -32,10 +32,12 @@ class RootForm extends StatelessWidget {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text('Setting up...'),
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.settingUpDialog,
+            ),
             actionsAlignment: MainAxisAlignment.center,
-            actions: <Widget>[
+            actions: const <Widget>[
               CircularProgressIndicator(),
             ],
           );
@@ -50,7 +52,7 @@ class RootForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Deleted',
+              AppLocalizations.of(context)!.delete,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
@@ -82,7 +84,7 @@ class RootForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              CustomErrTitle.commonErrTitle,
+              AppLocalizations.of(context)!.errorDialog,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),
@@ -242,7 +244,7 @@ class _PopupMenu extends StatelessWidget {
               case Menu.favorite:
                 context
                     .read<RootBloc>()
-                    .add(BookmarksChanged(state.directory.last.id));
+                    .add(BookmarksChanged(state.directory.last));
                 break;
               default:
                 break;
@@ -644,7 +646,7 @@ class _NodeDirectory extends StatelessWidget {
       buildWhen: (previous, current) => previous.directory != current.directory,
       builder: (context, state) {
         if (state.formStatus.isRequestSuccess) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
               _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,

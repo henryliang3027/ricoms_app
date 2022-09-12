@@ -62,11 +62,45 @@ class User {
   final String ext;
 
   @HiveField(9, defaultValue: [])
-  final List<int> bookmarks;
+  final List<DeviceMeta> bookmarks;
 
   @HiveField(10, defaultValue: false)
   final bool isActivate;
 
   @HiveField(11, defaultValue: '-')
   final String account;
+}
+
+@HiveType(typeId: 2)
+class DeviceMeta {
+  const DeviceMeta({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.ip,
+    required this.shelf,
+    required this.slot,
+    required this.path,
+  });
+
+  @HiveField(0, defaultValue: -1)
+  final int id;
+
+  @HiveField(1, defaultValue: '-')
+  final String name;
+
+  @HiveField(2, defaultValue: -1)
+  final int type;
+
+  @HiveField(3, defaultValue: '-')
+  final String ip;
+
+  @HiveField(4, defaultValue: -1)
+  final int shelf;
+
+  @HiveField(5, defaultValue: -1)
+  final int slot;
+
+  @HiveField(6, defaultValue: [])
+  final List<int> path;
 }

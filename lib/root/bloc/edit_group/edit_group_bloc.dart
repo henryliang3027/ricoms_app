@@ -43,12 +43,12 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     Emitter<EditGroupState> emit,
   ) async {
     if (state.isEditing && _currentNode != null) {
-      var info = await _rootRepository.getNodeInfo(
+      List<dynamic> resultOfNodeInfo = await _rootRepository.getNodeInfo(
         user: _user,
         nodeId: _currentNode!.id,
       );
 
-      if (info.runtimeType == Info) {
+      if (resultOfNodeInfo[0]) {
         Node newCurrentNode = Node(
           id: _currentNode!.id,
           name: _currentNode!.name,
@@ -59,7 +59,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
           slot: _currentNode!.slot,
           status: _currentNode!.status,
           sort: _currentNode!.sort,
-          info: info,
+          info: resultOfNodeInfo[1],
         );
 
         final name = Name.dirty(newCurrentNode.name);

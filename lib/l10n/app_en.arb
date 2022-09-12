@@ -253,5 +253,20 @@
     "oneMonth": "1 Month",
     "@all": {
       "description": "dashboard alarm ratio 1 month"
+    },
+
+    "settingUpDialog": "Setting Up",
+    "@all": {
+      "description": "setting up"
+    },
+
+    "deletedDialog": "Deleted",
+    "@all": {
+      "description": "deleted"
+    },
+
+    "errorDialog": "Error",
+    "@all": {
+      "description": "error"
     }
 }

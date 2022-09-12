@@ -62,10 +62,10 @@ class DeviceNavigateRequested extends RootEvent {
 }
 
 class BookmarksChanged extends RootEvent {
-  const BookmarksChanged(this.nodeId); //edfa id or a8k slot id
+  const BookmarksChanged(this.node); //edfa id or a8k slot id
 
-  final int nodeId;
+  final Node node;
 
   @override
-  List<Object?> get props => [nodeId];
+  List<Object?> get props => [node];
 }

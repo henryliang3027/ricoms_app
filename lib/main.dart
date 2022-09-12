@@ -21,7 +21,8 @@ Future<void> main() async {
   // dir.deleteSync(recursive: true);
   await Hive.initFlutter('.db');
   Hive.registerAdapter<User>(UserAdapter());
-  await Hive.openBox<User>('User');
+  Hive.registerAdapter<DeviceMeta>(DeviceMetaAdapter());
+  await Hive.openBox<User>('UserData');
 
   runApp(
     App(

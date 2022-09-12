@@ -21,11 +21,11 @@ class BookmarksRepository {
     List<Device> devices = [];
     UserApi userApi = UserApi();
 
-    List<int> bookmarks = userApi.getBookmarksByUserId(user.id);
+    List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
 
     if (bookmarks.isNotEmpty) {
       for (var bookmark in bookmarks) {
-        String deviceStatusApiPath = '/device/$bookmark';
+        String deviceStatusApiPath = '/device/${bookmark.id.toString()}';
 
         try {
           //404
@@ -48,7 +48,7 @@ class BookmarksRepository {
 
             if (element['device_id'] != null) {
               Device device = Device(
-                id: bookmark,
+                id: bookmark.id,
                 name: element['name'],
                 type: element['type'],
                 ip: element['ip'],
@@ -68,7 +68,18 @@ class BookmarksRepository {
               devices.add(device);
             }
           } else {
-            return [false, 'Error: ${data['code']} msg: ${data['msg']}'];
+            Device device = Device(
+              id: bookmark.id,
+              name: bookmark.name,
+              type: bookmark.type,
+              ip: bookmark.ip,
+              shelf: bookmark.shelf,
+              slot: bookmark.slot,
+              path: bookmark.path,
+              status: 0,
+            );
+
+            devices.add(device);
           }
         } on DioError catch (e) {
           return [false, CustomErrMsg.connectionFailed];

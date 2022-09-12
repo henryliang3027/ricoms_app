@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:ricoms_app/repository/user.dart';
 
 class UserApi {
-  UserApi() : _userBox = Hive.box('User');
+  UserApi() : _userBox = Hive.box('UserData');
   final Box<User> _userBox;
 
   User? getActivateUser() {
@@ -100,18 +100,19 @@ class UserApi {
   Future<void> deleteAll() async => await _userBox.clear();
 
   // get user device bookmarks
-  List<int> getBookmarksByUserId(String userId) =>
+  List<DeviceMeta> getBookmarksByUserId(String userId) =>
       _userBox.get(userId) != null ? _userBox.get(userId)!.bookmarks : [];
 
   // add user device bookmarks
-  Future<bool> addBookmarksByUserId(String userId, int nodeId) async {
+  Future<bool> addBookmarksByUserId(
+      String userId, DeviceMeta deviceMeta) async {
     //nodeId represent to edfa id or a8k slot id
     User? user = _userBox.get(userId); //get user if it already exists
 
     if (user != null) {
-      List<int> newBookmarks = [];
+      List<DeviceMeta> newBookmarks = [];
       newBookmarks.addAll(user.bookmarks);
-      newBookmarks.add(nodeId);
+      newBookmarks.add(deviceMeta);
 
       User updatedUser = User(
         id: user.id,
@@ -136,17 +137,13 @@ class UserApi {
   }
 
   // delete user device bookmarks
-  Future<bool> deleteBookmarksByUserId(String userId, int nodeId) async {
+  Future<bool> deleteBookmarksByUserId(String userId, int deviceId) async {
     User? user = _userBox.get(userId); //get user if it already exists
 
     if (user != null) {
-      List<int> newBookmarks = [];
+      List<DeviceMeta> newBookmarks = [];
       newBookmarks.addAll(user.bookmarks);
-      bool isRemoved = newBookmarks.remove(nodeId);
-
-      if (!isRemoved) {
-        return false;
-      }
+      newBookmarks.removeWhere((deviceMeta) => deviceMeta.id == deviceId);
 
       User updatedUser = User(
         id: user.id,
@@ -172,13 +169,14 @@ class UserApi {
 
   // delete user device bookmarks
   Future<bool> deleteMultipleBookmarksByUserId(
-      String userId, List<int> nodeIds) async {
+      String userId, List<int> deviceIds) async {
     User? user = _userBox.get(userId); //get user if it already exists
 
     if (user != null) {
-      List<int> newBookmarks = [];
+      List<DeviceMeta> newBookmarks = [];
       newBookmarks.addAll(user.bookmarks);
-      newBookmarks.removeWhere((id) => nodeIds.contains(id));
+      newBookmarks
+          .removeWhere((deviceMeta) => deviceIds.contains(deviceMeta.id));
 
       User updatedUser = User(
         id: user.id,

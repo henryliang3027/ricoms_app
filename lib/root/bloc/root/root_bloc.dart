@@ -367,12 +367,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     BookmarksChanged event,
     Emitter<RootState> emit,
   ) async {
-    bool exists = _checkDeviceInBookmarks(event.nodeId);
+    bool exists = _checkDeviceInBookmarks(event.node.id);
 
     if (exists) {
       // delete node id
       bool isSuccess = await _rootRepository.deleteBookmarks(
-          user: _user, nodeId: event.nodeId);
+          user: _user, nodeId: event.node.id);
 
       if (isSuccess) {
         emit(state.copyWith(
@@ -392,7 +392,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     } else {
       // add node id
       bool isSuccess =
-          await _rootRepository.addBookmarks(user: _user, nodeId: event.nodeId);
+          await _rootRepository.addBookmarks(user: _user, node: event.node);
 
       if (isSuccess) {
         emit(state.copyWith(
@@ -474,8 +474,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   }
 
   bool _checkDeviceInBookmarks(int nodeId) {
-    List<int> bookmarks = _rootRepository.getBookmarks(user: _user);
-    bool exists = bookmarks.contains(nodeId);
+    List<DeviceMeta> bookmarks = _rootRepository.getBookmarks(user: _user);
+    bool exists = false;
+
+    for (var bookmark in bookmarks) {
+      if (bookmark.id == nodeId) {
+        exists = true;
+        break;
+      }
+    }
+
     return exists;
   }
 
