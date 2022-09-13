@@ -7,6 +7,8 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_history_detail_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceHistoryForm extends StatelessWidget {
   const DeviceHistoryForm({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class DeviceHistoryForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Success!',
+              AppLocalizations.of(context)!.dialogTitle_NoMoreData,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
@@ -28,7 +30,12 @@ class DeviceHistoryForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

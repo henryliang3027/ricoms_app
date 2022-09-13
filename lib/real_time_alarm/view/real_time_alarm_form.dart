@@ -13,6 +13,7 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class RealTimeAlarmForm extends StatelessWidget {
   const RealTimeAlarmForm({
@@ -334,7 +335,12 @@ class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
           );
         } else if (state.allAlarmsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.allAlarms[0]),
+            child: Text(
+              getMessageLocalization(
+                msg: state.allAlarms[0],
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -400,7 +406,12 @@ class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
           );
         } else if (state.criticalAlarmsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.criticalAlarms[0]),
+            child: Text(
+              getMessageLocalization(
+                msg: state.criticalAlarms[0],
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -466,7 +477,12 @@ class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
           );
         } else if (state.warningAlarmsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.warningAlarms[0]),
+            child: Text(
+              getMessageLocalization(
+                msg: state.warningAlarms[0],
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -505,7 +521,7 @@ class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print('build _NormalAlarmsSliverList');
+      print('build_NormalAlarmsSliverList');
     }
     return BlocBuilder<RealTimeAlarmBloc, RealTimeAlarmState>(
       builder: (context, state) {
@@ -532,7 +548,12 @@ class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
           );
         } else if (state.normalAlarmsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.normalAlarms[0]),
+            child: Text(
+              getMessageLocalization(
+                msg: state.normalAlarms[0],
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -598,7 +619,12 @@ class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
           );
         } else if (state.noticeAlarmsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.noticeAlarms[0]),
+            child: Text(
+              getMessageLocalization(
+                msg: state.noticeAlarms[0],
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(

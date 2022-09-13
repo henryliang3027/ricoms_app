@@ -3,6 +3,7 @@ import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HistoryDetailPage extends StatelessWidget {
   const HistoryDetailPage({Key? key, required this.record}) : super(key: key);
@@ -19,7 +20,9 @@ class HistoryDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail'),
+        title: Text(
+          AppLocalizations.of(context)!.detail,
+        ),
       ),
       body: SizedBox(
         width: double.maxFinite,
@@ -32,10 +35,11 @@ class HistoryDetailPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 30.0),
               ),
               _SevrtityItem(
+                labelText: AppLocalizations.of(context)!.severity,
                 initialValue: record.severity,
               ),
               _Item(
-                labelText: 'Time Received',
+                labelText: AppLocalizations.of(context)!.timeReceived,
                 initialValue: record.receivedTime,
               ),
               _Item(
@@ -43,31 +47,31 @@ class HistoryDetailPage extends StatelessWidget {
                 initialValue: record.ip,
               ),
               _Item(
-                labelText: 'Group',
+                labelText: AppLocalizations.of(context)!.group,
                 initialValue: record.group,
               ),
               _Item(
-                labelText: 'Model',
+                labelText: AppLocalizations.of(context)!.model,
                 initialValue: record.model,
               ),
               _Item(
-                labelText: 'Name',
+                labelText: AppLocalizations.of(context)!.name,
                 initialValue: DisplayStyle.getDeviceDisplayName(record),
               ),
               _Item(
-                labelText: 'Event',
+                labelText: AppLocalizations.of(context)!.event,
                 initialValue: record.event,
               ),
               _Item(
-                labelText: 'Value',
+                labelText: AppLocalizations.of(context)!.value,
                 initialValue: record.value,
               ),
               _Item(
-                labelText: 'Clear Time',
+                labelText: AppLocalizations.of(context)!.clearTime,
                 initialValue: record.clearTime,
               ),
               _Item(
-                labelText: 'Alarm Duration',
+                labelText: AppLocalizations.of(context)!.alarmDuration,
                 initialValue: record.alarmDuration,
               ),
             ],
@@ -81,9 +85,11 @@ class HistoryDetailPage extends StatelessWidget {
 class _SevrtityItem extends StatelessWidget {
   const _SevrtityItem({
     Key? key,
+    required this.labelText,
     required this.initialValue,
   }) : super(key: key);
 
+  final String labelText;
   final int initialValue;
 
   @override
@@ -115,7 +121,7 @@ class _SevrtityItem extends StatelessWidget {
             isDense: true,
             filled: true,
             fillColor: CustomStyle.severityColor[initialValue],
-            labelText: 'Severity',
+            labelText: labelText,
             labelStyle: const TextStyle(
               fontSize: CommonStyle.sizeL,
             ),

@@ -16,9 +16,9 @@ import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class RootForm extends StatelessWidget {
   const RootForm({Key? key, required this.pageController}) : super(key: key);
@@ -84,7 +84,7 @@ class RootForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.errorDialog,
+              AppLocalizations.of(context)!.dialogTitle_error,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),
@@ -124,9 +124,14 @@ class RootForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.nodesExportMsg),
+                content: Text(
+                  getMessageLocalization(
+                    msg: state.nodesExportMsg,
+                    context: context,
+                  ),
+                ),
                 action: SnackBarAction(
-                  label: 'Open',
+                  label: AppLocalizations.of(context)!.open,
                   onPressed: () async {
                     OpenFile.open(
                       state.nodesExportFilePath,
@@ -395,7 +400,10 @@ class _NodeContent extends StatelessWidget {
                   color: Color(0xffffc107),
                 ),
                 Text(
-                  state.errmsg,
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
                 ),
                 const SizedBox(height: 40.0),
               ],
@@ -619,7 +627,12 @@ class _NodeSliverList extends StatelessWidget {
         } else if (state.formStatus.isRequestFailure) {
           return Expanded(
             child: Center(
-              child: Text(state.errmsg),
+              child: Text(
+                getMessageLocalization(
+                  msg: state.errmsg,
+                  context: context,
+                ),
+              ),
             ),
           );
         } else {
@@ -786,8 +799,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             title: currentNode.type == 1
-                ? const Text('Delete Group')
-                : const Text('Delete Device'),
+                ? Text(AppLocalizations.of(context)!.deletedGroupDialogTitle)
+                : Text(AppLocalizations.of(context)!.deletedDeviceDialogTitle),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -795,9 +808,9 @@ class _NodeEditBottomMenu extends StatelessWidget {
                     text: TextSpan(
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Are you sure you want to delete ',
-                          style: TextStyle(
+                        TextSpan(
+                          text: AppLocalizations.of(context)!.askBeforeDelete,
+                          style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),
                         ),
@@ -822,14 +835,16 @@ class _NodeEditBottomMenu extends StatelessWidget {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(); // pop dialog
                 },
               ),
               TextButton(
                 child: Text(
-                  'Yes, delete it!',
+                  AppLocalizations.of(context)!.confirmDeleted,
                   style: TextStyle(
                     color: CustomStyle.severityColor[3],
                   ),

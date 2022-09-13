@@ -17,6 +17,7 @@ import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:open_file/open_file.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class HistoryForm extends StatelessWidget {
   const HistoryForm({
@@ -45,7 +46,12 @@ class HistoryForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -69,7 +75,7 @@ class HistoryForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Success!',
+              AppLocalizations.of(context)!.dialogTitle_NoMoreData,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
@@ -77,7 +83,12 @@ class HistoryForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -103,9 +114,14 @@ class HistoryForm extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text(state.historyExportMsg),
+                content: Text(
+                  getMessageLocalization(
+                    msg: state.historyExportMsg,
+                    context: context,
+                  ),
+                ),
                 action: SnackBarAction(
-                  label: 'Open',
+                  label: AppLocalizations.of(context)!.open,
                   onPressed: () async {
                     OpenFile.open(
                       state.historyExportFilePath,
@@ -223,17 +239,18 @@ class _PopupMenu extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  // <-- Icon
+              children: [
+                const Icon(
                   CustomIcons.filter,
                   size: 20.0,
                   color: Colors.black,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10.0,
                 ),
-                Text('Filters'),
+                Text(
+                  AppLocalizations.of(context)!.filters,
+                ),
               ],
             ),
           ),
@@ -242,16 +259,18 @@ class _PopupMenu extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
+              children: [
+                const Icon(
                   CustomIcons.export,
                   size: 20.0,
                   color: Colors.black,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10.0,
                 ),
-                Text('Export'),
+                Text(
+                  AppLocalizations.of(context)!.export,
+                ),
               ],
             ),
           )
@@ -456,7 +475,12 @@ class _HistorySliverList extends StatelessWidget {
           );
         } else if (state.status.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -500,9 +524,9 @@ class _HistoryBottomMenu extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            'Show Detail',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
+          title: Text(
+            AppLocalizations.of(context)!.showDetail,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
           ),
           onTap: () {
             Navigator.pop(context);
@@ -526,9 +550,9 @@ class _HistoryBottomMenu extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            'Go to Device Setting',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
+          title: Text(
+            AppLocalizations.of(context)!.goToDeviceSetting,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
           ),
           onTap: () {
             Navigator.pop(context);

@@ -13,6 +13,7 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class BookmarksForm extends StatelessWidget {
   const BookmarksForm({
@@ -41,7 +42,12 @@ class BookmarksForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -187,16 +193,16 @@ class _PopupMenu extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.delete_outline,
                     size: 20.0,
                     color: Colors.black,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10.0,
                   ),
-                  Text('Delete'),
+                  Text(AppLocalizations.of(context)!.delete),
                 ],
               ),
             ),
@@ -368,7 +374,12 @@ class _DeviceSliverList extends StatelessWidget {
               ));
         } else if (state.formStatus.isRequestFailure) {
           return Center(
-            child: Text(state.requestErrorMsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.requestErrorMsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(

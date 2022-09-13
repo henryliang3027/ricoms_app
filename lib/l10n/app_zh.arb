@@ -21,7 +21,9 @@
     "edit": "編輯",
     "delete": "刪除",
     "search": "搜尋",
+    "searchHint": "請輸入搜尋條件",
     "export": "匯出",
+    "open": "打開",
     "favorite": "加入書籤",
 
     "addGroup": "新增群組",
@@ -56,6 +58,40 @@
     "oneMonth": "一個月",
 
     "settingUpDialog": "設定中",
-    "DeletedDialog": "刪除成功",
-    "ErrorDialog": "錯誤"
+
+    "deletedGroupDialogTitle": "刪除群組",
+    "deletedDeviceDialogTitle": "刪除裝置",
+    "deletedAccountDialogTitle": "刪除帳號",
+    "confirmDeleted": "確認刪除",
+    "askBeforeDelete": "確認刪除 ",
+
+    "filters": "篩選",
+    "date": "日期",
+    "category": "類別",
+    "shelf": "機框",
+    "slot": "槽位",
+    "showOpenIssueOnly": "只顯示尚未解除的告警",
+    "appliedFilter": "已套用的篩選條件",
+    "clearAllFilters": "清除所有篩選條件",
+    "showDetail": "詳細資料",
+    "goToDeviceSetting": "前往裝置設定",
+    "noMoreRecordToShow": "沒有資料可以顯示",
+    "connectionFailed": "連線失敗!",
+    
+    "detail": "詳細資料",
+    "severity": "嚴重性",
+    "timeReceived": "接收時間",
+    "model": "模組",
+    "event": "事件",
+    "value": "數值",
+    "clearTime": "解除時間",
+    "alarmDuration": "告警持續時間",
+    "dialogTitle_NoMoreData": "搜尋成功！",
+    "dialogMessage_NoMoreData": "無法載入更多紀錄。",
+    "dialogMessage_DeviceDoesNotRespond": "裝置沒有回應。",
+    "dialogMessage_NoNode": "找不到此節點",
+    "dialogMessage_ExportRootDataSuccess": "匯出節點資料成功",
+    "dialogMessage_ExportHistoryDataSuccess": "匯出歷史資料成功",
+    "dialogTitle_deletedSuccessfully": "刪除成功",
+    "dialogTitle_error": "錯誤"
 }

@@ -119,7 +119,7 @@ class _KeywordInput extends StatelessWidget {
                   isDense: true,
                   filled: true,
                   fillColor: Colors.white,
-                  labelText: AppLocalizations.of(context)!.search,
+                  labelText: AppLocalizations.of(context)!.searchHint,
                   labelStyle: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                   ),

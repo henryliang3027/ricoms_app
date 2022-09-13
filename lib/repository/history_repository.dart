@@ -316,7 +316,7 @@ class HistoryRepository {
       f.writeAsString(csv);
       return [
         true,
-        'Export root data success',
+        'Export history data success',
         fullWrittenPath,
       ];
     } else if (Platform.isAndroid) {
@@ -352,7 +352,7 @@ class HistoryRepository {
           file.writeAsString(csv);
           return [
             true,
-            'Export root data success',
+            'Export history data success',
             fullWrittenPath,
           ];
         }

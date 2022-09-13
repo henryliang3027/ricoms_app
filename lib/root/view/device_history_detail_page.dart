@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceHistoryDetailPage extends StatelessWidget {
   const DeviceHistoryDetailPage({Key? key, required this.deviceHistoryData})
@@ -20,7 +21,9 @@ class DeviceHistoryDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail'),
+        title: Text(
+          AppLocalizations.of(context)!.detail,
+        ),
       ),
       body: SizedBox(
         width: double.maxFinite,
@@ -33,22 +36,23 @@ class DeviceHistoryDetailPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 50.0),
               ),
               _SevrtityItem(
+                labelText: AppLocalizations.of(context)!.severity,
                 initialValue: deviceHistoryData.severity,
               ),
               _Item(
-                labelText: 'Event',
+                labelText: AppLocalizations.of(context)!.event,
                 initialValue: deviceHistoryData.event,
               ),
               _Item(
-                labelText: 'Time Received',
+                labelText: AppLocalizations.of(context)!.timeReceived,
                 initialValue: deviceHistoryData.timeReceived,
               ),
               _Item(
-                labelText: 'Clear Time',
+                labelText: AppLocalizations.of(context)!.clearTime,
                 initialValue: deviceHistoryData.clearTime,
               ),
               _Item(
-                labelText: 'Alarm Duration',
+                labelText: AppLocalizations.of(context)!.alarmDuration,
                 initialValue: deviceHistoryData.alarmDuration,
               ),
             ],
@@ -62,9 +66,11 @@ class DeviceHistoryDetailPage extends StatelessWidget {
 class _SevrtityItem extends StatelessWidget {
   const _SevrtityItem({
     Key? key,
+    required this.labelText,
     required this.initialValue,
   }) : super(key: key);
 
+  final String labelText;
   final int initialValue;
 
   @override
@@ -96,7 +102,7 @@ class _SevrtityItem extends StatelessWidget {
             isDense: true,
             filled: true,
             fillColor: CustomStyle.severityColor[initialValue],
-            labelText: 'Severity',
+            labelText: labelText,
             labelStyle: const TextStyle(
               fontSize: CommonStyle.sizeL,
             ),

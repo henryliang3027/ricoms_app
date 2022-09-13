@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/history/bloc/search/search_bloc.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchForm extends StatelessWidget {
   const SearchForm({Key? key}) : super(key: key);
@@ -12,7 +13,9 @@ class SearchForm extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Filters'),
+        title: Text(
+          AppLocalizations.of(context)!.filters,
+        ),
       ),
       body: Stack(
         children: [
@@ -30,7 +33,9 @@ class SearchForm extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.all(24.0),
                     ),
-                    const _WidgetTitle(title: 'Date'),
+                    _WidgetTitle(
+                      title: AppLocalizations.of(context)!.date,
+                    ),
                     Container(
                       color: Colors.white,
                       child: Row(
@@ -45,7 +50,9 @@ class SearchForm extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                     ),
-                    const _WidgetTitle(title: 'Category'),
+                    _WidgetTitle(
+                      title: AppLocalizations.of(context)!.category,
+                    ),
                     const Padding(
                       padding: EdgeInsets.all(4.0),
                     ),
@@ -55,7 +62,9 @@ class SearchForm extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                     ),
-                    const _WidgetTitle(title: 'Applied Filter'),
+                    _WidgetTitle(
+                      title: AppLocalizations.of(context)!.appliedFilter,
+                    ),
                     const Padding(
                       padding: EdgeInsets.all(4.0),
                     ),
@@ -132,8 +141,6 @@ class _KeywordInput extends StatelessWidget {
               },
               onFieldSubmitted: (String? keyword) {
                 context.read<SearchBloc>().add(CriteriaSaved(context));
-                // context.read<SearchBloc>().add(const FilterAdded());
-                // _controller.clear();
               },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
@@ -143,7 +150,7 @@ class _KeywordInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Search here...',
+                labelText: AppLocalizations.of(context)!.searchHint,
                 labelStyle: const TextStyle(
                   fontSize: CommonStyle.sizeL,
                 ),
@@ -289,48 +296,27 @@ class _EndDatePicker extends StatelessWidget {
   }
 }
 
-Map<String, String> shelfItem = {
-  'All': '',
-  '01': '1',
-  '02': '2',
-  '03': '3',
-  '04': '4',
-  '05': '5',
-  '06': '6',
-  '07': '7',
-  '08': '8',
-  '09': '9',
-  '10': '10',
-  '11': '11',
-  '12': '12',
-};
-
-Map<String, String> slotItem = {
-  'All': '',
-  '01': '1',
-  '02': '2',
-  '03': '3',
-  '04': '4',
-  '05': '5',
-  '06': '6',
-  '07': '7',
-  '08': '8',
-  '09': '9',
-  '10': '10',
-  '11': '11',
-  '12': '12',
-  '13': '13',
-  '14': '14',
-  '15': '15',
-  '16': '16',
-  'FAN': '0',
-};
-
 class _ShelfSelector extends StatelessWidget {
   const _ShelfSelector({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> shelfItem = {
+      AppLocalizations.of(context)!.all: '',
+      '01': '1',
+      '02': '2',
+      '03': '3',
+      '04': '4',
+      '05': '5',
+      '06': '6',
+      '07': '7',
+      '08': '8',
+      '09': '9',
+      '10': '10',
+      '11': '11',
+      '12': '12',
+    };
+
     Future<void> _showShelfListDialog(
         BuildContext buildContext, String initialValue) async {
       return showDialog<void>(
@@ -347,10 +333,10 @@ class _ShelfSelector extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Shelf',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.shelf,
+                        style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w500,
                         ),
@@ -394,7 +380,9 @@ class _ShelfSelector extends StatelessWidget {
         buildWhen: (previous, current) => previous.shelf != current.shelf,
         builder: (context, state) {
           return ListTile(
-            title: const Text('Shelf'),
+            title: Text(
+              AppLocalizations.of(context)!.shelf,
+            ),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -417,6 +405,27 @@ class _SlotSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> slotItem = {
+      AppLocalizations.of(context)!.all: '',
+      '01': '1',
+      '02': '2',
+      '03': '3',
+      '04': '4',
+      '05': '5',
+      '06': '6',
+      '07': '7',
+      '08': '8',
+      '09': '9',
+      '10': '10',
+      '11': '11',
+      '12': '12',
+      '13': '13',
+      '14': '14',
+      '15': '15',
+      '16': '16',
+      'FAN': '0',
+    };
+
     Future<void> _showSlotListDialog(
         BuildContext buildContext, String initialValue) async {
       return showDialog<void>(
@@ -433,10 +442,10 @@ class _SlotSelector extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Slot',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.slot,
+                        style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w500),
                       ),
                     ],
@@ -474,7 +483,9 @@ class _SlotSelector extends StatelessWidget {
         buildWhen: (previous, current) => previous.slot != current.slot,
         builder: (context, state) {
           return ListTile(
-            title: const Text('Slot'),
+            title: Text(
+              AppLocalizations.of(context)!.slot,
+            ),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -502,7 +513,9 @@ class _CurrentIssueCheckBox extends StatelessWidget {
             previous.unsolvedOnly != current.unsolvedOnly,
         builder: (context, state) {
           return CheckboxListTile(
-              title: const Text('Show open issue only'),
+              title: Text(
+                AppLocalizations.of(context)!.showOpenIssueOnly,
+              ),
               value: state.unsolvedOnly,
               onChanged: (bool? value) {
                 context
@@ -533,7 +546,9 @@ class _AppliedFilterList extends StatelessWidget {
             children: [
               state.queries.isNotEmpty
                   ? InputChip(
-                      label: const Text('Clear all filters'),
+                      label: Text(
+                        AppLocalizations.of(context)!.clearAllFilters,
+                      ),
                       onPressed: () {
                         context.read<SearchBloc>().add(const FilterCleared());
                       },

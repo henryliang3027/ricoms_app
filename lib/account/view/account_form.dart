@@ -13,6 +13,7 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class AccountForm extends StatelessWidget {
   const AccountForm({
@@ -31,7 +32,7 @@ class AccountForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Deleted',
+              AppLocalizations.of(context)!.deletedDeviceDialogTitle,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
@@ -39,7 +40,12 @@ class AccountForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -63,7 +69,7 @@ class AccountForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              CustomErrTitle.commonErrTitle,
+              AppLocalizations.of(context)!.dialogTitle_error,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),
@@ -71,7 +77,12 @@ class AccountForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -196,7 +207,7 @@ class _KeywordInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Search here...',
+                labelText: AppLocalizations.of(context)!.searchHint,
                 labelStyle: const TextStyle(
                   fontSize: CommonStyle.sizeL,
                 ),
@@ -414,7 +425,9 @@ class _AccountEditBottomMenu extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (context) {
           return AlertDialog(
-            title: const Text('Delete Account'),
+            title: Text(
+              AppLocalizations.of(context)!.deletedAccountDialogTitle,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -422,9 +435,9 @@ class _AccountEditBottomMenu extends StatelessWidget {
                     text: TextSpan(
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Are you sure you want to delete ',
-                          style: TextStyle(
+                        TextSpan(
+                          text: AppLocalizations.of(context)!.askBeforeDelete,
+                          style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),
                         ),
@@ -449,14 +462,16 @@ class _AccountEditBottomMenu extends StatelessWidget {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(); // pop dialog
                 },
               ),
               TextButton(
                 child: Text(
-                  'Yes, delete it!',
+                  AppLocalizations.of(context)!.confirmDeleted,
                   style: TextStyle(
                     color: CustomStyle.severityColor[3],
                   ),
@@ -489,9 +504,9 @@ class _AccountEditBottomMenu extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text(
-            'Edit',
-            style: TextStyle(fontSize: CommonStyle.sizeM),
+          title: Text(
+            AppLocalizations.of(context)!.edit,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
           ),
           onTap: () async {
             Navigator.pop(context);
@@ -528,9 +543,9 @@ class _AccountEditBottomMenu extends StatelessWidget {
                     ),
                   ),
                 ),
-                title: const Text(
-                  'Delete',
-                  style: TextStyle(fontSize: CommonStyle.sizeM),
+                title: Text(
+                  AppLocalizations.of(context)!.delete,
+                  style: const TextStyle(fontSize: CommonStyle.sizeM),
                 ),
                 onTap: () async {
                   Navigator.pop(context);

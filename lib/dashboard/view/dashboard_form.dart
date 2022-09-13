@@ -7,6 +7,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -158,7 +159,12 @@ class __AlarmOneDayStatisticsPieChartState
           );
         } else if (state.alarmOneDayStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -203,7 +209,12 @@ class __AlarmThreeDaysStatisticsPieChartState
           );
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -248,7 +259,12 @@ class __AlarmOneWeekStatisticsPieChartState
           );
         } else if (state.alarmOneWeekStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -293,7 +309,12 @@ class __AlarmTwoWeeksStatisticsPieChartState
           );
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -338,7 +359,12 @@ class __AlarmOneMonthStatisticsPieChartState
           );
         } else if (state.alarmOneMonthStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
@@ -461,7 +487,12 @@ class _DeviceStatisticsGridView extends StatelessWidget {
           );
         } else if (state.deviceStatisticsStatus.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(

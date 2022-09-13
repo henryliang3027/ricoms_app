@@ -100,9 +100,19 @@
       "description": "search"
     },
 
+    "searchHint": "Search here...",
+    "@all": {
+      "description": "search here"
+    },
+
     "export": "Export",
     "@all": {
       "description": "device status export or hisstory export"
+    },
+
+    "open": "Open",
+    "@all": {
+      "description": "open"
     },
 
     "favorite": "Favorite",
@@ -260,13 +270,170 @@
       "description": "setting up"
     },
 
-    "deletedDialog": "Deleted",
+    "deletedGroupDialogTitle": "Delete Group",
+    "@all": {
+      "description": "delete group"
+    },
+
+    "deletedDeviceDialogTitle": "Delete Device",
+    "@all": {
+      "description": "delete device"
+    },
+
+    "deletedAccountDialogTitle": "Delete Account",
+    "@all": {
+      "description": "delete account"
+    },
+
+    "confirmDeleted": "Yes, delete it!",
+    "@all": {
+      "description": "confirm deleted"
+    },
+
+    "askBeforeDelete": "Are you sure you want to delete ",
+    "@all": {
+      "description": "ask before delete"
+    },
+
+    "filters": "Filters",
+    "@all": {
+      "description": "filters"
+    },
+
+    "date": "Date",
+    "@all": {
+      "description": "date"
+    },
+  
+    "category": "Category",
+    "@all": {
+      "description": "category"
+    },
+
+    "shelf": "Shelf",
+    "@all": {
+      "description": "shelf"
+    },
+
+    "slot": "Slot",
+    "@all": {
+      "description": "slot"
+    },
+  
+    "showOpenIssueOnly": "Show open issue only",
+    "@all": {
+      "description": "show open issue only"
+    },
+
+    "appliedFilter": "Applied Filter",
+    "@all": {
+      "description": "applied filter"
+    },
+
+    "clearAllFilters": "Clear all filters",
+    "@all": {
+      "description": "clear all filters"
+    },
+
+    "showDetail": "Show Detail",
+    "@all": {
+      "description": "show detail"
+    },
+  
+    "goToDeviceSetting": "Go To Device Setting",
+    "@all": {
+      "description": "go to device setting"
+    },
+
+    "noMoreRecordToShow": "There are no records to show",
+    "@all": {
+      "description": "There are no records to show"
+    },
+
+    "connectionFailed": "Connection failed!",
+    "@all": {
+      "description": "Connection failed"
+    },
+
+
+    "detail": "Detail",
+    "@all": {
+      "description": "history detail"
+    },
+
+    "severity": "Severity",
+    "@all": {
+      "description": "severity"
+    },
+
+    "timeReceived": "Time Received",
+    "@all": {
+      "description": "time received"
+    },
+
+    "model": "Model",
+    "@all": {
+      "description": "model"
+    },
+
+    "event": "Event",
+    "@all": {
+      "description": "event"
+    },
+
+    "value": "Value",
+    "@all": {
+      "description": "value"
+    },
+
+    "clearTime": "Clear Time",
+    "@all": {
+      "description": "clear time"
+    },
+
+    "alarmDuration": "Alarm Duration",
+    "@all": {
+      "description": "alarm duration"
+    },
+
+    "dialogTitle_NoMoreData": "Success!",
+    "@all": {
+      "description": "no more data"
+    },
+
+    "dialogMessage_NoMoreData": "No more result.",
+    "@all": {
+      "description": "no more result"
+    },
+
+    "dialogMessage_DeviceDoesNotRespond": "The device does not respond!",
+    "@all": {
+      "description": "The device does not respond!"
+    },
+
+    "dialogMessage_NoNode": "No node",
+    "@all": {
+      "description": "No node"
+    },
+
+    "dialogMessage_ExportRootDataSuccess": "Export root data success",
+    "@all": {
+      "description": "Export root data success"
+    },
+
+    "dialogMessage_ExportHistoryDataSuccess": "Export history data success",
+    "@all": {
+      "description": "Export history data success"
+    },
+
+    "dialogTitle_deletedSuccessfully": "Deleted",
     "@all": {
       "description": "deleted"
     },
 
-    "errorDialog": "Error",
+    "dialogTitle_error": "Error",
     "@all": {
       "description": "error"
     }
+
 }
