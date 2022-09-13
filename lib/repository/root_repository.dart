@@ -54,30 +54,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return CustomErrMsg.connectionFailed;
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return 'Server No Response';
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return e.message;
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return e.toString();
-      // }
     }
   }
 
@@ -221,30 +197,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, e.response!.statusMessage];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -309,30 +261,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -361,30 +289,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -419,30 +323,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -476,30 +356,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -565,30 +421,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -689,30 +521,6 @@ class RootRepository {
       }
     } on DioError catch (e) {
       return [false, CustomErrMsg.connectionFailed];
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      // if (e is DioError) {
-      //   if (e.response != null) {
-      //     if (kDebugMode) {
-      //       print(e.response!.data);
-      //       print(e.response!.headers);
-      //       print(e.response!.requestOptions);
-      //     }
-      //     //throw Exception('Server No Response');
-      //     return [false, 'Server No Response'];
-      //   } else {
-      //     // Something happened in setting up or sending the request that triggered an Error
-      //     if (kDebugMode) {
-      //       print(e.requestOptions);
-      //       print(e.message);
-      //     }
-      //     //throw Exception(e.message);
-      //     return [false, e.message];
-      //   }
-      // } else {
-      //   //throw Exception(e.toString());
-      //   return [false, e.toString()];
-      // }
     }
   }
 
@@ -861,18 +669,3 @@ class Info {
   final String module;
   final String series;
 }
-
-// "device_id": 678,
-// "ip": "192.168.29.202",
-// "shelf": 0,
-// "slot": 0,
-// "read": "public",
-// "write": "private",
-// "description": "",
-// "location": "",
-// "parent_id": 779,
-// "path": ",1000,779,",
-// "device_main_id": -1,
-// "module_id": -1,
-// "module": "A8K3U",
-// "series": "A8K3U"
