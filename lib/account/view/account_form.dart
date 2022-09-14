@@ -11,7 +11,6 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -32,7 +31,7 @@ class AccountForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.deletedDeviceDialogTitle,
+              AppLocalizations.of(context)!.dialogTitle_deletedSuccessfully,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
@@ -426,7 +425,7 @@ class _AccountEditBottomMenu extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.deletedAccountDialogTitle,
+              AppLocalizations.of(context)!.dialogTitle_deletedAccount,
             ),
             content: SingleChildScrollView(
               child: ListBody(

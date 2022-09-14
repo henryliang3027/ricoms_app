@@ -200,6 +200,53 @@
       "description": "save"
     },
 
+    "noData": "No Data",
+    "@all": {
+      "description": "no data"
+    },
+
+
+    "deviceSettingTab_status": "Status",
+    "@all": {
+      "description": "status"
+    },
+
+    "deviceSettingTab_configuration": "Configuration",
+    "@all": {
+      "description": "Configuration"
+    },
+
+    "deviceSettingTab_threshold": "Threshold",
+    "@all": {
+      "description": "Threshold"
+    },
+
+    "deviceSettingTab_monitoringChart": "Monitoring Chart",
+    "@all": {
+      "description": "Monitoring Chart"
+    },
+
+    "deviceSettingTab_description": "Description",
+    "@all": {
+      "description": "Description"
+    },
+
+    "deviceSettingTab_summary": "Summary",
+    "@all": {
+      "description": "Summary"
+    },
+
+    "deviceSettingTab_wanSettings": "WAN Settings",
+    "@all": {
+      "description": "WAN Settings"
+    },
+
+    "deviceSettingTab_snmpSetup": "SNMP Setup",
+    "@all": {
+      "description": "SNMP Setup"
+    },
+
+
     "alarmRatio": "Alarm Ratio",
     "@all": {
       "description": "dashboard alarm ratio"
@@ -265,24 +312,19 @@
       "description": "dashboard alarm ratio 1 month"
     },
 
-    "settingUpDialog": "Setting Up",
+    "dialogTitle_settingUp": "Setting Up",
     "@all": {
       "description": "setting up"
     },
 
-    "deletedGroupDialogTitle": "Delete Group",
+    "dialogTitle_deletedGroup": "Delete Group",
     "@all": {
       "description": "delete group"
     },
 
-    "deletedDeviceDialogTitle": "Delete Device",
+    "dialogTitle_deletedDevice": "Delete Device",
     "@all": {
       "description": "delete device"
-    },
-
-    "deletedAccountDialogTitle": "Delete Account",
-    "@all": {
-      "description": "delete account"
     },
 
     "confirmDeleted": "Yes, delete it!",
@@ -396,6 +438,107 @@
       "description": "alarm duration"
     },
 
+
+    "editAccount": "Edit Account",
+    "@all": {
+      "description": "Edit Account"
+    },
+
+    "addAccount": "Add Account",
+    "@all": {
+      "description": "Add Account"
+    },
+
+    "password": "Password",
+    "@all": {
+      "description": "password"
+    },
+
+    "department": "Department",
+    "@all": {
+      "description": "department"
+    },
+
+    "email": "Email",
+    "@all": {
+      "description": "email"
+    },
+
+    "phone": "Phone",
+    "@all": {
+      "description": "email"
+    },
+
+    "tel": "Tel",
+    "@all": {
+      "description": "tel"
+    },
+
+    "ext": "Ext",
+    "@all": {
+      "description": "ext"
+    },
+
+    "accountErrorText": "The account must be between 1-32 characters.",
+    "@all": {
+      "description": "The account must be between 1-32 characters."
+    },
+
+    "passwordErrorText": "Password must be between 4-32 characters.",
+    "@all": {
+      "description": "Password must be between 4-32 characters."
+    },
+
+    "nameErrorText": "The name must be between 1-64 characters.",
+    "@all": {
+      "description": "The name must be between 1-64 characters."
+    },
+  
+    "emailErrorText": "Invalid email address.",
+    "@all": {
+      "description": "Invalid email address."
+    },
+
+    "passwordDoesNotMatch": "Your confirmation password does not match the new password.",
+    "@all": {
+      "description": "Your confirmation password does not match the new password."
+    },
+
+    "currentPassword": "Current Password",
+    "@all": {
+      "description": "current password"
+    },
+
+    "currentPasswordHelperText": "Enter the current password",
+    "@all": {
+      "description": "Enter the current password."
+    },
+
+    "newPassword": "New password",
+    "@all": {
+      "description": "new password"
+    },
+    
+    "newPasswordHelperText": "Enter the new password",
+    "@all": {
+      "description": "Enter the new password."
+    },
+    
+    "confirmPassword": "Confirm Password",
+    "@all": {
+      "description": "confirm password"
+    },
+
+    "confirmPasswordHelperText": "Confirm your new password",
+    "@all": {
+      "description": "Confirm your new password"
+    },
+
+    "update": "Update",
+    "@all": {
+      "description": "update"
+    },
+
     "dialogTitle_NoMoreData": "Success!",
     "@all": {
       "description": "no more data"
@@ -409,6 +552,16 @@
     "dialogMessage_DeviceDoesNotRespond": "The device does not respond!",
     "@all": {
       "description": "The device does not respond!"
+    },
+
+    "dialogMessage_NoModuleInTheSlot": "No module in the slot ",
+    "@all": {
+      "description": "No module in the slot"
+    },
+
+    "dialogMessage_PleaseTryAnother": "please try another.",
+    "@all": {
+      "description": "please try another."
     },
 
     "dialogMessage_NoNode": "No node",
@@ -426,6 +579,21 @@
       "description": "Export history data success"
     },
 
+    "dialogMessage_changePasswordSuccessfully": "Please login again.",
+    "@all": {
+      "description": "Please login again."
+    },
+
+    "dialogMessage_lostConnectionToServerContent": "Make sure you are on the same domain as the server. Please try to login again.",
+    "@all": {
+      "description": "lost connection to server content"
+    },
+
+    "dialogTitle_lostConnectionToServer": "Lost Connection To Server.",
+    "@all": {
+      "description": "lost connection to server."
+    },
+
     "dialogTitle_deletedSuccessfully": "Deleted",
     "@all": {
       "description": "deleted"
@@ -434,6 +602,30 @@
     "dialogTitle_error": "Error",
     "@all": {
       "description": "error"
-    }
+    },
 
+    "dialogTitle_deletedAccount": "Delete Account",
+    "@all": {
+      "description": "delete account"
+    },
+
+    "dialogTitle_saving": "Saving...",
+    "@all": {
+      "description": "saving"
+    },
+
+    "dialogTitle_editAccountSuccessfully": "Saved!",
+    "@all": {
+      "description": "edit account successfully"
+    },
+
+    "dialogTitle_addAccountSuccessfully": "Created!",
+    "@all": {
+      "description": "add account successfully"
+    },
+
+    "dialogTitle_changePasswordSuccessfully": "Update",
+    "@all": {
+      "description": "change password successfully"
+    }
 }

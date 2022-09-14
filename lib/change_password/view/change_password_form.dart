@@ -4,7 +4,8 @@ import 'package:formz/formz.dart';
 import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class ChangePasswordForm extends StatelessWidget {
   const ChangePasswordForm({Key? key}) : super(key: key);
@@ -18,15 +19,18 @@ class ChangePasswordForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Update',
+              AppLocalizations.of(context)!.update,
               style: TextStyle(
                 color: CustomStyle.severityColor[1],
               ),
             ),
             content: SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
-                  Text('Please login again.'),
+                children: <Widget>[
+                  Text(
+                    AppLocalizations.of(context)!
+                        .dialogMessage_changePasswordSuccessfully,
+                  ),
                 ],
               ),
             ),
@@ -49,14 +53,19 @@ class ChangePasswordForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(CustomErrTitle.commonErrTitle,
+            title: Text(AppLocalizations.of(context)!.dialogTitle_error,
                 style: TextStyle(
                   color: CustomStyle.severityColor[3],
                 )),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(errmsg),
+                  Text(
+                    getMessageLocalization(
+                      msg: errmsg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -153,16 +162,16 @@ class _CurrentPasswordInput extends StatelessWidget {
             isDense: true,
             filled: true,
             fillColor: Colors.white,
-            hintText: 'Current password',
+            hintText: AppLocalizations.of(context)!.currentPassword,
             hintStyle: const TextStyle(
               fontSize: CommonStyle.sizeL,
             ),
             errorMaxLines: 2,
             errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
             errorText: state.currentPassword.invalid
-                ? 'Password must be between 4-32 characters.'
+                ? AppLocalizations.of(context)!.passwordErrorText
                 : null,
-            helperText: 'Enter the Current password',
+            helperText: AppLocalizations.of(context)!.currentPasswordHelperText,
             helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
             suffixIconConstraints: const BoxConstraints(
                 maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
@@ -210,16 +219,16 @@ class _NewPasswordInput extends StatelessWidget {
               isDense: true,
               filled: true,
               fillColor: Colors.white,
-              hintText: 'New password',
+              hintText: AppLocalizations.of(context)!.newPassword,
               hintStyle: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
               errorMaxLines: 2,
               errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               errorText: state.newPassword.invalid
-                  ? 'Password must be between 4-32 characters.'
+                  ? AppLocalizations.of(context)!.passwordErrorText
                   : null,
-              helperText: 'Enter the New password',
+              helperText: AppLocalizations.of(context)!.newPasswordHelperText,
               helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               suffixIconConstraints: const BoxConstraints(
                   maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
@@ -267,16 +276,17 @@ class _ConfirmPasswordInput extends StatelessWidget {
               isDense: true,
               filled: true,
               fillColor: Colors.white,
-              hintText: 'Confirm password',
+              hintText: AppLocalizations.of(context)!.confirmPassword,
               hintStyle: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
               errorMaxLines: 2,
               errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               errorText: state.confirmPassword.invalid
-                  ? 'Password must be between 4-32 characters.'
+                  ? AppLocalizations.of(context)!.passwordErrorText
                   : null,
-              helperText: 'Confirm your new password',
+              helperText:
+                  AppLocalizations.of(context)!.confirmPasswordHelperText,
               helperStyle: const TextStyle(fontSize: CommonStyle.sizeS),
               suffixIconConstraints: const BoxConstraints(
                   maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
@@ -308,9 +318,9 @@ class _SaveButton extends StatelessWidget {
             ? const CircularProgressIndicator()
             : ElevatedButton(
                 key: const Key('changePasswordForm_save_raisedButton'),
-                child: const Text(
-                  'Update',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.update,
+                  style: const TextStyle(
                     fontSize: CommonStyle.sizeM,
                   ),
                 ),

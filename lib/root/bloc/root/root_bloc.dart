@@ -350,7 +350,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
-            errmsg: 'The device does not respond.',
+            errmsg: 'The device does not respond!',
           ));
         }
       } else {

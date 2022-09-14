@@ -34,7 +34,7 @@ class RootForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.settingUpDialog,
+              AppLocalizations.of(context)!.dialogTitle_settingUp,
             ),
             actionsAlignment: MainAxisAlignment.center,
             actions: const <Widget>[
@@ -523,9 +523,11 @@ class _NodeSliverList extends StatelessWidget {
           if (state.directory.last.type == 1) {
             //group
             if (state.data.isEmpty) {
-              return const Expanded(
+              return Expanded(
                 child: Center(
-                  child: Text('No data.'),
+                  child: Text(
+                    AppLocalizations.of(context)!.noData,
+                  ),
                 ),
               );
             }
@@ -553,14 +555,17 @@ class _NodeSliverList extends StatelessWidget {
                   color: Colors.white,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
+                    children: [
+                      const Icon(
                         Icons.warning_rounded,
                         size: 200,
                         color: Color(0xffffc107),
                       ),
-                      Text('The device does not respond.'),
-                      SizedBox(height: 40.0),
+                      Text(
+                        AppLocalizations.of(context)!
+                            .dialogMessage_DeviceDoesNotRespond,
+                      ),
+                      const SizedBox(height: 40.0),
                     ],
                   ),
                 ),
@@ -799,8 +804,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             title: currentNode.type == 1
-                ? Text(AppLocalizations.of(context)!.deletedGroupDialogTitle)
-                : Text(AppLocalizations.of(context)!.deletedDeviceDialogTitle),
+                ? Text(AppLocalizations.of(context)!.dialogTitle_deletedGroup)
+                : Text(AppLocalizations.of(context)!.dialogTitle_deletedDevice),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[

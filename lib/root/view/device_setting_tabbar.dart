@@ -4,10 +4,11 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
-import 'package:ricoms_app/root/view/device_history_form.dart';
 import 'package:ricoms_app/root/view/device_history_page.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceSettingTabBar extends StatelessWidget {
   const DeviceSettingTabBar({
@@ -56,11 +57,23 @@ class DeviceSettingTabBar extends StatelessWidget {
                     tabs: [
                       if (isA8KPCM2()) ...[
                         for (DeviceBlock deviceBlock in deviceBlocks)
-                          Tab(text: deviceBlock.name),
+                          Tab(
+                            text: getMessageLocalization(
+                              msg: deviceBlock.name,
+                              context: context,
+                            ),
+                          ),
                       ] else ...[
                         for (DeviceBlock deviceBlock in deviceBlocks)
-                          Tab(text: deviceBlock.name),
-                        const Tab(text: 'History')
+                          Tab(
+                            text: getMessageLocalization(
+                              msg: deviceBlock.name,
+                              context: context,
+                            ),
+                          ),
+                        Tab(
+                          text: AppLocalizations.of(context)!.history,
+                        ),
                       ]
                     ],
                   ),
@@ -106,7 +119,12 @@ class DeviceSettingTabBar extends StatelessWidget {
                     size: 200,
                     color: Color(0xffffc107),
                   ),
-                  Text(snapshot.data),
+                  Text(
+                    getMessageLocalization(
+                      msg: snapshot.data,
+                      context: context,
+                    ),
+                  ),
                   const SizedBox(height: 40.0),
                 ],
               ),

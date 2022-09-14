@@ -8,7 +8,7 @@ import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountEditForm extends StatelessWidget {
   const AccountEditForm({
@@ -37,10 +37,12 @@ class AccountEditForm extends StatelessWidget {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text('Saving...'),
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_saving,
+            ),
             actionsAlignment: MainAxisAlignment.center,
-            actions: <Widget>[
+            actions: const <Widget>[
               CircularProgressIndicator(),
             ],
           );
@@ -58,11 +60,13 @@ class AccountEditForm extends StatelessWidget {
           return AlertDialog(
             title: _isEditing
                 ? Text(
-                    'Saved!',
+                    AppLocalizations.of(context)!
+                        .dialogTitle_editAccountSuccessfully,
                     style: TextStyle(color: CustomStyle.severityColor[1]),
                   )
                 : Text(
-                    'Created!',
+                    AppLocalizations.of(context)!
+                        .dialogTitle_addAccountSuccessfully,
                     style: TextStyle(color: CustomStyle.severityColor[1]),
                   ),
             content: SingleChildScrollView(
@@ -97,7 +101,7 @@ class AccountEditForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              CustomErrTitle.commonErrTitle,
+              AppLocalizations.of(context)!.dialogTitle_error,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),
@@ -149,8 +153,12 @@ class AccountEditForm extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: _isEditing
-                ? const Text('Edit Account')
-                : const Text('Add Account'),
+                ? Text(
+                    AppLocalizations.of(context)!.editAccount,
+                  )
+                : Text(
+                    AppLocalizations.of(context)!.addAccount,
+                  ),
           ),
           body: Container(
             height: double.maxFinite,
@@ -235,7 +243,7 @@ class _AccountInput extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 counterText: '',
-                labelText: 'Account',
+                labelText: AppLocalizations.of(context)!.account,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -243,7 +251,7 @@ class _AccountInput extends StatelessWidget {
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.account.invalid
-                    ? 'The account must be between 1-32 characters long.'
+                    ? AppLocalizations.of(context)!.accountErrorText
                     : null,
               ),
             ),
@@ -287,7 +295,7 @@ class _PasswordInput extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 counterText: '',
-                hintText: 'Password',
+                hintText: AppLocalizations.of(context)!.password,
                 hintStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -295,7 +303,7 @@ class _PasswordInput extends StatelessWidget {
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.password.invalid
-                    ? 'Password must be between 4-32 characters.'
+                    ? AppLocalizations.of(context)!.passwordErrorText
                     : null,
                 suffixIconConstraints: const BoxConstraints(
                     maxHeight: 28, maxWidth: 28, minHeight: 28, minWidth: 28),
@@ -352,7 +360,7 @@ class _NameInput extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 counterText: '',
-                labelText: 'Name',
+                labelText: AppLocalizations.of(context)!.name,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -360,7 +368,7 @@ class _NameInput extends StatelessWidget {
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.name.invalid
-                    ? 'The name must be between 1-64 characters long.'
+                    ? AppLocalizations.of(context)!.nameErrorText
                     : null,
               ),
             ),
@@ -492,7 +500,7 @@ class _DepartmentInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Department',
+                labelText: AppLocalizations.of(context)!.department,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -538,15 +546,16 @@ class _EmailInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Email',
+                labelText: AppLocalizations.of(context)!.email,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
-                errorText:
-                    state.email.invalid ? 'Invalid email address.' : null,
+                errorText: state.email.invalid
+                    ? AppLocalizations.of(context)!.emailErrorText
+                    : null,
               ),
             ),
           ),
@@ -588,7 +597,7 @@ class _MobileInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Phone',
+                labelText: AppLocalizations.of(context)!.phone,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -633,7 +642,7 @@ class _TelInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Tel',
+                labelText: AppLocalizations.of(context)!.tel,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -678,7 +687,7 @@ class _ExtInput extends StatelessWidget {
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
-                labelText: 'Ext',
+                labelText: AppLocalizations.of(context)!.ext,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
@@ -726,15 +735,15 @@ class _SaveButton extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 : isEditing
-                    ? const Text(
-                        'Save',
-                        style: TextStyle(
+                    ? Text(
+                        AppLocalizations.of(context)!.save,
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeM,
                         ),
                       )
-                    : const Text(
-                        'Create',
-                        style: TextStyle(
+                    : Text(
+                        AppLocalizations.of(context)!.create,
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeM,
                         ),
                       ),

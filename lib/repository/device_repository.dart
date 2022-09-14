@@ -44,7 +44,7 @@ class DeviceRepository {
 
         return deviceBlocks;
       } else {
-        return 'The device does not respond.';
+        return 'The device does not respond!';
       }
     } on DioError catch (e) {
       return CustomErrMsg.connectionFailed;

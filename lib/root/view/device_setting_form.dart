@@ -8,6 +8,8 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceSettingForm extends StatefulWidget {
   DeviceSettingForm({
@@ -37,10 +39,12 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text('Setting up'),
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.dialogTitle_settingUp,
+          ),
           actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
+          actions: const <Widget>[
             CircularProgressIndicator(),
           ],
         );
@@ -241,14 +245,17 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                 color: Colors.white,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
+                  children: [
+                    const Icon(
                       Icons.warning_rounded,
                       size: 200,
                       color: Color(0xffffc107),
                     ),
-                    Text('The device does not respond.'),
-                    SizedBox(height: 40.0),
+                    Text(
+                      AppLocalizations.of(context)!
+                          .dialogMessage_DeviceDoesNotRespond,
+                    ),
+                    const SizedBox(height: 40.0),
                   ],
                 ),
               ),

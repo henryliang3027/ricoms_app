@@ -38,7 +38,7 @@ class HistoryForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              CustomErrTitle.commonErrTitle,
+              AppLocalizations.of(context)!.dialogTitle_error,
               style: TextStyle(
                 color: CustomStyle.severityColor[3],
               ),

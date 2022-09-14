@@ -5,6 +5,8 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
 import 'package:ricoms_app/login/view/login_form.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
