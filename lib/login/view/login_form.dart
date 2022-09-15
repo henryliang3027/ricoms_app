@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -15,16 +16,21 @@ class LoginForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(
-              CustomErrTitle.commonErrTitle,
-              style: TextStyle(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_error,
+              style: const TextStyle(
                 color: Colors.red,
               ),
             ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(errmsg),
+                  Text(
+                    getMessageLocalization(
+                      msg: errmsg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -70,13 +76,13 @@ class LoginForm extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(
                     height: 32.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Image.asset('assets/login_ip_icon.png'),
-                    ),
+                    child: Image.asset('assets/login_ip_icon.png'),
                   ),
                   Expanded(
-                    child: _IPInput(),
+                    child: SizedBox(
+                      height: 32.0,
+                      child: _IPInput(),
+                    ),
                   ),
                 ],
               ),
@@ -90,13 +96,13 @@ class LoginForm extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(
                     height: 32.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Image.asset('assets/login_username_icon.png'),
-                    ),
+                    child: Image.asset('assets/login_username_icon.png'),
                   ),
                   Expanded(
-                    child: _UsernameInput(),
+                    child: SizedBox(
+                      height: 32.0,
+                      child: _UsernameInput(),
+                    ),
                   ),
                 ],
               ),
@@ -110,13 +116,13 @@ class LoginForm extends StatelessWidget {
                 children: <Widget>[
                   SizedBox(
                     height: 32.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Image.asset('assets/login_password_icon.png'),
-                    ),
+                    child: Image.asset('assets/login_password_icon.png'),
                   ),
                   Expanded(
-                    child: _PasswordInput(),
+                    child: SizedBox(
+                      height: 32.0,
+                      child: _PasswordInput(),
+                    ),
                   ),
                 ],
               ),
@@ -145,14 +151,15 @@ class _IPInput extends StatelessWidget {
           enabled: state.status.isSubmissionInProgress ? false : true,
           textInputAction: TextInputAction.done,
           onChanged: (ip) => context.read<LoginBloc>().add(LoginIPChanged(ip)),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-            contentPadding: EdgeInsets.all(5),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+            contentPadding: const EdgeInsets.all(5),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
-            hintText: 'IP',
-            hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            hintText: AppLocalizations.of(context)!.loginServerIP,
+            hintStyle:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             //errorText: state.ip.invalid ? 'Invalid IP' : null,
           ),
         );
@@ -177,14 +184,15 @@ class _UsernameInput extends StatelessWidget {
           textInputAction: TextInputAction.done,
           onChanged: (username) =>
               context.read<LoginBloc>().add(LoginUsernameChanged(username)),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-            contentPadding: EdgeInsets.all(5),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
+            contentPadding: const EdgeInsets.all(5),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
-            hintText: 'User ID',
-            hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            hintText: AppLocalizations.of(context)!.loginUserID,
+            hintStyle:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             //errorText: state.username.invalid ? 'Invalid User ID' : null,
           ),
         );
@@ -217,7 +225,7 @@ class _PasswordInput extends StatelessWidget {
             isDense: true,
             filled: true,
             fillColor: Colors.white,
-            hintText: 'Password',
+            hintText: AppLocalizations.of(context)!.loginPassword,
             hintStyle:
                 const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
             //errorText: state.password.invalid ? 'Invalid Password' : null,

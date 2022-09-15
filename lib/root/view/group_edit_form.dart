@@ -6,6 +6,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class GroupEditForm extends StatelessWidget {
   const GroupEditForm({Key? key}) : super(key: key);
@@ -18,7 +19,13 @@ class GroupEditForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: isEditing ? const Text('Saving') : const Text('Creating'),
+            title: isEditing
+                ? Text(
+                    AppLocalizations.of(context)!.dialogTitle_saving,
+                  )
+                : Text(
+                    AppLocalizations.of(context)!.dialogTitle_creating,
+                  ),
             actionsAlignment: MainAxisAlignment.center,
             actions: const <Widget>[
               CircularProgressIndicator(),
@@ -36,17 +43,22 @@ class GroupEditForm extends StatelessWidget {
           return AlertDialog(
             title: isEditing
                 ? Text(
-                    'Saved!',
+                    AppLocalizations.of(context)!.dialogTitle_editSuccess,
                     style: TextStyle(color: CustomStyle.severityColor[1]),
                   )
                 : Text(
-                    'Created!',
+                    AppLocalizations.of(context)!.dialogTitle_createSuccess,
                     style: TextStyle(color: CustomStyle.severityColor[1]),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

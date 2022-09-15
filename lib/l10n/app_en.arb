@@ -1,4 +1,19 @@
 {
+    "loginServerIP": "IP",
+    "@realTimeAlarm": {
+      "description": "login server ip"
+    },
+
+    "loginUserID": "User ID",
+    "@realTimeAlarm": {
+      "description": "login user id"
+    },
+
+    "loginPassword": "Password",
+    "@realTimeAlarm": {
+      "description": "login password"
+    },
+
     "realTimeAlarm": "Real-Time Alarm",
     "@realTimeAlarm": {
       "description": "App bar title and drawer item text"
@@ -216,6 +231,12 @@
       "description": "Configuration"
     },
 
+    "deviceSettingTab_ipConfiguration": "IP Configuration",
+    "@all": {
+      "description": "IP Configuration"
+    },
+
+
     "deviceSettingTab_threshold": "Threshold",
     "@all": {
       "description": "Threshold"
@@ -315,6 +336,16 @@
     "dialogTitle_settingUp": "Setting Up",
     "@all": {
       "description": "setting up"
+    },
+
+    "dialogTitle_setupCompleted": "Setup completed!",
+    "@all": {
+      "description": "setup completed"
+    },
+
+    "dialogTitle_setupFailed": "Setting failed.",
+    "@all": {
+      "description": "setting failed."
     },
 
     "dialogTitle_deletedGroup": "Delete Group",
@@ -539,9 +570,10 @@
       "description": "update"
     },
 
-    "dialogTitle_NoMoreData": "Success!",
+
+    "dialogMessage_DeviceUnconnected": "The device is unconnected and unsupported.",
     "@all": {
-      "description": "no more data"
+      "description": "The device is unconnected and unsupported."
     },
 
     "dialogMessage_NoMoreData": "No more result.",
@@ -584,7 +616,7 @@
       "description": "Please login again."
     },
 
-    "dialogMessage_lostConnectionToServerContent": "Make sure you are on the same domain as the server. Please try to login again.",
+    "dialogMessage_lostConnectionToServerContent": "Please make sure you are on the same domain as the server and try to login again.",
     "@all": {
       "description": "lost connection to server content"
     },
@@ -592,6 +624,11 @@
     "dialogTitle_lostConnectionToServer": "Lost Connection To Server.",
     "@all": {
       "description": "lost connection to server."
+    },
+
+    "dialogTitle_NoMoreData": "Success!",
+    "@all": {
+      "description": "no more data"
     },
 
     "dialogTitle_deletedSuccessfully": "Deleted",
@@ -609,9 +646,14 @@
       "description": "delete account"
     },
 
-    "dialogTitle_saving": "Saving...",
+    "dialogTitle_saving": "Saving",
     "@all": {
       "description": "saving"
+    },
+
+    "dialogTitle_creating": "Creating",
+    "@all": {
+      "description": "creating"
     },
 
     "dialogTitle_editAccountSuccessfully": "Saved!",
@@ -627,5 +669,26 @@
     "dialogTitle_changePasswordSuccessfully": "Update",
     "@all": {
       "description": "change password successfully"
+    },
+
+    "dialogTitle_connectingToTheDevice": "Connecting to the device",
+    "@all": {
+      "description": "connecting to the device"
+    },
+
+    "dialogTitle_connectToTheDeviceSuccess": "Success!",
+    "@all": {
+      "description": "connecting to the device success"
+    },
+
+    "dialogTitle_createSuccess": "Created!",
+    "@all": {
+      "description": "create device or group success"
+    },
+
+    "dialogTitle_editSuccess": "Saved!",
+    "@all": {
+      "description": "edit device or group success"
     }
+
 }

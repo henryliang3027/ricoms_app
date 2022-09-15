@@ -277,16 +277,16 @@ class _AccountSliverList extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10.0, 0.0, 6.0, 4.0),
-                                child: Text(
-                                  accountOutline.account,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: CommonStyle.sizeL,
-                                    //fontWeight: FontWeight.w500,
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 6.0, 4.0),
+                                  child: Text(
+                                    accountOutline.account,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                      fontSize: CommonStyle.sizeL,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -299,7 +299,6 @@ class _AccountSliverList extends StatelessWidget {
                                   children: [
                                     Text(
                                       accountOutline.permission,
-                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.roboto(
                                         fontSize: CommonStyle.sizeS,

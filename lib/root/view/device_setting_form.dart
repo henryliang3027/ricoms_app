@@ -59,7 +59,10 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            msg,
+            getMessageLocalization(
+              msg: msg,
+              context: context,
+            ),
             style: TextStyle(
               color: CustomStyle.severityColor[1],
             ),
@@ -84,7 +87,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            CustomErrTitle.commonErrTitle,
+            AppLocalizations.of(context)!.dialogTitle_error,
             style: TextStyle(
               color: CustomStyle.severityColor[3],
             ),
@@ -92,7 +95,12 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(msg),
+                Text(
+                  getMessageLocalization(
+                    msg: msg,
+                    context: context,
+                  ),
+                ),
               ],
             ),
           ),

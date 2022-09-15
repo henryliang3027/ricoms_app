@@ -60,8 +60,14 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    final String errTitle = context.read<AuthenticationBloc>().state.msgTitle;
-    final String errmsg = context.read<AuthenticationBloc>().state.msg;
+    final String errTitle = getMessageLocalization(
+      msg: context.read<AuthenticationBloc>().state.msgTitle,
+      context: context,
+    );
+    final String errmsg = getMessageLocalization(
+      msg: context.read<AuthenticationBloc>().state.msg,
+      context: context,
+    );
 
     if (errmsg != '') {
       Future.delayed(

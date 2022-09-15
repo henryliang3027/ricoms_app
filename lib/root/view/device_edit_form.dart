@@ -6,6 +6,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceEditForm extends StatelessWidget {
   const DeviceEditForm({Key? key}) : super(key: key);
@@ -21,9 +22,17 @@ class DeviceEditForm extends StatelessWidget {
           return AlertDialog(
             title: isEditing
                 ? isTestConection
-                    ? const Text('Connecting to the device...')
-                    : const Text('Saving...')
-                : const Text('Connecting to the device...'),
+                    ? Text(
+                        AppLocalizations.of(context)!
+                            .dialogTitle_connectingToTheDevice,
+                      )
+                    : Text(
+                        AppLocalizations.of(context)!.dialogTitle_saving,
+                      )
+                : Text(
+                    AppLocalizations.of(context)!
+                        .dialogTitle_connectingToTheDevice,
+                  ),
             actionsAlignment: MainAxisAlignment.center,
             actions: const <Widget>[
               CircularProgressIndicator(),
@@ -43,21 +52,27 @@ class DeviceEditForm extends StatelessWidget {
             title: isEditing
                 ? isTestConection
                     ? Text(
-                        'Success!',
+                        AppLocalizations.of(context)!
+                            .dialogTitle_connectToTheDeviceSuccess,
                         style: TextStyle(color: CustomStyle.severityColor[1]),
                       )
                     : Text(
-                        'Saved!',
+                        AppLocalizations.of(context)!.dialogTitle_editSuccess,
                         style: TextStyle(color: CustomStyle.severityColor[1]),
                       )
                 : Text(
-                    'Created!',
+                    AppLocalizations.of(context)!.dialogTitle_createSuccess,
                     style: TextStyle(color: CustomStyle.severityColor[1]),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

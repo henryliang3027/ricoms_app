@@ -189,7 +189,7 @@ class RootRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        return [true, 'create node success'];
+        return [true, ''];
       } else if (data['code'] == '204') {
         return [true, 'The device is unconnedted and unsupported.'];
       } else {
@@ -253,7 +253,7 @@ class RootRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        return [true, 'create node success'];
+        return [true, ''];
       } else if (data['code'] == '204') {
         return [true, 'The device is unconnected and unsupported.'];
       } else {

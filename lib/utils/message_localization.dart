@@ -25,6 +25,8 @@ String getMessageLocalization({
     } else {
       return msg;
     }
+  } else if (msg == 'The device is unconnected and unsupported.') {
+    return AppLocalizations.of(context)!.dialogMessage_DeviceUnconnected;
   } else if (msg == 'No node') {
     return AppLocalizations.of(context)!.dialogMessage_NoNode;
   } else if (msg == 'Export root data success') {
@@ -40,6 +42,8 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.deviceSettingTab_status;
   } else if (msg == 'Configuration') {
     return AppLocalizations.of(context)!.deviceSettingTab_configuration;
+  } else if (msg == 'IP Configuration') {
+    return AppLocalizations.of(context)!.deviceSettingTab_ipConfiguration;
   } else if (msg == 'Threshold') {
     return AppLocalizations.of(context)!.deviceSettingTab_threshold;
   } else if (msg == 'Monitoring Chart') {
@@ -52,6 +56,18 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.deviceSettingTab_wanSettings;
   } else if (msg == 'SNMP Setup') {
     return AppLocalizations.of(context)!.deviceSettingTab_snmpSetup;
+  } else if (msg == 'Setup completed!') {
+    return AppLocalizations.of(context)!.dialogTitle_setupCompleted;
+  } else if (msg == 'Setting failed.') {
+    return AppLocalizations.of(context)!.dialogTitle_setupFailed;
+  } else if (msg == 'Lost connection to Server.') {
+    return AppLocalizations.of(context)!.dialogTitle_lostConnectionToServer;
+  } else if (msg ==
+      'Please make sure you are on the same domain as the server and try to login again.') {
+    return AppLocalizations.of(context)!
+        .dialogMessage_lostConnectionToServerContent;
+  } else if (msg == 'Error') {
+    return AppLocalizations.of(context)!.dialogTitle_error;
   } else {
     return msg;
   }
