@@ -49,7 +49,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-  equatable: ^2.0.4
+  equatable: ^2.0.5
   dropdown_button2: ^1.4.0 # custom dropdownButton and dropdownMenuItems
   smooth_page_indicator: ^1.0.0+2 # for dashboard piechart
   fl_chart: ^0.55.0 # for dashboard piechart
