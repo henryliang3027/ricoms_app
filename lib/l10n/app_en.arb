@@ -205,6 +205,11 @@
       "description": "cancel"
     },
 
+    "exit": "Exit",
+    "@all": {
+      "description": "exit app"
+    },
+
     "create": "Create",
     "@all": {
       "description": "create"
@@ -689,6 +694,11 @@
     "dialogTitle_editSuccess": "Saved!",
     "@all": {
       "description": "edit device or group success"
+    },
+
+    "dialogTitle_AskBeforeExitApp": "Are you sure you want to exit App ?",
+    "@all": {
+      "description": "Are you sure you want to exit app ?"
     }
 
 }

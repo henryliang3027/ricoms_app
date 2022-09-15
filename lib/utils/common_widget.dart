@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommonWidget {
   static Future<bool?> showExitAppDialog({
@@ -9,17 +10,21 @@ class CommonWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Are you sure you want to exit app ?'),
+          title: Text(
+            AppLocalizations.of(context)!.dialogTitle_AskBeforeExitApp,
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(
+                AppLocalizations.of(context)!.cancel,
+              ),
               onPressed: () {
                 Navigator.of(context).pop(false); // pop dialog
               },
             ),
             TextButton(
               child: Text(
-                'Exit',
+                AppLocalizations.of(context)!.exit,
                 style: TextStyle(
                   color: CustomStyle.severityColor[3],
                 ),

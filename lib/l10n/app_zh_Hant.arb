@@ -44,6 +44,7 @@
     "moduleSeries": "系列模組",
     "connect": "確認模組",
     "cancel": "取消",
+    "exit": "離開",
     "create": "建立",
     "save": "儲存",
     "noData": "無資料",
@@ -149,5 +150,6 @@
     "dialogTitle_connectingToTheDevice": "裝置連接中",
     "dialogTitle_connectToTheDeviceSuccess": "成功",
     "dialogTitle_createSuccess": "建立成功!",
-    "dialogTitle_editSuccess": "儲存成功！"
+    "dialogTitle_editSuccess": "儲存成功！",
+    "dialogTitle_AskBeforeExitApp": "您確定要退出應用程式嗎？"
 }
