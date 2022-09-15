@@ -27,22 +27,27 @@ class HomeBottomNavigationBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(CustomIcons.realtimeAlarm),
           label: 'Real-Time Alarm',
+          tooltip: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(CustomIcons.network),
           label: 'Network',
+          tooltip: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(CustomIcons.dashboard),
           label: 'Dashboard',
+          tooltip: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(CustomIcons.history),
           label: 'History',
+          tooltip: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(CustomIcons.bookmarks),
           label: 'Bookmarks',
+          tooltip: '',
         ),
       ],
       //if current page is account which is not list in bottom navigation bar, make all items grey color

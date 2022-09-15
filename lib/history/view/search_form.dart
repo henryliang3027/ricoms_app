@@ -190,12 +190,13 @@ class _StartDatePicker extends StatelessWidget {
           onPressed: () async {
             String startDate = state.startDate.replaceAll('/', '');
             DateTime? datetime = await showDatePicker(
-                context: context,
-                initialDate: startDate == ''
-                    ? DateTime.now()
-                    : DateTime.parse(startDate),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2050));
+              context: context,
+              initialDate:
+                  startDate == '' ? DateTime.now() : DateTime.parse(startDate),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2050),
+              locale: Localizations.localeOf(context),
+            );
 
             if (datetime != null) {
               String formattedDateTime =
@@ -255,10 +256,12 @@ class _EndDatePicker extends StatelessWidget {
                 : DateTime.parse(formattedEndDate);
 
             DateTime? datetime = await showDatePicker(
-                context: context,
-                initialDate: endDate.isAfter(startDate) ? endDate : startDate,
-                firstDate: startDate,
-                lastDate: DateTime(2050));
+              context: context,
+              initialDate: endDate.isAfter(startDate) ? endDate : startDate,
+              firstDate: startDate,
+              lastDate: DateTime(2050),
+              locale: Localizations.localeOf(context),
+            );
 
             if (datetime != null) {
               String formattedDateTime =
