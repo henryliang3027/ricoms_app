@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/system_log_repository.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class DisplayStyle {
@@ -149,6 +150,22 @@ class DisplayStyle {
     } else {
       // edfa
       return record.name;
+    }
+  }
+
+  static String getSystemLogDeviceTypeDeviceDisplayName(Log log) {
+    if (log.type == 5) {
+      //a8k slot
+      if (log.shelf == 0 && log.slot == 1) {
+        return '${log.name} [ PCM2 (L) ]';
+      } else if (log.shelf != 0 && log.slot == 0) {
+        return '${log.name} [ ${log.device} / Shelf ${log.shelf} / FAN ]';
+      } else {
+        return '${log.name} [ ${log.device} / Shelf ${log.shelf} / Slot ${log.slot} ]';
+      }
+    } else {
+      // edfa
+      return log.name;
     }
   }
 }

@@ -46,6 +46,8 @@ class DeviceSettingTabBar extends StatelessWidget {
                   isA8KPCM2() ? deviceBlocks.length : deviceBlocks.length + 1,
               child: Scaffold(
                 appBar: AppBar(
+                  leading: null,
+                  automaticallyImplyLeading: false,
                   elevation: 0.0,
                   backgroundColor: Colors.white,
                   centerTitle: true,

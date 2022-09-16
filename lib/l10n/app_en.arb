@@ -39,7 +39,17 @@
       "description": "App bar title and drawer item text"
     },
 
+    "systemLog": "System Log",
+    "@account": {
+      "description": "App bar title and drawer item text"
+    },
+
     "account": "Account",
+    "@account": {
+      "description": "App bar title and drawer item text"
+    },
+
+    "advance": "Advance",
     "@account": {
       "description": "App bar title and drawer item text"
     },

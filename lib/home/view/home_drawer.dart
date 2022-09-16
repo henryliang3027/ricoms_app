@@ -41,15 +41,21 @@ class HomeDrawer extends StatelessWidget {
     ];
 
     List<String> _extraListTileTitles = [
+      AppLocalizations.of(context)!.systemLog,
       AppLocalizations.of(context)!.account,
+      AppLocalizations.of(context)!.advance,
     ];
 
     List<IconData> _extraListTileIcons = [
+      Icons.list_alt_outlined,
       CustomIcons.account,
+      Icons.settings_outlined,
     ];
 
     List<int> _extraListFunctionPermissions = [
+      23,
       5,
+      6,
     ];
 
     List<Widget> _buildMainListView(int currentPageIndex) {
@@ -84,7 +90,7 @@ class HomeDrawer extends StatelessWidget {
 
       for (int i = 0; i < _extraListTileTitles.length; i++) {
         if (_userFunctionMap[_extraListFunctionPermissions[i]]) {
-          int pageIndex = _listTileTitles.length;
+          int pageIndex = _listTileTitles.length + i;
           ListTile listTile = ListTile(
             dense: true,
             leading: Padding(

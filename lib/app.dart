@@ -12,6 +12,7 @@ import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/repository/system_log_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -23,6 +24,7 @@ class App extends StatelessWidget {
     required this.dashboardRepository,
     required this.historyRepository,
     required this.bookmarksRepository,
+    required this.systemLogRepository,
     required this.accountRepository,
   }) : super(key: key);
 
@@ -33,6 +35,7 @@ class App extends StatelessWidget {
   final DashboardRepository dashboardRepository;
   final HistoryRepository historyRepository;
   final BookmarksRepository bookmarksRepository;
+  final SystemLogRepository systemLogRepository;
   final AccountRepository accountRepository;
 
   @override
@@ -59,6 +62,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<BookmarksRepository>(
           create: (context) => bookmarksRepository,
+        ),
+        RepositoryProvider<SystemLogRepository>(
+          create: (context) => systemLogRepository,
         ),
         RepositoryProvider<AccountRepository>(
           create: (context) => accountRepository,
@@ -90,7 +96,13 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: const <Locale>[
+        Locale('en'),
+        Locale('zh'),
+        Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant'), //to use traditional chinese datepicker
+      ],
       navigatorKey: _navigatorKey,
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

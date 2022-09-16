@@ -68,6 +68,7 @@ class HistoryState extends Equatable {
         errmsg,
         historyExportMsg,
         historyExportFilePath,
+        moreRecordsMessage,
         isShowFloatingActionButton,
       ];
 }

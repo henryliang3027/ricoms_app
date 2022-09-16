@@ -14,8 +14,8 @@ import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
-class AccountForm extends StatelessWidget {
-  const AccountForm({
+class AdvancedForm extends StatelessWidget {
+  const AdvancedForm({
     Key? key,
     required this.pageController,
   }) : super(key: key);
@@ -118,12 +118,12 @@ class AccountForm extends StatelessWidget {
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,
-            selectedIndex: 6, // No need to show button, set an useless index
+            selectedIndex: 5, // No need to show button, set an useless index
           ),
           drawer: HomeDrawer(
             user: context.read<AuthenticationBloc>().state.user,
             pageController: pageController,
-            currentPageIndex: 6,
+            currentPageIndex: 5,
           ),
           body: Container(
             color: Colors.white,
