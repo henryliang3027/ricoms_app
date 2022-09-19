@@ -34,20 +34,6 @@ class BookmarksItemToggled extends BookmarksEvent {
   List<Object?> get props => [device];
 }
 
-class BookmarksAllItemSelected extends BookmarksEvent {
-  const BookmarksAllItemSelected();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class BookmarksAllItemDeselected extends BookmarksEvent {
-  const BookmarksAllItemDeselected();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class BookmarksDeleted extends BookmarksEvent {
   const BookmarksDeleted();
 

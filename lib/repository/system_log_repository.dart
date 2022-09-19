@@ -293,7 +293,7 @@ class SystemLogRepository {
       f.writeAsString(csv);
       return [
         true,
-        'Export system log data success',
+        'Export system logs success',
         fullWrittenPath,
       ];
     } else if (Platform.isAndroid) {

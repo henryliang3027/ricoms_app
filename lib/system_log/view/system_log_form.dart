@@ -11,6 +11,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/system_log/bloc/system_log/system_log_bloc.dart';
 import 'package:ricoms_app/system_log/view/filter_page.dart';
+import 'package:ricoms_app/system_log/view/system_log_detail_page.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -623,7 +624,7 @@ class _LogBottomMenu extends StatelessWidget {
           ),
           onTap: () {
             Navigator.pop(context);
-            // Navigator.push(context, HistoryDetailPage.route(record));
+            Navigator.push(context, SystemLogDetailPage.route(log));
           },
         ),
         log.logType == 'Device'

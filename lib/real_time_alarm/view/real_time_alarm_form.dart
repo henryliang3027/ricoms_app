@@ -42,7 +42,12 @@ class RealTimeAlarmForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -70,76 +75,112 @@ class RealTimeAlarmForm extends StatelessWidget {
           bool? isExit = await CommonWidget.showExitAppDialog(context: context);
           return isExit ?? false;
         },
-        child: Scaffold(
-          appBar: AppBar(
+        child: DefaultTabController(
+          length: 5,
+          child: Scaffold(
+            appBar: AppBar(
               title: Text(
-            AppLocalizations.of(context)!.realTimeAlarm,
-          )),
-          bottomNavigationBar: HomeBottomNavigationBar(
-            pageController: pageController,
-            selectedIndex: 0,
-          ),
-          drawer: HomeDrawer(
-            user: context.read<AuthenticationBloc>().state.user,
-            pageController: pageController,
-            currentPageIndex: 0,
-          ),
-          body: DefaultTabController(
-            length: 5,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0.0,
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                titleSpacing: 0.0,
-                title: TabBar(
-                  unselectedLabelColor: Colors.grey,
-                  labelColor: Colors.blue,
-                  isScrollable: true,
-                  tabs: [
-                    Tab(
-                      text: AppLocalizations.of(context)!.all,
-                    ),
-                    Tab(
-                      text: AppLocalizations.of(context)!.critical,
-                    ),
-                    Tab(
-                      text: AppLocalizations.of(context)!.warning,
-                    ),
-                    Tab(
-                      text: AppLocalizations.of(context)!.normal,
-                    ),
-                    Tab(
-                      text: AppLocalizations.of(context)!.notice,
-                    ),
-                  ],
-                ),
+                AppLocalizations.of(context)!.realTimeAlarm,
               ),
-              body: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _AllAlarmsSliverList(
-                    pageController: pageController,
-                    initialPath: initialPath,
+              elevation: 0.0,
+              bottom: TabBar(
+                unselectedLabelColor: Colors.white,
+                labelColor: Colors.blue,
+                isScrollable: true,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicator: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    color: Colors.white),
+                labelPadding: EdgeInsets.symmetric(horizontal: 24.0),
+                tabs: [
+                  Tab(
+                    child: SizedBox(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.all,
+                        ),
+                      ),
+                    ),
                   ),
-                  _CriticalAlarmsSliverList(
-                    pageController: pageController,
-                    initialPath: initialPath,
+                  Tab(
+                    child: SizedBox(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.critical,
+                        ),
+                      ),
+                    ),
                   ),
-                  _WarningAlarmsSliverList(
-                    pageController: pageController,
-                    initialPath: initialPath,
+                  Tab(
+                    child: SizedBox(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.warning,
+                        ),
+                      ),
+                    ),
                   ),
-                  _NormalAlarmsSliverList(
-                    pageController: pageController,
-                    initialPath: initialPath,
+                  Tab(
+                    child: SizedBox(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.normal,
+                        ),
+                      ),
+                    ),
                   ),
-                  _NoticeAlarmsSliverList(
-                    pageController: pageController,
-                    initialPath: initialPath,
+                  Tab(
+                    child: SizedBox(
+                      width: 60,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.notice,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
+            ),
+            bottomNavigationBar: HomeBottomNavigationBar(
+              pageController: pageController,
+              selectedIndex: 0,
+            ),
+            drawer: HomeDrawer(
+              user: context.read<AuthenticationBloc>().state.user,
+              pageController: pageController,
+              currentPageIndex: 0,
+            ),
+            body: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _AllAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
+                ),
+                _CriticalAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
+                ),
+                _WarningAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
+                ),
+                _NormalAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
+                ),
+                _NoticeAlarmsSliverList(
+                  pageController: pageController,
+                  initialPath: initialPath,
+                ),
+              ],
             ),
           ),
         ),
@@ -148,9 +189,9 @@ class RealTimeAlarmForm extends StatelessWidget {
   }
 }
 
-Widget _showEmptyContent() {
-  return const Center(
-    child: Text('There are no records to show'),
+Widget _showEmptyContent(BuildContext context) {
+  return Center(
+    child: Text(AppLocalizations.of(context)!.noMoreRecordToShow),
   );
 }
 
@@ -331,7 +372,7 @@ class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
                       )
                     ],
                   )
-                : _showEmptyContent(),
+                : _showEmptyContent(context),
           );
         } else if (state.allAlarmsStatus.isRequestFailure) {
           return Center(
@@ -402,7 +443,7 @@ class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
                       )
                     ],
                   )
-                : _showEmptyContent(),
+                : _showEmptyContent(context),
           );
         } else if (state.criticalAlarmsStatus.isRequestFailure) {
           return Center(
@@ -473,7 +514,7 @@ class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
                       )
                     ],
                   )
-                : _showEmptyContent(),
+                : _showEmptyContent(context),
           );
         } else if (state.warningAlarmsStatus.isRequestFailure) {
           return Center(
@@ -544,7 +585,7 @@ class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
                       )
                     ],
                   )
-                : _showEmptyContent(),
+                : _showEmptyContent(context),
           );
         } else if (state.normalAlarmsStatus.isRequestFailure) {
           return Center(
@@ -615,7 +656,7 @@ class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
                       )
                     ],
                   )
-                : _showEmptyContent(),
+                : _showEmptyContent(context),
           );
         } else if (state.noticeAlarmsStatus.isRequestFailure) {
           return Center(

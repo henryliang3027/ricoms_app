@@ -106,8 +106,6 @@ class BookmarksForm extends StatelessWidget {
 
 enum Menu {
   delete,
-  selectAll,
-  deselectAll,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -118,62 +116,7 @@ class _PopupMenu extends StatelessWidget {
     return BlocBuilder<BookmarksBloc, BookmarksState>(
         builder: (context, state) {
       if (state.isDeleteMode) {
-        return PopupMenuButton<Menu>(
-          onSelected: (Menu item) async {
-            switch (item) {
-              case Menu.selectAll:
-                context
-                    .read<BookmarksBloc>()
-                    .add(const BookmarksAllItemSelected());
-                break;
-              case Menu.deselectAll:
-                context
-                    .read<BookmarksBloc>()
-                    .add(const BookmarksAllItemDeselected());
-                break;
-              default:
-                break;
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-            PopupMenuItem<Menu>(
-              value: Menu.selectAll,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.select_all_outlined,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text('Select all'),
-                ],
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.deselectAll,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.deselect_outlined,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  Text('Deselect all'),
-                ],
-              ),
-            ),
-          ],
-        );
+        return Container();
       } else {
         return PopupMenuButton<Menu>(
           onSelected: (Menu item) async {

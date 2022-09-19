@@ -586,6 +586,56 @@
     },
 
 
+    "systemLogType": "Type",
+    "@all": {
+      "description": "type"
+    },
+
+    "permission": "Permission",
+    "@all": {
+      "description": "permission"
+    },
+
+    "userIP": "User IP",
+    "@all": {
+      "description": "user ip"
+    },
+
+    "deviceIP": "Device IP",
+    "@all": {
+      "description": "device ip"
+    },
+
+    "advancedTrap": "Trap",
+    "@all": {
+      "description": "advanced trap"
+    },
+
+    "advancedSystem": "System",
+    "@all": {
+      "description": "advanced system"
+    },
+
+    "advancedDevice": "Device",
+    "@all": {
+      "description": "advanced device"
+    },
+
+    "trapFowward": "Trap Forward",
+    "@all": {
+      "description": "trap forward"
+    },
+
+    "colorOfTrapAlarm": "Color Of Trap Alarm",
+    "@all": {
+      "description": "color of trap alarm"
+    },
+
+    "alarmSoundOfTrap": "Alarm Sound Of Trap",
+    "@all": {
+      "description": "alarm sound of trap"
+    },
+
     "dialogMessage_DeviceUnconnected": "The device is unconnected and unsupported.",
     "@all": {
       "description": "The device is unconnected and unsupported."
@@ -624,6 +674,11 @@
     "dialogMessage_ExportHistoryDataSuccess": "Export history data success",
     "@all": {
       "description": "Export history data success"
+    },
+
+    "dialogMessage_ExportSystemLogDataSuccess": "Export system logs success",
+    "@all": {
+      "description": "Export system logs success"
     },
 
     "dialogMessage_changePasswordSuccessfully": "Please login again.",
