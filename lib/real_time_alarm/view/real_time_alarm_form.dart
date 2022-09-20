@@ -89,11 +89,12 @@ class RealTimeAlarmForm extends StatelessWidget {
                 isScrollable: true,
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicator: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                    color: Colors.white),
-                labelPadding: EdgeInsets.symmetric(horizontal: 24.0),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                  color: Colors.white,
+                ),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 24.0),
                 tabs: [
                   Tab(
                     child: SizedBox(

@@ -44,71 +44,100 @@ class DeviceSettingTabBar extends StatelessWidget {
             return DefaultTabController(
               length:
                   isA8KPCM2() ? deviceBlocks.length : deviceBlocks.length + 1,
-              child: Scaffold(
-                appBar: AppBar(
-                  leading: null,
-                  automaticallyImplyLeading: false,
-                  elevation: 0.0,
-                  backgroundColor: Colors.white,
-                  centerTitle: true,
-                  titleSpacing: 0.0,
-                  title: TabBar(
-                    unselectedLabelColor: Colors.grey,
-                    labelColor: Colors.blue,
-                    isScrollable: true,
-                    tabs: [
-                      if (isA8KPCM2()) ...[
-                        for (DeviceBlock deviceBlock in deviceBlocks)
-                          Tab(
-                            text: getMessageLocalization(
-                              msg: deviceBlock.name,
-                              context: context,
-                            ),
-                          ),
-                      ] else ...[
-                        for (DeviceBlock deviceBlock in deviceBlocks)
-                          Tab(
-                            text: getMessageLocalization(
-                              msg: deviceBlock.name,
-                              context: context,
-                            ),
-                          ),
-                        Tab(
-                          text: AppLocalizations.of(context)!.history,
-                        ),
-                      ]
-                    ],
-                  ),
-                ),
-                body: TabBarView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    if (isA8KPCM2()) ...[
-                      for (DeviceBlock deviceBlock in deviceBlocks) ...[
-                        DeviceSettingPage(
-                          deviceBlock: deviceBlock,
-                          nodeId: node.id,
-                        )
-                      ],
-                    ] else ...[
-                      for (DeviceBlock deviceBlock in deviceBlocks) ...[
-                        DeviceSettingPage(
-                          deviceBlock: deviceBlock,
-                          nodeId: node.id,
-                        )
-                      ],
-                      DeviceHistoryPage(
-                        user: context.read<AuthenticationBloc>().state.user,
-                        deviceRepository: deviceRepository,
-                        nodeId: node.id,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    color: Colors.blue,
+                    child: TabBar(
+                      unselectedLabelColor: Colors.white,
+                      labelColor: Colors.blue,
+                      isScrollable: true,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: Colors.white,
                       ),
-                    ],
-                  ],
-                ),
+                      labelPadding:
+                          const EdgeInsets.symmetric(horizontal: 24.0),
+                      tabs: [
+                        if (isA8KPCM2()) ...[
+                          for (DeviceBlock deviceBlock in deviceBlocks)
+                            Tab(
+                              child: SizedBox(
+                                width: 120,
+                                child: Center(
+                                  child: Text(
+                                    getMessageLocalization(
+                                      msg: deviceBlock.name,
+                                      context: context,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ] else ...[
+                          for (DeviceBlock deviceBlock in deviceBlocks)
+                            Tab(
+                              child: SizedBox(
+                                width: 120,
+                                child: Center(
+                                  child: Text(
+                                    getMessageLocalization(
+                                      msg: deviceBlock.name,
+                                      context: context,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          Tab(
+                            child: SizedBox(
+                              width: 120,
+                              child: Center(
+                                child: Text(
+                                  AppLocalizations.of(context)!.history,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        if (isA8KPCM2()) ...[
+                          for (DeviceBlock deviceBlock in deviceBlocks) ...[
+                            DeviceSettingPage(
+                              deviceBlock: deviceBlock,
+                              nodeId: node.id,
+                            )
+                          ],
+                        ] else ...[
+                          for (DeviceBlock deviceBlock in deviceBlocks) ...[
+                            DeviceSettingPage(
+                              deviceBlock: deviceBlock,
+                              nodeId: node.id,
+                            )
+                          ],
+                          DeviceHistoryPage(
+                            user: context.read<AuthenticationBloc>().state.user,
+                            deviceRepository: deviceRepository,
+                            nodeId: node.id,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
           } else {
-            //String
             return Container(
               width: double.maxFinite,
               height: double.maxFinite,
