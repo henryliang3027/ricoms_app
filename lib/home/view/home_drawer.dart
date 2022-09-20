@@ -43,7 +43,7 @@ class HomeDrawer extends StatelessWidget {
     List<String> _extraListTileTitles = [
       AppLocalizations.of(context)!.systemLog,
       AppLocalizations.of(context)!.account,
-      AppLocalizations.of(context)!.advance,
+      AppLocalizations.of(context)!.advanced,
     ];
 
     List<IconData> _extraListTileIcons = [

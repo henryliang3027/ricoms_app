@@ -54,61 +54,156 @@ class _AdvancedOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
+      child: ListView(
+        children: [
+          ListTile(
+            leading: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.roundabout_right_rounded),
+            ),
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.advancedTrap,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(context, _TrapForm.route());
+            },
+          ),
+          ListTile(
+            leading: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.settings_system_daydream_outlined),
+            ),
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.advancedSystem,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(CustomIcons.device),
+            ),
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.advancedDevice,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrapForm extends StatelessWidget {
+  const _TrapForm({Key? key}) : super(key: key);
+
+  static Route route() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const _TrapForm(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.advancedTrap),
+      ),
+      body: Container(
         color: Colors.white,
-        child: ListView(
-          children: [
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.roundabout_right_rounded),
-              ),
-              trailing: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.keyboard_arrow_right_outlined),
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.advancedTrap,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeL,
-                ),
-              ),
-              onTap: () {},
+        child: const _TrapOption(),
+      ),
+    );
+  }
+}
+
+class _TrapOption extends StatelessWidget {
+  const _TrapOption({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: ListView(
+        children: [
+          ListTile(
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
             ),
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.settings_system_daydream_outlined),
+            title: Text(
+              AppLocalizations.of(context)!.trapFowward,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
               ),
-              trailing: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.keyboard_arrow_right_outlined),
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.advancedSystem,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeL,
-                ),
-              ),
-              onTap: () {},
             ),
-            ListTile(
-              leading: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.device),
-              ),
-              trailing: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Icon(Icons.keyboard_arrow_right_outlined),
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.advancedDevice,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeL,
-                ),
-              ),
-              onTap: () {},
+            onTap: () {},
+          ),
+          ListTile(
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
             ),
-          ],
-        ));
+            title: Text(
+              AppLocalizations.of(context)!.colorOfTrapAlarm,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            trailing: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Icon(Icons.keyboard_arrow_right_outlined),
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.alarmSoundOfTrap,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
+            ),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
   }
 }
