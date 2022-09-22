@@ -4,39 +4,41 @@ abstract class TrapForwardEvent extends Equatable {
   const TrapForwardEvent();
 }
 
-class ForwardMetasRequested extends TrapForwardEvent {
-  const ForwardMetasRequested();
+class ForwardOutlinesRequested extends TrapForwardEvent {
+  const ForwardOutlinesRequested();
 
   @override
   List<Object?> get props => [];
 }
 
-class ForwardMetasDeletedModeEnabled extends TrapForwardEvent {
-  const ForwardMetasDeletedModeEnabled();
+class ForwardOutlinesDeletedModeEnabled extends TrapForwardEvent {
+  const ForwardOutlinesDeletedModeEnabled();
 
   @override
   List<Object?> get props => [];
 }
 
-class ForwardMetasDeletedModeDisabled extends TrapForwardEvent {
-  const ForwardMetasDeletedModeDisabled();
+class ForwardOutlinesDeletedModeDisabled extends TrapForwardEvent {
+  const ForwardOutlinesDeletedModeDisabled();
 
   @override
   List<Object?> get props => [];
 }
 
-class ForwardMetasItemToggled extends TrapForwardEvent {
-  const ForwardMetasItemToggled(this.forwardMeta);
+class ForwardOutlinesItemToggled extends TrapForwardEvent {
+  const ForwardOutlinesItemToggled(this.forwardOutlines);
 
-  final ForwardMeta forwardMeta;
+  final ForwardOutline forwardOutlines;
 
   @override
-  List<Object?> get props => [forwardMeta];
+  List<Object?> get props => [forwardOutlines];
 }
 
-class ForwardMetasDeleted extends TrapForwardEvent {
-  const ForwardMetasDeleted();
+class ForwardOutlineDeleted extends TrapForwardEvent {
+  const ForwardOutlineDeleted(this.id);
+
+  final int id;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [id];
 }

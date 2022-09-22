@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -14,121 +15,132 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
   })  : _user = user,
         _trapForwardRepository = trapForwardRepository,
         super(const TrapForwardState()) {
-    on<TrapForwardEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ForwardOutlinesRequested>(_onForwardOutlinesRequested);
+    on<ForwardOutlinesDeletedModeEnabled>(_onForwardOutlinesDeletedModeEnabled);
+    on<ForwardOutlinesDeletedModeDisabled>(
+        _onForwardOutlinesDeletedModeDisabled);
+    on<ForwardOutlinesItemToggled>(_onForwardOutlinesItemToggled);
+    on<ForwardOutlineDeleted>(_onForwardOutlineDeleted);
+
+    add(const ForwardOutlinesRequested());
   }
 
   final User _user;
   final TrapForwardRepository _trapForwardRepository;
 
-  Future<void> _onForwardMetasRequested(
-    ForwardMetasRequested event,
+  Future<void> _onForwardOutlinesRequested(
+    ForwardOutlinesRequested event,
     Emitter<TrapForwardState> emit,
   ) async {
     emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
+      status: FormStatus.requestInProgress,
+      deleteStatus: SubmissionStatus.none,
     ));
 
     List<dynamic> result =
-        await _trapForwardRepository.getForwardMetaList(user: _user);
+        await _trapForwardRepository.getForwardOutlineList(user: _user);
 
     if (result[0]) {
       emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        forwardMetas: result[1],
+        status: FormStatus.requestSuccess,
+        deleteStatus: SubmissionStatus.none,
+        forwardOutlines: result[1],
       ));
     } else {
       emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
+        status: FormStatus.requestFailure,
+        deleteStatus: SubmissionStatus.none,
         requestErrorMsg: result[1],
       ));
     }
   }
 
-  void _onForwardMetasDeletedModeEnabled(
-    ForwardMetasDeletedModeEnabled event,
+  void _onForwardOutlinesDeletedModeEnabled(
+    ForwardOutlinesDeletedModeEnabled event,
     Emitter<TrapForwardState> emit,
   ) {
-    if (state.forwardMetas.isNotEmpty) {
+    if (state.forwardOutlines.isNotEmpty) {
       emit(state.copyWith(
-        selectedforwardMetas: state.forwardMetas,
+        deleteStatus: SubmissionStatus.none,
+        selectedforwardOutlines: state.forwardOutlines,
         isDeleteMode: true,
       ));
     }
   }
 
-  void _onForwardMetasDeletedModeDisabled(
-    ForwardMetasDeletedModeDisabled event,
+  void _onForwardOutlinesDeletedModeDisabled(
+    ForwardOutlinesDeletedModeDisabled event,
     Emitter<TrapForwardState> emit,
   ) {
     emit(state.copyWith(
-      selectedforwardMetas: const [],
+      deleteStatus: SubmissionStatus.none,
+      selectedforwardOutlines: const [],
       isDeleteMode: false,
     ));
   }
 
-  Future<void> _onBookmarksDeleted(
-    ForwardMetasDeleted event,
-    Emitter<TrapForwardState> emit,
-  ) async {
-    emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
-    ));
-
-    // List<dynamic> resultOfDelete = await _bookmarksRepository.deleteDevices(
-    //   user: _user,
-    //   devices: state.selectedDevices,
-    // );
-
-    // if (resultOfDelete[0]) {
-    //   List<dynamic> resultOfRetrieve =
-    //       await _bookmarksRepository.getBookmarks(user: _user);
-
-    //   if (resultOfRetrieve[0]) {
-    //     emit(state.copyWith(
-    //       formStatus: FormStatus.requestSuccess,
-    //       deviceDeleteStatus: FormStatus.requestSuccess,
-    //       devices: resultOfRetrieve[1],
-    //       selectedDevices: const [],
-    //       isDeleteMode: false,
-    //     ));
-    //   } else {
-    //     emit(state.copyWith(
-    //       formStatus: FormStatus.requestFailure,
-    //       deviceDeleteStatus: FormStatus.requestSuccess,
-    //       requestErrorMsg: resultOfRetrieve[1],
-    //       selectedDevices: const [],
-    //       isDeleteMode: false,
-    //     ));
-    //   }
-    // } else {
-    //   emit(state.copyWith(
-    //     formStatus: FormStatus.requestFailure,
-    //     deviceDeleteStatus: FormStatus.requestFailure,
-    //     deleteResultMsg: resultOfDelete[1],
-    //     selectedDevices: const [],
-    //     isDeleteMode: false,
-    //   ));
-    // }
-  }
-
-  void _onForwardMetasItemToggled(
-    ForwardMetasItemToggled event,
+  void _onForwardOutlinesItemToggled(
+    ForwardOutlinesItemToggled event,
     Emitter<TrapForwardState> emit,
   ) {
-    List<ForwardMeta> selectedForwardMetas = [];
+    List<ForwardOutline> selectedForwardOutlines = [];
 
-    selectedForwardMetas.addAll(state.selectedforwardMetas);
+    selectedForwardOutlines.addAll(state.selectedforwardOutlines);
 
-    if (selectedForwardMetas.contains(event.forwardMeta)) {
-      selectedForwardMetas.remove(event.forwardMeta);
+    if (selectedForwardOutlines.contains(event.forwardOutlines)) {
+      selectedForwardOutlines.remove(event.forwardOutlines);
     } else {
-      selectedForwardMetas.add(event.forwardMeta);
+      selectedForwardOutlines.add(event.forwardOutlines);
     }
 
     emit(state.copyWith(
-      selectedforwardMetas: selectedForwardMetas,
+      selectedforwardOutlines: selectedForwardOutlines,
     ));
+  }
+
+  Future<void> _onForwardOutlineDeleted(
+    ForwardOutlineDeleted event,
+    Emitter<TrapForwardState> emit,
+  ) async {
+    emit(state.copyWith(
+      status: FormStatus.requestInProgress,
+      deleteStatus: SubmissionStatus.none,
+    ));
+
+    List<dynamic> resultOfDelete =
+        await _trapForwardRepository.deleteForwardOutline(
+      user: _user,
+      id: event.id,
+    );
+
+    if (resultOfDelete[0]) {
+      List<dynamic> resultOfRetrieve =
+          await _trapForwardRepository.getForwardOutlineList(user: _user);
+
+      if (resultOfRetrieve[0]) {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          forwardOutlines: resultOfRetrieve[1],
+          deleteResultMsg: resultOfDelete[1],
+          selectedforwardOutlines: const [],
+          isDeleteMode: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: FormStatus.requestFailure,
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          requestErrorMsg: resultOfRetrieve[1],
+          deleteResultMsg: resultOfDelete[1],
+          selectedforwardOutlines: const [],
+          isDeleteMode: false,
+        ));
+      }
+    } else {
+      emit(state.copyWith(
+        deleteStatus: SubmissionStatus.submissionFailure,
+        deleteResultMsg: resultOfDelete[1],
+      ));
+    }
   }
 }

@@ -13,6 +13,7 @@ import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/trap_forward_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -26,6 +27,7 @@ class App extends StatelessWidget {
     required this.bookmarksRepository,
     required this.systemLogRepository,
     required this.accountRepository,
+    required this.trapForwardRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -37,6 +39,7 @@ class App extends StatelessWidget {
   final BookmarksRepository bookmarksRepository;
   final SystemLogRepository systemLogRepository;
   final AccountRepository accountRepository;
+  final TrapForwardRepository trapForwardRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +71,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<AccountRepository>(
           create: (context) => accountRepository,
+        ),
+        RepositoryProvider<TrapForwardRepository>(
+          create: (context) => trapForwardRepository,
         ),
       ],
       child: BlocProvider(

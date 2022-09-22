@@ -258,8 +258,7 @@ class _AccountSliverList extends StatelessWidget {
                 showModalBottomSheet(
                   context: context,
                   builder: (_) => _AccountEditBottomMenu(
-                    superContext:
-                        context, //pass this context contain AccountBloc so that BottomMenu can use it to call AccountDeleted event
+                    superContext: context,
                     accountOutline: accountOutline,
                   ),
                 );
@@ -414,7 +413,7 @@ class _AccountEditBottomMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int currentUserId =
-        int.parse(superContext.read<AuthenticationBloc>().state.user.id);
+        int.parse(context.read<AuthenticationBloc>().state.user.id);
 
     Future<bool?> _showConfirmDeleteDialog(
         AccountOutline accountOutline) async {

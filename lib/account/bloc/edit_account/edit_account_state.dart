@@ -3,7 +3,7 @@ part of 'edit_account_bloc.dart';
 class EditAccountState extends Equatable {
   const EditAccountState({
     this.isModify = false,
-    //determine whether account form should be update or not
+    //determine whether account form should be update or not after creating  or updating account
     this.status = FormzStatus.pure,
     this.submissionStatus = SubmissionStatus.none,
     this.isInitController = false,

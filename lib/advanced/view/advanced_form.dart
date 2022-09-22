@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/advanced/view/trap_forward_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ricoms_app/utils/message_localization.dart';
 
 class AdvancedForm extends StatelessWidget {
   const AdvancedForm({
@@ -169,12 +168,14 @@ class _TrapOption extends StatelessWidget {
               child: Icon(Icons.keyboard_arrow_right_outlined),
             ),
             title: Text(
-              AppLocalizations.of(context)!.trapFowward,
+              AppLocalizations.of(context)!.trapForward,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, TrapForwardPage.route());
+            },
           ),
           ListTile(
             trailing: const Padding(

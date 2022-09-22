@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:ricoms_app/repository/forward_detail.dart';
+import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 class TrapForwardRepository {
-  Future<List<dynamic>> getForwardMetaList({
+  Future<List<dynamic>> getForwardOutlineList({
     required User user,
   }) async {
     Dio dio = Dio();
@@ -22,23 +24,10 @@ class TrapForwardRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List rawDataList = data['data'];
-        List<ForwardMeta> forwardMetaList = [];
+        List<ForwardOutline> forwardOutlineList = List<ForwardOutline>.from(
+            data['data'].map((element) => ForwardOutline.fromJson(element)));
 
-        for (var element in rawDataList) {
-          if (element['id'] != null) {
-            ForwardMeta forwardMeta = ForwardMeta(
-              id: element['id'],
-              enable: element['enable'] ?? 0,
-              name: element['name'] ?? '',
-              ip: element['ip'] ?? '',
-              //element['item'] : we don't need this data that return from api
-            );
-
-            forwardMetaList.add(forwardMeta);
-          }
-        }
-        return [true, forwardMetaList];
+        return [true, forwardOutlineList];
       } else {
         return [false, 'There are no records to show'];
       }
@@ -46,94 +35,150 @@ class TrapForwardRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
-}
 
-Future<List<dynamic>> getForwardDetail({
-  required User user,
-  required int id,
-}) async {
-  Dio dio = Dio();
-  dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-  dio.options.connectTimeout = 10000; //10s
-  dio.options.receiveTimeout = 10000;
-  String trapForwardInfoApiPath = '/advanced/forward/$id';
+  Future<List<dynamic>> getForwardDetail({
+    required User user,
+    required int id,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardInfoApiPath = '/advanced/forward/$id';
 
-  try {
-    Response response = await dio.get(
-      trapForwardInfoApiPath,
-    );
-
-    var data = jsonDecode(response.data.toString());
-
-    if (data['code'] == '200') {
-      var rawData = data['data'][0];
-
-      List itemDataList = rawData['item'];
-      List<Parameter> parameters = [];
-      for (var item in itemDataList) {
-        Parameter parameter = Parameter(
-          name: item['name'],
-          oid: item['OID'],
-          check: item['checked'],
-        );
-        parameters.add(parameter);
-      }
-
-      ForwardDetail forwardDetail = ForwardDetail(
-        id: rawData['id'],
-        enable: rawData['enable'] ?? 0,
-        name: rawData['name'] ?? '',
-        ip: rawData['ip'] ?? '',
-        parameters: parameters,
+    try {
+      Response response = await dio.get(
+        trapForwardInfoApiPath,
       );
 
-      return [true, forwardDetail];
-    } else {
-      return [false, 'There are no records to show'];
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        ForwardDetail forwardDetail = List<ForwardDetail>.from(
+            data['data'].map((element) => ForwardDetail.fromJson(element)))[0];
+
+        return [true, forwardDetail];
+      } else {
+        return [false, 'There are no records to show'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
     }
-  } on DioError catch (e) {
-    return [false, CustomErrMsg.connectionFailed];
   }
-}
 
-class ForwardMeta {
-  const ForwardMeta({
-    required this.id, //forward info id
-    this.enable = 0, // 'User' or 'Device'
-    this.name = '',
-    this.ip = '',
-  });
+  Future<List<dynamic>> updateForwardDetail({
+    required User user,
+    required int id,
+    required bool enable,
+    required String name,
+    required String ip,
+    required List<Parameter> parameters,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardInfoApiPath = '/advanced/forward';
 
-  final int id;
-  final int enable;
-  final String name;
-  final String ip;
-}
+    int isEnable = enable ? 1 : 0;
 
-class ForwardDetail {
-  const ForwardDetail({
-    required this.id, //forward info id
-    this.enable = 0, // 'User' or 'Device'
-    this.name = '',
-    this.ip = '',
-    this.parameters = const [], // forward parameters
-  });
+    ForwardDetail forwardDetail = ForwardDetail(
+      id: id,
+      enable: isEnable,
+      name: name,
+      ip: ip,
+      parameters: parameters,
+    );
 
-  final int id;
-  final int enable;
-  final String name;
-  final String ip;
-  final List<Parameter> parameters;
-}
+    Map<String, dynamic> requestData = forwardDetail.toJson();
+    requestData['uid'] = user.id;
 
-class Parameter {
-  const Parameter({
-    required this.name,
-    required this.oid,
-    required this.check,
-  });
+    try {
+      Response response = await dio.put(
+        trapForwardInfoApiPath,
+        data: requestData,
+      );
 
-  final String name;
-  final String oid;
-  final int check;
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, ''];
+      } else {
+        return [false, 'There are no records to show'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  Future<List<dynamic>> createForwardDetail({
+    required User user,
+    required bool enable,
+    required String name,
+    required String ip,
+    required List<Parameter> parameters,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardInfoApiPath = '/advanced/forward';
+
+    int isEnable = enable ? 1 : 0;
+
+    ForwardDetail forwardDetail = ForwardDetail(
+      id: 0,
+      enable: isEnable,
+      name: name,
+      ip: ip,
+      parameters: parameters,
+    );
+
+    Map<String, dynamic> requestData = forwardDetail.toJson();
+    requestData['uid'] = user.id;
+
+    try {
+      Response response = await dio.put(
+        trapForwardInfoApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, ''];
+      } else {
+        return [false, 'There are no records to show'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  Future<List<dynamic>> deleteForwardOutline({
+    required User user,
+    required int id,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardDeleteApiPath = '/advanced/forward/$id?uid=${user.id}';
+
+    try {
+      Response response = await dio.delete(
+        trapForwardDeleteApiPath,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, ''];
+      } else {
+        return [false, 'Delete Trap Forward failed!'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
 }

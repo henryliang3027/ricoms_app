@@ -621,9 +621,19 @@
       "description": "advanced device"
     },
 
-    "trapFowward": "Trap Forward",
+    "trapForward": "Trap Forward",
     "@all": {
       "description": "trap forward"
+    },
+
+    "addTrapForward": "Add Trap Forward",
+    "@all": {
+      "description": "add trap forward"
+    },
+
+    "editTrapForward": "Edit Trap Forward",
+    "@all": {
+      "description": "edit trap forward"
     },
 
     "colorOfTrapAlarm": "Color Of Trap Alarm",

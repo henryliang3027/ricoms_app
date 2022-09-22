@@ -137,7 +137,9 @@
     "advancedTrap": "告警",
     "advancedSystem": "系統",
     "advancedDevice": "裝置",
-    "trapFowward": "告警轉發",
+    "trapForward": "告警轉發",
+    "addTrapForward": "新增告警轉發",
+    "editTrapForward": "編輯告警轉發",
     "colorOfTrapAlarm": "告警顏色設定",
     "alarmSoundOfTrap": "告警警告聲設定",
 
