@@ -18,7 +18,6 @@ class DashboardRepository {
     String deviceStatusStatisticApiPath = '/statistics/device';
 
     try {
-      //404
       Response response = await _dio.get(
         deviceStatusStatisticApiPath,
       );
@@ -57,7 +56,6 @@ class DashboardRepository {
         '/statistics/severity?type=${type.toString()}';
 
     try {
-      //404
       Response response = await _dio.get(
         deviceSeverityStatisticApiPath,
       );

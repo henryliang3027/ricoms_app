@@ -22,7 +22,6 @@ class RootRepository {
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
 
     try {
-      //404
       Response response = await dio.get(childsPath);
 
       //print(response.data.toString());
@@ -74,7 +73,6 @@ class RootRepository {
     String deviceBlockPath = '/device/' + deviceId.toString() + '/block';
 
     try {
-      //404
       Response response = await dio.get(deviceBlockPath);
 
       //print(response.data.toString());
@@ -99,7 +97,6 @@ class RootRepository {
     String childsPath = '/net/node/' + nodeId.toString();
 
     try {
-      //404
       Response response = await dio.get(childsPath);
 
       //print(response.data.toString());
@@ -150,8 +147,6 @@ class RootRepository {
     String createNodePath = '/net/node/' + parentId.toString() + '/childs/new';
 
     try {
-      //404
-
       Response response;
 
       if (type == 1) {
@@ -217,8 +212,6 @@ class RootRepository {
     String updateNodePath = '/net/node/' + currentNode.id.toString();
 
     try {
-      //404
-
       Response response;
 
       if (currentNode.type == 1) {
@@ -337,8 +330,6 @@ class RootRepository {
     String deleteNodePath = '/net/node/' + currentNode.id.toString();
 
     try {
-      //404
-
       Response response;
 
       Map<String, dynamic> requestData = {
@@ -371,8 +362,6 @@ class RootRepository {
     String deleteNodePath = '/device/search/';
 
     try {
-      //404
-
       Response response;
 
       Map<String, dynamic> queryData = {
@@ -432,7 +421,6 @@ class RootRepository {
     String nodeExportApiPath = '/net/node';
 
     try {
-      //404
       Response response = await dio.get(
         nodeExportApiPath,
         queryParameters: {'uid': user.id},

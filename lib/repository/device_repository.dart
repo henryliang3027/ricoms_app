@@ -19,7 +19,6 @@ class DeviceRepository {
     String deviceStatusPath = '/device/' + nodeId.toString() + '/block';
 
     try {
-      //404
       Response response = await dio.get(deviceStatusPath);
 
       //print(response.data.toString());
@@ -69,7 +68,6 @@ class DeviceRepository {
         '/device/' + nodeId.toString() + '/block/' + pageId.toString();
 
     try {
-      //404
       Response response = await dio.get(deviceThresholdPath);
 
       //print(response.data.toString());
@@ -171,7 +169,6 @@ class DeviceRepository {
     String deviceDescriptionPath = '/device/' + nodeId.toString();
 
     try {
-      //404
       Response response = await dio.get(deviceDescriptionPath);
 
       //print(response.data.toString());
@@ -242,7 +239,6 @@ class DeviceRepository {
             nodeId.toString();
 
     try {
-      //404
       Response response = await dio.get(deviceStatusPath);
 
       //print(response.data.toString());
@@ -305,7 +301,6 @@ class DeviceRepository {
         '/history/search?start_time=&end_time=&shelf=&slot=&next=$next&trap_id=${trapId.toString()}&current=0&q=&node_id=${nodeId.toString()}';
 
     try {
-      //404
       Response response = await dio.get(deviceStatusPath);
 
       //print(response.data.toString());

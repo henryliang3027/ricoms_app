@@ -21,7 +21,6 @@ class AccountRepository {
     String accountListApiPath = '/accounts';
 
     try {
-      //404
       Response response = await _dio.get(
         accountListApiPath,
       );
@@ -107,7 +106,6 @@ class AccountRepository {
     String accountDetailApiPath = '/accounts/$accountId';
 
     try {
-      //404
       Response response = await _dio.get(
         accountDetailApiPath,
       );

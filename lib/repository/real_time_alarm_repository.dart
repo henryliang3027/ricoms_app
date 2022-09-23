@@ -19,7 +19,6 @@ class RealTimeAlarmRepository {
     String realTimeAlarmApiPath = '/history/realtime?max=';
 
     try {
-      //404
       Response response = await _dio.get(
         realTimeAlarmApiPath,
       );
@@ -97,7 +96,6 @@ class RealTimeAlarmRepository {
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
 
     try {
-      //404
       Response response = await _dio.get(
         realTimeAlarmApiPath,
       );
@@ -133,7 +131,6 @@ class RealTimeAlarmRepository {
       String childsPath = '/net/node/' + nodeId.toString();
 
       try {
-        //404
         Response response = await _dio.get(childsPath);
 
         //print(response.data.toString());

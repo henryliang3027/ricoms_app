@@ -28,7 +28,6 @@ class BookmarksRepository {
         String deviceStatusApiPath = '/device/${bookmark.id.toString()}';
 
         try {
-          //404
           Response response = await _dio.get(
             deviceStatusApiPath,
           );
@@ -124,7 +123,6 @@ class BookmarksRepository {
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
 
     try {
-      //404
       Response response = await dio.get(
         realTimeAlarmApiPath,
       );
@@ -161,7 +159,6 @@ class BookmarksRepository {
       String childsPath = '/net/node/' + nodeId.toString();
 
       try {
-        //404
         Response response = await dio.get(childsPath);
 
         //print(response.data.toString());

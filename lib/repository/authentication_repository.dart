@@ -54,7 +54,6 @@ class AuthenticationRepository {
     String loginPath = '/account/login';
 
     try {
-      //404
       Response response = await dio.post(
         loginPath,
         data: {'account': user.account, 'pwd': user.password},
@@ -134,7 +133,6 @@ class AuthenticationRepository {
     String loginPath = '/account/login';
 
     try {
-      //404
       Response response = await dio.post(
         loginPath,
         data: {'account': account, 'pwd': password},
@@ -224,10 +222,29 @@ class AuthenticationRepository {
   }
 
   Future<void> logOut({
-    required userId,
+    required User user,
   }) async {
-    // need to call api ?
-    bool _ = await userApi.deActivateUser(userId);
+    // Call the api to let the server record the log out log
+
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    String logOutPath = '/account/logout?uid=${user.id}';
+
+    try {
+      Response response = await dio.post(
+        logOutPath,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+      } else {}
+    } on DioError catch (e) {}
+
+    bool _ = await userApi.deActivateUser(user.id);
     _controller.add(const AuthenticationReport(
       status: AuthenticationStatus.unauthenticated,
     ));
@@ -247,7 +264,6 @@ class AuthenticationRepository {
       String changePasswordPath = '/account/' + user.id + '/pwd';
 
       try {
-        //404
         Response response = await dio.put(
           changePasswordPath,
           data: {'current_pwd': currentPassword, 'new_pwd': newPassword},
@@ -390,7 +406,6 @@ class AuthenticationRepository {
       }
 
       try {
-        //404
         Response response = await dio.get(
           userFunctionPath,
         );

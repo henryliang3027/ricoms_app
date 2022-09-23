@@ -153,8 +153,8 @@ class _IPInput extends StatelessWidget {
           onChanged: (ip) => context.read<LoginBloc>().add(LoginIPChanged(ip)),
           decoration: InputDecoration(
             border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
-            contentPadding: const EdgeInsets.all(5),
-            isDense: true,
+            contentPadding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+            //isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: AppLocalizations.of(context)!.loginServerIP,
@@ -186,8 +186,8 @@ class _UsernameInput extends StatelessWidget {
               context.read<LoginBloc>().add(LoginUsernameChanged(username)),
           decoration: InputDecoration(
             border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
-            contentPadding: const EdgeInsets.all(5),
-            isDense: true,
+            contentPadding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+            //isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: AppLocalizations.of(context)!.loginUserID,
@@ -221,8 +221,8 @@ class _PasswordInput extends StatelessWidget {
           obscureText: !state.passwordVisibility,
           decoration: InputDecoration(
             border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
-            contentPadding: const EdgeInsets.all(5),
-            isDense: true,
+            contentPadding: const EdgeInsets.fromLTRB(4.0, 0.0, 0.0, 0.0),
+            //isDense: true,
             filled: true,
             fillColor: Colors.white,
             hintText: AppLocalizations.of(context)!.loginPassword,

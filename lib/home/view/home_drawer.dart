@@ -200,7 +200,7 @@ class HomeDrawer extends StatelessWidget {
                 actionResult
                     ? context
                         .read<AuthenticationBloc>()
-                        .add(AuthenticationLogoutRequested(user.id))
+                        .add(AuthenticationLogoutRequested(user))
                     : null;
               },
             ),
@@ -220,7 +220,7 @@ class HomeDrawer extends StatelessWidget {
               onTap: () {
                 context
                     .read<AuthenticationBloc>()
-                    .add(AuthenticationLogoutRequested(user.id));
+                    .add(AuthenticationLogoutRequested(user));
               },
             ),
             const Padding(

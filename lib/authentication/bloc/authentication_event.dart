@@ -17,10 +17,10 @@ class AuthenticationStatusChanged extends AuthenticationEvent {
 }
 
 class AuthenticationLogoutRequested extends AuthenticationEvent {
-  const AuthenticationLogoutRequested(this.userId);
+  const AuthenticationLogoutRequested(this.user);
 
-  final String userId;
+  final User user;
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [user];
 }

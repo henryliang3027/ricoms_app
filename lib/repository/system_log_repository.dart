@@ -171,7 +171,6 @@ class SystemLogRepository {
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
 
     try {
-      //404
       Response response = await dio.get(
         realTimeAlarmApiPath,
       );
@@ -208,7 +207,6 @@ class SystemLogRepository {
       String childsPath = '/net/node/' + nodeId.toString();
 
       try {
-        //404
         Response response = await dio.get(childsPath);
 
         //print(response.data.toString());
