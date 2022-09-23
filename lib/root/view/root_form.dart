@@ -897,8 +897,6 @@ class _NodeEditBottomMenu extends StatelessWidget {
                 context,
                 DeviceEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
-                    rootRepository:
-                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: true,
                     currentNode: currentNode));
@@ -908,8 +906,6 @@ class _NodeEditBottomMenu extends StatelessWidget {
                 context,
                 GroupEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
-                    rootRepository:
-                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: true,
                     currentNode: currentNode));
@@ -1002,8 +998,6 @@ class _NodeCreationBottomMenu extends StatelessWidget {
                 context,
                 GroupEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
-                    rootRepository:
-                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));
@@ -1036,8 +1030,6 @@ class _NodeCreationBottomMenu extends StatelessWidget {
                 context,
                 DeviceEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
-                    rootRepository:
-                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));

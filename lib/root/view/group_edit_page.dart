@@ -10,7 +10,6 @@ class GroupEditPage extends StatelessWidget {
   const GroupEditPage({
     Key? key,
     required this.user,
-    required this.rootRepository,
     required this.parentNode,
     required this.isEditing,
     this.currentNode,
@@ -18,7 +17,6 @@ class GroupEditPage extends StatelessWidget {
 
   static Route route({
     required User user,
-    required RootRepository rootRepository,
     required Node parentNode,
     required bool isEditing,
     Node? currentNode,
@@ -26,7 +24,6 @@ class GroupEditPage extends StatelessWidget {
     return MaterialPageRoute(
         builder: (_) => GroupEditPage(
               user: user,
-              rootRepository: rootRepository,
               parentNode: parentNode,
               isEditing: isEditing,
               currentNode: currentNode,
@@ -34,7 +31,6 @@ class GroupEditPage extends StatelessWidget {
   }
 
   final User user;
-  final RootRepository rootRepository;
   final Node parentNode;
   final bool isEditing;
   final Node? currentNode;
@@ -43,11 +39,12 @@ class GroupEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: ((context) => EditGroupBloc(
-            user: user,
-            rootRepository: rootRepository,
-            parentNode: parentNode,
-            isEditing: isEditing,
-            currentNode: currentNode)),
+              user: user,
+              rootRepository: RepositoryProvider.of<RootRepository>(context),
+              parentNode: parentNode,
+              isEditing: isEditing,
+              currentNode: currentNode,
+            )),
         child: Scaffold(
           //resizeToAvoidBottomInset: false,
           appBar: AppBar(

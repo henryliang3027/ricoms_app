@@ -10,7 +10,6 @@ class DeviceEditPage extends StatelessWidget {
   const DeviceEditPage({
     Key? key,
     required this.user,
-    required this.rootRepository,
     required this.parentNode,
     required this.isEditing,
     this.currentNode,
@@ -18,7 +17,6 @@ class DeviceEditPage extends StatelessWidget {
 
   static Route route({
     required User user,
-    required RootRepository rootRepository,
     required Node parentNode,
     required bool isEditing,
     Node? currentNode,
@@ -26,7 +24,6 @@ class DeviceEditPage extends StatelessWidget {
     return MaterialPageRoute(
         builder: (_) => DeviceEditPage(
               user: user,
-              rootRepository: rootRepository,
               parentNode: parentNode,
               isEditing: isEditing,
               currentNode: currentNode,
@@ -34,7 +31,6 @@ class DeviceEditPage extends StatelessWidget {
   }
 
   final User user;
-  final RootRepository rootRepository;
   final Node parentNode;
   final bool isEditing;
   final Node? currentNode;
@@ -43,11 +39,12 @@ class DeviceEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: ((context) => EditDeviceBloc(
-            user: user,
-            rootRepository: rootRepository,
-            parentNode: parentNode,
-            isEditing: isEditing,
-            currentNode: currentNode)),
+              user: user,
+              rootRepository: RepositoryProvider.of<RootRepository>(context),
+              parentNode: parentNode,
+              isEditing: isEditing,
+              currentNode: currentNode,
+            )),
         child: Scaffold(
           //resizeToAvoidBottomInset: false,
           appBar: AppBar(
