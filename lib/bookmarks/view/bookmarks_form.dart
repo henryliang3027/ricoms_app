@@ -345,18 +345,19 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (context) {
           return AlertDialog(
-            title: const Text('Delete Account'),
+            title:
+                Text(AppLocalizations.of(context)!.dialogTitle_deleteBookmark),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   RichText(
                     text: TextSpan(
                       style: DefaultTextStyle.of(context).style,
-                      children: const <TextSpan>[
+                      children: <TextSpan>[
                         TextSpan(
-                          text:
-                              'Are you sure you want to delete selected bookmarks ?',
-                          style: TextStyle(
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
+                          style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),
                         ),
@@ -368,14 +369,16 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(); // pop dialog
                 },
               ),
               TextButton(
                 child: Text(
-                  'Yes, delete it!',
+                  AppLocalizations.of(context)!.confirmDeleted,
                   style: TextStyle(
                     color: CustomStyle.severityColor[3],
                   ),

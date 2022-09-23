@@ -21,6 +21,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
         _onForwardOutlinesDeletedModeDisabled);
     on<ForwardOutlinesItemToggled>(_onForwardOutlinesItemToggled);
     on<ForwardOutlineDeleted>(_onForwardOutlineDeleted);
+    on<MultipleForwardOutlinesDeleted>(_onMultipleForwardOutlinesDeleted);
 
     add(const ForwardOutlinesRequested());
   }
@@ -111,6 +112,52 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
         await _trapForwardRepository.deleteForwardOutline(
       user: _user,
       id: event.id,
+    );
+
+    if (resultOfDelete[0]) {
+      List<dynamic> resultOfRetrieve =
+          await _trapForwardRepository.getForwardOutlineList(user: _user);
+
+      if (resultOfRetrieve[0]) {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          forwardOutlines: resultOfRetrieve[1],
+          deleteResultMsg: resultOfDelete[1],
+          selectedforwardOutlines: const [],
+          isDeleteMode: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: FormStatus.requestFailure,
+          deleteStatus: SubmissionStatus.submissionSuccess,
+          requestErrorMsg: resultOfRetrieve[1],
+          deleteResultMsg: resultOfDelete[1],
+          selectedforwardOutlines: const [],
+          isDeleteMode: false,
+        ));
+      }
+    } else {
+      emit(state.copyWith(
+        deleteStatus: SubmissionStatus.submissionFailure,
+        deleteResultMsg: resultOfDelete[1],
+      ));
+    }
+  }
+
+  Future<void> _onMultipleForwardOutlinesDeleted(
+    MultipleForwardOutlinesDeleted event,
+    Emitter<TrapForwardState> emit,
+  ) async {
+    emit(state.copyWith(
+      status: FormStatus.requestInProgress,
+      deleteStatus: SubmissionStatus.none,
+    ));
+
+    List<dynamic> resultOfDelete =
+        await _trapForwardRepository.deleteMultipleForwardOutlines(
+      user: _user,
+      forwardOutlines: state.selectedforwardOutlines,
     );
 
     if (resultOfDelete[0]) {

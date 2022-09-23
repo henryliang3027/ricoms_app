@@ -818,7 +818,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
                         TextSpan(
-                          text: AppLocalizations.of(context)!.askBeforeDelete,
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
                           style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),

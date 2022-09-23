@@ -181,4 +181,37 @@ class TrapForwardRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
+
+  Future<List<dynamic>> deleteMultipleForwardOutlines({
+    required User user,
+    required List<ForwardOutline> forwardOutlines,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    for (ForwardOutline forwardOutline in forwardOutlines) {
+      String trapForwardDeleteApiPath =
+          '/advanced/forward/${forwardOutline.id}?uid=${user.id}';
+
+      try {
+        Response response = await dio.delete(
+          trapForwardDeleteApiPath,
+        );
+
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] != '200') {
+          return [
+            false,
+            'Delete Trap Forward failed! Name: ${forwardOutline.name}'
+          ];
+        }
+      } on DioError catch (e) {
+        return [false, CustomErrMsg.connectionFailed];
+      }
+    }
+    return [true, ''];
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_forward_edit_page.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
@@ -100,11 +101,66 @@ class TrapForwardForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.trapForward),
+          actions: const [
+            _PopupMenu(),
+          ],
         ),
         body: const _ForwardOutlineSliverList(),
         floatingActionButton: const _AccountFloatingActionButton(),
       ),
     );
+  }
+}
+
+enum Menu {
+  delete,
+}
+
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TrapForwardBloc, TrapForwardState>(
+        builder: (context, state) {
+      if (state.isDeleteMode) {
+        return Container();
+      } else {
+        return PopupMenuButton<Menu>(
+          onSelected: (Menu item) async {
+            switch (item) {
+              case Menu.delete:
+                context
+                    .read<TrapForwardBloc>()
+                    .add(const ForwardOutlinesDeletedModeEnabled());
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.delete,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.delete_outline,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(AppLocalizations.of(context)!.delete),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+    });
   }
 }
 
@@ -115,29 +171,128 @@ class _AccountFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TrapForwardBloc, TrapForwardState>(
-      builder: (context, state) {
-        return FloatingActionButton(
-          elevation: 0.0,
-          backgroundColor: const Color(0x742195F3),
-          onPressed: () async {
-            bool? isModify = await Navigator.push(
-                context,
-                TrapForwardEditPage.route(
-                    isEditing: false,
-                    forwardOutline: ForwardOutline(
-                        id: 0, enable: 0, name: '', ip: '', parameter: '')));
+    Future<bool?> _showConfirmDeleteDialog() async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_deleteTrapForward,
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
+                          style: const TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.confirmDeleted,
+                  style: TextStyle(
+                    color: CustomStyle.severityColor[3],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
-            if (isModify != null) {
-              if (isModify) {
-                context
-                    .read<TrapForwardBloc>()
-                    .add(const ForwardOutlinesRequested());
+    return BlocBuilder<TrapForwardBloc, TrapForwardState>(
+      buildWhen: (previous, current) =>
+          previous.isDeleteMode != current.isDeleteMode,
+      builder: (context, state) {
+        if (state.isDeleteMode) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                heroTag: null,
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
+                onPressed: () async {
+                  bool? result = await _showConfirmDeleteDialog();
+                  if (result != null) {
+                    result
+                        ? context
+                            .read<TrapForwardBloc>()
+                            .add(const MultipleForwardOutlinesDeleted())
+                        : null;
+                  }
+                },
+                child: const Icon(
+                  CustomIcons.check,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(6.0),
+              ),
+              FloatingActionButton(
+                heroTag: null,
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
+                onPressed: () {
+                  context
+                      .read<TrapForwardBloc>()
+                      .add(const ForwardOutlinesDeletedModeDisabled());
+                },
+                child: const Icon(
+                  CustomIcons.cancel,
+                ),
+              ),
+            ],
+          );
+        } else {
+          return FloatingActionButton(
+            elevation: 0.0,
+            backgroundColor: const Color(0x742195F3),
+            onPressed: () async {
+              bool? isModify = await Navigator.push(
+                  context,
+                  TrapForwardEditPage.route(
+                      isEditing: false,
+                      forwardOutline: ForwardOutline(
+                          id: 0, enable: 0, name: '', ip: '', parameter: '')));
+
+              if (isModify != null) {
+                if (isModify) {
+                  context
+                      .read<TrapForwardBloc>()
+                      .add(const ForwardOutlinesRequested());
+                }
               }
-            }
-          },
-          child: const Icon(Icons.add),
-        );
+            },
+            child: const Icon(Icons.add),
+          );
+        }
       },
     );
   }
@@ -148,8 +303,11 @@ class _ForwardOutlineSliverList extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  SliverChildBuilderDelegate _forwardOutlineSliverChildBuilderDelegate(
-      List data) {
+  SliverChildBuilderDelegate _forwardOutlineSliverChildBuilderDelegate({
+    required List data,
+    required bool isDeleteMode,
+    required List<ForwardOutline> selectedForwardOutlines,
+  }) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         ForwardOutline forwardOutline = data[index];
@@ -158,6 +316,13 @@ class _ForwardOutlineSliverList extends StatelessWidget {
           child: Material(
             color: index.isEven ? Colors.grey.shade100 : Colors.white,
             child: InkWell(
+              onTap: isDeleteMode
+                  ? () {
+                      context
+                          .read<TrapForwardBloc>()
+                          .add(ForwardOutlinesItemToggled(forwardOutline));
+                    }
+                  : null,
               onLongPress: () {
                 showModalBottomSheet(
                   context: context,
@@ -176,25 +341,41 @@ class _ForwardOutlineSliverList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 10.0, 6.0, 10.0),
-                          child: Text(
-                            forwardOutline.name,
-                            //maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
-                              fontSize: CommonStyle.sizeXL,
-                              //fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                10.0, 10.0, 6.0, 10.0),
+                            child: Text(
+                              forwardOutline.name,
+                              //maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.roboto(
+                                fontSize: CommonStyle.sizeXL,
+                                //fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    isDeleteMode
+                        ? selectedForwardOutlines.contains(forwardOutline)
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: Colors.amber,
+                              )
+                            : const Icon(
+                                Icons.circle_outlined,
+                                color: Colors.amber,
+                              )
+                        : const Icon(
+                            Icons.circle_outlined,
+                            color: Colors.transparent,
+                          )
                   ],
                 ),
               ),
@@ -221,7 +402,10 @@ class _ForwardOutlineSliverList extends StatelessWidget {
               slivers: [
                 SliverList(
                     delegate: _forwardOutlineSliverChildBuilderDelegate(
-                        state.forwardOutlines)),
+                  data: state.forwardOutlines,
+                  isDeleteMode: state.isDeleteMode,
+                  selectedForwardOutlines: state.selectedforwardOutlines,
+                )),
               ],
             ),
           );
@@ -264,7 +448,7 @@ class _ForwardOutlineEditBottomMenu extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.dialogTitle_deletedAccount,
+              AppLocalizations.of(context)!.dialogTitle_deleteTrapForward,
             ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -274,7 +458,8 @@ class _ForwardOutlineEditBottomMenu extends StatelessWidget {
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
                         TextSpan(
-                          text: AppLocalizations.of(context)!.askBeforeDelete,
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
                           style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),

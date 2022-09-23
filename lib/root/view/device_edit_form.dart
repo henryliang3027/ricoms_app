@@ -343,8 +343,9 @@ class _DeviceIPInput extends StatelessWidget {
                 ),
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
-                errorText:
-                    state.deviceIP.invalid ? 'Invalid IP address.' : null,
+                errorText: state.deviceIP.invalid
+                    ? AppLocalizations.of(context)!.ipErrorText
+                    : null,
               ),
             ),
           ),

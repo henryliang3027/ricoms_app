@@ -378,11 +378,6 @@
       "description": "confirm deleted"
     },
 
-    "askBeforeDelete": "Are you sure you want to delete ",
-    "@all": {
-      "description": "ask before delete"
-    },
-
     "filters": "Filters",
     "@all": {
       "description": "filters"
@@ -545,6 +540,11 @@
       "description": "Invalid email address."
     },
 
+    "ipErrorText": "Invalid IP address.",
+    "@all": {
+      "description": "Invalid ip address."
+    },
+
     "passwordDoesNotMatch": "Your confirmation password does not match the new password.",
     "@all": {
       "description": "Your confirmation password does not match the new password."
@@ -646,6 +646,11 @@
       "description": "alarm sound of trap"
     },
 
+    "dialogMessage_AskBeforeDelete": "Are you sure you want to delete ",
+    "@all": {
+      "description": "ask before delete"
+    },
+
     "dialogMessage_DeviceUnconnected": "The device is unconnected and unsupported.",
     "@all": {
       "description": "The device is unconnected and unsupported."
@@ -721,9 +726,19 @@
       "description": "error"
     },
 
-    "dialogTitle_deletedAccount": "Delete Account",
+    "dialogTitle_deleteBookmark": "Delete Bookmark",
+    "@all": {
+      "description": "delete bookmark"
+    },
+
+    "dialogTitle_deleteAccount": "Delete Account",
     "@all": {
       "description": "delete account"
+    },
+
+    "dialogTitle_deleteTrapForward": "Delete destination IP",
+    "@all": {
+      "description": "delete destination IP"
     },
 
     "dialogTitle_saving": "Saving",

@@ -425,7 +425,7 @@ class _AccountEditBottomMenu extends StatelessWidget {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.dialogTitle_deletedAccount,
+              AppLocalizations.of(context)!.dialogTitle_deleteAccount,
             ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -435,7 +435,8 @@ class _AccountEditBottomMenu extends StatelessWidget {
                       style: DefaultTextStyle.of(context).style,
                       children: <TextSpan>[
                         TextSpan(
-                          text: AppLocalizations.of(context)!.askBeforeDelete,
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
                           style: const TextStyle(
                             fontSize: CommonStyle.sizeXL,
                           ),

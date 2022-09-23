@@ -42,3 +42,10 @@ class ForwardOutlineDeleted extends TrapForwardEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class MultipleForwardOutlinesDeleted extends TrapForwardEvent {
+  const MultipleForwardOutlinesDeleted();
+
+  @override
+  List<Object?> get props => [];
+}
