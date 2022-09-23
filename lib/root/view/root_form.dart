@@ -347,10 +347,12 @@ class _DynamicFloatingActionButton extends StatelessWidget {
                   elevation: 0.0,
                   backgroundColor: const Color(0x742195F3),
                   onPressed: () {
+                    // because RootBloc cannot be found inside ModalBottomSheet
+                    // provide the context that contain RootBloc for it
                     showModalBottomSheet(
                         context: context,
                         builder: (_) => _NodeCreationBottomMenu(
-                              superContext: context,
+                              parentContext: context,
                               parentNode: state.directory.last,
                             ));
                   },
@@ -451,11 +453,13 @@ class _NodeSliverList extends StatelessWidget {
               onLongPress: () {
                 if (node.type == 1 || node.type == 2 || node.type == 3) {
                   if (enabledEdit || enabledDelete) {
+                    // because RootBloc cannot be found inside ModalBottomSheet
+                    // provide the context that contain RootBloc for it
                     showModalBottomSheet(
                       context: context,
                       builder: (_) => _NodeEditBottomMenu(
-                        superContext:
-                            context, //pass this context contain RootBloc so that BottomMenu can use it to call NodeDeleted event
+                        parentContext:
+                            context, //pass this context contain RootBloc so that BottomMenu can use it
                         parentNode: parentNode,
                         currentNode: node,
                         enabledEdit: enabledEdit,
@@ -782,14 +786,14 @@ class _NodeDirectory extends StatelessWidget {
 class _NodeEditBottomMenu extends StatelessWidget {
   const _NodeEditBottomMenu({
     Key? key,
-    required this.superContext,
+    required this.parentContext,
     required this.parentNode,
     required this.currentNode,
     required this.enabledEdit,
     required this.enabledDelete,
   }) : super(key: key);
 
-  final BuildContext superContext;
+  final BuildContext parentContext;
   final Node parentNode;
   final Node currentNode;
   final bool enabledEdit;
@@ -894,7 +898,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
                 DeviceEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
-                        RepositoryProvider.of<RootRepository>(superContext),
+                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: true,
                     currentNode: currentNode));
@@ -905,7 +909,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
                 GroupEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
-                        RepositoryProvider.of<RootRepository>(superContext),
+                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: true,
                     currentNode: currentNode));
@@ -942,7 +946,7 @@ class _NodeEditBottomMenu extends StatelessWidget {
           bool? result = await _showConfirmDeleteDialog(currentNode);
           if (result != null) {
             result
-                ? superContext.read<RootBloc>().add(NodeDeleted(currentNode))
+                ? parentContext.read<RootBloc>().add(NodeDeleted(currentNode))
                 : null;
           }
         },
@@ -961,11 +965,11 @@ class _NodeEditBottomMenu extends StatelessWidget {
 class _NodeCreationBottomMenu extends StatelessWidget {
   const _NodeCreationBottomMenu({
     Key? key,
-    required this.superContext,
+    required this.parentContext,
     required this.parentNode,
   }) : super(key: key);
 
-  final BuildContext superContext;
+  final BuildContext parentContext;
   final Node parentNode;
 
   @override
@@ -999,7 +1003,7 @@ class _NodeCreationBottomMenu extends StatelessWidget {
                 GroupEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
-                        RepositoryProvider.of<RootRepository>(superContext),
+                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));
@@ -1033,7 +1037,7 @@ class _NodeCreationBottomMenu extends StatelessWidget {
                 DeviceEditPage.route(
                     user: context.read<AuthenticationBloc>().state.user,
                     rootRepository:
-                        RepositoryProvider.of<RootRepository>(superContext),
+                        RepositoryProvider.of<RootRepository>(parentContext),
                     parentNode: parentNode,
                     isEditing: false,
                     currentNode: null));

@@ -303,17 +303,16 @@ class _HistorySliverList extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // because HistoryBloc cannot be found inside ModalBottomSheet
-                // provide HistoryBloc for it by using BlocProvider
+                // provide the context that contain HistoryBloc for it
                 showModalBottomSheet(
-                    context: context,
-                    builder: (_) => BlocProvider.value(
-                          value: context.read<HistoryBloc>(),
-                          child: _HistoryBottomMenu(
-                            initialPath: initialPath,
-                            record: record,
-                            pageController: pageController,
-                          ),
-                        ));
+                  context: context,
+                  builder: (_) => _HistoryBottomMenu(
+                    parentContext: context,
+                    initialPath: initialPath,
+                    record: record,
+                    pageController: pageController,
+                  ),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -492,11 +491,13 @@ class _HistorySliverList extends StatelessWidget {
 class _HistoryBottomMenu extends StatelessWidget {
   const _HistoryBottomMenu({
     Key? key,
+    required this.parentContext,
     required this.initialPath,
     required this.record,
     required this.pageController,
   }) : super(key: key);
 
+  final BuildContext parentContext;
   final List initialPath;
   final Record record;
   final PageController pageController;
@@ -553,7 +554,7 @@ class _HistoryBottomMenu extends StatelessWidget {
           ),
           onTap: () {
             Navigator.pop(context);
-            context.read<HistoryBloc>().add(DeviceStatusChecked(
+            parentContext.read<HistoryBloc>().add(DeviceStatusChecked(
                   initialPath,
                   record.path,
                   pageController,

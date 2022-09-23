@@ -302,18 +302,17 @@ class _LogSliverList extends StatelessWidget {
             color: index.isEven ? Colors.grey.shade100 : Colors.white,
             child: InkWell(
               onTap: () {
-                // because HistoryBloc cannot be found inside ModalBottomSheet
-                // provide HistoryBloc for it by using BlocProvider
+                // because SystemLogBloc cannot be found inside ModalBottomSheet
+                // provide the context that contain SystemLogBloc for it
                 showModalBottomSheet(
-                    context: context,
-                    builder: (_) => BlocProvider.value(
-                          value: context.read<SystemLogBloc>(),
-                          child: _LogBottomMenu(
-                            initialPath: initialPath,
-                            log: log,
-                            pageController: pageController,
-                          ),
-                        ));
+                  context: context,
+                  builder: (_) => _LogBottomMenu(
+                    parentContext: context,
+                    initialPath: initialPath,
+                    log: log,
+                    pageController: pageController,
+                  ),
+                );
               },
               child: _buildItem(log),
             ),
@@ -589,11 +588,13 @@ class _LogSliverList extends StatelessWidget {
 class _LogBottomMenu extends StatelessWidget {
   const _LogBottomMenu({
     Key? key,
+    required this.parentContext,
     required this.initialPath,
     required this.log,
     required this.pageController,
   }) : super(key: key);
 
+  final BuildContext parentContext;
   final List initialPath;
   final Log log;
   final PageController pageController;
@@ -651,7 +652,7 @@ class _LogBottomMenu extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  context.read<SystemLogBloc>().add(DeviceStatusChecked(
+                  parentContext.read<SystemLogBloc>().add(DeviceStatusChecked(
                         initialPath,
                         log.path,
                         pageController,

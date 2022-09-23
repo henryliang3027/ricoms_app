@@ -255,10 +255,12 @@ class _AccountSliverList extends StatelessWidget {
                     : Colors.white,
             child: InkWell(
               onLongPress: () {
+                // because AccountBloc cannot be found inside ModalBottomSheet
+                // provide the context that contain AccountBloc for it
                 showModalBottomSheet(
                   context: context,
                   builder: (_) => _AccountEditBottomMenu(
-                    superContext: context,
+                    parentContext: context,
                     accountOutline: accountOutline,
                   ),
                 );
@@ -403,11 +405,11 @@ class _AccountSliverList extends StatelessWidget {
 class _AccountEditBottomMenu extends StatelessWidget {
   const _AccountEditBottomMenu({
     Key? key,
-    required this.superContext,
+    required this.parentContext,
     required this.accountOutline,
   }) : super(key: key);
 
-  final BuildContext superContext;
+  final BuildContext parentContext;
   final AccountOutline accountOutline;
 
   @override
@@ -516,7 +518,7 @@ class _AccountEditBottomMenu extends StatelessWidget {
 
             if (isModify != null) {
               if (isModify) {
-                superContext.read<AccountBloc>().add(const AccountRequested());
+                parentContext.read<AccountBloc>().add(const AccountRequested());
               }
             }
           },
@@ -550,7 +552,7 @@ class _AccountEditBottomMenu extends StatelessWidget {
                   bool? result = await _showConfirmDeleteDialog(accountOutline);
                   if (result != null) {
                     result
-                        ? superContext
+                        ? parentContext
                             .read<AccountBloc>()
                             .add(AccountDeleted(accountOutline.id))
                         : null;

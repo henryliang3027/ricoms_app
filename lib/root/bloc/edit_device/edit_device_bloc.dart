@@ -262,7 +262,10 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     Emitter<EditDeviceState> emit,
   ) async {
     if (state.status.isValidated) {
-      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+      emit(state.copyWith(
+        status: FormzStatus.submissionInProgress,
+        isTestConnection: true,
+      ));
 
       // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.connectDevice(
@@ -274,14 +277,14 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
       if (msg[0]) {
         emit(state.copyWith(
           isInitController: false,
-          isTestConnection: true,
+          isTestConnection: false,
           msg: msg[1],
           status: FormzStatus.submissionSuccess,
         ));
       } else {
         emit(state.copyWith(
           isInitController: false,
-          isTestConnection: true,
+          isTestConnection: false,
           msg: msg[1],
           status: FormzStatus.submissionFailure,
         ));
