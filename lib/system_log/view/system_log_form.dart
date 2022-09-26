@@ -350,9 +350,9 @@ class _LogSliverList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Icon(
-                  Icons.person_outline,
+                  CustomIcons.user,
                   color: Colors.blue,
-                  size: 30.0,
+                  //size: 30.0,
                 ),
               ],
             ),
@@ -442,7 +442,7 @@ class _LogSliverList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Icon(
-                  CustomIcons.device,
+                  CustomIcons.device_simple,
                   color: Colors.blue,
                 ),
               ],

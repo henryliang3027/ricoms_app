@@ -5,6 +5,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/device_history_page.dart';
+import 'package:ricoms_app/root/view/device_monitoring_chart_page.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -120,10 +121,12 @@ class DeviceSettingTabBar extends StatelessWidget {
                           ],
                         ] else ...[
                           for (DeviceBlock deviceBlock in deviceBlocks) ...[
-                            DeviceSettingPage(
-                              deviceBlock: deviceBlock,
-                              nodeId: node.id,
-                            )
+                            deviceBlock.name == 'Monitoring Chart'
+                                ? const DeviceMonitoringChartPage()
+                                : DeviceSettingPage(
+                                    deviceBlock: deviceBlock,
+                                    nodeId: node.id,
+                                  )
                           ],
                           DeviceHistoryPage(
                             user: context.read<AuthenticationBloc>().state.user,
