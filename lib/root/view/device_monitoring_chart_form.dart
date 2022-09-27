@@ -78,21 +78,21 @@ class _LinePlotState extends State<LinePlot> {
             // }
           });
         },
-        // onHorizontalDragUpdate: (dragUpdDet) {
-        //   setState(() {
-        //     print(dragUpdDet.primaryDelta);
-        //     double primDelta = dragUpdDet.primaryDelta ?? 0.0;
-        //     if (primDelta != 0) {
-        //       if (primDelta.isNegative) {
-        //         minX += maxX * 0.005;
-        //         maxX += maxX * 0.005;
-        //       } else {
-        //         minX -= maxX * 0.005;
-        //         maxX -= maxX * 0.005;
-        //       }
-        //     }
-        //   });
-        // },
+        onHorizontalDragUpdate: (dragUpdDet) {
+          setState(() {
+            print(dragUpdDet.primaryDelta);
+            double primDelta = dragUpdDet.primaryDelta ?? 0.0;
+            if (primDelta != 0) {
+              if (primDelta.isNegative) {
+                minX += maxX * 0.005;
+                maxX += maxX * 0.005;
+              } else {
+                minX -= maxX * 0.005;
+                maxX -= maxX * 0.005;
+              }
+            }
+          });
+        },
         child: LineChart(
           LineChartData(
             minX: minX,

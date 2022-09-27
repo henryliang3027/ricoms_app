@@ -11,7 +11,7 @@ class DeviceMonitoringChartPage extends StatelessWidget {
       maxY: 100,
       minY: 0,
       result: [
-        for (int i = 0; i < 2; i++) ...[Random().nextDouble() * 256]
+        for (int i = 0; i < 10000; i++) ...[Random().nextDouble() * 256]
       ],
     );
 
