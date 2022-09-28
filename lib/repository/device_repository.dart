@@ -379,19 +379,3 @@ class DeviceHistoryData {
   final String clearTime;
   final String alarmDuration;
 }
-
-class ThresholdData {
-  const ThresholdData({
-    required this.id, //threshold id
-    required this.majorH,
-    required this.minorH,
-    required this.majorL,
-    required this.minorL,
-  });
-
-  final int id;
-  final int majorH;
-  final int minorH;
-  final int majorL;
-  final int minorL;
-}

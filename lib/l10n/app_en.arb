@@ -235,6 +235,10 @@
       "description": "no data"
     },
 
+    "parameter": "Parameters",
+    "@all": {
+      "description": "parameters"
+    },
 
     "deviceSettingTab_status": "Status",
     "@all": {

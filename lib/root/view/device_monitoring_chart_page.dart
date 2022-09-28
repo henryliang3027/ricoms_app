@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoring_chart_form.dart';
 
 class DeviceMonitoringChartPage extends StatelessWidget {
-  const DeviceMonitoringChartPage({Key? key}) : super(key: key);
+  const DeviceMonitoringChartPage({
+    Key? key,
+    required this.deviceBlock,
+    required this.nodeId,
+  }) : super(key: key);
+
+  final DeviceBlock deviceBlock;
+  final int nodeId;
 
   @override
   Widget build(BuildContext context) {
-    PlotData plotData = PlotData(
-      maxY: 100,
-      minY: 0,
-      result: [
-        for (int i = 0; i < 10000; i++) ...[Random().nextDouble() * 256]
-      ],
-    );
-
-    return Container(
-      child: LinePlot(
-        plotData: plotData,
-      ),
+    return BlocProvider(
+      create: (context) => ChartFilterBloc(
+          user: context.read<AuthenticationBloc>().state.user,
+          deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
+          nodeId: nodeId,
+          deviceBlock: deviceBlock),
+      child: const DeviceMonitoringChartForm(),
     );
   }
 }

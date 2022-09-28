@@ -122,7 +122,10 @@ class DeviceSettingTabBar extends StatelessWidget {
                         ] else ...[
                           for (DeviceBlock deviceBlock in deviceBlocks) ...[
                             deviceBlock.name == 'Monitoring Chart'
-                                ? const DeviceMonitoringChartPage()
+                                ? DeviceMonitoringChartPage(
+                                    deviceBlock: deviceBlock,
+                                    nodeId: node.id,
+                                  )
                                 : DeviceSettingPage(
                                     deviceBlock: deviceBlock,
                                     nodeId: node.id,

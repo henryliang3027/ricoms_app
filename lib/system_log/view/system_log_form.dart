@@ -352,7 +352,7 @@ class _LogSliverList extends StatelessWidget {
                 Icon(
                   CustomIcons.user,
                   color: Colors.blue,
-                  //size: 30.0,
+                  size: 30.0,
                 ),
               ],
             ),
@@ -444,6 +444,7 @@ class _LogSliverList extends StatelessWidget {
                 Icon(
                   CustomIcons.device_simple,
                   color: Colors.blue,
+                  size: 30.0,
                 ),
               ],
             ),

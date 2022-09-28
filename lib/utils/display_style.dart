@@ -44,6 +44,7 @@ class DisplayStyle {
       } else if (node.shelf != 0) {
         // a8k normal slot
         return RichText(
+          //textScaleFactor: 1.0,
           text: TextSpan(
             style: DefaultTextStyle.of(context).style,
             children: <TextSpan>[

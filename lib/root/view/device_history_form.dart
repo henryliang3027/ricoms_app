@@ -145,10 +145,12 @@ class _HistorySliverList extends StatelessWidget {
                                   10.0, 0.0, 10.0, 2.0),
                               child: Text(
                                 deviceHistoryData.event,
+                                //default textScaleFactor is MediaQuery.of(context).textScaleFactor = 1.15
+                                textScaleFactor: 1.0,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 18.0,
+                                style: const TextStyle(
+                                  fontSize: CommonStyle.sizeXL,
                                   //fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -172,7 +174,7 @@ class _HistorySliverList extends StatelessWidget {
                                     child: Text(
                                       'Time Received: ${deviceHistoryData.timeReceived}',
                                       style: GoogleFonts.roboto(
-                                        fontSize: 12.0,
+                                        fontSize: CommonStyle.sizeS,
                                         //fontWeight: FontWeight.w600,
                                         color: Colors.grey.shade400,
                                       ),
@@ -220,7 +222,12 @@ class _HistorySliverList extends StatelessWidget {
           );
         } else if (state.status.isRequestFailure) {
           return Center(
-            child: Text(state.errmsg),
+            child: Text(
+              getMessageLocalization(
+                msg: state.errmsg,
+                context: context,
+              ),
+            ),
           );
         } else {
           return const Center(
