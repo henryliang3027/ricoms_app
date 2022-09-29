@@ -333,7 +333,7 @@ class SystemLogRepository {
         }
       } else {
         openAppSettings();
-        return [false, 'Please allow permission before you export your data'];
+        return [false, 'Please allow permission before you export your data.'];
       }
     } else {
       return [

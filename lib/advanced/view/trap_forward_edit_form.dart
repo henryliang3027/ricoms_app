@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/advanced/bloc/edit_trap_forward/edit_trap_forward_bloc.dart';
-import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
 import 'package:ricoms_app/repository/forward_detail.dart';
 import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class TrapForwardEditForm extends StatelessWidget {
   const TrapForwardEditForm({
@@ -67,7 +67,12 @@ class TrapForwardEditForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -104,7 +109,12 @@ class TrapForwardEditForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

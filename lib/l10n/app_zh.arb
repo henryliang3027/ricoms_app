@@ -95,6 +95,7 @@
     "showDetail": "詳細資料",
     "goToDeviceSetting": "前往裝置設定",
     "noMoreRecordToShow": "沒有資料可以顯示",
+    "noSearchResult": "搜尋無結果",
     "connectionFailed": "連線失敗!",
     
     "detail": "詳細資料",
@@ -144,10 +145,14 @@
     "colorOfTrapAlarm": "告警顏色設定",
     "alarmSoundOfTrap": "告警警告聲設定",
 
+    
+    "dialogMessage_LoginFailed": "登入失敗，請重新確認你的帳號或密碼。",
+    "dialogMessage_AllFileAccess": "請允許檔案存取權後再匯出您的資料",
     "dialogMessage_AskBeforeDelete": "確認刪除 ",
     "dialogMessage_DeviceUnconnected": "裝置無法連線或支援。",
     "dialogMessage_NoMoreData": "無法載入更多紀錄。",
     "dialogMessage_DeviceDoesNotRespond": "裝置沒有回應。",
+    "dialogMessage_DeviceAlreadyExists": "裝置已存在。",
     "dialogMessage_NoModuleInTheSlot": "無法偵測到模組在槽位 ",
     "dialogMessage_PleaseTryAnother": "請點選其他槽位。",
     "dialogMessage_NoNode": "找不到此節點",

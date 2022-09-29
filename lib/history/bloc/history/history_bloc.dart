@@ -173,6 +173,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     HistoryRecordsExported event,
     Emitter<HistoryState> emit,
   ) async {
+    emit(state.copyWith(
+      moreRecordsStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      historyExportStatus: FormStatus.none,
+    ));
+
     List<dynamic> result = await _historyRepository.exportHistory(
       user: _user,
       records: state.records,

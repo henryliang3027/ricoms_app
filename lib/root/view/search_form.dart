@@ -8,6 +8,7 @@ import 'package:ricoms_app/root/bloc/search/search_bloc.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class SearchForm extends StatelessWidget {
   const SearchForm({Key? key}) : super(key: key);
@@ -238,7 +239,12 @@ class _DeviceListView extends StatelessWidget {
                     ),
                   )
                 : Center(
-                    child: Text(state.searchResult),
+                    child: Text(
+                      getMessageLocalization(
+                        msg: state.searchResult,
+                        context: context,
+                      ),
+                    ),
                   );
           }
         });

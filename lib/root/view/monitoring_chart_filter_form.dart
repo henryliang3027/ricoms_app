@@ -151,7 +151,9 @@ class _EndDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
-      buildWhen: (previous, current) => previous.endDate != current.endDate,
+      buildWhen: (previous, current) =>
+          previous.endDate != current.endDate ||
+          previous.startDate != current.startDate,
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () async {
@@ -224,7 +226,8 @@ class _ThresholdListView extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             //color: Colors.grey,
-            border: Border.all(color: Colors.grey),
+            border: Border.all(color: Colors.grey, width: 2.0),
+            borderRadius: const BorderRadius.all(Radius.circular(2.0)),
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 0.0),

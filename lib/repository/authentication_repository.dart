@@ -377,7 +377,8 @@ class AuthenticationRepository {
             return [true, true];
           }
         } else {
-          return [false, 'Failed to get user permission'];
+          // Failed to get user permission
+          return [true, true];
         }
       } on DioError catch (e) {
         return [false, CustomErrMsg.connectionFailed];

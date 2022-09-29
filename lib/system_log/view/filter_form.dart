@@ -230,7 +230,9 @@ class _EndDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FilterBloc, FilterState>(
-      buildWhen: (previous, current) => previous.endDate != current.endDate,
+      buildWhen: (previous, current) =>
+          previous.endDate != current.endDate ||
+          previous.startDate != current.startDate,
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () async {

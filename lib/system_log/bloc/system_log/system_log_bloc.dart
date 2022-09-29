@@ -167,6 +167,12 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
     LogsExported event,
     Emitter<SystemLogState> emit,
   ) async {
+    emit(state.copyWith(
+      moreLogsStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      logExportStatus: FormStatus.none,
+    ));
+
     List<dynamic> result = await _systemLogRepository.exportLogs(
       user: _user,
       logs: state.logs,

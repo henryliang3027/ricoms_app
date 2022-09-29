@@ -437,6 +437,11 @@
       "description": "There are no records to show"
     },
 
+    "noSearchResult": "No results found",
+    "@all": {
+      "description": "No results found"
+    },
+
     "connectionFailed": "Connection failed!",
     "@all": {
       "description": "Connection failed"
@@ -650,6 +655,17 @@
       "description": "alarm sound of trap"
     },
 
+
+    "dialogMessage_LoginFailed": "Login failed. Please reconfirm your account password.",
+    "@all": {
+      "description": "Login failed. Please reconfirm your account password."
+    },
+
+    "dialogMessage_AllFileAccess": "Please allow permission before you export your data.",
+    "@all": {
+      "description": "Please allow permission before you export your data."
+    },
+
     "dialogMessage_AskBeforeDelete": "Are you sure you want to delete ",
     "@all": {
       "description": "ask before delete"
@@ -668,6 +684,11 @@
     "dialogMessage_DeviceDoesNotRespond": "The device does not respond!",
     "@all": {
       "description": "The device does not respond!"
+    },
+
+    "dialogMessage_DeviceAlreadyExists": "The device already exists.",
+    "@all": {
+      "description": "The device already exists."
     },
 
     "dialogMessage_NoModuleInTheSlot": "No module in the slot ",
@@ -695,7 +716,7 @@
       "description": "Export history data success"
     },
 
-    "dialogMessage_ExportSystemLogDataSuccess": "Export system logs success",
+    "dialogMessage_ExportSystemLogDataSuccess": "Export system log data success",
     "@all": {
       "description": "Export system logs success"
     },

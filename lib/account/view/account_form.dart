@@ -314,37 +314,35 @@ class _AccountSliverList extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10.0, 0.0, 6.0, 4.0),
-                                child: Text(
-                                  accountOutline.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: CommonStyle.sizeS,
-                                    color: Colors.grey,
-                                    //fontWeight: FontWeight.w500,
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 6.0, 4.0),
+                                  child: Text(
+                                    accountOutline.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                      fontSize: CommonStyle.sizeS,
+                                      color: Colors.grey,
+                                      //fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10.0, 0.0, 6.0, 4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      accountOutline.department ?? '',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.roboto(
-                                        fontSize: CommonStyle.sizeS,
-                                        //fontWeight: FontWeight.w500,
-                                      ),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 6.0, 4.0),
+                                  child: Text(
+                                    accountOutline.department ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                      fontSize: CommonStyle.sizeS,
+                                      //fontWeight: FontWeight.w500,
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ],

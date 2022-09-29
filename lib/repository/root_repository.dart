@@ -49,7 +49,7 @@ class RootRepository {
         }
         return childs;
       } else {
-        return 'Error errno: ${data['code']}';
+        return 'No node';
       }
     } on DioError catch (e) {
       return CustomErrMsg.connectionFailed;
@@ -186,7 +186,9 @@ class RootRepository {
       if (data['code'] == '200') {
         return [true, ''];
       } else if (data['code'] == '204') {
-        return [true, 'The device is unconnedted and unsupported.'];
+        return [true, 'The device is unconnected and unsupported.'];
+      } else if (data['code'] == '409') {
+        return [false, 'The device already exists.'];
       } else {
         return [false, data['msg']];
       }
@@ -499,7 +501,10 @@ class RootRepository {
           }
         } else {
           openAppSettings();
-          return [false, 'Please allow permission before you export your data'];
+          return [
+            false,
+            'Please allow permission before you export your data.'
+          ];
         }
       } else {
         return [

@@ -9,6 +9,8 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.noMoreRecordToShow;
   } else if (msg == 'No more result.') {
     return AppLocalizations.of(context)!.dialogMessage_NoMoreData;
+  } else if (msg == 'No results found.') {
+    return AppLocalizations.of(context)!.noSearchResult;
   } else if (msg == 'The device does not respond!') {
     return AppLocalizations.of(context)!.dialogMessage_DeviceDoesNotRespond;
   } else if (msg.startsWith('No module in the slot')) {
@@ -25,15 +27,21 @@ String getMessageLocalization({
     } else {
       return msg;
     }
+  } else if (msg == 'Please allow permission before you export your data.') {
+    return AppLocalizations.of(context)!.dialogMessage_AllFileAccess;
+  } else if (msg == 'Login failed. Please reconfirm your account password.') {
+    return AppLocalizations.of(context)!.dialogMessage_LoginFailed;
   } else if (msg == 'The device is unconnected and unsupported.') {
     return AppLocalizations.of(context)!.dialogMessage_DeviceUnconnected;
+  } else if (msg == 'The device already exists.') {
+    return AppLocalizations.of(context)!.dialogMessage_DeviceAlreadyExists;
   } else if (msg == 'No node') {
     return AppLocalizations.of(context)!.dialogMessage_NoNode;
   } else if (msg == 'Export root data success') {
     return AppLocalizations.of(context)!.dialogMessage_ExportRootDataSuccess;
   } else if (msg == 'Export history data success') {
     return AppLocalizations.of(context)!.dialogMessage_ExportHistoryDataSuccess;
-  } else if (msg == 'Export system logs success') {
+  } else if (msg == 'Export system log data success') {
     return AppLocalizations.of(context)!
         .dialogMessage_ExportSystemLogDataSuccess;
   } else if (msg == 'Connection failed!') {
