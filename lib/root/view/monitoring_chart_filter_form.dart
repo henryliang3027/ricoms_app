@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -213,10 +213,42 @@ class _EndDatePicker extends StatelessWidget {
 }
 
 class _ThresholdListView extends StatelessWidget {
-  _ThresholdListView({Key? key}) : super(key: key);
+  const _ThresholdListView({Key? key}) : super(key: key);
 
-  final Map<String, bool> checkBoxValues = {};
-  final Map<String, ThresholdData> thresholdDataSet = {};
+  Widget _buildItem(
+      ItemProperty itemProperty, Map<String, bool> checkBoxValues) {
+    if (itemProperty.runtimeType == TextProperty) {
+      TextProperty textProperty = itemProperty as TextProperty;
+      return Expanded(
+        flex: textProperty.boxLength,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: textProperty.boxColor,
+              border: Border.all(color: textProperty.borderColor),
+            ),
+            child: Text(
+              textProperty.text,
+              style: TextStyle(
+                color: textProperty.textColor,
+                fontSize: textProperty.fontSize,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else if (itemProperty.runtimeType == CheckBoxProperty) {
+      CheckBoxProperty checkBoxProperty = itemProperty as CheckBoxProperty;
+      return _FilterCheckBoxes(
+        checkBoxProperty: checkBoxProperty,
+        oid: checkBoxProperty.oid,
+        value: checkBoxValues[checkBoxProperty.oid] ?? false,
+      );
+    } else {
+      return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +257,6 @@ class _ThresholdListView extends StatelessWidget {
       if (state.status.isRequestSuccess) {
         return Container(
           decoration: BoxDecoration(
-            //color: Colors.grey,
             border: Border.all(color: Colors.grey, width: 2.0),
             borderRadius: const BorderRadius.all(Radius.circular(2.0)),
           ),
@@ -234,18 +265,18 @@ class _ThresholdListView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for (var item in state.data) ...[
+                for (int i = 0;
+                    i < state.itemPropertiesCollection.length;
+                    i++) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(
                         width: 10.0,
                       ),
-                      for (var e in item) ...[
-                        MonitoringChartStyle.getChartFilterData(
-                            e: e,
-                            checkBoxValues: checkBoxValues,
-                            thresholdDataSet: thresholdDataSet)
+                      for (ItemProperty itemProperty
+                          in state.itemPropertiesCollection[i]) ...[
+                        _buildItem(itemProperty, state.checkBoxValues),
                       ]
                     ],
                   )
@@ -258,7 +289,7 @@ class _ThresholdListView extends StatelessWidget {
           ),
         );
       } else if (state.status.isRequestFailure) {
-        String errMsg = state.data[0];
+        String errMsg = state.requestErrorMsg;
         return Center(
           child: Text(errMsg),
         );
@@ -268,6 +299,47 @@ class _ThresholdListView extends StatelessWidget {
         );
       }
     });
+  }
+}
+
+class _FilterCheckBoxes extends StatelessWidget {
+  const _FilterCheckBoxes({
+    Key? key,
+    required this.checkBoxProperty,
+    required this.oid,
+    required this.value,
+  }) : super(key: key);
+
+  final CheckBoxProperty checkBoxProperty;
+  final String oid;
+  final bool value;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+      buildWhen: (previous, current) =>
+          previous.checkBoxValues[oid] != current.checkBoxValues[oid],
+      builder: (context, state) {
+        return Expanded(
+          flex: (checkBoxProperty.boxLength * 0.5).ceil(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            child: Checkbox(
+              visualDensity: const VisualDensity(vertical: -4.0),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              value: value,
+              onChanged: (value) {
+                if (value != null) {
+                  context
+                      .read<ChartFilterBloc>()
+                      .add(CheckBoxValueChanged(oid, value));
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

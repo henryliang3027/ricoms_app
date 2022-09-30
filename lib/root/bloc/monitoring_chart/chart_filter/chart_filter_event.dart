@@ -35,3 +35,16 @@ class FilterSelectingModeChanged extends ChartFilterEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CheckBoxValueChanged extends ChartFilterEvent {
+  const CheckBoxValueChanged(this.oid, this.value);
+
+  final String oid;
+  final bool value;
+
+  @override
+  List<Object?> get props => [
+        oid,
+        value,
+      ];
+}

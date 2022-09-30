@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
 
 class MonitoringChartStyle {
-  static Widget getChartFilterData({
+  static void getChartFilterData({
     required dynamic e,
+    required List<ItemProperty> itemProperties,
     required Map<String, bool> checkBoxValues,
-    required Map<String, ThresholdData> thresholdDataSet,
   }) {
     int style = e['style'] ?? -1;
     int length = e['length'] ?? 1;
@@ -30,565 +29,101 @@ class MonitoringChartStyle {
       case 99: //勾選方塊
         if (id != '-1') {
           checkBoxValues[id] = false;
-          thresholdDataSet[id] = ThresholdData(
-            id: id,
+          CheckBoxProperty checkBoxProperty = CheckBoxProperty(
+            oid: id,
             majorH: majorH,
             minorH: minorH,
             majorL: majorL,
             minorL: minorL,
+            boxLength: length,
           );
+
+          itemProperties.add(checkBoxProperty);
         }
-
-        return Expanded(
-          flex: (length * 0.5).ceil(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: CustomCheckbox(
-                checkBoxValues: checkBoxValues,
-                isEditing: true,
-                readonly: 0,
-                oid: id),
-          ),
-        );
-
+        break;
       case 100: //文字標籤 - 白底黑字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.black, fontSize: font),
-              ),
-            ),
-          ),
+        TextProperty textProperty = TextProperty(
+          text: value,
+          textColor: Colors.black,
+          boxColor: Colors.white,
+          borderColor: Colors.white,
+          boxLength: length,
+          fontSize: font,
         );
-
-      case 101: //文字標籤 - 灰底白字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 102: //文字標籤 - 白底藍字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
-              ),
-            ),
-          ),
-        );
+        itemProperties.add(textProperty);
+        break;
       case 103: //文字標籤 - 藍底白字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                border: Border.all(color: Colors.blue),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
+        TextProperty textProperty = TextProperty(
+          text: value,
+          textColor: Colors.white,
+          boxColor: Colors.blue,
+          borderColor: Colors.blue,
+          boxLength: length,
+          fontSize: font,
         );
-      case 104: //文字標籤 - 綠底白字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.green,
-                border: Border.all(color: Colors.green),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 105: //文字標籤 - 白底綠字
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.green, fontSize: font),
-              ),
-            ),
-          ),
-        );
-
-      case 106: //文字標籤 - 白底黑字 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.black,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-
-      case 107: //文字標籤 - 白底藍字 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.blue,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-
-      case 108: //文字標籤 - 白底綠字 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.green,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 110: //文字標籤 - 白底黑字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.black, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 111: //文字標籤 - 灰底白字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 112: //文字標籤 - 白底藍字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.blue, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 113: //文字標籤 - 藍底白字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                border: Border.all(color: Colors.blue),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 114: //文字標籤 - 綠底白字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                border: Border.all(color: Colors.green),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 115: //文字標籤 - 白底綠字, 文字置中
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.green, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 116: //文字標籤 - 白底黑字, 文字置中 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.black,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 117: //文字標籤 - 白底藍字, 文字置中 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.blue,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 118: //文字標籤 - 白底綠字, 文字置中 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.green,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 120: //文字標籤 - 白底黑字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.black,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 121: //文字標籤 - 灰底白字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 122: //文字標籤 - 白底藍字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.blue,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 123: //文字標籤 - 藍底白字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                border: Border.all(color: Colors.blue),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 124: //文字標籤 - 綠底白字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                border: Border.all(color: Colors.green),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.white, fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 125: //文字標籤 - 白底綠字, 文字靠右
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.white),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.green,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 126: //文字標籤 - 白底黑字, 文字靠右 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.black,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 127: //文字標籤 - 白底藍字, 文字靠右 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.blue,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
-      case 128: //文字標籤 - 白底綠字, 文字靠右 (有邊框)
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              alignment: Alignment.centerRight,
-              decoration: BoxDecoration(
-                color: CustomStyle.statusColor[status],
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(
-                    color: status == 3 ? Colors.white : Colors.green,
-                    fontSize: font),
-              ),
-            ),
-          ),
-        );
+        itemProperties.add(textProperty);
+        break;
       default:
-        return Expanded(
-          flex: length,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black),
-              ),
-              child: Text(
-                value,
-                style: TextStyle(color: Colors.black, fontSize: font),
-              ),
-            ),
-          ),
+        TextProperty textProperty = TextProperty(
+          text: value,
+          textColor: Colors.black,
+          boxColor: Colors.white,
+          borderColor: Colors.black,
+          boxLength: length,
+          fontSize: font,
         );
+        itemProperties.add(textProperty);
+        break;
     }
   }
 }
 
-class ThresholdData {
-  const ThresholdData({
-    required this.id, //threshold id
+abstract class ItemProperty {
+  const ItemProperty();
+}
+
+class TextProperty extends ItemProperty {
+  const TextProperty({
+    required this.text,
+    this.textColor = Colors.black,
+    this.boxColor = Colors.white,
+    this.borderColor = Colors.transparent,
+    this.boxLength = 1,
+    this.fontSize = 14.0,
+  });
+
+  final String text;
+  final Color textColor;
+  final Color boxColor;
+  final Color borderColor;
+  final int boxLength;
+  final double fontSize;
+}
+
+class CheckBoxProperty extends ItemProperty {
+  const CheckBoxProperty({
+    required this.oid,
     required this.majorH,
     required this.minorH,
     required this.majorL,
     required this.minorL,
+    this.boxLength = 1,
   });
 
-  final String id;
+  final String oid;
   final double majorH;
   final double minorH;
   final double majorL;
   final double minorL;
+  final int boxLength;
+}
+
+class CheckBoxValue {
+  const CheckBoxValue({
+    required this.oid,
+    required this.value,
+  });
+
+  final String oid;
+  final bool value;
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
 
 part 'chart_filter_event.dart';
 part 'chart_filter_state.dart';
@@ -23,6 +24,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     on<StartDateChanged>(_onStartDateChanged);
     on<EndDateChanged>(_onEndDateChanged);
     on<FilterSelectingModeChanged>(_onFilterSelectingModeChanged);
+    on<CheckBoxValueChanged>(_onCheckBoxValueChanged);
 
     add(const ThresholdDataRequested());
   }
@@ -36,6 +38,9 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     ThresholdDataRequested event,
     Emitter<ChartFilterState> emit,
   ) async {
+    List<List<ItemProperty>> itemPropertiesCollection = [];
+    Map<String, bool> checkBoxValues = {};
+
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
     ));
@@ -47,16 +52,28 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     );
 
     if (data is List) {
+      for (var item in data) {
+        List<ItemProperty> itemProperties = [];
+        for (var e in item) {
+          MonitoringChartStyle.getChartFilterData(
+            e: e,
+            itemProperties: itemProperties,
+            checkBoxValues: checkBoxValues,
+          );
+        }
+        itemPropertiesCollection.add(itemProperties);
+      }
+
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
-        data: data,
+        itemPropertiesCollection: itemPropertiesCollection,
+        checkBoxValues: checkBoxValues,
         startDate: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
         endDate: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
       ));
     } else {
       emit(state.copyWith(
         status: FormStatus.requestFailure,
-        data: [],
         requestErrorMsg: data,
       ));
     }
@@ -116,6 +133,20 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
   ) {
     emit(state.copyWith(
       filterSelectingMode: !state.filterSelectingMode,
+    ));
+  }
+
+  void _onCheckBoxValueChanged(
+    CheckBoxValueChanged event,
+    Emitter<ChartFilterState> emit,
+  ) {
+    Map<String, bool> checkBoxValues = {};
+
+    checkBoxValues.addAll(state.checkBoxValues);
+    checkBoxValues[event.oid] = event.value;
+
+    emit(state.copyWith(
+      checkBoxValues: checkBoxValues,
     ));
   }
 }
