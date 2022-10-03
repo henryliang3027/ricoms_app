@@ -286,6 +286,10 @@
       "description": "SNMP Setup"
     },
 
+    "deviceSettingTab_discreteProperty": "Discrete Property",
+    "@all": {
+      "description": "Discrete Property"
+    },
 
     "alarmRatio": "Alarm Ratio",
     "@all": {

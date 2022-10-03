@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/view/monitoring_chart_display_page.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_filter_form.dart';
+import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
 
 class DeviceMonitoringChartForm extends StatelessWidget {
-  const DeviceMonitoringChartForm({Key? key}) : super(key: key);
+  const DeviceMonitoringChartForm({
+    Key? key,
+    required this.nodeId,
+  }) : super(key: key);
+
+  final int nodeId;
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _DeviceMonitoringChartContent(),
-      floatingActionButton: _ChartFloatingActionButton(),
+    return Scaffold(
+      body: _DeviceMonitoringChartContent(
+        nodeId: nodeId,
+      ),
+      floatingActionButton: const _ChartFloatingActionButton(),
     );
   }
 }
 
 class _DeviceMonitoringChartContent extends StatelessWidget {
-  const _DeviceMonitoringChartContent({Key? key}) : super(key: key);
+  const _DeviceMonitoringChartContent({
+    Key? key,
+    required this.nodeId,
+  }) : super(key: key);
+
+  final int nodeId;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +40,9 @@ class _DeviceMonitoringChartContent extends StatelessWidget {
       builder: (context, state) {
         return state.filterSelectingMode
             ? const MonitoringChartFilterForm()
-            : const _MonitoringChartDisplay();
+            : _MonitoringChartGridView(
+                nodeId: nodeId,
+              );
       },
     );
   }
@@ -50,7 +66,7 @@ class _ChartFloatingActionButton extends StatelessWidget {
                 onPressed: () async {
                   context
                       .read<ChartFilterBloc>()
-                      .add(const FilterSelectingModeChanged());
+                      .add(const FilterSelectingModeEnabled());
                 },
                 child: const Icon(
                   Icons.edit,
@@ -66,13 +82,37 @@ class _ChartFloatingActionButton extends StatelessWidget {
   }
 }
 
-class _MonitoringChartDisplay extends StatelessWidget {
-  const _MonitoringChartDisplay({Key? key}) : super(key: key);
+class _MonitoringChartGridView extends StatelessWidget {
+  const _MonitoringChartGridView({
+    Key? key,
+    required this.nodeId,
+  }) : super(key: key);
+
+  final int nodeId;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Chart'),
-    );
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+        buildWhen: (previous, current) =>
+            previous.selectedCheckBoxValues != current.selectedCheckBoxValues,
+        builder: (context, state) {
+          return ListView(
+            children: [
+              for (CheckBoxValue checkBoxValue
+                  in state.selectedCheckBoxValues) ...[
+                MonitoringChartDisplayPage(
+                  startDate: state.startDate,
+                  endDate: state.endDate,
+                  nodeId: nodeId,
+                  oid: checkBoxValue.oid,
+                  majorH: checkBoxValue.majorH,
+                  minorH: checkBoxValue.minorH,
+                  majorL: checkBoxValue.majorL,
+                  minorL: checkBoxValue.minorL,
+                )
+              ]
+            ],
+          );
+        });
   }
 }

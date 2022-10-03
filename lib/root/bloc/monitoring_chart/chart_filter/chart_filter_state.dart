@@ -7,6 +7,7 @@ class ChartFilterState extends Equatable {
     this.endDate = '',
     this.itemPropertiesCollection = const [],
     this.checkBoxValues = const {},
+    this.selectedCheckBoxValues = const [],
     this.filterSelectingMode = true,
     this.requestErrorMsg = '',
   });
@@ -15,7 +16,8 @@ class ChartFilterState extends Equatable {
   final String startDate;
   final String endDate;
   final List<List<ItemProperty>> itemPropertiesCollection;
-  final Map<String, bool> checkBoxValues;
+  final Map<String, CheckBoxValue> checkBoxValues;
+  final List<CheckBoxValue> selectedCheckBoxValues;
   final bool filterSelectingMode;
   final String requestErrorMsg;
 
@@ -24,7 +26,8 @@ class ChartFilterState extends Equatable {
     String? startDate,
     String? endDate,
     List<List<ItemProperty>>? itemPropertiesCollection,
-    Map<String, bool>? checkBoxValues,
+    Map<String, CheckBoxValue>? checkBoxValues,
+    List<CheckBoxValue>? selectedCheckBoxValues,
     bool? filterSelectingMode,
     String? requestErrorMsg,
   }) {
@@ -35,6 +38,8 @@ class ChartFilterState extends Equatable {
       itemPropertiesCollection:
           itemPropertiesCollection ?? this.itemPropertiesCollection,
       checkBoxValues: checkBoxValues ?? this.checkBoxValues,
+      selectedCheckBoxValues:
+          selectedCheckBoxValues ?? this.selectedCheckBoxValues,
       filterSelectingMode: filterSelectingMode ?? this.filterSelectingMode,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
     );
@@ -47,6 +52,7 @@ class ChartFilterState extends Equatable {
         endDate,
         itemPropertiesCollection,
         checkBoxValues,
+        selectedCheckBoxValues,
         filterSelectingMode,
         requestErrorMsg,
       ];

@@ -61,6 +61,7 @@
     "deviceSettingTab_summary": "摘要",
     "deviceSettingTab_wanSettings": "WAN 設定",
     "deviceSettingTab_snmpSetup": "SNMP 設定",
+    "deviceSettingTab_discreteProperty": "離散屬性",
 
 
     "alarmRatio": "告警百分比",

@@ -29,8 +29,15 @@ class EndDateChanged extends ChartFilterEvent {
   List<Object?> get props => [endDate];
 }
 
-class FilterSelectingModeChanged extends ChartFilterEvent {
-  const FilterSelectingModeChanged();
+class FilterSelectingModeEnabled extends ChartFilterEvent {
+  const FilterSelectingModeEnabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class FilterSelectingModeDisabled extends ChartFilterEvent {
+  const FilterSelectingModeDisabled();
 
   @override
   List<Object?> get props => [];

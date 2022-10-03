@@ -23,7 +23,8 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     on<ThresholdDataRequested>(_onThresholdDataRequested);
     on<StartDateChanged>(_onStartDateChanged);
     on<EndDateChanged>(_onEndDateChanged);
-    on<FilterSelectingModeChanged>(_onFilterSelectingModeChanged);
+    on<FilterSelectingModeEnabled>(_onFilterSelectingModeEnabled);
+    on<FilterSelectingModeDisabled>(_onFilterSelectingModeDisabled);
     on<CheckBoxValueChanged>(_onCheckBoxValueChanged);
 
     add(const ThresholdDataRequested());
@@ -39,7 +40,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     Emitter<ChartFilterState> emit,
   ) async {
     List<List<ItemProperty>> itemPropertiesCollection = [];
-    Map<String, bool> checkBoxValues = {};
+    Map<String, CheckBoxValue> checkBoxValues = {};
 
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
@@ -127,12 +128,31 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     ));
   }
 
-  void _onFilterSelectingModeChanged(
-    FilterSelectingModeChanged event,
+  void _onFilterSelectingModeEnabled(
+    FilterSelectingModeEnabled event,
     Emitter<ChartFilterState> emit,
   ) {
     emit(state.copyWith(
-      filterSelectingMode: !state.filterSelectingMode,
+      filterSelectingMode: true,
+      selectedCheckBoxValues: [],
+    ));
+  }
+
+  void _onFilterSelectingModeDisabled(
+    FilterSelectingModeDisabled event,
+    Emitter<ChartFilterState> emit,
+  ) {
+    List<CheckBoxValue> selectedCheckBoxValues = [];
+
+    state.checkBoxValues.forEach((oid, checkBoxValue) {
+      if (checkBoxValue.value == true) {
+        selectedCheckBoxValues.add(checkBoxValue);
+      }
+    });
+
+    emit(state.copyWith(
+      filterSelectingMode: false,
+      selectedCheckBoxValues: selectedCheckBoxValues,
     ));
   }
 
@@ -140,10 +160,25 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     CheckBoxValueChanged event,
     Emitter<ChartFilterState> emit,
   ) {
-    Map<String, bool> checkBoxValues = {};
+    Map<String, CheckBoxValue> checkBoxValues = {};
 
     checkBoxValues.addAll(state.checkBoxValues);
-    checkBoxValues[event.oid] = event.value;
+
+    String oid = checkBoxValues[event.oid]!.oid;
+    double majorH = checkBoxValues[event.oid]!.majorH;
+    double minorH = checkBoxValues[event.oid]!.minorH;
+    double majorL = checkBoxValues[event.oid]!.majorL;
+    double minorL = checkBoxValues[event.oid]!.minorL;
+
+    CheckBoxValue newCheckBoxValue = CheckBoxValue(
+      oid: oid,
+      majorH: majorH,
+      minorH: minorH,
+      majorL: majorL,
+      minorL: minorL,
+      value: event.value,
+    );
+    checkBoxValues[event.oid] = newCheckBoxValue;
 
     emit(state.copyWith(
       checkBoxValues: checkBoxValues,

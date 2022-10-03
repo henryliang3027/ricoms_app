@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 
@@ -348,6 +349,56 @@ class DeviceRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
+
+  Future<List<dynamic>> getDeviceChartData({
+    required User user,
+    required String startDate,
+    required String endDate,
+    required int deviceId,
+    required String oid,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String deviceChartDataPath =
+        '/device/$deviceId/chart?start_time=$startDate&end_time=$endDate&oid=$oid';
+
+    try {
+      Response response = await dio.get(deviceChartDataPath);
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        List rawdataList = data['data']['data'][0]['data'];
+        List<ChartDateValuePair> chartDateValuePairs = [];
+
+        for (var element in rawdataList) {
+          String? rawDate = element['time'];
+          String? rawValue = element['value'];
+
+          if (rawDate != null &&
+              rawValue != null &&
+              rawDate != 'null' &&
+              rawValue != 'null') {
+            double value = double.parse(rawValue);
+            String date = rawDate;
+            chartDateValuePairs.add(ChartDateValuePair(
+              date: date,
+              point: Offset(rawdataList.indexOf(element).toDouble(), value),
+              value: value,
+            ));
+          }
+        }
+
+        return [true, chartDateValuePairs];
+      } else {
+        return [false, 'No chart data.'];
+      }
+    } on DioError catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
 }
 
 class DeviceBlock {
@@ -378,4 +429,16 @@ class DeviceHistoryData {
   final String timeReceived;
   final String clearTime;
   final String alarmDuration;
+}
+
+class ChartDateValuePair {
+  const ChartDateValuePair({
+    required this.date,
+    required this.point,
+    required this.value,
+  });
+
+  final String date;
+  final Offset point;
+  final double value;
 }

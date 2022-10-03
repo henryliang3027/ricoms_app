@@ -4,7 +4,7 @@ class MonitoringChartStyle {
   static void getChartFilterData({
     required dynamic e,
     required List<ItemProperty> itemProperties,
-    required Map<String, bool> checkBoxValues,
+    required Map<String, CheckBoxValue> checkBoxValues,
   }) {
     int style = e['style'] ?? -1;
     int length = e['length'] ?? 1;
@@ -28,13 +28,16 @@ class MonitoringChartStyle {
     switch (style) {
       case 99: //勾選方塊
         if (id != '-1') {
-          checkBoxValues[id] = false;
-          CheckBoxProperty checkBoxProperty = CheckBoxProperty(
+          checkBoxValues[id] = CheckBoxValue(
             oid: id,
             majorH: majorH,
             minorH: minorH,
             majorL: majorL,
             minorL: minorL,
+            value: false,
+          );
+          CheckBoxProperty checkBoxProperty = CheckBoxProperty(
+            oid: id,
             boxLength: length,
           );
 
@@ -103,11 +106,21 @@ class TextProperty extends ItemProperty {
 class CheckBoxProperty extends ItemProperty {
   const CheckBoxProperty({
     required this.oid,
+    this.boxLength = 1,
+  });
+
+  final String oid;
+  final int boxLength;
+}
+
+class CheckBoxValue {
+  const CheckBoxValue({
+    required this.oid,
     required this.majorH,
     required this.minorH,
     required this.majorL,
     required this.minorL,
-    this.boxLength = 1,
+    required this.value,
   });
 
   final String oid;
@@ -115,15 +128,5 @@ class CheckBoxProperty extends ItemProperty {
   final double minorH;
   final double majorL;
   final double minorL;
-  final int boxLength;
-}
-
-class CheckBoxValue {
-  const CheckBoxValue({
-    required this.oid,
-    required this.value,
-  });
-
-  final String oid;
   final bool value;
 }

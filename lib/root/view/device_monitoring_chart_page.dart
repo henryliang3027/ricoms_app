@@ -23,7 +23,9 @@ class DeviceMonitoringChartPage extends StatelessWidget {
           deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
           nodeId: nodeId,
           deviceBlock: deviceBlock),
-      child: const DeviceMonitoringChartForm(),
+      child: DeviceMonitoringChartForm(
+        nodeId: nodeId,
+      ),
     );
   }
 }

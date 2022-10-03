@@ -47,7 +47,7 @@ class MonitoringChartFilterForm extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.all(4.0),
             ),
-            _ThresholdListView(),
+            const _ThresholdListView(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -216,7 +216,7 @@ class _ThresholdListView extends StatelessWidget {
   const _ThresholdListView({Key? key}) : super(key: key);
 
   Widget _buildItem(
-      ItemProperty itemProperty, Map<String, bool> checkBoxValues) {
+      ItemProperty itemProperty, Map<String, CheckBoxValue> checkBoxValues) {
     if (itemProperty.runtimeType == TextProperty) {
       TextProperty textProperty = itemProperty as TextProperty;
       return Expanded(
@@ -243,7 +243,7 @@ class _ThresholdListView extends StatelessWidget {
       return _FilterCheckBoxes(
         checkBoxProperty: checkBoxProperty,
         oid: checkBoxProperty.oid,
-        value: checkBoxValues[checkBoxProperty.oid] ?? false,
+        value: checkBoxValues[checkBoxProperty.oid]!.value,
       );
     } else {
       return Container();
@@ -371,7 +371,7 @@ class _CancelButton extends StatelessWidget {
             FocusManager.instance.primaryFocus?.unfocus();
             context
                 .read<ChartFilterBloc>()
-                .add(const FilterSelectingModeChanged());
+                .add(const FilterSelectingModeDisabled());
           }),
     );
   }
@@ -397,7 +397,7 @@ class _SaveButton extends StatelessWidget {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
                     .read<ChartFilterBloc>()
-                    .add(const FilterSelectingModeChanged());
+                    .add(const FilterSelectingModeDisabled());
               }),
         );
       },

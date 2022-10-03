@@ -67,6 +67,8 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.deviceSettingTab_wanSettings;
   } else if (msg == 'SNMP Setup') {
     return AppLocalizations.of(context)!.deviceSettingTab_snmpSetup;
+  } else if (msg == 'Discrete Property') {
+    return AppLocalizations.of(context)!.deviceSettingTab_discreteProperty;
   } else if (msg == 'Setup completed!') {
     return AppLocalizations.of(context)!.dialogTitle_setupCompleted;
   } else if (msg == 'Setting failed.') {
