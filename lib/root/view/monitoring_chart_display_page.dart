@@ -10,6 +10,7 @@ class MonitoringChartDisplayPage extends StatelessWidget {
     Key? key,
     required this.nodeId,
     required this.oid,
+    required this.name,
     required this.startDate,
     required this.endDate,
     required this.majorH,
@@ -20,6 +21,7 @@ class MonitoringChartDisplayPage extends StatelessWidget {
 
   final int nodeId;
   final String oid;
+  final String name;
   final String startDate;
   final String endDate;
   final double majorH;
@@ -38,7 +40,9 @@ class MonitoringChartDisplayPage extends StatelessWidget {
         nodeId: nodeId,
         oid: oid,
       ),
-      child: const MonitoringChartDisplayForm(),
+      child: MonitoringChartDisplayForm(
+        name: name,
+      ),
     );
   }
 }

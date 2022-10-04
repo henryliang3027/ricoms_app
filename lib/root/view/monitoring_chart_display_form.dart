@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
 import 'package:ricoms_app/root/view/graph.dart';
 
 class MonitoringChartDisplayForm extends StatefulWidget {
-  const MonitoringChartDisplayForm({Key? key}) : super(key: key);
+  const MonitoringChartDisplayForm({
+    Key? key,
+    required this.name,
+  }) : super(key: key);
+
+  final String name;
 
   @override
   State<MonitoringChartDisplayForm> createState() =>
@@ -21,8 +24,17 @@ class _MonitoringChartDisplayFormState
     return BlocBuilder<ChartBloc, ChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return Center(
-            child: Graph(chartDateValuePairList: state.chartDateValuePairs),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Text(
+                  widget.name,
+                ),
+              ),
+              Graph(chartDateValuePairList: state.chartDateValuePairs),
+            ],
           );
         } else if (state.status.isRequestFailure) {
           return Center(

@@ -105,6 +105,7 @@ class _MonitoringChartGridView extends StatelessWidget {
                   endDate: state.endDate,
                   nodeId: nodeId,
                   oid: checkBoxValue.oid,
+                  name: checkBoxValue.name,
                   majorH: checkBoxValue.majorH,
                   minorH: checkBoxValue.minorH,
                   majorL: checkBoxValue.majorL,
