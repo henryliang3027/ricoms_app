@@ -110,7 +110,7 @@ class _MonitoringChartGridView extends StatelessWidget {
                   majorL: checkBoxValue.majorL,
                   minorL: checkBoxValue.minorL,
                 )
-              ]
+              ],
             ],
           );
         });

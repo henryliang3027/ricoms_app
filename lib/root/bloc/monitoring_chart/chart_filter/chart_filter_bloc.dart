@@ -53,7 +53,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     );
 
     if (data is List) {
-      for (var item in data) {
+      for (List item in data) {
         List<ItemProperty> itemProperties = [];
         for (var e in item) {
           MonitoringChartStyle.getChartFilterData(

@@ -208,9 +208,7 @@ class AltitudeGraphViewState extends State<AltitudeGraphView>
       // }
     }
 
-    var maxDivide = (_maxAltitude - _minAltitude) == 0
-        ? _maxAltitude
-        : _maxAltitude - _minAltitude;
+    var maxDivide = _maxAltitude - _minAltitude;
     if (maxDivide > 1000) {
       _maxVerticalAxisValue = (_maxAltitude / 1000.0).ceil() * 1000.0;
       _minVerticalAxisValue = (_minAltitude / 1000.0).floor() * 1000.0;
@@ -220,21 +218,12 @@ class AltitudeGraphViewState extends State<AltitudeGraphView>
     } else if (maxDivide > 10) {
       _maxVerticalAxisValue = (_maxAltitude / 10.0).ceil() * 10.0;
       _minVerticalAxisValue = (_minAltitude / 10.0).floor() * 10.0;
-    } else if (maxDivide > 1) {
-      _maxVerticalAxisValue = (_maxAltitude / 1.0).ceil() * 1.0;
-      _minVerticalAxisValue = (_minAltitude / 1.0).floor() * 1.0;
-    } else if (maxDivide > 0.1) {
-      _maxVerticalAxisValue = (_maxAltitude / 0.1).ceil() * 0.1;
-      _minVerticalAxisValue = (_minAltitude / 0.1).floor() * 0.1;
-    } else if (maxDivide > 0.01) {
-      _maxVerticalAxisValue = (_maxAltitude / 0.01).ceil() * 0.01;
-      _minVerticalAxisValue = (_minAltitude / 0.01).floor() * 0.01;
-    } else if (maxDivide > 0.001) {
-      _maxVerticalAxisValue = (_maxAltitude / 0.001).ceil() * 0.001;
-      _minVerticalAxisValue = (_minAltitude / 0.001).floor() * 0.001;
+    } else if (maxDivide >= 0) {
+      _maxVerticalAxisValue = (_maxAltitude * 2.0).ceil() * 1.0;
+      _minVerticalAxisValue = (_minAltitude / 2.0).floor() * 1.0;
     } else {
-      _maxVerticalAxisValue = (_maxAltitude / 0.0001).ceil() * 0.0001;
-      _minVerticalAxisValue = (_minAltitude / 0.0001).floor() * 0.0001;
+      _maxVerticalAxisValue = (_maxAltitude * 4.0).ceil() * 1.0;
+      _minVerticalAxisValue = (_minAltitude / 4.0).floor() * 1.0;
     }
 
     _verticalAxisInterval =
@@ -246,16 +235,8 @@ class AltitudeGraphViewState extends State<AltitudeGraphView>
       _verticalAxisInterval = (_verticalAxisInterval / 100.0).floor() * 100.0;
     } else if (absVerticalAxisInterval > 10) {
       _verticalAxisInterval = (_verticalAxisInterval / 10.0).floor() * 10.0;
-    } else if (absVerticalAxisInterval > 1) {
-      _verticalAxisInterval = (_verticalAxisInterval / 1.0).floor() * 1.0;
-    } else if (absVerticalAxisInterval > 0.1) {
-      _verticalAxisInterval = (_verticalAxisInterval / 0.1).floor() * 0.1;
-    } else if (absVerticalAxisInterval > 0.01) {
-      _verticalAxisInterval = (_verticalAxisInterval / 0.01).floor() * 0.01;
-    } else if (absVerticalAxisInterval > 0.001) {
-      _verticalAxisInterval = (_verticalAxisInterval / 0.001).floor() * 0.001;
     } else {
-      _verticalAxisInterval = (_verticalAxisInterval / 0.0001).floor() * 0.0001;
+      _verticalAxisInterval = (_verticalAxisInterval / 1.0).floor() * 1.0;
     }
   }
 

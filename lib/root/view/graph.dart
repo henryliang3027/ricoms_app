@@ -39,6 +39,10 @@ class _GraphState extends State<Graph> with SingleTickerProviderStateMixin {
     } else {
       _maxScale = 1.0;
     }
+
+    setState(() {
+      controller.forward();
+    });
   }
 
   @override
