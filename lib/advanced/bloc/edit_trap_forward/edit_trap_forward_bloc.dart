@@ -179,6 +179,7 @@ class EditTrapForwardBloc
     if (result[0]) {
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionSuccess,
+        isModify: true,
         submissionMsg: result[1],
       ));
     } else {
