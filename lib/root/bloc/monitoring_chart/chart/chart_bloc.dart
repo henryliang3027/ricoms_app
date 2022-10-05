@@ -9,13 +9,15 @@ part 'chart_state.dart';
 
 class ChartBloc extends Bloc<ChartEvent, ChartState> {
   ChartBloc({
+    required int index,
     required User user,
     required DeviceRepository deviceRepository,
     required String startDate,
     required String endDate,
     required int nodeId,
     required String oid,
-  })  : _user = user,
+  })  : _index = index,
+        _user = user,
         _deviceRepository = deviceRepository,
         _startDate = startDate,
         _endDate = endDate,
@@ -27,6 +29,7 @@ class ChartBloc extends Bloc<ChartEvent, ChartState> {
     add(const ChartDataRequested());
   }
 
+  final int _index;
   final User _user;
   final DeviceRepository _deviceRepository;
   final String _startDate;
@@ -41,6 +44,8 @@ class ChartBloc extends Bloc<ChartEvent, ChartState> {
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
     ));
+
+    await Future.delayed(Duration(seconds: _index));
 
     List<dynamic> result = await _deviceRepository.getDeviceChartData(
       user: _user,

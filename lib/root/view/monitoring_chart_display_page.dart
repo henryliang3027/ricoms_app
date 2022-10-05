@@ -8,6 +8,7 @@ import 'package:ricoms_app/root/view/monitoring_chart_display_form.dart';
 class MonitoringChartDisplayPage extends StatelessWidget {
   const MonitoringChartDisplayPage({
     Key? key,
+    required this.index,
     required this.nodeId,
     required this.oid,
     required this.name,
@@ -19,6 +20,7 @@ class MonitoringChartDisplayPage extends StatelessWidget {
     required this.minorL,
   }) : super(key: key);
 
+  final int index;
   final int nodeId;
   final String oid;
   final String name;
@@ -33,6 +35,7 @@ class MonitoringChartDisplayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChartBloc(
+        index: index,
         user: context.read<AuthenticationBloc>().state.user,
         deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
         startDate: startDate,

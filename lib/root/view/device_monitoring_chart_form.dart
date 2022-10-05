@@ -99,18 +99,20 @@ class _MonitoringChartGridView extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
-                for (CheckBoxValue checkBoxValue
-                    in state.selectedCheckBoxValues) ...[
+                for (int i = 0;
+                    i < state.selectedCheckBoxValues.length;
+                    i++) ...[
                   MonitoringChartDisplayPage(
+                    index: i,
                     startDate: state.startDate,
                     endDate: state.endDate,
                     nodeId: nodeId,
-                    oid: checkBoxValue.oid,
-                    name: checkBoxValue.name,
-                    majorH: checkBoxValue.majorH,
-                    minorH: checkBoxValue.minorH,
-                    majorL: checkBoxValue.majorL,
-                    minorL: checkBoxValue.minorL,
+                    oid: state.selectedCheckBoxValues[i].oid,
+                    name: state.selectedCheckBoxValues[i].name,
+                    majorH: state.selectedCheckBoxValues[i].majorH,
+                    minorH: state.selectedCheckBoxValues[i].minorH,
+                    majorL: state.selectedCheckBoxValues[i].majorL,
+                    minorL: state.selectedCheckBoxValues[i].minorL,
                   )
                 ],
               ],
