@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
-import 'package:ricoms_app/root/view/graph.dart';
+import 'package:ricoms_app/root/view/line_chart.dart';
 
-class MonitoringChartDisplayForm extends StatefulWidget {
+class MonitoringChartDisplayForm extends StatelessWidget {
   const MonitoringChartDisplayForm({
     Key? key,
     required this.name,
@@ -13,28 +13,13 @@ class MonitoringChartDisplayForm extends StatefulWidget {
   final String name;
 
   @override
-  State<MonitoringChartDisplayForm> createState() =>
-      _MonitoringChartDisplayFormState();
-}
-
-class _MonitoringChartDisplayFormState
-    extends State<MonitoringChartDisplayForm> {
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartBloc, ChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Text(
-                  widget.name,
-                ),
-              ),
-              Graph(chartDateValuePairList: state.chartDateValuePairs),
-            ],
+          return MonitoringLineChart(
+            chartDateValuePairs: state.chartDateValuePairs,
+            name: name,
           );
         } else if (state.status.isRequestFailure) {
           return Center(

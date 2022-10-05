@@ -384,8 +384,7 @@ class DeviceRepository {
             double value = double.parse(rawValue);
             String date = rawDate;
             chartDateValuePairs.add(ChartDateValuePair(
-              date: date,
-              point: Offset(rawdataList.indexOf(element).toDouble(), value),
+              dateTime: DateTime.parse(date),
               value: value,
             ));
           }
@@ -433,12 +432,10 @@ class DeviceHistoryData {
 
 class ChartDateValuePair {
   const ChartDateValuePair({
-    required this.date,
-    required this.point,
+    required this.dateTime,
     required this.value,
   });
 
-  final String date;
-  final Offset point;
+  final DateTime dateTime;
   final double value;
 }
