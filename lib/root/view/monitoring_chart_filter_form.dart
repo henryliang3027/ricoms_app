@@ -48,13 +48,7 @@ class MonitoringChartFilterForm extends StatelessWidget {
               padding: EdgeInsets.all(4.0),
             ),
             const _ThresholdListView(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const _CancelButton(),
-                _SaveButton(),
-              ],
-            ),
+            const _SaveButton(),
           ],
         ),
       ),
@@ -343,62 +337,36 @@ class _FilterCheckBoxes extends StatelessWidget {
   }
 }
 
-class _CancelButton extends StatelessWidget {
-  const _CancelButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(CommonStyle.lineSpacing),
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.white,
-            shape: const RoundedRectangleBorder(
-                side: BorderSide(width: 1.0, color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(4.0))),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          key: const Key('monitoringChartFilterForm_cancel_raisedButton'),
-          child: Text(
-            AppLocalizations.of(context)!.cancel,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeM,
-              color: Colors.black,
-            ),
-          ),
-          onPressed: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-            context
-                .read<ChartFilterBloc>()
-                .add(const FilterSelectingModeDisabled());
-          }),
-    );
-  }
-}
-
 class _SaveButton extends StatelessWidget {
+  const _SaveButton({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(6),
-          child: ElevatedButton(
-              key: const Key('monitoringChartFilterForm_save_raisedButton'),
-              child: Text(
-                AppLocalizations.of(context)!.save,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeM,
-                ),
-              ),
-              onPressed: () {
-                FocusManager.instance.primaryFocus?.unfocus();
-                context
-                    .read<ChartFilterBloc>()
-                    .add(const FilterSelectingModeDisabled());
-              }),
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: SizedBox(
+              height: 40,
+              width: 80,
+              child: ElevatedButton(
+                  key: const Key('monitoringChartFilterForm_save_raisedButton'),
+                  child: Text(
+                    AppLocalizations.of(context)!.save,
+                    style: const TextStyle(
+                      fontSize: CommonStyle.sizeM,
+                    ),
+                  ),
+                  onPressed: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    context
+                        .read<ChartFilterBloc>()
+                        .add(const FilterSelectingModeDisabled());
+                  }),
+            ),
+          ),
         );
       },
     );

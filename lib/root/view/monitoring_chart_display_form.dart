@@ -8,9 +8,13 @@ class MonitoringChartDisplayForm extends StatelessWidget {
   const MonitoringChartDisplayForm({
     Key? key,
     required this.name,
+    required this.majorH,
+    required this.majorL,
   }) : super(key: key);
 
   final String name;
+  final double majorH;
+  final double majorL;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,8 @@ class MonitoringChartDisplayForm extends StatelessWidget {
           return MonitoringLineChart(
             chartDateValuePairs: state.chartDateValuePairs,
             name: name,
+            majorH: majorH,
+            majorL: majorL,
           );
         } else if (state.status.isRequestFailure) {
           return Center(

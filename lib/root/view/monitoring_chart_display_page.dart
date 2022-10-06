@@ -45,6 +45,8 @@ class MonitoringChartDisplayPage extends StatelessWidget {
       ),
       child: MonitoringChartDisplayForm(
         name: name,
+        majorH: majorH,
+        majorL: majorL,
       ),
     );
   }
