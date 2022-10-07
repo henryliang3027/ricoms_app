@@ -80,6 +80,7 @@ class BookmarksForm extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.bookmarks),
+            leading: HomeDrawerToolTip.setToolTip(context),
             actions: const [
               _PopupMenu(),
             ],
@@ -119,6 +120,7 @@ class _PopupMenu extends StatelessWidget {
         return Container();
       } else {
         return PopupMenuButton<Menu>(
+          tooltip: '',
           onSelected: (Menu item) async {
             switch (item) {
               case Menu.delete:

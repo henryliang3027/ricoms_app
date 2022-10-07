@@ -145,6 +145,7 @@ class HistoryForm extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.history),
+            leading: HomeDrawerToolTip.setToolTip(context),
             actions: const [
               _PopupMenu(),
             ],
@@ -211,6 +212,7 @@ class _PopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
       return PopupMenuButton<Menu>(
+        tooltip: '',
         onSelected: (Menu item) async {
           switch (item) {
             case Menu.filter:

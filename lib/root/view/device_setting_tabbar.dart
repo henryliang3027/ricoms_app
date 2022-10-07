@@ -68,7 +68,7 @@ class DeviceSettingTabBar extends StatelessWidget {
                           for (DeviceBlock deviceBlock in deviceBlocks)
                             Tab(
                               child: SizedBox(
-                                width: 120,
+                                width: 130,
                                 child: Center(
                                   child: Text(
                                     getMessageLocalization(
@@ -83,7 +83,7 @@ class DeviceSettingTabBar extends StatelessWidget {
                           for (DeviceBlock deviceBlock in deviceBlocks)
                             Tab(
                               child: SizedBox(
-                                width: 120,
+                                width: 130,
                                 child: Center(
                                   child: Text(
                                     getMessageLocalization(

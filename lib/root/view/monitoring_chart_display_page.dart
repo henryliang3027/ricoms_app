@@ -14,10 +14,10 @@ class MonitoringChartDisplayPage extends StatelessWidget {
     required this.name,
     required this.startDate,
     required this.endDate,
-    required this.majorH,
-    required this.minorH,
-    required this.majorL,
-    required this.minorL,
+    this.majorH,
+    this.minorH,
+    this.majorL,
+    this.minorL,
   }) : super(key: key);
 
   final int index;
@@ -26,10 +26,10 @@ class MonitoringChartDisplayPage extends StatelessWidget {
   final String name;
   final String startDate;
   final String endDate;
-  final double majorH;
-  final double minorH;
-  final double majorL;
-  final double minorL;
+  final double? majorH;
+  final double? minorH;
+  final double? majorL;
+  final double? minorL;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,8 @@ class MonitoringChartDisplayPage extends StatelessWidget {
         name: name,
         majorH: majorH,
         majorL: majorL,
+        majorHAnnotationColor: Colors.red,
+        majorLAnnotationColor: Colors.red,
       ),
     );
   }

@@ -3,29 +3,103 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
 import 'package:ricoms_app/root/view/line_chart.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 
 class MonitoringChartDisplayForm extends StatelessWidget {
   const MonitoringChartDisplayForm({
     Key? key,
     required this.name,
-    required this.majorH,
-    required this.majorL,
+    this.majorH,
+    this.majorL,
+    this.majorHAnnotationColor = Colors.red,
+    this.majorLAnnotationColor = Colors.red,
   }) : super(key: key);
 
   final String name;
-  final double majorH;
-  final double majorL;
+  final double? majorH;
+  final double? majorL;
+  final Color? majorHAnnotationColor;
+  final Color? majorLAnnotationColor;
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildMajorHAnnotation() {
+      if (majorH != null) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
+          child: Container(
+            color: majorHAnnotationColor,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+              child: Text(
+                'MajorHI : $majorH',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }
+
+    Widget _buildMajorLAnnotation() {
+      if (majorH != null) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
+          child: Container(
+            color: majorLAnnotationColor,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+              child: Text(
+                'MajorLO : $majorL',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }
+
     return BlocBuilder<ChartBloc, ChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return MonitoringLineChart(
-            chartDateValuePairs: state.chartDateValuePairs,
-            name: name,
-            majorH: majorH,
-            majorL: majorL,
+          return Padding(
+            padding: const EdgeInsets.only(
+              top: 20.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: CommonStyle.sizeXXL,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildMajorHAnnotation(),
+                    _buildMajorLAnnotation(),
+                  ],
+                ),
+                MonitoringLineChart(
+                  chartDateValuePairs: state.chartDateValuePairs,
+                  name: name,
+                  majorH: majorH,
+                  majorL: majorL,
+                  majorHAnnotationColor: Colors.red,
+                  majorLAnnotationColor: Colors.red,
+                )
+              ],
+            ),
           );
         } else if (state.status.isRequestFailure) {
           return Center(

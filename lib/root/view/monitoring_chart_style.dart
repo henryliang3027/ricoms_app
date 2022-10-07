@@ -12,18 +12,18 @@ class MonitoringChartStyle {
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
     int status = e['status'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
-    double majorH = e['MajorHI'] != null && e['MajorHI'] != 'x'
+    double? majorH = e['MajorHI'] != null && e['MajorHI'] != 'x'
         ? double.parse(e['MajorHI'])
-        : -1.0;
-    double minorH = e['MinorHI'] != null && e['MinorHI'] != 'x'
+        : null;
+    double? minorH = e['MinorHI'] != null && e['MinorHI'] != 'x'
         ? double.parse(e['MinorHI'])
-        : -1.0;
-    double majorL = e['MajorLO'] != null && e['MajorLO'] != 'x'
+        : null;
+    double? majorL = e['MajorLO'] != null && e['MajorLO'] != 'x'
         ? double.parse(e['MajorLO'])
-        : -1.0;
-    double minorL = e['MinorLO'] != null && e['MinorLO'] != 'x'
+        : null;
+    double? minorL = e['MinorLO'] != null && e['MinorLO'] != 'x'
         ? double.parse(e['MinorLO'])
-        : -1.0;
+        : null;
 
     switch (style) {
       case 99: //勾選方塊
@@ -119,18 +119,18 @@ class CheckBoxValue {
   const CheckBoxValue({
     required this.oid,
     required this.name,
-    required this.majorH,
-    required this.minorH,
-    required this.majorL,
-    required this.minorL,
     required this.value,
+    this.majorH,
+    this.minorH,
+    this.majorL,
+    this.minorL,
   });
 
   final String oid;
   final String name;
-  final double majorH;
-  final double minorH;
-  final double majorL;
-  final double minorL;
   final bool value;
+  final double? majorH;
+  final double? minorH;
+  final double? majorL;
+  final double? minorL;
 }

@@ -161,6 +161,7 @@ class RootForm extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const _DynamicTitle(),
+            leading: HomeDrawerToolTip.setToolTip(context),
             actions: const [
               _PopupMenu(),
             ],
@@ -227,6 +228,7 @@ class _PopupMenu extends StatelessWidget {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       if (state.formStatus.isRequestSuccess) {
         return PopupMenuButton<Menu>(
+          tooltip: '',
           onSelected: (Menu item) async {
             switch (item) {
               case Menu.search:

@@ -28,6 +28,7 @@ class AdvancedForm extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.account),
+          leading: HomeDrawerToolTip.setToolTip(context),
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,

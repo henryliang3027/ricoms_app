@@ -83,6 +83,7 @@ class RealTimeAlarmForm extends StatelessWidget {
                 AppLocalizations.of(context)!.realTimeAlarm,
               ),
               elevation: 0.0,
+              leading: HomeDrawerToolTip.setToolTip(context),
               bottom: TabBar(
                 unselectedLabelColor: Colors.white,
                 labelColor: Colors.blue,

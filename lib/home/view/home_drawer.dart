@@ -7,6 +7,22 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+class HomeDrawerToolTip {
+  static Builder setToolTip(BuildContext context) {
+    return Builder(
+      builder: (BuildContext context) {
+        return IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+          tooltip: '',
+        );
+      },
+    );
+  }
+}
+
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({
     Key? key,

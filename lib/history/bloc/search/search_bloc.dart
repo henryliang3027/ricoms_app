@@ -221,8 +221,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(
       startDate: '',
       endDate: '',
-      shelf: state.shelf,
-      slot: state.slot,
+      shelf: '',
+      slot: '',
       unsolvedOnly: false,
       keyword: '',
       queries: [],

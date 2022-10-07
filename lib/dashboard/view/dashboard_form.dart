@@ -28,6 +28,7 @@ class DashboardForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.dashboard),
+          leading: HomeDrawerToolTip.setToolTip(context),
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,

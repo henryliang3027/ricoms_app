@@ -146,6 +146,7 @@ class SystemLogForm extends StatelessWidget {
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.systemLog),
+            leading: HomeDrawerToolTip.setToolTip(context),
             actions: const [
               _PopupMenu(),
             ],
@@ -213,6 +214,7 @@ class _PopupMenu extends StatelessWidget {
     return BlocBuilder<SystemLogBloc, SystemLogState>(
         builder: (context, state) {
       return PopupMenuButton<Menu>(
+        tooltip: '',
         onSelected: (Menu item) async {
           switch (item) {
             case Menu.filter:

@@ -166,10 +166,10 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
     String oid = checkBoxValues[event.oid]!.oid;
     String name = checkBoxValues[event.oid]!.name;
-    double majorH = checkBoxValues[event.oid]!.majorH;
-    double minorH = checkBoxValues[event.oid]!.minorH;
-    double majorL = checkBoxValues[event.oid]!.majorL;
-    double minorL = checkBoxValues[event.oid]!.minorL;
+    double? majorH = checkBoxValues[event.oid]!.majorH;
+    double? minorH = checkBoxValues[event.oid]!.minorH;
+    double? majorL = checkBoxValues[event.oid]!.majorL;
+    double? minorL = checkBoxValues[event.oid]!.minorL;
 
     CheckBoxValue newCheckBoxValue = CheckBoxValue(
       oid: oid,

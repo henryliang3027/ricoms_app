@@ -7,14 +7,18 @@ class MonitoringLineChart extends StatefulWidget {
     Key? key,
     required this.chartDateValuePairs,
     required this.name,
-    required this.majorH,
-    required this.majorL,
+    this.majorH,
+    this.majorL,
+    this.majorHAnnotationColor = Colors.red,
+    this.majorLAnnotationColor = Colors.red,
   }) : super(key: key);
 
   final List<ChartDateValuePair> chartDateValuePairs;
   final String name;
-  final double majorH;
-  final double majorL;
+  final double? majorH;
+  final double? majorL;
+  final Color? majorHAnnotationColor;
+  final Color? majorLAnnotationColor;
 
   @override
   State<MonitoringLineChart> createState() => _MonitoringLineChartState();
@@ -35,7 +39,9 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
     _majorLDateValuePairs = getmajorLDateValuePairs();
     _trackballBehavior = TrackballBehavior(
       enable: true,
-      tooltipSettings: InteractiveTooltip(format: 'point.x : point.y ($_unit)'),
+      activationMode: ActivationMode.longPress,
+      tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
+      tooltipSettings: InteractiveTooltip(format: 'point.y ($_unit)'),
     );
     _zoomPanBehavior = ZoomPanBehavior(
       enablePanning: true,
@@ -59,15 +65,17 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
   List<ChartDateValuePair> getmajorHDateValuePairs() {
     List<ChartDateValuePair> _majorHDateValuePairs = [];
 
-    _majorHDateValuePairs.add(ChartDateValuePair(
-      dateTime: widget.chartDateValuePairs.first.dateTime,
-      value: widget.majorH,
-    ));
+    if (widget.majorH != null) {
+      _majorHDateValuePairs.add(ChartDateValuePair(
+        dateTime: widget.chartDateValuePairs.first.dateTime,
+        value: widget.majorH!,
+      ));
 
-    _majorHDateValuePairs.add(ChartDateValuePair(
-      dateTime: widget.chartDateValuePairs.last.dateTime,
-      value: widget.majorH,
-    ));
+      _majorHDateValuePairs.add(ChartDateValuePair(
+        dateTime: widget.chartDateValuePairs.last.dateTime,
+        value: widget.majorH!,
+      ));
+    }
 
     return _majorHDateValuePairs;
   }
@@ -75,25 +83,34 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
   List<ChartDateValuePair> getmajorLDateValuePairs() {
     List<ChartDateValuePair> _majorLDateValuePairs = [];
 
-    _majorLDateValuePairs.add(ChartDateValuePair(
-      dateTime: widget.chartDateValuePairs.first.dateTime,
-      value: widget.majorL,
-    ));
+    if (widget.majorL != null) {
+      _majorLDateValuePairs.add(ChartDateValuePair(
+        dateTime: widget.chartDateValuePairs.first.dateTime,
+        value: widget.majorL!,
+      ));
 
-    _majorLDateValuePairs.add(ChartDateValuePair(
-      dateTime: widget.chartDateValuePairs.last.dateTime,
-      value: widget.majorL,
-    ));
+      _majorLDateValuePairs.add(ChartDateValuePair(
+        dateTime: widget.chartDateValuePairs.last.dateTime,
+        value: widget.majorL!,
+      ));
+    }
 
     return _majorLDateValuePairs;
   }
 
   double getMaximumYAxisValue() {
-    double majorH = widget.majorH;
+    double? majorH = widget.majorH;
     double maximumChartValue = widget.chartDateValuePairs
         .reduce((current, next) => current.value > next.value ? current : next)
         .value;
-    double maximum = majorH >= maximumChartValue ? majorH : maximumChartValue;
+    double maximum = 0.0;
+
+    if (majorH != null) {
+      maximum = majorH >= maximumChartValue ? majorH : maximumChartValue;
+    } else {
+      maximum = maximumChartValue;
+    }
+
     if (maximum > 0.0) {
       maximum = maximum * 1.5;
     } else if (maximum < 0.0) {
@@ -105,11 +122,18 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
   }
 
   double getMinimumYAxisValue() {
-    double majorL = widget.majorL;
+    double? majorL = widget.majorL;
     double minimumChartValue = widget.chartDateValuePairs
         .reduce((current, next) => current.value < next.value ? current : next)
         .value;
-    double minimum = majorL <= minimumChartValue ? majorL : minimumChartValue;
+    double minimum = 0.0;
+
+    if (majorL != null) {
+      minimum = majorL <= minimumChartValue ? majorL : minimumChartValue;
+    } else {
+      minimum = minimumChartValue;
+    }
+
     if (minimum > 0.0) {
       minimum = minimum * 0.5;
     } else if (minimum < 0.0) {
@@ -120,12 +144,100 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
     return minimum;
   }
 
+  List<ChartSeries> _buildChartSeries() {
+    // because traceball is disable when assigning a empty majorH or majorL series
+    // only assign series containing data
+    // *important: assign data series first to fixed the problem that traceball sometimes does not display.
+    if (widget.majorH == null && widget.majorL == null) {
+      // only draw data series
+      return <ChartSeries>[
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: Colors.blue,
+          dataSource: widget.chartDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+      ];
+    } else if (widget.majorH == null) {
+      // only draw majorL and data series
+      return <ChartSeries>[
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: Colors.blue,
+          dataSource: widget.chartDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: widget.majorLAnnotationColor,
+          width: 1.0,
+          dataSource: _majorLDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+      ];
+    } else if (widget.majorL == null) {
+      // only draw majorH and data series
+      return <ChartSeries>[
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: Colors.blue,
+          dataSource: widget.chartDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: widget.majorHAnnotationColor,
+          width: 1.0,
+          dataSource: _majorHDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+      ];
+    } else {
+      //all series
+      return <ChartSeries>[
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: Colors.blue,
+          dataSource: widget.chartDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: widget.majorHAnnotationColor,
+          width: 1.0,
+          dataSource: _majorHDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+        LineSeries<ChartDateValuePair, DateTime>(
+          color: widget.majorLAnnotationColor,
+          width: 1.0,
+          dataSource: _majorLDateValuePairs,
+          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.dateTime,
+          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+              chartDateValuePair.value,
+        ),
+      ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
-      title: ChartTitle(
-        text: widget.name,
-      ),
       // legend: Legend(
       //   isVisible: true,
       //   position: LegendPosition.bottom,
@@ -139,57 +251,9 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
         maximum: getMaximumYAxisValue(),
         minimum: getMinimumYAxisValue(),
       ),
-      // annotations: <CartesianChartAnnotation>[
-      //   CartesianChartAnnotation(
-      //     yAxisName: 'primaryY',
-      //     widget: Container(
-      //       child: const Text(
-      //         'major',
-      //       ),
-      //     ),
-      //     coordinateUnit: CoordinateUnit.point,
-      //     region: AnnotationRegion.chart,
-      //     x: widget.chartDateValuePairs.last.dateTime.microsecondsSinceEpoch
-      //         .toDouble(),
-      //     y: 38,
-      //   )
-      // ],
-
       trackballBehavior: _trackballBehavior,
       zoomPanBehavior: _zoomPanBehavior,
-      series: <ChartSeries>[
-        LineSeries<ChartDateValuePair, DateTime>(
-          yAxisName: 'primaryY',
-          color: Colors.red,
-          width: 1.0,
-          dataSource: _majorHDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
-          dataLabelSettings:
-              DataLabelSettings(isVisible: true, useSeriesColor: true),
-        ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.red,
-          width: 1.0,
-          dataSource: _majorLDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
-          dataLabelSettings:
-              DataLabelSettings(isVisible: true, useSeriesColor: true),
-        ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.blue,
-          dataSource: widget.chartDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
-        ),
-      ],
+      series: _buildChartSeries(),
     );
   }
 }
