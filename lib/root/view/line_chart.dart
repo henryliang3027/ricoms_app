@@ -144,116 +144,208 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
     return minimum;
   }
 
-  List<ChartSeries> _buildChartSeries() {
-    // because traceball is disable when assigning a empty majorH or majorL series
-    // only assign series containing data
-    // *important: assign data series first to fixed the problem that traceball sometimes does not display.
+  Widget _buildMajorHAnnotation() {
+    if (widget.majorH != null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
+        child: Container(
+          color: widget.majorHAnnotationColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+            child: Text(
+              'MajorHI : ${widget.majorH}',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMajorLAnnotation() {
+    if (widget.majorL != null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
+        child: Container(
+          color: widget.majorLAnnotationColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+            child: Text(
+              'MajorLO : ${widget.majorL}',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  SfCartesianChart _buildChart() {
     if (widget.majorH == null && widget.majorL == null) {
       // only draw data series
-      return <ChartSeries>[
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.blue,
-          dataSource: widget.chartDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+      return SfCartesianChart(
+        primaryXAxis: DateTimeAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
-      ];
+        primaryYAxis: NumericAxis(
+          maximum: getMaximumYAxisValue(),
+          minimum: getMinimumYAxisValue(),
+        ),
+        trackballBehavior: _trackballBehavior,
+        zoomPanBehavior: _zoomPanBehavior,
+        series: <ChartSeries>[
+          LineSeries<ChartDateValuePair, DateTime>(
+            color: Colors.blue,
+            dataSource: widget.chartDateValuePairs,
+            xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.dateTime,
+            yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.value,
+          ),
+        ],
+      );
     } else if (widget.majorH == null) {
       // only draw majorL and data series
-      return <ChartSeries>[
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.blue,
-          dataSource: widget.chartDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+      return SfCartesianChart(
+        primaryXAxis: DateTimeAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: widget.majorLAnnotationColor,
-          width: 1.0,
-          dataSource: _majorLDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+        primaryYAxis: NumericAxis(
+          maximum: getMaximumYAxisValue(),
+          minimum: getMinimumYAxisValue(),
+          plotBands: <PlotBand>[
+            PlotBand(
+              start: widget.majorL,
+              end: widget.majorL,
+              borderWidth: 1,
+              borderColor: Colors.red,
+            ),
+          ],
         ),
-      ];
+        trackballBehavior: _trackballBehavior,
+        zoomPanBehavior: _zoomPanBehavior,
+        // annotations: <CartesianChartAnnotation>[
+        //   CartesianChartAnnotation(
+        //     widget: _buildMajorLAnnotation(),
+        //     coordinateUnit: CoordinateUnit.point,
+        //     x: widget.chartDateValuePairs.last.dateTime,
+        //     y: widget.majorL,
+        //     horizontalAlignment: ChartAlignment.far,
+        //   ),
+        // ],
+        series: <ChartSeries>[
+          LineSeries<ChartDateValuePair, DateTime>(
+            color: Colors.blue,
+            dataSource: widget.chartDateValuePairs,
+            xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.dateTime,
+            yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.value,
+          ),
+        ],
+      );
     } else if (widget.majorL == null) {
       // only draw majorH and data series
-      return <ChartSeries>[
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.blue,
-          dataSource: widget.chartDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+      return SfCartesianChart(
+        primaryXAxis: DateTimeAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: widget.majorHAnnotationColor,
-          width: 1.0,
-          dataSource: _majorHDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+        primaryYAxis: NumericAxis(
+          maximum: getMaximumYAxisValue(),
+          minimum: getMinimumYAxisValue(),
+          plotBands: <PlotBand>[
+            PlotBand(
+              start: widget.majorH,
+              end: widget.majorH,
+              borderWidth: 1,
+              borderColor: Colors.red,
+            ),
+          ],
         ),
-      ];
+        trackballBehavior: _trackballBehavior,
+        zoomPanBehavior: _zoomPanBehavior,
+        // annotations: <CartesianChartAnnotation>[
+        //   CartesianChartAnnotation(
+        //     widget: _buildMajorHAnnotation(),
+        //     coordinateUnit: CoordinateUnit.point,
+        //     x: widget.chartDateValuePairs.last.dateTime,
+        //     y: widget.majorH,
+        //     horizontalAlignment: ChartAlignment.far,
+        //   ),
+        // ],
+        series: <ChartSeries>[
+          LineSeries<ChartDateValuePair, DateTime>(
+            color: Colors.blue,
+            dataSource: widget.chartDateValuePairs,
+            xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.dateTime,
+            yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.value,
+          ),
+        ],
+      );
     } else {
       //all series
-      return <ChartSeries>[
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: Colors.blue,
-          dataSource: widget.chartDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+      return SfCartesianChart(
+        primaryXAxis: DateTimeAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: widget.majorHAnnotationColor,
-          width: 1.0,
-          dataSource: _majorHDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
+        primaryYAxis: NumericAxis(
+          maximum: getMaximumYAxisValue(),
+          minimum: getMinimumYAxisValue(),
+          plotBands: <PlotBand>[
+            PlotBand(
+              start: widget.majorH,
+              end: widget.majorH,
+              borderWidth: 1,
+              borderColor: Colors.red,
+            ),
+            PlotBand(
+              start: widget.majorL,
+              end: widget.majorL,
+              borderWidth: 1,
+              borderColor: Colors.red,
+            ),
+          ],
         ),
-        LineSeries<ChartDateValuePair, DateTime>(
-          color: widget.majorLAnnotationColor,
-          width: 1.0,
-          dataSource: _majorLDateValuePairs,
-          xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.dateTime,
-          yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-              chartDateValuePair.value,
-        ),
-      ];
+        trackballBehavior: _trackballBehavior,
+        zoomPanBehavior: _zoomPanBehavior,
+        // annotations: <CartesianChartAnnotation>[
+        //   CartesianChartAnnotation(
+        //     widget: _buildMajorHAnnotation(),
+        //     coordinateUnit: CoordinateUnit.point,
+        //     x: widget.chartDateValuePairs.last.dateTime,
+        //     y: widget.majorH,
+        //     horizontalAlignment: ChartAlignment.far,
+        //   ),
+        //   CartesianChartAnnotation(
+        //     widget: _buildMajorLAnnotation(),
+        //     coordinateUnit: CoordinateUnit.point,
+        //     x: widget.chartDateValuePairs.last.dateTime,
+        //     y: widget.majorL,
+        //     horizontalAlignment: ChartAlignment.far,
+        //   ),
+        // ],
+        series: <ChartSeries>[
+          LineSeries<ChartDateValuePair, DateTime>(
+            color: Colors.blue,
+            dataSource: widget.chartDateValuePairs,
+            xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.dateTime,
+            yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+                chartDateValuePair.value,
+          ),
+        ],
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SfCartesianChart(
-      // legend: Legend(
-      //   isVisible: true,
-      //   position: LegendPosition.bottom,
-      // ),
-      primaryXAxis: DateTimeAxis(
-        name: 'primaryX',
-        edgeLabelPlacement: EdgeLabelPlacement.shift,
-      ),
-      primaryYAxis: NumericAxis(
-        name: 'primaryY',
-        maximum: getMaximumYAxisValue(),
-        minimum: getMinimumYAxisValue(),
-      ),
-      trackballBehavior: _trackballBehavior,
-      zoomPanBehavior: _zoomPanBehavior,
-      series: _buildChartSeries(),
-    );
+    return _buildChart();
   }
 }
