@@ -155,21 +155,21 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   ) async {
     // Ｔhe directory is empty because of no internet and user reload the page (switch back from another page)
 
-    List<Node> directory = [];
+    // List<Node> directory = [];
 
-    if (state.directory.isNotEmpty) {
-      directory.addAll(state.directory);
-    } else {
-      directory.add(const Node(
-        id: 0,
-        type: 1,
-        name: 'Root',
-      ));
-    }
+    // if (state.directory.isNotEmpty) {
+    //   directory.addAll(state.directory);
+    // } else {
+    //   directory.add(const Node(
+    //     id: 0,
+    //     type: 1,
+    //     name: 'Root',
+    //   ));
+    // }
 
     var resultOfChilds = await _rootRepository.getChilds(
       user: _user,
-      parentId: directory[directory.length - 1].id,
+      parentId: state.directory.last.id,
     );
 
     if (resultOfChilds is List) {
@@ -178,7 +178,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
         data: resultOfChilds,
-        directory: directory,
+        directory: state.directory,
       ));
     } else {
       emit(state.copyWith(

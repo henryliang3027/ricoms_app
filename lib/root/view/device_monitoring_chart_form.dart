@@ -92,6 +92,7 @@ class _MonitoringChartGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int i = -1;
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
         buildWhen: (previous, current) =>
             previous.selectedCheckBoxValues != current.selectedCheckBoxValues,
@@ -99,20 +100,19 @@ class _MonitoringChartGridView extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
-                for (int i = 0;
-                    i < state.selectedCheckBoxValues.length;
-                    i++) ...[
+                for (MapEntry<String, CheckBoxValue> entry
+                    in state.selectedCheckBoxValues.entries) ...[
                   MonitoringChartDisplayPage(
-                    index: i,
+                    index: i += 1,
                     startDate: state.startDate,
                     endDate: state.endDate,
                     nodeId: nodeId,
-                    oid: state.selectedCheckBoxValues[i].oid,
-                    name: state.selectedCheckBoxValues[i].name,
-                    majorH: state.selectedCheckBoxValues[i].majorH,
-                    minorH: state.selectedCheckBoxValues[i].minorH,
-                    majorL: state.selectedCheckBoxValues[i].majorL,
-                    minorL: state.selectedCheckBoxValues[i].minorL,
+                    oid: entry.key,
+                    name: entry.value.name,
+                    majorH: entry.value.majorH,
+                    minorH: entry.value.minorH,
+                    majorL: entry.value.majorL,
+                    minorL: entry.value.minorL,
                   )
                 ],
               ],

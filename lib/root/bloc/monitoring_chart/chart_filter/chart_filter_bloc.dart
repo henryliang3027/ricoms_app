@@ -26,6 +26,8 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     on<FilterSelectingModeEnabled>(_onFilterSelectingModeEnabled);
     on<FilterSelectingModeDisabled>(_onFilterSelectingModeDisabled);
     on<CheckBoxValueChanged>(_onCheckBoxValueChanged);
+    on<AllCheckBoxValueChanged>(_onAllCheckBoxValueChanged);
+    on<MultipleYAxisCheckBoxValueChanged>(_onMultipleYAxisCheckBoxValueChanged);
 
     add(const ThresholdDataRequested());
   }
@@ -134,7 +136,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
   ) {
     emit(state.copyWith(
       filterSelectingMode: true,
-      selectedCheckBoxValues: [],
+      selectedCheckBoxValues: {},
     ));
   }
 
@@ -142,11 +144,11 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     FilterSelectingModeDisabled event,
     Emitter<ChartFilterState> emit,
   ) {
-    List<CheckBoxValue> selectedCheckBoxValues = [];
+    Map<String, CheckBoxValue> selectedCheckBoxValues = {};
 
     state.checkBoxValues.forEach((oid, checkBoxValue) {
       if (checkBoxValue.value == true) {
-        selectedCheckBoxValues.add(checkBoxValue);
+        selectedCheckBoxValues[oid] = checkBoxValue;
       }
     });
 
@@ -161,10 +163,13 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     Emitter<ChartFilterState> emit,
   ) {
     Map<String, CheckBoxValue> checkBoxValues = {};
+    bool isSelectAll = false;
+    bool isShowMultipleYAxis = false;
+    bool isSelectMultipleYAxis = state.isSelectMultipleYAxis;
+    int selectCount = 0;
 
     checkBoxValues.addAll(state.checkBoxValues);
 
-    String oid = checkBoxValues[event.oid]!.oid;
     String name = checkBoxValues[event.oid]!.name;
     double? majorH = checkBoxValues[event.oid]!.majorH;
     double? minorH = checkBoxValues[event.oid]!.minorH;
@@ -172,7 +177,6 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     double? minorL = checkBoxValues[event.oid]!.minorL;
 
     CheckBoxValue newCheckBoxValue = CheckBoxValue(
-      oid: oid,
       name: name,
       majorH: majorH,
       minorH: minorH,
@@ -182,8 +186,79 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     );
     checkBoxValues[event.oid] = newCheckBoxValue;
 
+    checkBoxValues.forEach(
+      (key, checkBoxValue) {
+        if (checkBoxValue.value == true) {
+          selectCount += 1;
+        }
+      },
+    );
+
+    if (selectCount == state.checkBoxValues.length) {
+      isSelectAll = true;
+    }
+
+    if (selectCount > 0) {
+      isShowMultipleYAxis = true;
+    }
+
+    if (selectCount == 0) {
+      isSelectMultipleYAxis = false;
+    }
+
     emit(state.copyWith(
+      isSelectAll: isSelectAll,
+      isShowMultipleYAxis: isShowMultipleYAxis,
+      isSelectMultipleYAxis: isSelectMultipleYAxis,
       checkBoxValues: checkBoxValues,
+    ));
+  }
+
+  void _onAllCheckBoxValueChanged(
+    AllCheckBoxValueChanged event,
+    Emitter<ChartFilterState> emit,
+  ) {
+    Map<String, CheckBoxValue> checkBoxValues = {};
+    bool isSelectMultipleYAxis = state.isSelectMultipleYAxis;
+
+    state.checkBoxValues.forEach((key, checkBoxValue) {
+      String name = checkBoxValue.name;
+      double? majorH = checkBoxValue.majorH;
+      double? minorH = checkBoxValue.minorH;
+      double? majorL = checkBoxValue.majorL;
+      double? minorL = checkBoxValue.minorL;
+      bool value = event.value;
+
+      CheckBoxValue newCheckBoxValue = CheckBoxValue(
+        name: name,
+        majorH: majorH,
+        minorH: minorH,
+        majorL: majorL,
+        minorL: minorL,
+        value: value,
+      );
+
+      checkBoxValues[key] = newCheckBoxValue;
+    });
+
+    if (event.value == false) {
+      isSelectMultipleYAxis = false;
+    }
+
+    emit(state.copyWith(
+      isSelectAll: event.value,
+      isShowMultipleYAxis: event.value,
+      isSelectMultipleYAxis: isSelectMultipleYAxis,
+      checkBoxValues: checkBoxValues,
+    ));
+  }
+
+  void _onMultipleYAxisCheckBoxValueChanged(
+    MultipleYAxisCheckBoxValueChanged event,
+    Emitter<ChartFilterState> emit,
+  ) {
+    emit(state.copyWith(
+      isSelectMultipleYAxis: event.value,
     ));
   }
 }

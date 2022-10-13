@@ -30,7 +30,6 @@ class MonitoringChartStyle {
         if (id != '-1') {
           TextProperty textProperty = itemProperties[0] as TextProperty;
           checkBoxValues[id] = CheckBoxValue(
-            oid: id,
             name: textProperty.text,
             majorH: majorH,
             minorH: minorH,
@@ -117,7 +116,6 @@ class CheckBoxProperty extends ItemProperty {
 
 class CheckBoxValue {
   const CheckBoxValue({
-    required this.oid,
     required this.name,
     required this.value,
     this.majorH,
@@ -126,7 +124,6 @@ class CheckBoxValue {
     this.minorL,
   });
 
-  final String oid;
   final String name;
   final bool value;
   final double? majorH;

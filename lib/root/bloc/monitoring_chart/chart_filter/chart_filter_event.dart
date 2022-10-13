@@ -55,3 +55,21 @@ class CheckBoxValueChanged extends ChartFilterEvent {
         value,
       ];
 }
+
+class AllCheckBoxValueChanged extends ChartFilterEvent {
+  const AllCheckBoxValueChanged(this.value);
+
+  final bool value;
+
+  @override
+  List<Object?> get props => [value];
+}
+
+class MultipleYAxisCheckBoxValueChanged extends ChartFilterEvent {
+  const MultipleYAxisCheckBoxValueChanged(this.value);
+
+  final bool value;
+
+  @override
+  List<Object?> get props => [value];
+}

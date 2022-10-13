@@ -125,6 +125,11 @@
       "description": "delete all"
     },
 
+    "selectAll": "Select All",
+    "@all": {
+      "description": "select all"
+    },
+
     "search": "Search",
     "@all": {
       "description": "search"
@@ -294,6 +299,11 @@
     "deviceSettingTab_discreteProperty": "Discrete Property",
     "@all": {
       "description": "Discrete Property"
+    },
+
+    "multipleYAxis": "Multiple y-axis chart",
+    "@all": {
+      "description": "multiple y-axis chart"
     },
 
     "alarmRatio": "Alarm Ratio",

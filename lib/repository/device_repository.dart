@@ -398,6 +398,34 @@ class DeviceRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
+
+  Future<List<dynamic>> getMultipleDeviceChartData({
+    required User user,
+    required String startDate,
+    required String endDate,
+    required int deviceId,
+    required List<String> oids,
+  }) async {
+    Map<String, ChartDateValuePair> chartDateValues = {};
+
+    for (String oid in oids) {
+      List<dynamic> result = await getDeviceChartData(
+        user: user,
+        startDate: startDate,
+        endDate: endDate,
+        deviceId: deviceId,
+        oid: oid,
+      );
+
+      if (result[0]) {
+        chartDateValues[oid] = result[1];
+      } else {
+        return result;
+      }
+    }
+
+    return [true, chartDateValues];
+  }
 }
 
 class DeviceBlock {

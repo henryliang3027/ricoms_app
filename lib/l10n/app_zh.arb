@@ -26,7 +26,8 @@
     "device": "裝置",
     "edit": "編輯",
     "delete": "刪除",
-    "deleteAll": "刪除全部",
+    "deleteAll": "全部刪除",
+    "selectAll": "全部選取",
     "search": "搜尋",
     "searchHint": "請輸入搜尋條件",
     "export": "匯出",
@@ -63,8 +64,8 @@
     "deviceSettingTab_wanSettings": "WAN 設定",
     "deviceSettingTab_snmpSetup": "SNMP 設定",
     "deviceSettingTab_discreteProperty": "離散屬性",
-
-
+    
+    "multipleYAxis": "多Y軸圖表",
     "alarmRatio": "告警百分比",
     "deviceStatus": "裝置狀態",
     "allDeviceStatus": "全部裝置",

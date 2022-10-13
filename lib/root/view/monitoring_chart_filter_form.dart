@@ -47,7 +47,9 @@ class MonitoringChartFilterForm extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.all(4.0),
             ),
+            const _SelectAllCheckBox(),
             const _ThresholdListView(),
+            const _MultipleYAxisCheckBox(),
             const _SaveButton(),
           ],
         ),
@@ -126,7 +128,7 @@ class _StartDatePicker extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
-            primary: Colors.white70,
+            backgroundColor: Colors.white70,
             elevation: 0,
             visualDensity: const VisualDensity(
               horizontal: -4.0,
@@ -193,7 +195,7 @@ class _EndDatePicker extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
-            primary: Colors.white70,
+            backgroundColor: Colors.white70,
             elevation: 0,
             visualDensity: const VisualDensity(
               horizontal: -4.0,
@@ -216,7 +218,7 @@ class _ThresholdListView extends StatelessWidget {
       return Expanded(
         flex: textProperty.boxLength,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Container(
             decoration: BoxDecoration(
               color: textProperty.boxColor,
@@ -255,7 +257,12 @@ class _ThresholdListView extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(2.0)),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 0.0),
+            padding: const EdgeInsets.only(
+              left: 14.0,
+              top: 8.0,
+              right: 14.0,
+              bottom: 8.0,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -265,9 +272,6 @@ class _ThresholdListView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        width: 10.0,
-                      ),
                       for (ItemProperty itemProperty
                           in state.itemPropertiesCollection[i]) ...[
                         _buildItem(itemProperty, state.checkBoxValues),
@@ -314,24 +318,100 @@ class _FilterCheckBoxes extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.checkBoxValues[oid] != current.checkBoxValues[oid],
       builder: (context, state) {
-        return Expanded(
-          flex: (checkBoxProperty.boxLength * 0.5).ceil(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Checkbox(
-              visualDensity: const VisualDensity(vertical: -4.0),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              value: value,
-              onChanged: (value) {
-                if (value != null) {
-                  context
-                      .read<ChartFilterBloc>()
-                      .add(CheckBoxValueChanged(oid, value));
-                }
-              },
+        return Checkbox(
+          visualDensity: const VisualDensity(vertical: -4.0),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          value: value,
+          onChanged: (value) {
+            if (value != null) {
+              context
+                  .read<ChartFilterBloc>()
+                  .add(CheckBoxValueChanged(oid, value));
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class _SelectAllCheckBox extends StatelessWidget {
+  const _SelectAllCheckBox({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+      buildWhen: (previous, current) =>
+          previous.isSelectAll != current.isSelectAll,
+      builder: (context, state) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey, width: 2.0),
+            borderRadius: const BorderRadius.all(Radius.circular(2.0)),
+          ),
+          child: CheckboxListTile(
+            title: Text(
+              AppLocalizations.of(context)!.selectAll,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeM,
+              ),
             ),
+            value: state.isSelectAll,
+            visualDensity: const VisualDensity(vertical: -4.0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14.0),
+            onChanged: (bool? value) {
+              context
+                  .read<ChartFilterBloc>()
+                  .add(AllCheckBoxValueChanged(value ?? false));
+            },
           ),
         );
+      },
+    );
+  }
+}
+
+class _MultipleYAxisCheckBox extends StatelessWidget {
+  const _MultipleYAxisCheckBox({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+      buildWhen: (previous, current) =>
+          previous.isShowMultipleYAxis != current.isShowMultipleYAxis ||
+          previous.isSelectMultipleYAxis != current.isSelectMultipleYAxis,
+      builder: (context, state) {
+        return state.isShowMultipleYAxis
+            ? Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 4.0,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey, width: 2.0),
+                    borderRadius: const BorderRadius.all(Radius.circular(2.0)),
+                  ),
+                  child: CheckboxListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.multipleYAxis,
+                      style: const TextStyle(
+                        fontSize: CommonStyle.sizeM,
+                      ),
+                    ),
+                    value: state.isSelectMultipleYAxis,
+                    visualDensity: const VisualDensity(vertical: -4.0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 14.0),
+                    onChanged: (bool? value) {
+                      context.read<ChartFilterBloc>().add(
+                          MultipleYAxisCheckBoxValueChanged(value ?? false));
+                    },
+                  ),
+                ),
+              )
+            : Container();
       },
     );
   }

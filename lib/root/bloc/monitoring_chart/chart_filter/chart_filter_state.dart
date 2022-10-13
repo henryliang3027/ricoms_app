@@ -7,7 +7,10 @@ class ChartFilterState extends Equatable {
     this.endDate = '',
     this.itemPropertiesCollection = const [],
     this.checkBoxValues = const {},
-    this.selectedCheckBoxValues = const [],
+    this.selectedCheckBoxValues = const {},
+    this.isSelectAll = false,
+    this.isShowMultipleYAxis = false,
+    this.isSelectMultipleYAxis = false,
     this.filterSelectingMode = true,
     this.requestErrorMsg = '',
   });
@@ -17,7 +20,10 @@ class ChartFilterState extends Equatable {
   final String endDate;
   final List<List<ItemProperty>> itemPropertiesCollection;
   final Map<String, CheckBoxValue> checkBoxValues;
-  final List<CheckBoxValue> selectedCheckBoxValues;
+  final Map<String, CheckBoxValue> selectedCheckBoxValues;
+  final bool isSelectAll;
+  final bool isShowMultipleYAxis;
+  final bool isSelectMultipleYAxis;
   final bool filterSelectingMode;
   final String requestErrorMsg;
 
@@ -27,7 +33,10 @@ class ChartFilterState extends Equatable {
     String? endDate,
     List<List<ItemProperty>>? itemPropertiesCollection,
     Map<String, CheckBoxValue>? checkBoxValues,
-    List<CheckBoxValue>? selectedCheckBoxValues,
+    Map<String, CheckBoxValue>? selectedCheckBoxValues,
+    bool? isSelectAll,
+    bool? isShowMultipleYAxis,
+    bool? isSelectMultipleYAxis,
     bool? filterSelectingMode,
     String? requestErrorMsg,
   }) {
@@ -40,6 +49,10 @@ class ChartFilterState extends Equatable {
       checkBoxValues: checkBoxValues ?? this.checkBoxValues,
       selectedCheckBoxValues:
           selectedCheckBoxValues ?? this.selectedCheckBoxValues,
+      isSelectAll: isSelectAll ?? this.isSelectAll,
+      isShowMultipleYAxis: isShowMultipleYAxis ?? this.isShowMultipleYAxis,
+      isSelectMultipleYAxis:
+          isSelectMultipleYAxis ?? this.isSelectMultipleYAxis,
       filterSelectingMode: filterSelectingMode ?? this.filterSelectingMode,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
     );
@@ -53,6 +66,9 @@ class ChartFilterState extends Equatable {
         itemPropertiesCollection,
         checkBoxValues,
         selectedCheckBoxValues,
+        isSelectAll,
+        isShowMultipleYAxis,
+        isSelectMultipleYAxis,
         filterSelectingMode,
         requestErrorMsg,
       ];
