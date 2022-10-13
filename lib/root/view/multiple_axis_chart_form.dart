@@ -1,6 +1,7 @@
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/multiple_axis_chart/multiple_axis_chart_bloc.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
 
 class MultipleAxisChartForm extends StatelessWidget {
@@ -13,6 +14,22 @@ class MultipleAxisChartForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return BlocBuilder<MultipleAxisChartBloc, MultipleAxisChartState>(
+      builder: (context, state) {
+        if (state.status.isRequestSuccess) {
+          return Center(
+            child: Icon(Icons.chair),
+          );
+        } else if (state.status.isRequestFailure) {
+          return Center(
+            child: Text(state.errMsg),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
   }
 }

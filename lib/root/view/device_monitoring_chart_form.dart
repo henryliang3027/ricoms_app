@@ -4,6 +4,7 @@ import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_
 import 'package:ricoms_app/root/view/monitoring_chart_display_page.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_filter_form.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
+import 'package:ricoms_app/root/view/multiple_axis_chart_page.dart';
 
 class DeviceMonitoringChartForm extends StatelessWidget {
   const DeviceMonitoringChartForm({
@@ -95,29 +96,37 @@ class _MonitoringChartGridView extends StatelessWidget {
     int i = -1;
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
         buildWhen: (previous, current) =>
-            previous.selectedCheckBoxValues != current.selectedCheckBoxValues,
+            previous.selectedCheckBoxValues != current.selectedCheckBoxValues ||
+            previous.isSelectMultipleYAxis != current.isSelectMultipleYAxis,
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                for (MapEntry<String, CheckBoxValue> entry
-                    in state.selectedCheckBoxValues.entries) ...[
-                  MonitoringChartDisplayPage(
-                    index: i += 1,
-                    startDate: state.startDate,
-                    endDate: state.endDate,
-                    nodeId: nodeId,
-                    oid: entry.key,
-                    name: entry.value.name,
-                    majorH: entry.value.majorH,
-                    minorH: entry.value.minorH,
-                    majorL: entry.value.majorL,
-                    minorL: entry.value.minorL,
-                  )
-                ],
-              ],
-            ),
-          );
+          return state.isSelectMultipleYAxis
+              ? MultipleAxisChartPage(
+                  nodeId: nodeId,
+                  startDate: state.startDate,
+                  endDate: state.endDate,
+                  selectedCheckBoxValues: state.selectedCheckBoxValues,
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (MapEntry<String, CheckBoxValue> entry
+                          in state.selectedCheckBoxValues.entries) ...[
+                        MonitoringChartDisplayPage(
+                          index: i += 1,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                          nodeId: nodeId,
+                          oid: entry.key,
+                          name: entry.value.name,
+                          majorH: entry.value.majorH,
+                          minorH: entry.value.minorH,
+                          majorL: entry.value.majorL,
+                          minorL: entry.value.minorL,
+                        )
+                      ],
+                    ],
+                  ),
+                );
         });
   }
 }

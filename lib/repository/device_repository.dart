@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 
@@ -406,7 +405,7 @@ class DeviceRepository {
     required int deviceId,
     required List<String> oids,
   }) async {
-    Map<String, ChartDateValuePair> chartDateValues = {};
+    Map<String, List<ChartDateValuePair>> chartDateValues = {};
 
     for (String oid in oids) {
       List<dynamic> result = await getDeviceChartData(
@@ -418,7 +417,8 @@ class DeviceRepository {
       );
 
       if (result[0]) {
-        chartDateValues[oid] = result[1];
+        List<ChartDateValuePair> chartDateValuePairs = result[1];
+        chartDateValues[oid] = chartDateValuePairs;
       } else {
         return result;
       }
