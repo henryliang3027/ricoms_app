@@ -120,6 +120,11 @@
       "description": "delete"
     },
 
+    "deleteAll": "Delete All",
+    "@all": {
+      "description": "delete all"
+    },
+
     "search": "Search",
     "@all": {
       "description": "search"

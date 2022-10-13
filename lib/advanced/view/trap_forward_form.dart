@@ -113,7 +113,7 @@ class TrapForwardForm extends StatelessWidget {
 }
 
 enum Menu {
-  delete,
+  deleteAll,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -130,7 +130,7 @@ class _PopupMenu extends StatelessWidget {
           tooltip: '',
           onSelected: (Menu item) async {
             switch (item) {
-              case Menu.delete:
+              case Menu.deleteAll:
                 context
                     .read<TrapForwardBloc>()
                     .add(const ForwardOutlinesDeletedModeEnabled());
@@ -141,7 +141,7 @@ class _PopupMenu extends StatelessWidget {
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
             PopupMenuItem<Menu>(
-              value: Menu.delete,
+              value: Menu.deleteAll,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +154,7 @@ class _PopupMenu extends StatelessWidget {
                   const SizedBox(
                     width: 10.0,
                   ),
-                  Text(AppLocalizations.of(context)!.delete),
+                  Text(AppLocalizations.of(context)!.deleteAll),
                 ],
               ),
             ),

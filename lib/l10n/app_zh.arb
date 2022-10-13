@@ -26,6 +26,7 @@
     "device": "裝置",
     "edit": "編輯",
     "delete": "刪除",
+    "deleteAll": "刪除全部",
     "search": "搜尋",
     "searchHint": "請輸入搜尋條件",
     "export": "匯出",
