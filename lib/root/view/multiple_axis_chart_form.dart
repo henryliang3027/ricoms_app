@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/multiple_axis_chart/multiple_axis_chart_bloc.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
+import 'package:ricoms_app/root/view/multiple_axis_line_chart.dart';
 
 class MultipleAxisChartForm extends StatelessWidget {
   const MultipleAxisChartForm({
@@ -17,8 +18,9 @@ class MultipleAxisChartForm extends StatelessWidget {
     return BlocBuilder<MultipleAxisChartBloc, MultipleAxisChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return Center(
-            child: Icon(Icons.chair),
+          return MultipleAxisLineChart(
+            chartDateValues: state.chartDateValues,
+            checkBoxValues: selectedCheckBoxValues,
           );
         } else if (state.status.isRequestFailure) {
           return Center(

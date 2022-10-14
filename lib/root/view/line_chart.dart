@@ -31,6 +31,10 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
 
   late List<ChartDateValuePair> _majorHDateValuePairs;
   late List<ChartDateValuePair> _majorLDateValuePairs;
+  // ChartSeriesController? _chartSeriesController;
+  bool isLoadTime = true;
+  Offset? pointLocationL = Offset.zero;
+  Offset? pointLocationH = Offset.zero;
 
   @override
   void initState() {
@@ -112,11 +116,11 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
     }
 
     if (maximum > 0.0) {
-      maximum = maximum * 1.5;
+      maximum = maximum + 50;
     } else if (maximum < 0.0) {
-      maximum = maximum * 0.5;
+      maximum = maximum + 50;
     } else {
-      maximum = (maximum + 1) * 1.5;
+      maximum = (maximum + 1) * 10;
     }
     return maximum;
   }
@@ -135,9 +139,9 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
     }
 
     if (minimum > 0.0) {
-      minimum = minimum * 0.5;
+      minimum = minimum - 50;
     } else if (minimum < 0.0) {
-      minimum = minimum * 1.5;
+      minimum = minimum - 50;
     } else {
       minimum = (minimum - 1) * 1.5;
     }
@@ -153,7 +157,7 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
             child: Text(
-              'MajorHI : ${widget.majorH}',
+              '${widget.majorH}',
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -173,7 +177,7 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
             child: Text(
-              'MajorLO : ${widget.majorL}',
+              '${widget.majorL}',
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -200,6 +204,7 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
         series: <ChartSeries>[
           LineSeries<ChartDateValuePair, DateTime>(
             color: Colors.blue,
+            animationDuration: 0.0,
             dataSource: widget.chartDateValuePairs,
             xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.dateTime,
@@ -210,6 +215,23 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
       );
     } else if (widget.majorH == null) {
       // only draw majorL and data series
+
+      // SchedulerBinding.instance.addPostFrameCallback((_) {
+      //   if (isLoadTime) {
+      //     final CartesianChartPoint<dynamic> chartPointL =
+      //         CartesianChartPoint<dynamic>(
+      //       widget.chartDateValuePairs.last.dateTime.millisecondsSinceEpoch,
+      //       widget.majorL,
+      //     );
+      //     // Calculated the pixel values of chartPoint
+      //     pointLocationL = _chartSeriesController?.pointToPixel(chartPointL);
+
+      //     setState(() {
+      //       isLoadTime = false;
+      //     });
+      //   }
+      // });
+
       return SfCartesianChart(
         primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
@@ -228,18 +250,19 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
         ),
         trackballBehavior: _trackballBehavior,
         zoomPanBehavior: _zoomPanBehavior,
-        // annotations: <CartesianChartAnnotation>[
-        //   CartesianChartAnnotation(
-        //     widget: _buildMajorLAnnotation(),
-        //     coordinateUnit: CoordinateUnit.point,
-        //     x: widget.chartDateValuePairs.last.dateTime,
-        //     y: widget.majorL,
-        //     horizontalAlignment: ChartAlignment.far,
-        //   ),
-        // ],
+        annotations: <CartesianChartAnnotation>[
+          CartesianChartAnnotation(
+            widget: _buildMajorLAnnotation(),
+            coordinateUnit: CoordinateUnit.logicalPixel,
+            x: pointLocationL!.dx,
+            y: pointLocationL!.dy,
+            horizontalAlignment: ChartAlignment.far,
+          ),
+        ],
         series: <ChartSeries>[
           LineSeries<ChartDateValuePair, DateTime>(
             color: Colors.blue,
+            animationDuration: 0.0,
             dataSource: widget.chartDateValuePairs,
             xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.dateTime,
@@ -250,6 +273,23 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
       );
     } else if (widget.majorL == null) {
       // only draw majorH and data series
+
+      // SchedulerBinding.instance.addPostFrameCallback((_) {
+      //   if (isLoadTime) {
+      //     final CartesianChartPoint<dynamic> chartPointH =
+      //         CartesianChartPoint<dynamic>(
+      //       widget.chartDateValuePairs.last.dateTime.millisecondsSinceEpoch,
+      //       widget.majorH,
+      //     );
+      //     // Calculated the pixel values of chartPoint
+      //     pointLocationH = _chartSeriesController?.pointToPixel(chartPointH);
+
+      //     setState(() {
+      //       isLoadTime = false;
+      //     });
+      //   }
+      // });
+
       return SfCartesianChart(
         primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
@@ -268,18 +308,19 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
         ),
         trackballBehavior: _trackballBehavior,
         zoomPanBehavior: _zoomPanBehavior,
-        // annotations: <CartesianChartAnnotation>[
-        //   CartesianChartAnnotation(
-        //     widget: _buildMajorHAnnotation(),
-        //     coordinateUnit: CoordinateUnit.point,
-        //     x: widget.chartDateValuePairs.last.dateTime,
-        //     y: widget.majorH,
-        //     horizontalAlignment: ChartAlignment.far,
-        //   ),
-        // ],
+        annotations: <CartesianChartAnnotation>[
+          CartesianChartAnnotation(
+            widget: _buildMajorHAnnotation(),
+            coordinateUnit: CoordinateUnit.point,
+            x: pointLocationH!.dx,
+            y: pointLocationH!.dy,
+            horizontalAlignment: ChartAlignment.far,
+          ),
+        ],
         series: <ChartSeries>[
           LineSeries<ChartDateValuePair, DateTime>(
             color: Colors.blue,
+            animationDuration: 0.0,
             dataSource: widget.chartDateValuePairs,
             xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.dateTime,
@@ -290,6 +331,31 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
       );
     } else {
       //all series
+
+      // SchedulerBinding.instance.addPostFrameCallback((_) {
+      //   if (isLoadTime) {
+      //     final CartesianChartPoint<dynamic> chartPointL =
+      //         CartesianChartPoint<dynamic>(
+      //       widget.chartDateValuePairs.last.dateTime.millisecondsSinceEpoch,
+      //       widget.majorL,
+      //     );
+      //     // Calculated the pixel values of chartPoint
+      //     pointLocationL = _chartSeriesController?.pointToPixel(chartPointL);
+
+      //     final CartesianChartPoint<dynamic> chartPointH =
+      //         CartesianChartPoint<dynamic>(
+      //       widget.chartDateValuePairs.last.dateTime.millisecondsSinceEpoch,
+      //       widget.majorH,
+      //     );
+      //     // Calculated the pixel values of chartPoint
+      //     pointLocationH = _chartSeriesController?.pointToPixel(chartPointH);
+
+      //     setState(() {
+      //       isLoadTime = false;
+      //     });
+      //   }
+      // });
+
       return SfCartesianChart(
         primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
@@ -314,30 +380,34 @@ class _MonitoringLineChartState extends State<MonitoringLineChart> {
         ),
         trackballBehavior: _trackballBehavior,
         zoomPanBehavior: _zoomPanBehavior,
-        // annotations: <CartesianChartAnnotation>[
-        //   CartesianChartAnnotation(
-        //     widget: _buildMajorHAnnotation(),
-        //     coordinateUnit: CoordinateUnit.point,
-        //     x: widget.chartDateValuePairs.last.dateTime,
-        //     y: widget.majorH,
-        //     horizontalAlignment: ChartAlignment.far,
-        //   ),
-        //   CartesianChartAnnotation(
-        //     widget: _buildMajorLAnnotation(),
-        //     coordinateUnit: CoordinateUnit.point,
-        //     x: widget.chartDateValuePairs.last.dateTime,
-        //     y: widget.majorL,
-        //     horizontalAlignment: ChartAlignment.far,
-        //   ),
-        // ],
+        annotations: <CartesianChartAnnotation>[
+          CartesianChartAnnotation(
+            widget: _buildMajorHAnnotation(),
+            coordinateUnit: CoordinateUnit.logicalPixel,
+            x: pointLocationH!.dx,
+            y: pointLocationH!.dy - 15,
+            horizontalAlignment: ChartAlignment.far,
+          ),
+          CartesianChartAnnotation(
+            widget: _buildMajorLAnnotation(),
+            coordinateUnit: CoordinateUnit.logicalPixel,
+            x: pointLocationL!.dx,
+            y: pointLocationL!.dy + 8,
+            horizontalAlignment: ChartAlignment.far,
+          ),
+        ],
         series: <ChartSeries>[
           LineSeries<ChartDateValuePair, DateTime>(
             color: Colors.blue,
+            animationDuration: 0.0,
             dataSource: widget.chartDateValuePairs,
             xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.dateTime,
             yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.value,
+            // onRendererCreated: (ChartSeriesController controller) {
+            //   _chartSeriesController = controller;
+            // },
           ),
         ],
       );
