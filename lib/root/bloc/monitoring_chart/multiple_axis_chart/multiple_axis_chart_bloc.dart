@@ -11,13 +11,15 @@ part 'multiple_axis_chart_state.dart';
 class MultipleAxisChartBloc
     extends Bloc<MultipleAxisChartEvent, MultipleAxisChartState> {
   MultipleAxisChartBloc({
+    required int index,
     required User user,
     required DeviceRepository deviceRepository,
     required String startDate,
     required String endDate,
     required int nodeId,
     required Map<String, CheckBoxValue> selectedCheckBoxValues,
-  })  : _user = user,
+  })  : _index = index,
+        _user = user,
         _deviceRepository = deviceRepository,
         _startDate = startDate,
         _endDate = endDate,
@@ -29,6 +31,7 @@ class MultipleAxisChartBloc
     add(const ChartDataRequested());
   }
 
+  final int _index;
   final User _user;
   final DeviceRepository _deviceRepository;
   final String _startDate;
@@ -43,6 +46,8 @@ class MultipleAxisChartBloc
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
     ));
+
+    await Future.delayed(Duration(seconds: _index));
 
     List<dynamic> result = await _deviceRepository.getMultipleDeviceChartData(
       user: _user,

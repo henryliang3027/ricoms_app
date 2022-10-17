@@ -840,6 +840,13 @@ class CustomStyle {
     4: null, //shelf
     5: null, //slot
   };
+
+  static const List<Color> multiAxisLineChartSeriesColors = [
+    Color(0xffdc3545),
+    Color(0xffffc107),
+    Color(0xff28a745),
+    Color(0xff006cab),
+  ];
 }
 
 class CustomCheckbox extends StatefulWidget {

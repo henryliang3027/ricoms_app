@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
-import 'package:ricoms_app/root/view/line_chart.dart';
+import 'package:ricoms_app/root/view/single_axis_line_chart.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
-class MonitoringChartDisplayForm extends StatelessWidget {
-  const MonitoringChartDisplayForm({
+class SingleAxisChartForm extends StatelessWidget {
+  const SingleAxisChartForm({
     Key? key,
     required this.name,
     this.majorH,
@@ -86,11 +86,11 @@ class MonitoringChartDisplayForm extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildMajorHAnnotation(),
                     _buildMajorLAnnotation(),
+                    _buildMajorHAnnotation(),
                   ],
                 ),
-                MonitoringLineChart(
+                SingleAxisLineChart(
                   chartDateValuePairs: state.chartDateValuePairs,
                   name: name,
                   majorH: majorH,

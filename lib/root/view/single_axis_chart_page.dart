@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
-import 'package:ricoms_app/root/view/monitoring_chart_display_form.dart';
+import 'package:ricoms_app/root/view/single_axis_chart_form.dart';
 
-class MonitoringChartDisplayPage extends StatelessWidget {
-  const MonitoringChartDisplayPage({
+class SingleAxisChartPage extends StatelessWidget {
+  const SingleAxisChartPage({
     Key? key,
     required this.index,
     required this.nodeId,
@@ -43,7 +43,7 @@ class MonitoringChartDisplayPage extends StatelessWidget {
         nodeId: nodeId,
         oid: oid,
       ),
-      child: MonitoringChartDisplayForm(
+      child: SingleAxisChartForm(
         name: name,
         majorH: majorH,
         majorL: majorL,

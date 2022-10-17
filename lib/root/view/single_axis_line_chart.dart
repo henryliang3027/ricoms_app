@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class MonitoringLineChart extends StatefulWidget {
-  const MonitoringLineChart({
+class SingleAxisLineChart extends StatefulWidget {
+  const SingleAxisLineChart({
     Key? key,
     required this.chartDateValuePairs,
     required this.name,
@@ -21,10 +21,10 @@ class MonitoringLineChart extends StatefulWidget {
   final Color? majorLAnnotationColor;
 
   @override
-  State<MonitoringLineChart> createState() => _MonitoringLineChartState();
+  State<SingleAxisLineChart> createState() => _SingleAxisLineChartState();
 }
 
-class _MonitoringLineChartState extends State<MonitoringLineChart> {
+class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
   late TrackballBehavior _trackballBehavior;
   late ZoomPanBehavior _zoomPanBehavior;
   late String _unit;

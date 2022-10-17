@@ -18,9 +18,17 @@ class MultipleAxisChartForm extends StatelessWidget {
     return BlocBuilder<MultipleAxisChartBloc, MultipleAxisChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return MultipleAxisLineChart(
-            chartDateValues: state.chartDateValues,
-            checkBoxValues: selectedCheckBoxValues,
+          return Padding(
+            padding: const EdgeInsets.only(
+              top: 20.0,
+            ),
+            child: SizedBox(
+              height: 400,
+              child: MultipleAxisLineChart(
+                chartDateValues: state.chartDateValues,
+                checkBoxValues: selectedCheckBoxValues,
+              ),
+            ),
           );
         } else if (state.status.isRequestFailure) {
           return Center(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -51,35 +52,48 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
   //   return _unit;
   // }
 
+  List<ChartSeries> _buildSeries() {
+    List<ChartSeries> series = [];
+    List<MapEntry<String, List<ChartDateValuePair>>> chartDateValueEntries =
+        widget.chartDateValues.entries.toList();
+    for (int i = 0; i < chartDateValueEntries.length; i++) {
+      MapEntry<String, List<ChartDateValuePair>> entry =
+          chartDateValueEntries[i];
+
+      series.add(LineSeries<ChartDateValuePair, DateTime>(
+        color: CustomStyle.multiAxisLineChartSeriesColors[i],
+        animationDuration: 0.0,
+        name: widget.checkBoxValues[entry.key]?.name,
+        dataSource: entry.value,
+        xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+            chartDateValuePair.dateTime,
+        yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
+            chartDateValuePair.value,
+      ));
+    }
+
+    return series;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SfCartesianChart(
-      primaryXAxis: DateTimeAxis(
-        edgeLabelPlacement: EdgeLabelPlacement.shift,
-      ),
-      primaryYAxis: NumericAxis(),
-      legend: Legend(
-        isVisible: true,
-        position: LegendPosition.bottom,
-      ),
-      trackballBehavior: _trackballBehavior,
-      zoomPanBehavior: _zoomPanBehavior,
-      series: <ChartSeries>[
-        for (MapEntry<String, List<ChartDateValuePair>> entry
-            in widget.chartDateValues.entries) ...[
-          LineSeries<ChartDateValuePair, DateTime>(
-            //color: Colors.blue,
-            animationDuration: 0.0,
-            name: widget.checkBoxValues[entry.key]?.name,
-            dataSource: entry.value,
-            xValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-                chartDateValuePair.dateTime,
-            yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
-                chartDateValuePair.value,
+    return Stack(
+      children: [
+        SfCartesianChart(
+          primaryXAxis: DateTimeAxis(
+            edgeLabelPlacement: EdgeLabelPlacement.shift,
           ),
-        ]
+          primaryYAxis: NumericAxis(),
+          legend: Legend(
+            isVisible: true,
+            position: LegendPosition.bottom,
+            overflowMode: LegendItemOverflowMode.wrap,
+          ),
+          trackballBehavior: _trackballBehavior,
+          zoomPanBehavior: _zoomPanBehavior,
+          series: _buildSeries(),
+        ),
       ],
     );
-    ;
   }
 }
