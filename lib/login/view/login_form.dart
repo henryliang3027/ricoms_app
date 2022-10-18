@@ -55,81 +55,84 @@ class LoginForm extends StatelessWidget {
       },
       child: Align(
         alignment: const Alignment(0, -0.32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            //const Padding(padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 30.0)),
-            const SizedBox(
-              height: 90,
-              child: Image(
-                image: AssetImage('assets/ricoms_logo.png'),
-                fit: BoxFit.cover,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //const Padding(padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 30.0)),
+              const SizedBox(
+                height: 90,
+                child: Image(
+                  image: AssetImage('assets/ricoms_logo.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.all(22)),
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 32.0,
-                    child: Image.asset('assets/login_ip_icon.png'),
-                  ),
-                  Expanded(
-                    child: SizedBox(
+              const Padding(padding: EdgeInsets.all(22)),
+              SizedBox(
+                width: 230,
+                //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
                       height: 32.0,
-                      child: _IPInput(),
+                      child: Image.asset('assets/login_ip_icon.png'),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: SizedBox(
+                        height: 32.0,
+                        child: _IPInput(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.all(10)),
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 32.0,
-                    child: Image.asset('assets/login_username_icon.png'),
-                  ),
-                  Expanded(
-                    child: SizedBox(
+              const Padding(padding: EdgeInsets.all(10)),
+              SizedBox(
+                width: 230,
+                //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
                       height: 32.0,
-                      child: _UsernameInput(),
+                      child: Image.asset('assets/login_username_icon.png'),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: SizedBox(
+                        height: 32.0,
+                        child: _UsernameInput(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.all(10)),
-            SizedBox(
-              width: 230,
-              //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 32.0,
-                    child: Image.asset('assets/login_password_icon.png'),
-                  ),
-                  Expanded(
-                    child: SizedBox(
+              const Padding(padding: EdgeInsets.all(10)),
+              SizedBox(
+                width: 230,
+                //padding: const EdgeInsets.only(left: 50.0, right: 50.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
                       height: 32.0,
-                      child: _PasswordInput(),
+                      child: Image.asset('assets/login_password_icon.png'),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: SizedBox(
+                        height: 32.0,
+                        child: _PasswordInput(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.all(20)),
-            _LoginButton(),
-          ],
+              const Padding(padding: EdgeInsets.all(20)),
+              _LoginButton(),
+            ],
+          ),
         ),
       ),
     );

@@ -87,10 +87,11 @@ class LoginPage extends StatelessWidget {
         alignment: Alignment.center,
         children: <Widget>[
           SizedBox(
+            width: double.maxFinite,
             height: double.maxFinite,
             child: Image.asset(
               'assets/login_background_android.gif',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           Align(
