@@ -4,11 +4,12 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
-part 'chart_event.dart';
-part 'chart_state.dart';
+part 'single_axis_chart_event.dart';
+part 'single_axis_chart_state.dart';
 
-class ChartBloc extends Bloc<ChartEvent, ChartState> {
-  ChartBloc({
+class SingleAxisChartBloc
+    extends Bloc<SingleAxisChartEvent, SingleAxisChartState> {
+  SingleAxisChartBloc({
     required int index,
     required User user,
     required DeviceRepository deviceRepository,
@@ -23,7 +24,7 @@ class ChartBloc extends Bloc<ChartEvent, ChartState> {
         _endDate = endDate,
         _nodeId = nodeId,
         _oid = oid,
-        super(const ChartState()) {
+        super(const SingleAxisChartState()) {
     on<ChartDataRequested>(_onChartDataRequested);
 
     add(const ChartDataRequested());
@@ -39,7 +40,7 @@ class ChartBloc extends Bloc<ChartEvent, ChartState> {
 
   Future<void> _onChartDataRequested(
     ChartDataRequested event,
-    Emitter<ChartState> emit,
+    Emitter<SingleAxisChartState> emit,
   ) async {
     emit(state.copyWith(
       status: FormStatus.requestInProgress,

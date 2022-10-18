@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart/chart_bloc.dart';
-import 'package:ricoms_app/root/view/single_axis_line_chart.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/single_axis_chart/single_axis_chart_bloc.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_line_chart.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class SingleAxisChartForm extends StatelessWidget {
@@ -65,7 +65,7 @@ class SingleAxisChartForm extends StatelessWidget {
       }
     }
 
-    return BlocBuilder<ChartBloc, ChartState>(
+    return BlocBuilder<SingleAxisChartBloc, SingleAxisChartState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
           return Padding(

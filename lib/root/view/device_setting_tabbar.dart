@@ -5,7 +5,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/device_history_page.dart';
-import 'package:ricoms_app/root/view/device_monitoring_chart_page.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/device_monitoring_chart_page.dart';
 import 'package:ricoms_app/root/view/device_setting_form.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

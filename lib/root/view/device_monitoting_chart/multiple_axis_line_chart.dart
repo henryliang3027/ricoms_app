@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
-import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MultipleAxisLineChart extends StatefulWidget {
@@ -21,17 +21,13 @@ class MultipleAxisLineChart extends StatefulWidget {
 class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
   late TrackballBehavior _trackballBehavior;
   late ZoomPanBehavior _zoomPanBehavior;
-  //late String _unit;
 
   @override
   void initState() {
-    //_unit = getUnit();
-
     _trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.longPress,
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
-      //tooltipSettings: InteractiveTooltip(format: 'point.y ($_unit)'),
     );
     _zoomPanBehavior = ZoomPanBehavior(
       enablePanning: true,
@@ -41,16 +37,6 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
 
     super.initState();
   }
-
-  // String getUnit() {
-  //   RegExp unitRegex = RegExp(r'^.*\((.*)\)$');
-  //   _unit = '';
-  //   if (unitRegex.hasMatch(widget.name)) {
-  //     List<Match> matches = unitRegex.allMatches(widget.name).toList();
-  //     _unit = matches[0][1]!;
-  //   }
-  //   return _unit;
-  // }
 
   List<ChartSeries> _buildSeries() {
     List<ChartSeries> series = [];

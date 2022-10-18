@@ -1,7 +1,7 @@
-part of 'chart_bloc.dart';
+part of 'single_axis_chart_bloc.dart';
 
-class ChartState extends Equatable {
-  const ChartState({
+class SingleAxisChartState extends Equatable {
+  const SingleAxisChartState({
     this.status = FormStatus.none,
     this.chartDateValuePairs = const [],
     this.errMsg = '',
@@ -11,12 +11,12 @@ class ChartState extends Equatable {
   final List<ChartDateValuePair> chartDateValuePairs;
   final String errMsg;
 
-  ChartState copyWith({
+  SingleAxisChartState copyWith({
     FormStatus? status,
     List<ChartDateValuePair>? chartDateValuePairs,
     String? errMsg,
   }) {
-    return ChartState(
+    return SingleAxisChartState(
       status: status ?? this.status,
       chartDateValuePairs: chartDateValuePairs ?? this.chartDateValuePairs,
       errMsg: errMsg ?? this.errMsg,

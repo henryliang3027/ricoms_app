@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/monitoring_chart_style.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 
 part 'chart_filter_event.dart';
 part 'chart_filter_state.dart';
