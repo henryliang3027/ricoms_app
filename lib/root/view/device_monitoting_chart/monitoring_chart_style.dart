@@ -10,7 +10,6 @@ class MonitoringChartStyle {
     int length = e['length'] ?? 1;
     String value = e['value'].toString();
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
-    int status = e['status'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
     double? majorH = e['MajorHI'] != null && e['MajorHI'] != 'x'
         ? double.parse(e['MajorHI'])

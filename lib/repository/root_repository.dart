@@ -51,7 +51,7 @@ class RootRepository {
       } else {
         return 'No node';
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return CustomErrMsg.connectionFailed;
     }
   }
@@ -83,7 +83,7 @@ class RootRepository {
       } else {
         return [false, 'offline'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -124,7 +124,7 @@ class RootRepository {
       } else {
         return [false, 'Error errno: ${data['code']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -192,7 +192,7 @@ class RootRepository {
       } else {
         return [false, data['msg']];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -254,7 +254,7 @@ class RootRepository {
       } else {
         return [false, data['msg']];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -282,7 +282,7 @@ class RootRepository {
       } else {
         return [false, 'Error errno: ${data['code']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -316,7 +316,7 @@ class RootRepository {
       } else {
         return [false, data['msg']];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -347,7 +347,7 @@ class RootRepository {
       } else {
         return [false, data['msg']];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -410,7 +410,7 @@ class RootRepository {
       } else {
         return [false, data['msg']];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -512,7 +512,7 @@ class RootRepository {
           'write file failed, export function not implement on ${Platform.operatingSystem} '
         ];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }

@@ -81,7 +81,7 @@ class SystemLogRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -155,7 +155,7 @@ class SystemLogRepository {
       } else {
         return [false, 'No more result.'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -189,7 +189,7 @@ class SystemLogRepository {
       } else {
         return [false, 'The device does not respond!'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -217,7 +217,7 @@ class SystemLogRepository {
         } else {
           return [false, 'No node'];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     }

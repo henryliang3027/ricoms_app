@@ -45,7 +45,7 @@ class DeviceRepository {
       } else {
         return 'The device does not respond!';
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return CustomErrMsg.connectionFailed;
     }
   }
@@ -118,7 +118,7 @@ class DeviceRepository {
       } else {
         return 'Error errno: ${data['code']}';
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return CustomErrMsg.connectionFailed;
     }
   }
@@ -152,7 +152,7 @@ class DeviceRepository {
       } else {
         return [false, 'Setting failed.'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -186,7 +186,7 @@ class DeviceRepository {
       } else {
         return 'Error errno: ${data['code']}';
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return CustomErrMsg.connectionFailed;
     }
   }
@@ -221,7 +221,7 @@ class DeviceRepository {
       } else {
         return [false, 'Setup Failed! errno: ${data['code']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -282,7 +282,7 @@ class DeviceRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -344,7 +344,7 @@ class DeviceRepository {
       } else {
         return [false, 'No more result.'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -393,7 +393,7 @@ class DeviceRepository {
       } else {
         return [false, 'No chart data.'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }

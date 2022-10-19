@@ -138,10 +138,8 @@ class _Item extends StatelessWidget {
     Key? key,
     required this.labelText,
     required this.initialValue,
-    this.fontColor = Colors.black,
   }) : super(key: key);
 
-  final Color fontColor;
   final String labelText;
   final String initialValue;
 
@@ -156,9 +154,9 @@ class _Item extends StatelessWidget {
           // enabled: false,
           initialValue: initialValue,
           textInputAction: TextInputAction.done,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: CommonStyle.sizeL,
-            color: fontColor,
+            color: Colors.black,
           ),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(5),

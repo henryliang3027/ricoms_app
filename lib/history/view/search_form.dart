@@ -223,7 +223,7 @@ class _StartDatePicker extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
-            primary: Colors.white70,
+            backgroundColor: Colors.white70,
             elevation: 0,
             visualDensity: const VisualDensity(
               horizontal: -4.0,
@@ -288,7 +288,7 @@ class _EndDatePicker extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
-            primary: Colors.white70,
+            backgroundColor: Colors.white70,
             elevation: 0,
             visualDensity: const VisualDensity(
               horizontal: -4.0,

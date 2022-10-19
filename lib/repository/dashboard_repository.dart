@@ -40,7 +40,7 @@ class DashboardRepository {
       } else {
         return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -85,7 +85,7 @@ class DashboardRepository {
       } else {
         return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }

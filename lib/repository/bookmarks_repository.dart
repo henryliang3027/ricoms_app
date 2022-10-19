@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
@@ -80,7 +78,7 @@ class BookmarksRepository {
 
             devices.add(device);
           }
-        } on DioError catch (e) {
+        } on DioError catch (_) {
           return [false, CustomErrMsg.connectionFailed];
         }
       }
@@ -141,7 +139,7 @@ class BookmarksRepository {
       } else {
         return [false, 'The device does not respond!'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -169,7 +167,7 @@ class BookmarksRepository {
         } else {
           return [false, 'No node'];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     }

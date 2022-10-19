@@ -4,7 +4,6 @@ import 'package:formz/formz.dart';
 import 'package:ricoms_app/root/bloc/edit_device/edit_device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -509,7 +508,7 @@ class _ModuleSeries extends StatelessWidget {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: CustomStyle.severityColor[0],
+                                backgroundColor: CustomStyle.severityColor[0],
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -645,7 +644,7 @@ class _CancelButton extends StatelessWidget {
       padding: const EdgeInsets.all(CommonStyle.lineSpacing),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.white,
+            backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
                 side: BorderSide(width: 1.0, color: Colors.black),
                 borderRadius: BorderRadius.all(Radius.circular(4.0))),

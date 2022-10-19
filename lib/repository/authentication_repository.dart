@@ -213,7 +213,7 @@ class AuthenticationRepository {
           data['msg'],
         ];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [
         false,
         CustomErrMsg.connectionFailed,
@@ -242,7 +242,7 @@ class AuthenticationRepository {
 
       if (data['code'] == '200') {
       } else {}
-    } on DioError catch (e) {}
+    } on DioError catch (_) {}
 
     bool _ = await userApi.deActivateUser(user.id);
     _controller.add(const AuthenticationReport(
@@ -279,7 +279,7 @@ class AuthenticationRepository {
         } else {
           return data['msg'];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return CustomErrMsg.connectionFailed;
       }
     } else {
@@ -344,7 +344,7 @@ class AuthenticationRepository {
         } else {
           return [false, data['msg']];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     }
@@ -380,7 +380,7 @@ class AuthenticationRepository {
           // Failed to get user permission
           return [true, true];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {
@@ -429,7 +429,7 @@ class AuthenticationRepository {
         } else {
           return [false, 'Failed to get user function'];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {

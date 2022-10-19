@@ -39,7 +39,6 @@ class TrapForwardEditPage extends StatelessWidget {
       ),
       child: TrapForwardEditForm(
         isEditing: isEditing,
-        forwardOutline: forwardOutline,
       ),
     );
   }

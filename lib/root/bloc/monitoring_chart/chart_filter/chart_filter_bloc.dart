@@ -105,7 +105,6 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     //otherwise, asign end date
     String validEndDate =
         endDate.isAfter(startDate) ? displayEndDate : displayStartDate;
-    String date = '$displayStartDate - $validEndDate';
 
     emit(state.copyWith(
       startDate: displayStartDate,

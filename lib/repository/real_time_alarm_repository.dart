@@ -81,7 +81,7 @@ class RealTimeAlarmRepository {
       } else {
         return [false, 'Error errno: ${data['code']} msg: ${data['msg']}'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -114,7 +114,7 @@ class RealTimeAlarmRepository {
       } else {
         return [false, 'The device does not respond!'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -141,7 +141,7 @@ class RealTimeAlarmRepository {
         } else {
           return [false, 'No node'];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     }

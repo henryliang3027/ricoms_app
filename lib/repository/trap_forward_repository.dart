@@ -31,7 +31,7 @@ class TrapForwardRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -61,7 +61,7 @@ class TrapForwardRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -106,7 +106,7 @@ class TrapForwardRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -150,7 +150,7 @@ class TrapForwardRepository {
       } else {
         return [false, 'There are no records to show'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -177,7 +177,7 @@ class TrapForwardRepository {
       } else {
         return [false, 'Delete Trap Forward failed!'];
       }
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
@@ -208,7 +208,7 @@ class TrapForwardRepository {
             'Delete Trap Forward failed! Name: ${forwardOutline.name}'
           ];
         }
-      } on DioError catch (e) {
+      } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
     }

@@ -16,11 +16,9 @@ class TrapForwardEditForm extends StatelessWidget {
     required bool isEditing,
     ForwardOutline? forwardOutline,
   })  : _isEditing = isEditing,
-        _forwardOutline = forwardOutline,
         super(key: key);
 
   final bool _isEditing;
-  final ForwardOutline? _forwardOutline;
 
   @override
   Widget build(BuildContext context) {
@@ -396,7 +394,7 @@ class _CancelButton extends StatelessWidget {
       padding: const EdgeInsets.all(CommonStyle.lineSpacing),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.white,
+            backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
                 side: BorderSide(width: 1.0, color: Colors.black),
                 borderRadius: BorderRadius.all(Radius.circular(4.0))),
