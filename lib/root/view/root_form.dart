@@ -132,7 +132,7 @@ class RootForm extends StatelessWidget {
                 ),
                 action: SnackBarAction(
                   label: AppLocalizations.of(context)!.open,
-                  onPressed: () async {
+                  onPressed: () {
                     OpenFile.open(
                       state.nodesExportFilePath,
                       type: 'text/comma-separated-values',
