@@ -211,13 +211,15 @@ class _HistorySliverList extends StatelessWidget {
           }
           return Container(
             color: Colors.grey.shade300,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverList(
-                    delegate: _historySliverChildBuilderDelegate(
-                        state.deviceHistoryRecords)),
-              ],
+            child: Scrollbar(
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverList(
+                      delegate: _historySliverChildBuilderDelegate(
+                          state.deviceHistoryRecords)),
+                ],
+              ),
             ),
           );
         } else if (state.status.isRequestFailure) {
