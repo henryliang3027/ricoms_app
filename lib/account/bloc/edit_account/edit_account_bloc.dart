@@ -4,6 +4,9 @@ import 'package:formz/formz.dart';
 import 'package:ricoms_app/account/model/account.dart';
 import 'package:ricoms_app/account/model/account_password.dart';
 import 'package:ricoms_app/account/model/email.dart';
+import 'package:ricoms_app/account/model/ext.dart';
+import 'package:ricoms_app/account/model/mobile.dart';
+import 'package:ricoms_app/account/model/tel.dart';
 import 'package:ricoms_app/repository/account_detail.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
@@ -65,6 +68,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
       final Name name = Name.dirty(accountDetail.name);
       final int permission = int.parse(accountDetail.permission);
       final Email email = Email.dirty(accountDetail.email ?? '');
+      final Mobile mobile = Mobile.dirty(accountDetail.mobile ?? '');
+      final Tel tel = Tel.dirty(accountDetail.tel ?? '');
+      final Ext ext = Ext.dirty(accountDetail.ext ?? '');
 
       emit(state.copyWith(
         isInitController: true,
@@ -73,9 +79,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         permission: permission,
         department: accountDetail.department,
         email: email,
-        mobile: accountDetail.mobile,
-        tel: accountDetail.tel,
-        ext: accountDetail.ext,
+        mobile: mobile,
+        tel: tel,
+        ext: ext,
         status: Formz.validate([
           account,
           state.password,
@@ -209,11 +215,13 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     MobileChanged event,
     Emitter<EditAccountState> emit,
   ) {
+    final mobile = Mobile.dirty(event.mobile);
+
     emit(
       state.copyWith(
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
-        mobile: event.mobile,
+        mobile: mobile,
       ),
     );
   }
@@ -222,11 +230,13 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     TelChanged event,
     Emitter<EditAccountState> emit,
   ) {
+    final tel = Tel.dirty(event.tel);
+
     emit(
       state.copyWith(
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
-        tel: event.tel,
+        tel: tel,
       ),
     );
   }
@@ -235,11 +245,13 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
     ExtChanged event,
     Emitter<EditAccountState> emit,
   ) {
+    final ext = Ext.dirty(event.ext);
+
     emit(
       state.copyWith(
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
-        ext: event.ext,
+        ext: ext,
       ),
     );
   }
@@ -261,9 +273,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         permission: state.permission,
         department: state.department,
         email: state.email.value,
-        mobile: state.mobile,
-        tel: state.tel,
-        ext: state.ext,
+        mobile: state.mobile.value,
+        tel: state.tel.value,
+        ext: state.ext.value,
       );
 
       if (result[0]) {
@@ -299,9 +311,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         permission: state.permission,
         department: state.department,
         email: state.email.value,
-        mobile: state.mobile,
-        tel: state.tel,
-        ext: state.ext,
+        mobile: state.mobile.value,
+        tel: state.tel.value,
+        ext: state.ext.value,
       );
 
       if (result[0]) {

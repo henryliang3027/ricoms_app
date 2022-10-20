@@ -139,9 +139,9 @@ class AccountEditForm extends StatelessWidget {
           _nameController.text = state.name.value;
           _departmentController.text = state.department;
           _emailController.text = state.email.value;
-          _mobileController.text = state.mobile;
-          _telController.text = state.tel;
-          _extController.text = state.ext;
+          _mobileController.text = state.mobile.value;
+          _telController.text = state.tel.value;
+          _extController.text = state.ext.value;
         }
       },
       child: WillPopScope(
@@ -494,12 +494,14 @@ class _DepartmentInput extends StatelessWidget {
                     .read<EditAccountBloc>()
                     .add(DepartmentChanged(department));
               },
+              maxLength: 64,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.department,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
@@ -540,12 +542,14 @@ class _EmailInput extends StatelessWidget {
               onChanged: (email) {
                 context.read<EditAccountBloc>().add(EmailChanged(email));
               },
+              maxLength: 64,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.email,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
@@ -591,17 +595,24 @@ class _MobileInput extends StatelessWidget {
               onChanged: (mobile) {
                 context.read<EditAccountBloc>().add(MobileChanged(mobile));
               },
+              maxLength: 32,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.phone,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText: state.mobile.invalid
+                    ? AppLocalizations.of(context)!.mobileErrorText
+                    : null,
               ),
             ),
           ),
@@ -636,17 +647,24 @@ class _TelInput extends StatelessWidget {
               onChanged: (tel) {
                 context.read<EditAccountBloc>().add(TelChanged(tel));
               },
+              maxLength: 32,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.tel,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText: state.tel.invalid
+                    ? AppLocalizations.of(context)!.telErrorText
+                    : null,
               ),
             ),
           ),
@@ -681,17 +699,24 @@ class _ExtInput extends StatelessWidget {
               onChanged: (ext) {
                 context.read<EditAccountBloc>().add(ExtChanged(ext));
               },
+              maxLength: 32,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.ext,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                errorMaxLines: 2,
+                errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
+                errorText: state.ext.invalid
+                    ? AppLocalizations.of(context)!.extErrorText
+                    : null,
               ),
             ),
           ),

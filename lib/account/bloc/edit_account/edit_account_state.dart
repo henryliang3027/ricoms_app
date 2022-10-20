@@ -14,9 +14,9 @@ class EditAccountState extends Equatable {
     this.permission = 3,
     this.department = '',
     this.email = const Email.pure(),
-    this.mobile = '',
-    this.tel = '',
-    this.ext = '',
+    this.mobile = const Mobile.pure(),
+    this.tel = const Tel.pure(),
+    this.ext = const Ext.pure(),
     this.submissionMsg = '',
   });
 
@@ -31,9 +31,9 @@ class EditAccountState extends Equatable {
   final int permission;
   final String department;
   final Email email;
-  final String mobile;
-  final String tel;
-  final String ext;
+  final Mobile mobile;
+  final Tel tel;
+  final Ext ext;
   final String submissionMsg;
 
   EditAccountState copyWith({
@@ -48,9 +48,9 @@ class EditAccountState extends Equatable {
     int? permission,
     String? department,
     Email? email,
-    String? mobile,
-    String? tel,
-    String? ext,
+    Mobile? mobile,
+    Tel? tel,
+    Ext? ext,
     String? submissionMsg,
   }) {
     return EditAccountState(

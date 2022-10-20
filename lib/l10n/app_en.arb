@@ -568,6 +568,21 @@
       "description": "Invalid email address."
     },
 
+    "mobileErrorText": "Invalid phone format.",
+    "@all": {
+      "description": "invalid phone format."
+    },
+
+    "telErrorText": "Invalid telephone format.",
+    "@all": {
+      "description": "invalid telephone format."
+    },
+
+    "extErrorText": "Invalid extension format.",
+    "@all": {
+      "description": "invalid extension format."
+    },
+
     "ipErrorText": "Invalid IP address.",
     "@all": {
       "description": "Invalid ip address."

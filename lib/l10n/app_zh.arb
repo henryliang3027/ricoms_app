@@ -123,6 +123,9 @@
     "passwordErrorText": "此欄位長度必須在4-32個字元。",
     "nameErrorText": "此欄位長度必須在1-64個字元。",
     "emailErrorText": "這不是有效的電子郵件。",
+    "mobileErrorText": "這不是有效的手機號碼。",
+    "telErrorText": "這不是有效的電話號碼。",
+    "extErrorText": "這不是有效的分機號碼。",
     "ipErrorText": "這不是有效的IP位址。",
     "passwordDoesNotMatch": "您輸入的兩個密碼並不相符，請再試一次。",
 
