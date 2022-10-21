@@ -361,6 +361,10 @@ class AuthenticationRepository {
       String accountInformationPath =
           'http://' + user.ip + '/aci/api/accounts/' + user.id;
 
+      if (user.id == '0') {
+        return [true, false];
+      }
+
       try {
         Response response = await dio.get(
           accountInformationPath,

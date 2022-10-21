@@ -97,7 +97,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       _dataStreamSubscription?.cancel();
       _dataStreamSubscription = dataStream.listen((count) {
         if (kDebugMode) {
-          print('Root update trigger times: $count');
+          print('Device type node updated trigger times: $count');
         }
         add(const DeviceTypeNodeUpdated());
       });
@@ -275,7 +275,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     _dataStreamSubscription = dataStream.listen((count) {
       if (kDebugMode) {
-        print('Root update trigger times: $count');
+        print('Device type node updated trigger times: $count');
       }
       add(const DeviceTypeNodeUpdated());
     });
@@ -443,7 +443,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     _dataStreamSubscription = dataStream.listen((count) {
       if (kDebugMode) {
-        print('Root update trigger times: $count');
+        print('Device type node updated trigger times: $count');
       }
       add(const DeviceTypeNodeUpdated());
     });

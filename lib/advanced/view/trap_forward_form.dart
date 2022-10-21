@@ -399,15 +399,18 @@ class _ForwardOutlineSliverList extends StatelessWidget {
         } else if (state.status.isRequestSuccess) {
           return Container(
             color: Colors.grey.shade300,
-            child: CustomScrollView(
-              slivers: [
-                SliverList(
-                    delegate: _forwardOutlineSliverChildBuilderDelegate(
-                  data: state.forwardOutlines,
-                  isDeleteMode: state.isDeleteMode,
-                  selectedForwardOutlines: state.selectedforwardOutlines,
-                )),
-              ],
+            child: Scrollbar(
+              thickness: 8.0,
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                      delegate: _forwardOutlineSliverChildBuilderDelegate(
+                    data: state.forwardOutlines,
+                    isDeleteMode: state.isDeleteMode,
+                    selectedForwardOutlines: state.selectedforwardOutlines,
+                  )),
+                ],
+              ),
             ),
           );
         } else if (state.status.isRequestFailure) {

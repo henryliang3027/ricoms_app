@@ -288,10 +288,12 @@ class _PopupMenu extends StatelessWidget {
                         state.isAddedToBookmarks
                             ? const Icon(
                                 Icons.star_outlined,
+                                size: 20.0,
                                 color: Colors.amber,
                               )
                             : const Icon(
                                 Icons.star_border_outlined,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                         const SizedBox(
@@ -393,7 +395,6 @@ class _NodeContent extends StatelessWidget {
         return Expanded(
           child: Container(
             width: double.maxFinite,
-            height: double.maxFinite,
             color: Colors.white,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -539,6 +540,8 @@ class _NodeSliverList extends StatelessWidget {
             }
 
             return Expanded(
+                child: Scrollbar(
+              thickness: 8.0,
               child: CustomScrollView(
                 slivers: [
                   SliverList(
@@ -550,7 +553,7 @@ class _NodeSliverList extends StatelessWidget {
                   ))
                 ],
               ),
-            );
+            ));
           } else if (state.directory.last.type == 3) {
             //a8k
             if (state.directory.last.status == 0) {
@@ -579,6 +582,8 @@ class _NodeSliverList extends StatelessWidget {
             }
 
             return Expanded(
+                child: Scrollbar(
+              thickness: 8.0,
               child: CustomScrollView(
                 slivers: [
                   SliverList(
@@ -590,7 +595,7 @@ class _NodeSliverList extends StatelessWidget {
                   ))
                 ],
               ),
-            );
+            ));
           } else if (state.directory.last.type == 4) {
             // a8k shelf
             if (state.directory.last.status == 0) {
@@ -616,6 +621,8 @@ class _NodeSliverList extends StatelessWidget {
             }
 
             return Expanded(
+                child: Scrollbar(
+              thickness: 8.0,
               child: CustomScrollView(
                 slivers: [
                   SliverList(
@@ -627,7 +634,7 @@ class _NodeSliverList extends StatelessWidget {
                   ))
                 ],
               ),
-            );
+            ));
           } else {
             return const Expanded(
               child: Center(

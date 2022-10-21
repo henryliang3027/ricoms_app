@@ -556,17 +556,20 @@ class _LogSliverList extends StatelessWidget {
 
           return Container(
             color: Colors.grey.shade300,
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverList(
-                  delegate: _logSliverChildBuilderDelegate(
-                    state.logs,
-                    initialPath,
-                    pageController,
+            child: Scrollbar(
+              thickness: 8.0,
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  SliverList(
+                    delegate: _logSliverChildBuilderDelegate(
+                      state.logs,
+                      initialPath,
+                      pageController,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         } else if (state.status.isRequestFailure) {

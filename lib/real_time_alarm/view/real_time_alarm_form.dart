@@ -362,16 +362,19 @@ class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
           return Container(
             color: Colors.grey.shade300,
             child: state.allAlarms.isNotEmpty
-                ? CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: _alarmSliverChildBuilderDelegate(
-                          state.allAlarms,
-                          widget.initialPath,
-                          widget.pageController,
-                        ),
-                      )
-                    ],
+                ? Scrollbar(
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: _alarmSliverChildBuilderDelegate(
+                            state.allAlarms,
+                            widget.initialPath,
+                            widget.pageController,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : _showEmptyContent(context),
           );
@@ -433,16 +436,19 @@ class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
           return Container(
             color: Colors.grey.shade300,
             child: state.criticalAlarms.isNotEmpty
-                ? CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: _alarmSliverChildBuilderDelegate(
-                          state.criticalAlarms,
-                          widget.initialPath,
-                          widget.pageController,
-                        ),
-                      )
-                    ],
+                ? Scrollbar(
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: _alarmSliverChildBuilderDelegate(
+                            state.criticalAlarms,
+                            widget.initialPath,
+                            widget.pageController,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : _showEmptyContent(context),
           );
@@ -504,16 +510,19 @@ class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
           return Container(
             color: Colors.grey.shade300,
             child: state.warningAlarms.isNotEmpty
-                ? CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: _alarmSliverChildBuilderDelegate(
-                          state.warningAlarms,
-                          widget.initialPath,
-                          widget.pageController,
-                        ),
-                      )
-                    ],
+                ? Scrollbar(
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: _alarmSliverChildBuilderDelegate(
+                            state.warningAlarms,
+                            widget.initialPath,
+                            widget.pageController,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : _showEmptyContent(context),
           );
@@ -575,16 +584,19 @@ class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
           return Container(
             color: Colors.grey.shade300,
             child: state.normalAlarms.isNotEmpty
-                ? CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: _alarmSliverChildBuilderDelegate(
-                          state.normalAlarms,
-                          widget.initialPath,
-                          widget.pageController,
-                        ),
-                      )
-                    ],
+                ? Scrollbar(
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: _alarmSliverChildBuilderDelegate(
+                            state.normalAlarms,
+                            widget.initialPath,
+                            widget.pageController,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : _showEmptyContent(context),
           );
@@ -646,16 +658,19 @@ class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
           return Container(
             color: Colors.grey.shade300,
             child: state.noticeAlarms.isNotEmpty
-                ? CustomScrollView(
-                    slivers: [
-                      SliverList(
-                        delegate: _alarmSliverChildBuilderDelegate(
-                          state.noticeAlarms,
-                          widget.initialPath,
-                          widget.pageController,
-                        ),
-                      )
-                    ],
+                ? Scrollbar(
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList(
+                          delegate: _alarmSliverChildBuilderDelegate(
+                            state.noticeAlarms,
+                            widget.initialPath,
+                            widget.pageController,
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 : _showEmptyContent(context),
           );

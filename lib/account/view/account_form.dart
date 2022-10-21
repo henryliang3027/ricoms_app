@@ -373,15 +373,18 @@ class _AccountSliverList extends StatelessWidget {
         } else if (state.formStatus.isRequestSuccess) {
           return Container(
             color: Colors.grey.shade300,
-            child: CustomScrollView(
-              //shrinkWrap: true,
-              slivers: [
-                SliverList(
-                  delegate: _accountSliverChildBuilderDelegate(
-                    data: state.accounts,
-                  ),
-                )
-              ],
+            child: Scrollbar(
+              thickness: 8.0,
+              child: CustomScrollView(
+                //shrinkWrap: true,
+                slivers: [
+                  SliverList(
+                    delegate: _accountSliverChildBuilderDelegate(
+                      data: state.accounts,
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         } else if (state.formStatus.isRequestFailure) {

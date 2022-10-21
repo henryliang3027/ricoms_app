@@ -7,7 +7,6 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
-import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -246,26 +245,24 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
                   isEditing: state.isEditing,
                 ));
           } else {
-            return Expanded(
-              child: Container(
-                width: double.maxFinite,
-                height: double.maxFinite,
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.warning_rounded,
-                      size: 200,
-                      color: Color(0xffffc107),
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!
-                          .dialogMessage_DeviceDoesNotRespond,
-                    ),
-                    const SizedBox(height: 40.0),
-                  ],
-                ),
+            return Container(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.warning_rounded,
+                    size: 200,
+                    color: Color(0xffffc107),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!
+                        .dialogMessage_DeviceDoesNotRespond,
+                  ),
+                  const SizedBox(height: 40.0),
+                ],
               ),
             );
           }

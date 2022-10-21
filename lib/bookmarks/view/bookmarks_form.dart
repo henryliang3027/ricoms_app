@@ -304,7 +304,9 @@ class _DeviceSliverList extends StatelessWidget {
           );
         } else if (state.formStatus.isRequestSuccess) {
           return Container(
-              color: Colors.grey.shade300,
+            color: Colors.grey.shade300,
+            child: Scrollbar(
+              thickness: 8.0,
               child: CustomScrollView(
                 slivers: [
                   SliverList(
@@ -316,7 +318,9 @@ class _DeviceSliverList extends StatelessWidget {
                     ),
                   )
                 ],
-              ));
+              ),
+            ),
+          );
         } else if (state.formStatus.isRequestFailure) {
           return Center(
             child: Text(
