@@ -144,7 +144,7 @@ class _PopupMenu extends StatelessWidget {
               value: Menu.deleteAll,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Icon(
                     Icons.delete_outline,

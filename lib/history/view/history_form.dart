@@ -237,7 +237,7 @@ class _PopupMenu extends StatelessWidget {
             value: Menu.filter,
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Icon(
                   CustomIcons.filter,
@@ -257,7 +257,7 @@ class _PopupMenu extends StatelessWidget {
             value: Menu.export,
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Icon(
                   CustomIcons.export,
@@ -450,6 +450,7 @@ class _HistorySliverList extends StatelessWidget {
           return Container(
             color: Colors.grey.shade300,
             child: Scrollbar(
+              thickness: 8.0,
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [

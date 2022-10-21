@@ -262,7 +262,7 @@ class _PopupMenu extends StatelessWidget {
               value: Menu.search,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Icon(
                     Icons.search,
@@ -283,7 +283,7 @@ class _PopupMenu extends StatelessWidget {
                     value: Menu.favorite,
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         state.isAddedToBookmarks
                             ? const Icon(
@@ -307,7 +307,7 @@ class _PopupMenu extends StatelessWidget {
                     value: Menu.export,
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const Icon(
                           CustomIcons.export,

@@ -93,11 +93,14 @@ class _StartDatePicker extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () async {
-            String startDate = state.startDate.replaceAll('/', '');
+            String formattedStartDate = state.startDate.replaceAll('/', '');
+            DateTime startDate = formattedStartDate == ''
+                ? DateTime.now()
+                : DateTime.parse(formattedStartDate);
+
             DateTime? datetime = await showDatePicker(
               context: context,
-              initialDate:
-                  startDate == '' ? DateTime.now() : DateTime.parse(startDate),
+              initialDate: startDate,
               firstDate: DateTime(2000),
               lastDate: DateTime(2050),
               locale: Localizations.localeOf(context),
@@ -161,12 +164,13 @@ class _EndDatePicker extends StatelessWidget {
             DateTime endDate = formattedEndDate == ''
                 ? DateTime.now()
                 : DateTime.parse(formattedEndDate);
+            DateTime lastate = startDate.add(const Duration(days: 30));
 
             DateTime? datetime = await showDatePicker(
               context: context,
-              initialDate: endDate.isAfter(startDate) ? endDate : startDate,
+              initialDate: endDate,
               firstDate: startDate,
-              lastDate: DateTime(2050),
+              lastDate: lastate,
               locale: Localizations.localeOf(context),
             );
 

@@ -96,15 +96,22 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
     DateTime startDate = DateTime.parse(formattedStartDate);
     DateTime endDate = DateTime.parse(formattedEndDate);
+    DateTime lastate = startDate.add(const Duration(days: 30));
 
     String displayStartDate =
         DateFormat('yyyy-MM-dd').format(startDate).toString();
     String displayEndDate = DateFormat('yyyy-MM-dd').format(endDate).toString();
 
+    String displayLastDate =
+        DateFormat('yyyy-MM-dd').format(lastate).toString();
+
     //if end date should earlier than start date, then asign start date,
     //otherwise, asign end date
-    String validEndDate =
-        endDate.isAfter(startDate) ? displayEndDate : displayStartDate;
+    String validEndDate = endDate.isAfter(startDate)
+        ? endDate.isBefore(lastate)
+            ? displayEndDate
+            : displayLastDate
+        : displayStartDate;
 
     emit(state.copyWith(
       startDate: displayStartDate,
