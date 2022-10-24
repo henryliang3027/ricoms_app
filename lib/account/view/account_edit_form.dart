@@ -742,6 +742,7 @@ class _SaveButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: ElevatedButton(
+            key: const Key('accountEditForm_submit_raisedButton'),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith(
                 (Set<MaterialState> states) {
@@ -754,7 +755,6 @@ class _SaveButton extends StatelessWidget {
                 },
               ),
             ),
-            key: const Key('accountEditForm_submit_raisedButton'),
             child: state.submissionStatus.isSubmissionInProgress
                 ? const Center(
                     child: CircularProgressIndicator(),

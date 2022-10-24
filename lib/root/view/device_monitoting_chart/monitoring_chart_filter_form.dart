@@ -319,8 +319,6 @@ class _FilterCheckBoxes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
-      buildWhen: (previous, current) =>
-          previous.checkBoxValues[oid] != current.checkBoxValues[oid],
       builder: (context, state) {
         return Checkbox(
           visualDensity: const VisualDensity(vertical: -4.0),
@@ -427,7 +425,8 @@ class _SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
-      buildWhen: (previous, current) => previous.status != current.status,
+      buildWhen: (previous, current) =>
+          previous.selectedCheckBoxValues != current.selectedCheckBoxValues,
       builder: (context, state) {
         return Center(
           child: Padding(
@@ -436,19 +435,34 @@ class _SaveButton extends StatelessWidget {
               height: 40,
               width: 80,
               child: ElevatedButton(
-                  key: const Key('monitoringChartFilterForm_save_raisedButton'),
-                  child: Text(
-                    AppLocalizations.of(context)!.save,
-                    style: const TextStyle(
-                      fontSize: CommonStyle.sizeM,
-                    ),
+                key: const Key('monitoringChartFilterForm_save_raisedButton'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.blue;
+                      } else if (states.contains(MaterialState.disabled)) {
+                        return Colors.grey;
+                      }
+                      return null; // Use the component's default.
+                    },
                   ),
-                  onPressed: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    context
-                        .read<ChartFilterBloc>()
-                        .add(const FilterSelectingModeDisabled());
-                  }),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.save,
+                  style: const TextStyle(
+                    fontSize: CommonStyle.sizeM,
+                  ),
+                ),
+                onPressed: state.selectedCheckBoxValues.isNotEmpty
+                    ? () {
+                        //FocusManager.instance.primaryFocus?.unfocus();
+                        context
+                            .read<ChartFilterBloc>()
+                            .add(const FilterSelectingModeDisabled());
+                      }
+                    : null,
+              ),
             ),
           ),
         );
