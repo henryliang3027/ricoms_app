@@ -29,9 +29,6 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
   late ZoomPanBehavior _zoomPanBehavior;
   late String _unit;
 
-  late List<ChartDateValuePair> _majorHDateValuePairs;
-  late List<ChartDateValuePair> _majorLDateValuePairs;
-  // ChartSeriesController? _chartSeriesController;
   bool isLoadTime = true;
   Offset? pointLocationL = Offset.zero;
   Offset? pointLocationH = Offset.zero;
@@ -39,8 +36,6 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
   @override
   void initState() {
     _unit = getUnit();
-    _majorHDateValuePairs = getmajorHDateValuePairs();
-    _majorLDateValuePairs = getmajorLDateValuePairs();
     _trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.longPress,
@@ -66,42 +61,6 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     return _unit;
   }
 
-  List<ChartDateValuePair> getmajorHDateValuePairs() {
-    List<ChartDateValuePair> _majorHDateValuePairs = [];
-
-    if (widget.majorH != null) {
-      _majorHDateValuePairs.add(ChartDateValuePair(
-        dateTime: widget.chartDateValuePairs.first.dateTime,
-        value: widget.majorH!,
-      ));
-
-      _majorHDateValuePairs.add(ChartDateValuePair(
-        dateTime: widget.chartDateValuePairs.last.dateTime,
-        value: widget.majorH!,
-      ));
-    }
-
-    return _majorHDateValuePairs;
-  }
-
-  List<ChartDateValuePair> getmajorLDateValuePairs() {
-    List<ChartDateValuePair> _majorLDateValuePairs = [];
-
-    if (widget.majorL != null) {
-      _majorLDateValuePairs.add(ChartDateValuePair(
-        dateTime: widget.chartDateValuePairs.first.dateTime,
-        value: widget.majorL!,
-      ));
-
-      _majorLDateValuePairs.add(ChartDateValuePair(
-        dateTime: widget.chartDateValuePairs.last.dateTime,
-        value: widget.majorL!,
-      ));
-    }
-
-    return _majorLDateValuePairs;
-  }
-
   double getMaximumYAxisValue() {
     double? majorH = widget.majorH;
     double maximumChartValue = widget.chartDateValuePairs
@@ -116,11 +75,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     }
 
     if (maximum > 0.0) {
-      maximum = maximum + 50;
+      maximum = maximum * 1.5;
     } else if (maximum < 0.0) {
-      maximum = maximum + 50;
+      maximum = maximum / 1.5;
     } else {
-      maximum = (maximum + 1) * 10;
+      maximum = (maximum + 10) * 1.5;
     }
     return maximum;
   }
@@ -139,11 +98,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     }
 
     if (minimum > 0.0) {
-      minimum = minimum - 50;
+      minimum = minimum * 0.5;
     } else if (minimum < 0.0) {
-      minimum = minimum - 50;
+      minimum = minimum / 0.5;
     } else {
-      minimum = (minimum - 1) * 1.5;
+      minimum = (minimum - 10) / 0.5;
     }
     return minimum;
   }

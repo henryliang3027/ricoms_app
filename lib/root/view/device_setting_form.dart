@@ -31,8 +31,7 @@ class DeviceSettingForm extends StatefulWidget {
   State<DeviceSettingForm> createState() => _DeviceSettingFormState();
 }
 
-class _DeviceSettingFormState extends State<DeviceSettingForm>
-    with AutomaticKeepAliveClientMixin {
+class _DeviceSettingFormState extends State<DeviceSettingForm> {
   Future<void> _showInProgressDialog() async {
     return showDialog<void>(
       context: context,
@@ -200,11 +199,11 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
         } else if (state.submissionStatus.isSubmissionSuccess) {
           Navigator.of(context).pop();
           _showSuccessDialog(state.saveResultMsg);
-          context.read<DeviceBloc>().add(const DeviceDataRequested());
+          context.read<DeviceBloc>().add(const DeviceDataUpdateRequested());
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.saveResultMsg);
-          context.read<DeviceBloc>().add(const DeviceDataRequested());
+          context.read<DeviceBloc>().add(const DeviceDataUpdateRequested());
         }
       },
       child: BlocBuilder<DeviceBloc, DeviceState>(
@@ -270,9 +269,6 @@ class _DeviceSettingFormState extends State<DeviceSettingForm>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }
 
 class CreateEditingTool extends StatelessWidget {
