@@ -184,6 +184,7 @@ class _StartDatePicker extends StatelessWidget {
               firstDate: DateTime(2000),
               lastDate: DateTime(2050),
               locale: Localizations.localeOf(context),
+              initialEntryMode: DatePickerEntryMode.calendarOnly,
             );
 
             if (datetime != null) {
@@ -251,6 +252,7 @@ class _EndDatePicker extends StatelessWidget {
               firstDate: startDate,
               lastDate: DateTime(2050),
               locale: Localizations.localeOf(context),
+              initialEntryMode: DatePickerEntryMode.calendarOnly,
             );
 
             if (datetime != null) {
