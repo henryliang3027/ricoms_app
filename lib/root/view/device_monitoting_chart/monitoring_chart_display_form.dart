@@ -94,6 +94,67 @@ class MonitoringChartDisplayForm extends StatelessWidget {
     }
   }
 
+  ListView _buildChart({
+    required String startDate,
+    required String endDate,
+    required Map<String, CheckBoxValue> selectedCheckBoxValues,
+    required bool isMultipleAxis,
+  }) {
+    if (isMultipleAxis) {
+      return ListView.builder(
+          cacheExtent: 10000.0,
+          itemCount: selectedCheckBoxValues.length ~/ 2 + 1,
+          itemBuilder: (context, index) {
+            index *= 2;
+            Map<String, CheckBoxValue> checkBoxValues = {};
+            List<MapEntry<String, CheckBoxValue>> selectedCheckBoxValueEntries =
+                selectedCheckBoxValues.entries.toList();
+
+            if (index + 1 < selectedCheckBoxValues.length) {
+              for (int i = index; i < index + 2; i++) {
+                MapEntry<String, CheckBoxValue> entry =
+                    selectedCheckBoxValueEntries[i];
+                checkBoxValues[entry.key] = entry.value;
+              }
+            } else {
+              MapEntry<String, CheckBoxValue> entry =
+                  selectedCheckBoxValueEntries[index];
+              checkBoxValues[entry.key] = entry.value;
+            }
+
+            return MultipleAxisChartPage(
+              index: 0,
+              nodeId: nodeId,
+              startDate: startDate,
+              endDate: endDate,
+              selectedCheckBoxValues:
+                  Map<String, CheckBoxValue>.from(checkBoxValues),
+            );
+          });
+    } else {
+      return ListView.builder(
+        cacheExtent: 10000.0,
+        itemCount: selectedCheckBoxValues.length,
+        itemBuilder: (context, index) {
+          MapEntry<String, CheckBoxValue> entry =
+              selectedCheckBoxValues.entries.toList()[index];
+          return SingleAxisChartPage(
+            index: 0,
+            startDate: startDate,
+            endDate: endDate,
+            nodeId: nodeId,
+            oid: entry.key,
+            name: entry.value.name,
+            majorH: entry.value.majorH,
+            minorH: entry.value.minorH,
+            majorL: entry.value.majorL,
+            minorL: entry.value.minorL,
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
@@ -101,15 +162,11 @@ class MonitoringChartDisplayForm extends StatelessWidget {
             previous.selectedCheckBoxValues != current.selectedCheckBoxValues ||
             previous.isSelectMultipleYAxis != current.isSelectMultipleYAxis,
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Column(
-              children: _buildCharts(
-                startDate: state.startDate,
-                endDate: state.endDate,
-                selectedCheckBoxValues: state.selectedCheckBoxValues,
-                isMultipleAxis: state.isSelectMultipleYAxis,
-              ),
-            ),
+          return _buildChart(
+            startDate: state.startDate,
+            endDate: state.endDate,
+            selectedCheckBoxValues: state.selectedCheckBoxValues,
+            isMultipleAxis: state.isSelectMultipleYAxis,
           );
         });
   }

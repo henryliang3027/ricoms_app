@@ -198,31 +198,30 @@ class CustomStyle {
             flex: length,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
-              child: SingleChildScrollView(
-                child: TextField(
-                  key: Key(id),
-                  controller: textFieldControllers[id],
-                  enabled: _enabled,
-                  style: TextStyle(fontSize: font),
-                  maxLines: height,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: _enabled ? Colors.white : Colors.grey.shade300,
-                    //isDense: true,
-                    //contentPadding: EdgeInsets.symmetric(vertical: 30.0),
-                    isCollapsed: true,
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    disabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                      borderRadius: BorderRadius.zero,
-                    ),
+              child: TextField(
+                key: Key(id),
+                controller: textFieldControllers[id],
+                //enabled: _enabled,
+                readOnly: !_enabled,
+                style: TextStyle(fontSize: font),
+                maxLines: height,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: _enabled ? Colors.white : Colors.grey.shade300,
+                  //isDense: true,
+                  //contentPadding: EdgeInsets.symmetric(vertical: 30.0),
+                  isCollapsed: true,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
                   ),
                 ),
               ),

@@ -31,8 +31,17 @@ class MultipleAxisChartForm extends StatelessWidget {
             ),
           );
         } else if (state.status.isRequestFailure) {
-          return Center(
-            child: Text(state.errMsg),
+          return Padding(
+            padding: const EdgeInsets.only(
+              top: 20.0,
+            ),
+            child: SizedBox(
+              height: 400,
+              child: MultipleAxisLineChart(
+                chartDateValues: state.chartDateValues,
+                checkBoxValues: selectedCheckBoxValues,
+              ),
+            ),
           );
         } else {
           return const Center(
