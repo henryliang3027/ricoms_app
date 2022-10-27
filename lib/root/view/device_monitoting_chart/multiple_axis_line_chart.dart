@@ -38,6 +38,52 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
     super.initState();
   }
 
+  double getMaximumYAxisValue() {
+    double maximum = -double.maxFinite;
+
+    for (List<ChartDateValuePair> chartDateValuePairs
+        in widget.chartDateValues.values) {
+      double max = chartDateValuePairs
+          .reduce(
+              (current, next) => current.value > next.value ? current : next)
+          .value;
+
+      maximum = maximum < max ? max : maximum;
+    }
+
+    if (maximum > 0.0) {
+      maximum = maximum * 1.5;
+    } else if (maximum < 0.0) {
+      maximum = maximum / 1.5;
+    } else {
+      maximum = (maximum + 10) * 1.5;
+    }
+    return maximum;
+  }
+
+  double getMinimumYAxisValue() {
+    double minimum = double.maxFinite;
+
+    for (List<ChartDateValuePair> chartDateValuePairs
+        in widget.chartDateValues.values) {
+      double min = chartDateValuePairs
+          .reduce(
+              (current, next) => current.value < next.value ? current : next)
+          .value;
+
+      minimum = minimum > min ? min : minimum;
+    }
+
+    if (minimum > 0.0) {
+      minimum = minimum * 0.5;
+    } else if (minimum < 0.0) {
+      minimum = minimum / 0.5;
+    } else {
+      minimum = (minimum - 10) / 0.5;
+    }
+    return minimum;
+  }
+
   List<ChartSeries> _buildSeries() {
     List<ChartSeries> series = [];
     List<MapEntry<String, List<ChartDateValuePair>>> chartDateValueEntries =
@@ -63,23 +109,22 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SfCartesianChart(
-          primaryXAxis: DateTimeAxis(
-            edgeLabelPlacement: EdgeLabelPlacement.shift,
-          ),
-          primaryYAxis: NumericAxis(),
-          legend: Legend(
-            isVisible: true,
-            position: LegendPosition.bottom,
-            overflowMode: LegendItemOverflowMode.wrap,
-          ),
-          trackballBehavior: _trackballBehavior,
-          zoomPanBehavior: _zoomPanBehavior,
-          series: _buildSeries(),
-        ),
-      ],
+    return SfCartesianChart(
+      primaryXAxis: DateTimeAxis(
+        edgeLabelPlacement: EdgeLabelPlacement.shift,
+      ),
+      primaryYAxis: NumericAxis(
+        maximum: getMaximumYAxisValue(),
+        minimum: getMinimumYAxisValue(),
+      ),
+      legend: Legend(
+        isVisible: true,
+        position: LegendPosition.bottom,
+        overflowMode: LegendItemOverflowMode.wrap,
+      ),
+      trackballBehavior: _trackballBehavior,
+      zoomPanBehavior: _zoomPanBehavior,
+      series: _buildSeries(),
     );
   }
 }
