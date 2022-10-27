@@ -146,15 +146,39 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     ));
   }
 
-  void _onFilterSelectingModeDisabled(
+  Future<void> _onFilterSelectingModeDisabled(
     FilterSelectingModeDisabled event,
     Emitter<ChartFilterState> emit,
-  ) {
+  ) async {
+    Map<String, List<ChartDateValuePair>> chartDateValuePairsMap = {};
+
     emit(state.copyWith(
       filterSelectingMode: false,
-      selectedCheckBoxValues: state.selectedCheckBoxValues,
-      // just make sure we set state.selectedCheckBoxValues in the new state, still work without this argument
+      chartDataStatus: FormStatus.requestInProgress,
     ));
+
+    List<dynamic> result = await _deviceRepository.getMultipleDeviceChartData(
+        user: _user,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        deviceId: _nodeId,
+        oids: state.selectedCheckBoxValues.keys.toList());
+
+    if (result[0]) {
+      chartDateValuePairsMap = result[1];
+      emit(state.copyWith(
+        // filterSelectingMode: false,
+        chartDateValuePairsMap: chartDateValuePairsMap,
+        selectedCheckBoxValues: state.selectedCheckBoxValues,
+        // just make sure we set state.selectedCheckBoxValues in the new state, still work without this argument
+        chartDataStatus: FormStatus.requestSuccess,
+      ));
+    } else {
+      emit(state.copyWith(
+        // filterSelectingMode: false,
+        chartDataStatus: FormStatus.requestFailure,
+      ));
+    }
   }
 
   void _onCheckBoxValueChanged(

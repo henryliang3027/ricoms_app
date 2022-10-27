@@ -349,6 +349,44 @@ class DeviceRepository {
     }
   }
 
+  Future<bool> checkDeviceChartDataAvailable({
+    required User user,
+    required String startDate,
+    required String endDate,
+    required int deviceId,
+    required List<String> oids,
+  }) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+
+    int emptyCount = 0;
+
+    for (String oid in oids) {
+      String deviceChartDataPath =
+          '/device/$deviceId/chart?start_time=$startDate&end_time=$endDate&oid=$oid';
+
+      try {
+        Response response = await dio.get(deviceChartDataPath);
+
+        var data = jsonDecode(response.data.toString());
+
+        if (data['code'] != '200') {
+          emptyCount += 1;
+        }
+      } on DioError catch (_) {
+        return false;
+      }
+    }
+
+    if (emptyCount == oids.length) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<List<dynamic>> getDeviceChartData({
     required User user,
     required String startDate,
@@ -420,7 +458,7 @@ class DeviceRepository {
         List<ChartDateValuePair> chartDateValuePairs = result[1];
         chartDateValues[oid] = chartDateValuePairs;
       } else {
-        return result;
+        return [false, {}];
       }
     }
 

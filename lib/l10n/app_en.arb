@@ -740,6 +740,11 @@
       "description": "No node"
     },
 
+    "dialogMessage_NoChartData": "There are no data for the date that you have selected.",
+    "@all": {
+      "description": "There are no data for the date that you have selected."
+    },
+
     "dialogMessage_ExportRootDataSuccess": "Export root data success",
     "@all": {
       "description": "Export root data success"

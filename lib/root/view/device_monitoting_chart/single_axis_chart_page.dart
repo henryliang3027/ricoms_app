@@ -9,6 +9,7 @@ class SingleAxisChartPage extends StatelessWidget {
   const SingleAxisChartPage({
     Key? key,
     required this.index,
+    required this.chartDateValuePairs,
     required this.nodeId,
     required this.oid,
     required this.name,
@@ -21,6 +22,7 @@ class SingleAxisChartPage extends StatelessWidget {
   }) : super(key: key);
 
   final int index;
+  final List<ChartDateValuePair> chartDateValuePairs;
   final int nodeId;
   final String oid;
   final String name;
@@ -33,23 +35,31 @@ class SingleAxisChartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SingleAxisChartBloc(
-        index: index,
-        user: context.read<AuthenticationBloc>().state.user,
-        deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
-        startDate: startDate,
-        endDate: endDate,
-        nodeId: nodeId,
-        oid: oid,
-      ),
-      child: SingleAxisChartForm(
-        name: name,
-        majorH: majorH,
-        majorL: majorL,
-        majorHAnnotationColor: Colors.red,
-        majorLAnnotationColor: Colors.red,
-      ),
+    return SingleAxisChartForm(
+      chartDateValuePairs: chartDateValuePairs,
+      name: name,
+      majorH: majorH,
+      majorL: majorL,
+      majorHAnnotationColor: Colors.red,
+      majorLAnnotationColor: Colors.red,
     );
+    // BlocProvider(
+    //   create: (context) => SingleAxisChartBloc(
+    //     index: index,
+    //     user: context.read<AuthenticationBloc>().state.user,
+    //     deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
+    //     startDate: startDate,
+    //     endDate: endDate,
+    //     nodeId: nodeId,
+    //     oid: oid,
+    //   ),
+    //   child: SingleAxisChartForm(
+    //     name: name,
+    //     majorH: majorH,
+    //     majorL: majorL,
+    //     majorHAnnotationColor: Colors.red,
+    //     majorLAnnotationColor: Colors.red,
+    //   ),
+    // );
   }
 }

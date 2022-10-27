@@ -10,12 +10,14 @@ class MultipleAxisChartPage extends StatelessWidget {
   const MultipleAxisChartPage({
     Key? key,
     required this.index,
+    required this.chartDateValuePairs,
     required this.nodeId,
     required this.startDate,
     required this.endDate,
     required this.selectedCheckBoxValues,
   }) : super(key: key);
 
+  final Map<String, List<ChartDateValuePair>> chartDateValuePairs;
   final int index;
   final int nodeId;
   final String startDate;
@@ -24,19 +26,23 @@ class MultipleAxisChartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MultipleAxisChartBloc(
-        index: index,
-        user: context.read<AuthenticationBloc>().state.user,
-        deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
-        startDate: startDate,
-        endDate: endDate,
-        nodeId: nodeId,
-        selectedCheckBoxValues: selectedCheckBoxValues,
-      ),
-      child: MultipleAxisChartForm(
-        selectedCheckBoxValues: selectedCheckBoxValues,
-      ),
+    return MultipleAxisChartForm(
+      selectedCheckBoxValues: selectedCheckBoxValues,
+      chartDateValuePairs: chartDateValuePairs,
     );
+    // BlocProvider(
+    //   create: (context) => MultipleAxisChartBloc(
+    //     index: index,
+    //     user: context.read<AuthenticationBloc>().state.user,
+    //     deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
+    //     startDate: startDate,
+    //     endDate: endDate,
+    //     nodeId: nodeId,
+    //     selectedCheckBoxValues: selectedCheckBoxValues,
+    //   ),
+    //   child: MultipleAxisChartForm(
+    //     selectedCheckBoxValues: selectedCheckBoxValues,
+    //   ),
+    // );
   }
 }

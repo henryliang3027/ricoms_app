@@ -162,6 +162,7 @@
     "dialogMessage_NoModuleInTheSlot": "無法偵測到模組在槽位 ",
     "dialogMessage_PleaseTryAnother": "請點選其他槽位。",
     "dialogMessage_NoNode": "找不到此節點",
+    "dialogMessage_NoChartData": "你選擇的日期沒有紀錄監控資訊。",
     "dialogMessage_ExportRootDataSuccess": "匯出節點資料成功",
     "dialogMessage_ExportHistoryDataSuccess": "匯出歷史資料成功",
     "dialogMessage_ExportSystemLogDataSuccess": "匯出系統紀錄成功",

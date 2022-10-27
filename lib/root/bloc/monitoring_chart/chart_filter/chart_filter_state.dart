@@ -3,11 +3,13 @@ part of 'chart_filter_bloc.dart';
 class ChartFilterState extends Equatable {
   const ChartFilterState({
     this.status = FormStatus.none,
+    this.chartDataStatus = FormStatus.none,
     this.startDate = '',
     this.endDate = '',
     this.itemPropertiesCollection = const [],
     this.checkBoxValues = const {},
     this.selectedCheckBoxValues = const {},
+    this.chartDateValuePairsMap = const {},
     this.isSelectAll = false,
     this.isShowMultipleYAxis = false,
     this.isSelectMultipleYAxis = false,
@@ -16,11 +18,13 @@ class ChartFilterState extends Equatable {
   });
 
   final FormStatus status;
+  final FormStatus chartDataStatus;
   final String startDate;
   final String endDate;
   final List<List<ItemProperty>> itemPropertiesCollection;
   final Map<String, CheckBoxValue> checkBoxValues;
   final Map<String, CheckBoxValue> selectedCheckBoxValues;
+  final Map<String, List<ChartDateValuePair>> chartDateValuePairsMap;
   final bool isSelectAll;
   final bool isShowMultipleYAxis;
   final bool isSelectMultipleYAxis;
@@ -29,11 +33,13 @@ class ChartFilterState extends Equatable {
 
   ChartFilterState copyWith({
     FormStatus? status,
+    FormStatus? chartDataStatus,
     String? startDate,
     String? endDate,
     List<List<ItemProperty>>? itemPropertiesCollection,
     Map<String, CheckBoxValue>? checkBoxValues,
     Map<String, CheckBoxValue>? selectedCheckBoxValues,
+    Map<String, List<ChartDateValuePair>>? chartDateValuePairsMap,
     bool? isSelectAll,
     bool? isShowMultipleYAxis,
     bool? isSelectMultipleYAxis,
@@ -42,6 +48,7 @@ class ChartFilterState extends Equatable {
   }) {
     return ChartFilterState(
       status: status ?? this.status,
+      chartDataStatus: chartDataStatus ?? this.chartDataStatus,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       itemPropertiesCollection:
@@ -49,6 +56,8 @@ class ChartFilterState extends Equatable {
       checkBoxValues: checkBoxValues ?? this.checkBoxValues,
       selectedCheckBoxValues:
           selectedCheckBoxValues ?? this.selectedCheckBoxValues,
+      chartDateValuePairsMap:
+          chartDateValuePairsMap ?? this.chartDateValuePairsMap,
       isSelectAll: isSelectAll ?? this.isSelectAll,
       isShowMultipleYAxis: isShowMultipleYAxis ?? this.isShowMultipleYAxis,
       isSelectMultipleYAxis:
@@ -61,11 +70,13 @@ class ChartFilterState extends Equatable {
   @override
   List<Object> get props => [
         status,
+        chartDataStatus,
         startDate,
         endDate,
         itemPropertiesCollection,
         checkBoxValues,
         selectedCheckBoxValues,
+        chartDateValuePairsMap,
         isSelectAll,
         isShowMultipleYAxis,
         isSelectMultipleYAxis,
