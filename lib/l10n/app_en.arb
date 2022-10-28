@@ -689,6 +689,26 @@
       "description": "alarm sound of trap"
     },
 
+    "serverIPSetting": "Server IP Setting",
+    "@all": {
+      "description": "server IP setting"
+    },
+
+    "clearLogRecordsSetting": "Clear Log Records Setting",
+    "@all": {
+      "description": "clear Log Records Setting"
+    },
+
+    "batchSetting": "Batch Setting",
+    "@all": {
+      "description": "batch setting"
+    },
+
+    "deviceWorkingCycle": "Device's Working Cycle",
+    "@all": {
+      "description": "device's working cycle"
+    },
+
 
     "dialogMessage_LoginFailed": "Login failed. Please reconfirm your account password.",
     "@all": {

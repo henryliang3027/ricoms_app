@@ -41,143 +41,29 @@ class AdvancedForm extends StatelessWidget {
         ),
         body: const Material(
           color: Colors.white,
-          child: _AdvancedOption(),
+          child: _AdvancedOptions(),
         ),
       ),
     );
   }
 }
 
-class _AdvancedOption extends StatelessWidget {
-  const _AdvancedOption({Key? key}) : super(key: key);
+class _AdvancedOptions extends StatelessWidget {
+  const _AdvancedOptions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
+    List<Widget> _buildTrapOptions() {
+      return [
         ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              CustomIcons.trap_alarm,
-              size: 30.0,
-            ),
-          ),
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.advancedTrap,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-            ),
-          ),
-          onTap: () {
-            Navigator.push(context, _TrapForm.route());
-          },
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              CustomIcons.system,
-              size: 30.0,
-            ),
-          ),
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.advancedSystem,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-              color: Colors.grey,
-            ),
-          ),
-          onTap: () {},
-        ),
-        ListTile(
-          leading: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              CustomIcons.device_simple,
-              size: 30.0,
-            ),
-          ),
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.advancedDevice,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-              color: Colors.grey,
-            ),
-          ),
-          onTap: () {},
-        ),
-      ],
-    );
-  }
-}
-
-class _TrapForm extends StatelessWidget {
-  const _TrapForm({Key? key}) : super(key: key);
-
-  static Route route() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          const _TrapForm(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0);
-        const end = Offset.zero;
-        const curve = Curves.ease;
-
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.advancedTrap),
-      ),
-      body: const Material(
-        color: Colors.white,
-        child: _TrapOption(),
-      ),
-    );
-  }
-}
-
-class _TrapOption extends StatelessWidget {
-  const _TrapOption({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.trapForward,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.trapForward,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+              ),
             ),
           ),
           onTap: () {
@@ -185,32 +71,152 @@ class _TrapOption extends StatelessWidget {
           },
         ),
         ListTile(
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.colorOfTrapAlarm,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-              color: Colors.grey,
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.colorOfTrapAlarm,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
             ),
           ),
           onTap: () {},
         ),
         ListTile(
-          trailing: const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.keyboard_arrow_right_outlined),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.alarmSoundOfTrap,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeL,
-              color: Colors.grey,
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.alarmSoundOfTrap,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
             ),
           ),
           onTap: () {},
+        ),
+      ];
+    }
+
+    List<Widget> _buildSystemOptions() {
+      return [
+        ListTile(
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.serverIPSetting,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          onTap: () {},
+        ),
+        ListTile(
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.clearLogRecordsSetting,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          onTap: () {},
+        ),
+      ];
+    }
+
+    List<Widget> _buildDeviceOptions() {
+      return [
+        ListTile(
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.batchSetting,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          onTap: () {},
+        ),
+        ListTile(
+          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              AppLocalizations.of(context)!.deviceWorkingCycle,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          onTap: () {},
+        ),
+      ];
+    }
+
+    Widget _buildCatecory({required IconData icon, required String title}) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(24.0, 24.0, 2.0, 12.0),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              //size: 26.0,
+              color: Colors.blue,
+            ),
+            const SizedBox(
+              width: 4.0,
+            ),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: CommonStyle.sizeL,
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView(
+      children: [
+        _buildCatecory(
+          icon: CustomIcons.trap_alarm,
+          title: AppLocalizations.of(context)!.advancedTrap,
+        ),
+        ..._buildTrapOptions(),
+        const SizedBox(
+          height: 10.0,
+        ),
+        _buildCatecory(
+          icon: CustomIcons.system,
+          title: AppLocalizations.of(context)!.advancedSystem,
+        ),
+        ..._buildSystemOptions(),
+        const SizedBox(
+          height: 10.0,
+        ),
+        _buildCatecory(
+          icon: CustomIcons.device_simple,
+          title: AppLocalizations.of(context)!.advancedDevice,
+        ),
+        ..._buildDeviceOptions(),
+        const SizedBox(
+          height: 10.0,
         ),
       ],
     );

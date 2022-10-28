@@ -150,8 +150,12 @@
     "editTrapForward": "編輯告警轉發",
     "colorOfTrapAlarm": "告警顏色設定",
     "alarmSoundOfTrap": "告警警告聲設定",
+    "serverIPSetting": "設定伺服器 IP",
+    "clearLogRecordsSetting": "清除紀錄相關參數設定",
+    "batchSetting": "批次設定",
+    "deviceWorkingCycle": "裝置輪詢週期",
 
-    
+
     "dialogMessage_LoginFailed": "登入失敗，請重新確認你的帳號或密碼。",
     "dialogMessage_AllFileAccess": "請允許檔案存取權後再匯出您的資料",
     "dialogMessage_AskBeforeDelete": "確認刪除 ",
