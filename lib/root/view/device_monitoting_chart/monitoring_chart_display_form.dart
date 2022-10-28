@@ -17,86 +17,6 @@ class MonitoringChartDisplayForm extends StatelessWidget {
   final int nodeId;
   final int maxLine = 2;
 
-  // List<Widget> _buildCharts({
-  //   required String startDate,
-  //   required String endDate,
-  //   required Map<String, CheckBoxValue> selectedCheckBoxValues,
-  //   required bool isMultipleAxis,
-  // }) {
-  //   if (isMultipleAxis) {
-  //     int index = -2;
-  //     List<Widget> multipleAxisCharts = [];
-  //     Map<String, CheckBoxValue> checkBoxValues = {};
-  //     List<MapEntry<String, CheckBoxValue>> selectedCheckBoxValueEntries =
-  //         selectedCheckBoxValues.entries.toList();
-  //     int quotient = selectedCheckBoxValueEntries.length ~/ maxLine;
-  //     int remainder = selectedCheckBoxValueEntries.length % maxLine;
-  //     int count = 0;
-
-  //     for (int i = 0; i < quotient * maxLine; i++) {
-  //       MapEntry<String, CheckBoxValue> entry = selectedCheckBoxValueEntries[i];
-  //       checkBoxValues[entry.key] = entry.value;
-  //       count += 1;
-
-  //       if (count == maxLine) {
-  //         multipleAxisCharts.add(MultipleAxisChartPage(
-  //           index: index += 2,
-  //           nodeId: nodeId,
-  //           startDate: startDate,
-  //           endDate: endDate,
-  //           selectedCheckBoxValues:
-  //               Map<String, CheckBoxValue>.from(checkBoxValues),
-  //         ));
-
-  //         // clone a new one and assign selectedCheckBoxValues bofore clear checkBoxValues
-  //         checkBoxValues.clear();
-  //         count = 0;
-  //       }
-  //     }
-
-  //     if (remainder > 0) {
-  //       for (int i = quotient * maxLine;
-  //           i < selectedCheckBoxValueEntries.length;
-  //           i++) {
-  //         MapEntry<String, CheckBoxValue> entry =
-  //             selectedCheckBoxValueEntries[i];
-  //         checkBoxValues[entry.key] = entry.value;
-  //       }
-
-  //       multipleAxisCharts.add(MultipleAxisChartPage(
-  //         index: index += 2,
-  //         nodeId: nodeId,
-  //         startDate: startDate,
-  //         endDate: endDate,
-  //         selectedCheckBoxValues:
-  //             Map<String, CheckBoxValue>.from(checkBoxValues),
-  //       ));
-  //     }
-
-  //     return multipleAxisCharts;
-  //   } else {
-  //     int i = -1;
-  //     List<Widget> singleAxisCharts = [];
-  //     for (MapEntry<String, CheckBoxValue> entry
-  //         in selectedCheckBoxValues.entries) {
-  //       singleAxisCharts.add(SingleAxisChartPage(
-  //         index: i += 1,
-  //         startDate: startDate,
-  //         endDate: endDate,
-  //         nodeId: nodeId,
-  //         oid: entry.key,
-  //         name: entry.value.name,
-  //         majorH: entry.value.majorH,
-  //         minorH: entry.value.minorH,
-  //         majorL: entry.value.majorL,
-  //         minorL: entry.value.minorL,
-  //       ));
-  //     }
-
-  //     return singleAxisCharts;
-  //   }
-  // }
-
   ListView _buildChart({
     required String startDate,
     required String endDate,
@@ -107,9 +27,9 @@ class MonitoringChartDisplayForm extends StatelessWidget {
     if (isMultipleAxis) {
       return ListView.builder(
           cacheExtent: 10000.0,
-          itemCount: selectedCheckBoxValues.length % 2 == 0
-              ? selectedCheckBoxValues.length ~/ 2
-              : selectedCheckBoxValues.length ~/ 2 + 1,
+          itemCount: selectedCheckBoxValues.length % maxLine == 0
+              ? selectedCheckBoxValues.length ~/ maxLine
+              : selectedCheckBoxValues.length ~/ maxLine + 1,
           itemBuilder: (context, index) {
             index *= 2;
             Map<String, CheckBoxValue> checkBoxValues = {};
@@ -118,7 +38,7 @@ class MonitoringChartDisplayForm extends StatelessWidget {
                 selectedCheckBoxValues.entries.toList();
 
             if (index + 1 < selectedCheckBoxValues.length) {
-              for (int i = index; i < index + 2; i++) {
+              for (int i = index; i < index + maxLine; i++) {
                 MapEntry<String, CheckBoxValue> entry =
                     selectedCheckBoxValueEntries[i];
 
@@ -155,11 +75,6 @@ class MonitoringChartDisplayForm extends StatelessWidget {
               selectedCheckBoxValues.entries.toList()[index];
           return SingleAxisChartPage(
             chartDateValuePairs: chartDateValuePairs[entry.key] ?? [],
-            index: 0,
-            startDate: startDate,
-            endDate: endDate,
-            nodeId: nodeId,
-            oid: entry.key,
             name: entry.value.name,
             majorH: entry.value.majorH,
             minorH: entry.value.minorH,
@@ -174,9 +89,6 @@ class MonitoringChartDisplayForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
-        // buildWhen: (previous, current) =>
-        //     previous.selectedCheckBoxValues != current.selectedCheckBoxValues ||
-        //     previous.isSelectMultipleYAxis != current.isSelectMultipleYAxis,
         builder: (context, state) {
       if (state.chartDataStatus == FormStatus.requestSuccess) {
         return _buildChart(
