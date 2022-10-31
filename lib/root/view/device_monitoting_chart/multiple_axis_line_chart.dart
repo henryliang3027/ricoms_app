@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
@@ -124,6 +125,12 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
       ),
       trackballBehavior: _trackballBehavior,
       zoomPanBehavior: _zoomPanBehavior,
+      onTrackballPositionChanging: (args) {
+        String dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+            .format(args.chartPointInfo.chartDataPoint!.x);
+
+        args.chartPointInfo.header = dateString;
+      },
       series: _buildSeries(),
     );
   }

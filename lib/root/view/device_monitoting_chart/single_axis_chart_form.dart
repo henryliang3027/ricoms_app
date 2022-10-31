@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_line_chart.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SingleAxisChartForm extends StatelessWidget {
   const SingleAxisChartForm({
@@ -65,6 +66,36 @@ class SingleAxisChartForm extends StatelessWidget {
       }
     }
 
+    Widget _buildExportButton() {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 10.0, 0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            OutlinedButton(
+              onPressed: () {},
+              child: Text(
+                AppLocalizations.of(context)!.export,
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.white70,
+                elevation: 0,
+                side: const BorderSide(
+                  width: 1.0,
+                  color: Colors.black,
+                ),
+                visualDensity:
+                    const VisualDensity(horizontal: -4.0, vertical: -4.0),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 20.0,
@@ -87,6 +118,7 @@ class SingleAxisChartForm extends StatelessWidget {
               _buildMajorHAnnotation(),
             ],
           ),
+          _buildExportButton(),
           SingleAxisLineChart(
             chartDateValuePairs: chartDateValuePairs,
             name: name,

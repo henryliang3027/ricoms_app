@@ -718,7 +718,7 @@ class _NodeDirectory extends StatelessWidget {
                       ),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.fromLTRB(6.0, 0.0, 8.0, 0.0),
-                        primary: Colors.white70,
+                        backgroundColor: Colors.white70,
                         elevation: 0,
                         side: const BorderSide(
                           width: 1.0,
@@ -761,7 +761,7 @@ class _NodeDirectory extends StatelessWidget {
                                         state.directory[i], context,
                                         isLastItemOfDirectory: false),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.white70,
+                                  backgroundColor: Colors.white70,
                                   elevation: 0,
                                   side: BorderSide(
                                     width: 1.0,

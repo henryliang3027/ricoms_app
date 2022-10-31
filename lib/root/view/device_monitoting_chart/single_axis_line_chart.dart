@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -42,6 +43,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
       tooltipSettings: InteractiveTooltip(format: 'point.y ($_unit)'),
     );
+
     _zoomPanBehavior = ZoomPanBehavior(
       enablePanning: true,
       enablePinching: true,
@@ -171,6 +173,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
                 chartDateValuePair.value,
           ),
         ],
+        onTrackballPositionChanging: (args) {
+          String dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+              .format(args.chartPointInfo.chartDataPoint!.x);
+
+          args.chartPointInfo.header = dateString;
+        },
       );
     } else if (widget.majorH == null) {
       // only draw majorL and data series
@@ -229,6 +237,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
                 chartDateValuePair.value,
           ),
         ],
+        onTrackballPositionChanging: (args) {
+          String dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+              .format(args.chartPointInfo.chartDataPoint!.x);
+
+          args.chartPointInfo.header = dateString;
+        },
       );
     } else if (widget.majorL == null) {
       // only draw majorH and data series
@@ -287,6 +301,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
                 chartDateValuePair.value,
           ),
         ],
+        onTrackballPositionChanging: (args) {
+          String dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+              .format(args.chartPointInfo.chartDataPoint!.x);
+
+          args.chartPointInfo.header = dateString;
+        },
       );
     } else {
       //all series
@@ -369,6 +389,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
             // },
           ),
         ],
+        onTrackballPositionChanging: (args) {
+          String dateString = DateFormat('yyyy-MM-dd HH:mm:ss')
+              .format(args.chartPointInfo.chartDataPoint!.x);
+
+          args.chartPointInfo.header = dateString;
+        },
       );
     }
   }
