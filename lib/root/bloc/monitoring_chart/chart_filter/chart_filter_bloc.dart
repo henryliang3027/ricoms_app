@@ -28,6 +28,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     on<CheckBoxValueChanged>(_onCheckBoxValueChanged);
     on<AllCheckBoxValueChanged>(_onAllCheckBoxValueChanged);
     on<MultipleYAxisCheckBoxValueChanged>(_onMultipleYAxisCheckBoxValueChanged);
+    on<ChartDateExported>(_onChartDateExported);
 
     add(const ThresholdDataRequested());
   }
@@ -142,6 +143,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
   ) {
     emit(state.copyWith(
       filterSelectingMode: true,
+      chartDataExportStatus: FormStatus.none,
       // selectedCheckBoxValues: {},
     ));
   }
@@ -297,5 +299,34 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     emit(state.copyWith(
       isSelectMultipleYAxis: event.value,
     ));
+  }
+
+  Future<void> _onChartDateExported(
+    ChartDateExported event,
+    Emitter<ChartFilterState> emit,
+  ) async {
+    emit(state.copyWith(
+      chartDataExportStatus: FormStatus.requestInProgress,
+    ));
+
+    List<dynamic> result = await _deviceRepository.exportChartData(
+      nodeName: event.nodeName,
+      parameterName: event.parameterName,
+      chartDateValuePairs: event.chartDateValuePairs,
+    );
+
+    if (result[0]) {
+      emit(state.copyWith(
+        chartDataExportStatus: FormStatus.requestSuccess,
+        chartDataExportMsg: result[1],
+        chartDataExportFilePath: result[2],
+      ));
+    } else {
+      emit(state.copyWith(
+        chartDataExportStatus: FormStatus.requestFailure,
+        chartDataExportMsg: result[1],
+        chartDataExportFilePath: '',
+      ));
+    }
   }
 }

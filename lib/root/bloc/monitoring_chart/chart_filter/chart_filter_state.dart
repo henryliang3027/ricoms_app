@@ -4,6 +4,7 @@ class ChartFilterState extends Equatable {
   const ChartFilterState({
     this.status = FormStatus.none,
     this.chartDataStatus = FormStatus.none,
+    this.chartDataExportStatus = FormStatus.none,
     this.startDate = '',
     this.endDate = '',
     this.itemPropertiesCollection = const [],
@@ -15,10 +16,13 @@ class ChartFilterState extends Equatable {
     this.isSelectMultipleYAxis = false,
     this.filterSelectingMode = true,
     this.requestErrorMsg = '',
+    this.chartDataExportMsg = '',
+    this.chartDataExportFilePath = '',
   });
 
   final FormStatus status;
   final FormStatus chartDataStatus;
+  final FormStatus chartDataExportStatus;
   final String startDate;
   final String endDate;
   final List<List<ItemProperty>> itemPropertiesCollection;
@@ -30,10 +34,13 @@ class ChartFilterState extends Equatable {
   final bool isSelectMultipleYAxis;
   final bool filterSelectingMode;
   final String requestErrorMsg;
+  final String chartDataExportMsg;
+  final String chartDataExportFilePath;
 
   ChartFilterState copyWith({
     FormStatus? status,
     FormStatus? chartDataStatus,
+    FormStatus? chartDataExportStatus,
     String? startDate,
     String? endDate,
     List<List<ItemProperty>>? itemPropertiesCollection,
@@ -45,10 +52,14 @@ class ChartFilterState extends Equatable {
     bool? isSelectMultipleYAxis,
     bool? filterSelectingMode,
     String? requestErrorMsg,
+    String? chartDataExportMsg,
+    String? chartDataExportFilePath,
   }) {
     return ChartFilterState(
       status: status ?? this.status,
       chartDataStatus: chartDataStatus ?? this.chartDataStatus,
+      chartDataExportStatus:
+          chartDataExportStatus ?? this.chartDataExportStatus,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       itemPropertiesCollection:
@@ -64,6 +75,9 @@ class ChartFilterState extends Equatable {
           isSelectMultipleYAxis ?? this.isSelectMultipleYAxis,
       filterSelectingMode: filterSelectingMode ?? this.filterSelectingMode,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
+      chartDataExportMsg: chartDataExportMsg ?? this.chartDataExportMsg,
+      chartDataExportFilePath:
+          chartDataExportFilePath ?? this.chartDataExportFilePath,
     );
   }
 
@@ -71,6 +85,7 @@ class ChartFilterState extends Equatable {
   List<Object> get props => [
         status,
         chartDataStatus,
+        chartDataExportStatus,
         startDate,
         endDate,
         itemPropertiesCollection,
@@ -82,5 +97,7 @@ class ChartFilterState extends Equatable {
         isSelectMultipleYAxis,
         filterSelectingMode,
         requestErrorMsg,
+        chartDataExportMsg,
+        chartDataExportFilePath,
       ];
 }

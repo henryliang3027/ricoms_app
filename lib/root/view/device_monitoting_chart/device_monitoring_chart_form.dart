@@ -8,15 +8,18 @@ class DeviceMonitoringChartForm extends StatelessWidget {
   const DeviceMonitoringChartForm({
     Key? key,
     required this.nodeId,
+    required this.nodeName,
   }) : super(key: key);
 
   final int nodeId;
+  final String nodeName;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _DeviceMonitoringChartContent(
         nodeId: nodeId,
+        nodeName: nodeName,
       ),
       floatingActionButton: const _ChartFloatingActionButton(),
     );
@@ -27,9 +30,11 @@ class _DeviceMonitoringChartContent extends StatelessWidget {
   const _DeviceMonitoringChartContent({
     Key? key,
     required this.nodeId,
+    required this.nodeName,
   }) : super(key: key);
 
   final int nodeId;
+  final String nodeName;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,7 @@ class _DeviceMonitoringChartContent extends StatelessWidget {
             ? const MonitoringChartFilterForm()
             : MonitoringChartDisplayForm(
                 nodeId: nodeId,
+                nodeName: nodeName,
               );
       },
     );

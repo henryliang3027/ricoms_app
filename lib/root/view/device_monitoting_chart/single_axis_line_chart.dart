@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -26,6 +27,7 @@ class SingleAxisLineChart extends StatefulWidget {
 }
 
 class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
+  // late ChartSeriesController _chartSeriesController;
   late TrackballBehavior _trackballBehavior;
   late ZoomPanBehavior _zoomPanBehavior;
   late String _unit;
@@ -208,6 +210,13 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           minimum: getMinimumYAxisValue(),
           plotBands: <PlotBand>[
             PlotBand(
+              text: ' majorLO: ${widget.majorL.toString()} ',
+              textStyle: const TextStyle(
+                color: Colors.white,
+                backgroundColor: Colors.red,
+              ),
+              horizontalTextAlignment: TextAnchor.end,
+              verticalTextAlignment: TextAnchor.start,
               start: widget.majorL,
               end: widget.majorL,
               borderWidth: 1,
@@ -235,6 +244,9 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
                 chartDateValuePair.dateTime,
             yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.value,
+            // onRendererCreated: (ChartSeriesController controller) {
+            //   _chartSeriesController = controller;
+            // },
           ),
         ],
         onTrackballPositionChanging: (args) {
@@ -272,6 +284,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           minimum: getMinimumYAxisValue(),
           plotBands: <PlotBand>[
             PlotBand(
+              text: ' majorHI: ${widget.majorH.toString()} ',
+              textStyle: const TextStyle(
+                color: Colors.white,
+                backgroundColor: Colors.red,
+              ),
+              horizontalTextAlignment: TextAnchor.end,
               start: widget.majorH,
               end: widget.majorH,
               borderWidth: 1,
@@ -299,6 +317,9 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
                 chartDateValuePair.dateTime,
             yValueMapper: (ChartDateValuePair chartDateValuePair, index) =>
                 chartDateValuePair.value,
+            // onRendererCreated: (ChartSeriesController controller) {
+            //   _chartSeriesController = controller;
+            // },
           ),
         ],
         onTrackballPositionChanging: (args) {
@@ -344,12 +365,25 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           minimum: getMinimumYAxisValue(),
           plotBands: <PlotBand>[
             PlotBand(
+              text: 'majorHI: ${widget.majorH.toString()}',
+              textStyle: const TextStyle(
+                color: Colors.white,
+                backgroundColor: Colors.red,
+              ),
+              horizontalTextAlignment: TextAnchor.end,
               start: widget.majorH,
               end: widget.majorH,
               borderWidth: 1,
               borderColor: Colors.red,
             ),
             PlotBand(
+              text: 'majorLO: ${widget.majorL.toString()}',
+              textStyle: const TextStyle(
+                color: Colors.white,
+                backgroundColor: Colors.red,
+              ),
+              horizontalTextAlignment: TextAnchor.end,
+              verticalTextAlignment: TextAnchor.start,
               start: widget.majorL,
               end: widget.majorL,
               borderWidth: 1,

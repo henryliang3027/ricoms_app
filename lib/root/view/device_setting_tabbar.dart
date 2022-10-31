@@ -125,6 +125,7 @@ class DeviceSettingTabBar extends StatelessWidget {
                                 ? DeviceMonitoringChartPage(
                                     deviceBlock: deviceBlock,
                                     nodeId: node.id,
+                                    nodeName: node.name,
                                   )
                                 : DeviceSettingPage(
                                     deviceBlock: deviceBlock,

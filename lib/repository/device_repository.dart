@@ -1,9 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/storage_permission.dart';
 
 class DeviceRepository {
   DeviceRepository();
@@ -463,6 +469,102 @@ class DeviceRepository {
     }
 
     return [true, chartDateValues];
+  }
+
+  Future<List<dynamic>> exportChartData({
+    required String nodeName,
+    required String parameterName,
+    required List<ChartDateValuePair> chartDateValuePairs,
+  }) async {
+    List<List<String>> dataList = [];
+
+    List<String> header = [];
+
+    header
+      ..add('Date')
+      ..add(parameterName);
+
+    dataList.add(header);
+
+    for (ChartDateValuePair chartDateValuePair in chartDateValuePairs) {
+      String dateTime =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(chartDateValuePair.dateTime);
+
+      String value = chartDateValuePair.value.toString();
+
+      List<String> row = [];
+      row
+        ..add(dateTime)
+        ..add(value);
+
+      dataList.add(row);
+    }
+
+    String csv = const ListToCsvConverter().convert(dataList);
+
+    String timeStamp =
+        DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
+
+    String filename = '${nodeName}_${parameterName}_$timeStamp.csv';
+
+    if (Platform.isIOS) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+      String fullWrittenPath = '$appDocPath/$filename';
+      File f = File(fullWrittenPath);
+      f.writeAsString(csv);
+      return [
+        true,
+        'Export chart data success',
+        fullWrittenPath,
+      ];
+    } else if (Platform.isAndroid) {
+      bool isPermit = await requestPermission();
+      if (isPermit) {
+        Directory? externalStorageDirectory =
+            await getExternalStorageDirectory();
+        if (externalStorageDirectory == null) {
+          return [false, 'No Storage found'];
+        } else {
+          String externalStoragePath = externalStorageDirectory.path;
+          List<String> externalStoragePathList = externalStoragePath.split('/');
+          int indexOfAndroidDir = externalStoragePathList.indexOf('Android');
+          String externalRootPath =
+              externalStoragePathList.sublist(0, indexOfAndroidDir).join('/');
+          String externalAppFolderPath = externalRootPath + '/RICOMS';
+
+          //Create Directory (if not exist)
+          Directory externalAppDirectory = Directory(externalAppFolderPath);
+          if (!externalAppDirectory.existsSync()) {
+            //Creating Directory
+            try {
+              await externalAppDirectory.create(recursive: true);
+            } catch (e) {
+              return [false, e.toString()];
+            }
+            //Directory Created
+          } else {
+            //Directory Already Existed
+          }
+          String fullWrittenPath = '$externalAppFolderPath/$filename';
+          File file = File(fullWrittenPath);
+          file.writeAsString(csv);
+          return [
+            true,
+            'Export chart data success',
+            fullWrittenPath,
+          ];
+        }
+      } else {
+        openAppSettings();
+        return [false, 'Please allow permission before you export your data.'];
+      }
+    } else {
+      return [
+        false,
+        'write file failed, export function not implement on ${Platform.operatingSystem} '
+      ];
+    }
   }
 }
 

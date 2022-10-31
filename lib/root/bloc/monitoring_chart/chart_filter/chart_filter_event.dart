@@ -73,3 +73,22 @@ class MultipleYAxisCheckBoxValueChanged extends ChartFilterEvent {
   @override
   List<Object?> get props => [value];
 }
+
+class ChartDateExported extends ChartFilterEvent {
+  const ChartDateExported(
+    this.nodeName,
+    this.parameterName,
+    this.chartDateValuePairs,
+  );
+
+  final String nodeName;
+  final String parameterName;
+  final List<ChartDateValuePair> chartDateValuePairs;
+
+  @override
+  List<Object?> get props => [
+        nodeName,
+        parameterName,
+        chartDateValuePairs,
+      ];
+}

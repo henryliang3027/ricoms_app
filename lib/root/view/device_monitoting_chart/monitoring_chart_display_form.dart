@@ -4,7 +4,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_chart_page.dart';
-import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_chart_page.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -12,9 +12,11 @@ class MonitoringChartDisplayForm extends StatelessWidget {
   const MonitoringChartDisplayForm({
     Key? key,
     required this.nodeId,
+    required this.nodeName,
   }) : super(key: key);
 
   final int nodeId;
+  final String nodeName;
   final int maxLine = 2;
 
   ListView _buildChart({
@@ -73,13 +75,14 @@ class MonitoringChartDisplayForm extends StatelessWidget {
         itemBuilder: (context, index) {
           MapEntry<String, CheckBoxValue> entry =
               selectedCheckBoxValues.entries.toList()[index];
-          return SingleAxisChartPage(
+          return SingleAxisChartForm(
+            nodeName: nodeName,
             chartDateValuePairs: chartDateValuePairs[entry.key] ?? [],
             name: entry.value.name,
             majorH: entry.value.majorH,
-            minorH: entry.value.minorH,
             majorL: entry.value.majorL,
-            minorL: entry.value.minorL,
+            majorHAnnotationColor: Colors.red,
+            majorLAnnotationColor: Colors.red,
           );
         },
       );

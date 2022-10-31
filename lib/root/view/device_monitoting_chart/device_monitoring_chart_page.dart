@@ -10,10 +10,12 @@ class DeviceMonitoringChartPage extends StatelessWidget {
     Key? key,
     required this.deviceBlock,
     required this.nodeId,
+    required this.nodeName,
   }) : super(key: key);
 
   final DeviceBlock deviceBlock;
   final int nodeId;
+  final String nodeName;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class DeviceMonitoringChartPage extends StatelessWidget {
           deviceBlock: deviceBlock),
       child: DeviceMonitoringChartForm(
         nodeId: nodeId,
+        nodeName: nodeName,
       ),
     );
   }
