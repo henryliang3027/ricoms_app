@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/multiple_axis_chart/multiple_axis_chart_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 
 class MultipleAxisChartPage extends StatelessWidget {
   const MultipleAxisChartPage({
     Key? key,
-    required this.index,
+    required this.nodeName,
     required this.chartDateValuePairs,
     required this.nodeId,
     required this.startDate,
@@ -17,8 +14,8 @@ class MultipleAxisChartPage extends StatelessWidget {
     required this.selectedCheckBoxValues,
   }) : super(key: key);
 
+  final String nodeName;
   final Map<String, List<ChartDateValuePair>> chartDateValuePairs;
-  final int index;
   final int nodeId;
   final String startDate;
   final String endDate;
@@ -27,6 +24,7 @@ class MultipleAxisChartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultipleAxisChartForm(
+      nodeName: nodeName,
       selectedCheckBoxValues: selectedCheckBoxValues,
       chartDateValuePairs: chartDateValuePairs,
     );

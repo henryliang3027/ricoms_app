@@ -770,6 +770,12 @@
       "description": "Export root data success"
     },
 
+    "dialogMessage_ExportChartDataSuccess": "Export chart data success",
+    "@all": {
+      "description": "Export chart data success"
+    },
+
+
     "dialogMessage_ExportHistoryDataSuccess": "Export history data success",
     "@all": {
       "description": "Export history data success"

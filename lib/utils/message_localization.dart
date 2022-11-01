@@ -39,6 +39,8 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.dialogMessage_NoNode;
   } else if (msg == 'Export root data success') {
     return AppLocalizations.of(context)!.dialogMessage_ExportRootDataSuccess;
+  } else if (msg == 'Export chart data success') {
+    return AppLocalizations.of(context)!.dialogMessage_ExportChartDataSuccess;
   } else if (msg == 'Export history data success') {
     return AppLocalizations.of(context)!.dialogMessage_ExportHistoryDataSuccess;
   } else if (msg == 'Export system log data success') {

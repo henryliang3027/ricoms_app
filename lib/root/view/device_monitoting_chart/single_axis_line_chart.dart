@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SingleAxisLineChart extends StatefulWidget {
@@ -35,6 +36,10 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
   bool isLoadTime = true;
   Offset? pointLocationL = Offset.zero;
   Offset? pointLocationH = Offset.zero;
+  double _maximumYAxisValue = 0.0;
+  double _minimumYAxisValue = 0.0;
+  double _maximumDataValue = 0.0;
+  double _minimumDataValue = 0.0;
 
   @override
   void initState() {
@@ -52,6 +57,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       zoomMode: ZoomMode.x,
     );
 
+    _maximumDataValue = getMaximumDataValue();
+    _minimumDataValue = getMinimumDataValue();
+    _maximumYAxisValue = getMaximumYAxisValue();
+    _minimumYAxisValue = getMinimumYAxisValue();
+
     super.initState();
   }
 
@@ -65,7 +75,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     return _unit;
   }
 
-  double getMaximumYAxisValue() {
+  double getMaximumDataValue() {
     double? majorH = widget.majorH;
     double maximumChartValue = widget.chartDateValuePairs
         .reduce((current, next) => current.value > next.value ? current : next)
@@ -78,17 +88,10 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       maximum = maximumChartValue;
     }
 
-    if (maximum > 0.0) {
-      maximum = maximum * 1.5;
-    } else if (maximum < 0.0) {
-      maximum = maximum / 1.5;
-    } else {
-      maximum = (maximum + 10) * 1.5;
-    }
     return maximum;
   }
 
-  double getMinimumYAxisValue() {
+  double getMinimumDataValue() {
     double? majorL = widget.majorL;
     double minimumChartValue = widget.chartDateValuePairs
         .reduce((current, next) => current.value < next.value ? current : next)
@@ -101,14 +104,33 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       minimum = minimumChartValue;
     }
 
-    if (minimum > 0.0) {
-      minimum = minimum * 0.5;
-    } else if (minimum < 0.0) {
-      minimum = minimum / 0.5;
-    } else {
-      minimum = (minimum - 10) / 0.5;
-    }
     return minimum;
+  }
+
+  double getMaximumYAxisValue() {
+    double maximumYAxisValue = 0.0;
+    int factor = _maximumDataValue.toString().replaceFirst('-', '').length - 2;
+
+    if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
+      maximumYAxisValue = _maximumDataValue + 100 * factor;
+    } else {
+      maximumYAxisValue = _maximumDataValue + 10 * factor;
+    }
+
+    return maximumYAxisValue;
+  }
+
+  double getMinimumYAxisValue() {
+    double minimumYAxisValue = 0.0;
+    int factor = _minimumDataValue.toString().replaceFirst('-', '').length - 2;
+
+    if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
+      minimumYAxisValue = _minimumDataValue - 100 * factor;
+    } else {
+      minimumYAxisValue = _minimumDataValue - 10 * factor;
+    }
+
+    return minimumYAxisValue;
   }
 
   Widget _buildMajorHAnnotation() {
@@ -159,8 +181,8 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
         primaryYAxis: NumericAxis(
-          maximum: getMaximumYAxisValue(),
-          minimum: getMinimumYAxisValue(),
+          maximum: _maximumYAxisValue,
+          minimum: _minimumYAxisValue,
         ),
         trackballBehavior: _trackballBehavior,
         zoomPanBehavior: _zoomPanBehavior,
@@ -206,11 +228,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
         primaryYAxis: NumericAxis(
-          maximum: getMaximumYAxisValue(),
-          minimum: getMinimumYAxisValue(),
+          maximum: _maximumYAxisValue,
+          minimum: _minimumYAxisValue,
           plotBands: <PlotBand>[
             PlotBand(
-              text: ' majorLO: ${widget.majorL.toString()} ',
+              text: 'MajorLO: ${widget.majorL.toString()} ',
               textStyle: const TextStyle(
                 color: Colors.white,
                 backgroundColor: Colors.red,
@@ -280,11 +302,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
         primaryYAxis: NumericAxis(
-          maximum: getMaximumYAxisValue(),
-          minimum: getMinimumYAxisValue(),
+          maximum: _maximumYAxisValue,
+          minimum: _minimumYAxisValue,
           plotBands: <PlotBand>[
             PlotBand(
-              text: ' majorHI: ${widget.majorH.toString()} ',
+              text: 'MajorHI: ${widget.majorH.toString()} ',
               textStyle: const TextStyle(
                 color: Colors.white,
                 backgroundColor: Colors.red,
@@ -361,11 +383,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           edgeLabelPlacement: EdgeLabelPlacement.shift,
         ),
         primaryYAxis: NumericAxis(
-          maximum: getMaximumYAxisValue(),
-          minimum: getMinimumYAxisValue(),
+          maximum: _maximumYAxisValue,
+          minimum: _minimumYAxisValue,
           plotBands: <PlotBand>[
             PlotBand(
-              text: 'majorHI: ${widget.majorH.toString()}',
+              text: 'MajorHI: ${widget.majorH.toString()}',
               textStyle: const TextStyle(
                 color: Colors.white,
                 backgroundColor: Colors.red,
@@ -377,7 +399,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
               borderColor: Colors.red,
             ),
             PlotBand(
-              text: 'majorLO: ${widget.majorL.toString()}',
+              text: 'MajorLO: ${widget.majorL.toString()}',
               textStyle: const TextStyle(
                 color: Colors.white,
                 backgroundColor: Colors.red,
@@ -435,6 +457,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildChart();
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+        buildWhen: (previous, current) =>
+            previous.checkBoxValues != current.checkBoxValues,
+        builder: (context, state) {
+          return _buildChart();
+        });
   }
 }

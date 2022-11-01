@@ -74,8 +74,8 @@ class MultipleYAxisCheckBoxValueChanged extends ChartFilterEvent {
   List<Object?> get props => [value];
 }
 
-class ChartDateExported extends ChartFilterEvent {
-  const ChartDateExported(
+class SingleAxisChartDataExported extends ChartFilterEvent {
+  const SingleAxisChartDataExported(
     this.nodeName,
     this.parameterName,
     this.chartDateValuePairs,
@@ -89,6 +89,25 @@ class ChartDateExported extends ChartFilterEvent {
   List<Object?> get props => [
         nodeName,
         parameterName,
+        chartDateValuePairs,
+      ];
+}
+
+class MultipleAxisChartDataExported extends ChartFilterEvent {
+  const MultipleAxisChartDataExported(
+    this.nodeName,
+    this.checkBoxValues,
+    this.chartDateValuePairs,
+  );
+
+  final String nodeName;
+  final Map<String, CheckBoxValue> checkBoxValues;
+  final Map<String, List<ChartDateValuePair>> chartDateValuePairs;
+
+  @override
+  List<Object?> get props => [
+        nodeName,
+        checkBoxValues,
         chartDateValuePairs,
       ];
 }

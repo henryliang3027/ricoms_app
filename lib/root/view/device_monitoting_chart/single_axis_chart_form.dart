@@ -7,8 +7,7 @@ import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_line_ch
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
-
-import '../../bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
 
 class SingleAxisChartForm extends StatelessWidget {
   const SingleAxisChartForm({
@@ -25,6 +24,107 @@ class SingleAxisChartForm extends StatelessWidget {
   final String nodeName;
   final List<ChartDateValuePair> chartDateValuePairs;
   final String name;
+  final double? majorH;
+  final double? majorL;
+  final Color? majorHAnnotationColor;
+  final Color? majorLAnnotationColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ChartFilterBloc, ChartFilterState>(
+      listener: (context, state) {
+        if (state.chartDataExportStatus.isRequestSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  getMessageLocalization(
+                    msg: state.chartDataExportMsg,
+                    context: context,
+                  ),
+                ),
+                action: SnackBarAction(
+                  label: AppLocalizations.of(context)!.open,
+                  onPressed: () {
+                    OpenFile.open(
+                      state.chartDataExportFilePath,
+                      type: 'text/comma-separated-values',
+                      uti: 'public.comma-separated-values-text',
+                    );
+                  },
+                ),
+              ),
+            );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 20.0,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ChartTitle(
+              name: name,
+            ),
+            _ThresholdText(
+              majorH: majorH,
+              majorL: majorL,
+              majorHAnnotationColor: majorHAnnotationColor,
+              majorLAnnotationColor: majorLAnnotationColor,
+            ),
+            _ExportButton(
+              nodeName: nodeName,
+              parameterName: name,
+              chartDateValuePairs: chartDateValuePairs,
+            ),
+            SingleAxisLineChart(
+              chartDateValuePairs: chartDateValuePairs,
+              name: name,
+              majorH: majorH,
+              majorL: majorL,
+              majorHAnnotationColor: majorHAnnotationColor,
+              majorLAnnotationColor: majorLAnnotationColor,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChartTitle extends StatelessWidget {
+  const _ChartTitle({Key? key, required this.name}) : super(key: key);
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+      buildWhen: (previous, current) =>
+          previous.checkBoxValues != current.checkBoxValues,
+      builder: (context, state) {
+        return Center(
+          child: Text(
+            name,
+            style: const TextStyle(
+              fontSize: CommonStyle.sizeXXL,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ThresholdText extends StatelessWidget {
+  const _ThresholdText({
+    Key? key,
+    this.majorH,
+    this.majorL,
+    this.majorHAnnotationColor,
+    this.majorLAnnotationColor,
+  }) : super(key: key);
   final double? majorH;
   final double? majorL;
   final Color? majorHAnnotationColor;
@@ -74,71 +174,18 @@ class SingleAxisChartForm extends StatelessWidget {
       }
     }
 
-    return BlocListener<ChartFilterBloc, ChartFilterState>(
-      listener: (context, state) {
-        if (state.chartDataExportStatus.isRequestSuccess) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(
-                  getMessageLocalization(
-                    msg: state.chartDataExportMsg,
-                    context: context,
-                  ),
-                ),
-                action: SnackBarAction(
-                  label: AppLocalizations.of(context)!.open,
-                  onPressed: () {
-                    OpenFile.open(
-                      state.chartDataExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
-                    );
-                  },
-                ),
-              ),
-            );
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 20.0,
-        ),
-        child: Column(
+    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+      buildWhen: (previous, current) =>
+          previous.checkBoxValues != current.checkBoxValues,
+      builder: (context, state) {
+        return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
-              child: Text(
-                name,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeXXL,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildMajorLAnnotation(),
-                _buildMajorHAnnotation(),
-              ],
-            ),
-            _ExportButton(
-              nodeName: nodeName,
-              parameterName: name,
-              chartDateValuePairs: chartDateValuePairs,
-            ),
-            SingleAxisLineChart(
-              chartDateValuePairs: chartDateValuePairs,
-              name: name,
-              majorH: majorH,
-              majorL: majorL,
-              majorHAnnotationColor: Colors.red,
-              majorLAnnotationColor: Colors.red,
-            )
+            _buildMajorLAnnotation(),
+            _buildMajorHAnnotation(),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -166,7 +213,9 @@ class _ExportButton extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  context.read<ChartFilterBloc>().add(ChartDateExported(
+                  context
+                      .read<ChartFilterBloc>()
+                      .add(SingleAxisChartDataExported(
                         nodeName,
                         parameterName,
                         chartDateValuePairs,

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
-import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_chart_page.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -57,16 +57,23 @@ class MonitoringChartDisplayForm extends StatelessWidget {
                   chartDateValuePairs[entry.key] ?? [];
             }
 
-            return MultipleAxisChartPage(
-              chartDateValuePairs: Map<String, List<ChartDateValuePair>>.from(
-                  chartDateValuePairsBlock),
-              index: 0,
-              nodeId: nodeId,
-              startDate: startDate,
-              endDate: endDate,
+            return MultipleAxisChartForm(
+              nodeName: nodeName,
               selectedCheckBoxValues:
                   Map<String, CheckBoxValue>.from(checkBoxValues),
+              chartDateValuePairs: Map<String, List<ChartDateValuePair>>.from(
+                  chartDateValuePairsBlock),
             );
+            // MultipleAxisChartPage(
+            //   nodeName: nodeName,
+            //   chartDateValuePairs: Map<String, List<ChartDateValuePair>>.from(
+            //       chartDateValuePairsBlock),
+            //   nodeId: nodeId,
+            //   startDate: startDate,
+            //   endDate: endDate,
+            //   selectedCheckBoxValues:
+            //       Map<String, CheckBoxValue>.from(checkBoxValues),
+            // );
           });
     } else {
       return ListView.builder(
@@ -92,26 +99,28 @@ class MonitoringChartDisplayForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+        buildWhen: (previous, current) =>
+            previous.chartDataStatus != current.chartDataStatus,
         builder: (context, state) {
-      if (state.chartDataStatus == FormStatus.requestSuccess) {
-        return _buildChart(
-          startDate: state.startDate,
-          endDate: state.endDate,
-          selectedCheckBoxValues: state.selectedCheckBoxValues,
-          chartDateValuePairs: state.chartDateValuePairsMap,
-          isMultipleAxis: state.isSelectMultipleYAxis,
-        );
-      } else if (state.chartDataStatus == FormStatus.requestFailure) {
-        return Center(
-          child: Text(
-            AppLocalizations.of(context)!.dialogMessage_NoChartData,
-          ),
-        );
-      } else {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    });
+          if (state.chartDataStatus == FormStatus.requestSuccess) {
+            return _buildChart(
+              startDate: state.startDate,
+              endDate: state.endDate,
+              selectedCheckBoxValues: state.selectedCheckBoxValues,
+              chartDateValuePairs: state.chartDateValuePairsMap,
+              isMultipleAxis: state.isSelectMultipleYAxis,
+            );
+          } else if (state.chartDataStatus == FormStatus.requestFailure) {
+            return Center(
+              child: Text(
+                AppLocalizations.of(context)!.dialogMessage_NoChartData,
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }

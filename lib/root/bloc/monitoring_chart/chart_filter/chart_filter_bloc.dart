@@ -28,7 +28,8 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     on<CheckBoxValueChanged>(_onCheckBoxValueChanged);
     on<AllCheckBoxValueChanged>(_onAllCheckBoxValueChanged);
     on<MultipleYAxisCheckBoxValueChanged>(_onMultipleYAxisCheckBoxValueChanged);
-    on<ChartDateExported>(_onChartDateExported);
+    on<SingleAxisChartDataExported>(_onSingleAxisChartDataExported);
+    on<MultipleAxisChartDataExported>(_onMultipleAxisChartDataExported);
 
     add(const ThresholdDataRequested());
   }
@@ -301,17 +302,48 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
     ));
   }
 
-  Future<void> _onChartDateExported(
-    ChartDateExported event,
+  Future<void> _onSingleAxisChartDataExported(
+    SingleAxisChartDataExported event,
     Emitter<ChartFilterState> emit,
   ) async {
     emit(state.copyWith(
       chartDataExportStatus: FormStatus.requestInProgress,
     ));
 
-    List<dynamic> result = await _deviceRepository.exportChartData(
+    List<dynamic> result = await _deviceRepository.exportSingleAxisChartData(
       nodeName: event.nodeName,
       parameterName: event.parameterName,
+      chartDateValuePairs: event.chartDateValuePairs,
+    );
+
+    // List<dynamic> result = [true, 'test', 'tset'];
+
+    if (result[0]) {
+      emit(state.copyWith(
+        chartDataExportStatus: FormStatus.requestSuccess,
+        chartDataExportMsg: result[1],
+        chartDataExportFilePath: result[2],
+      ));
+    } else {
+      emit(state.copyWith(
+        chartDataExportStatus: FormStatus.requestFailure,
+        chartDataExportMsg: result[1],
+        chartDataExportFilePath: '',
+      ));
+    }
+  }
+
+  Future<void> _onMultipleAxisChartDataExported(
+    MultipleAxisChartDataExported event,
+    Emitter<ChartFilterState> emit,
+  ) async {
+    emit(state.copyWith(
+      chartDataExportStatus: FormStatus.requestInProgress,
+    ));
+
+    List<dynamic> result = await _deviceRepository.exportMultipleAxisChartData(
+      nodeName: event.nodeName,
+      checkBoxValues: event.checkBoxValues,
       chartDateValuePairs: event.chartDateValuePairs,
     );
 

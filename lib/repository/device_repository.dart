@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/storage_permission.dart';
 
@@ -471,7 +472,7 @@ class DeviceRepository {
     return [true, chartDateValues];
   }
 
-  Future<List<dynamic>> exportChartData({
+  Future<List<dynamic>> exportSingleAxisChartData({
     required String nodeName,
     required String parameterName,
     required List<ChartDateValuePair> chartDateValuePairs,
@@ -486,6 +487,7 @@ class DeviceRepository {
 
     dataList.add(header);
 
+    print('start add');
     for (ChartDateValuePair chartDateValuePair in chartDateValuePairs) {
       String dateTime =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(chartDateValuePair.dateTime);
@@ -499,13 +501,121 @@ class DeviceRepository {
 
       dataList.add(row);
     }
+    print('end add');
+
+    print('start convert');
+    String csv = const ListToCsvConverter().convert(dataList);
+    print('end convert');
+
+    String timeStamp =
+        DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
+
+    String filename = '${nodeName}_${parameterName}_$timeStamp.csv';
+
+    if (Platform.isIOS) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+      String fullWrittenPath = '$appDocPath/$filename';
+      File f = File(fullWrittenPath);
+      f.writeAsString(csv);
+      return [
+        true,
+        'Export chart data success',
+        fullWrittenPath,
+      ];
+    } else if (Platform.isAndroid) {
+      bool isPermit = await requestPermission();
+      if (isPermit) {
+        Directory? externalStorageDirectory =
+            await getExternalStorageDirectory();
+        if (externalStorageDirectory == null) {
+          return [false, 'No Storage found'];
+        } else {
+          String externalStoragePath = externalStorageDirectory.path;
+          List<String> externalStoragePathList = externalStoragePath.split('/');
+          int indexOfAndroidDir = externalStoragePathList.indexOf('Android');
+          String externalRootPath =
+              externalStoragePathList.sublist(0, indexOfAndroidDir).join('/');
+          String externalAppFolderPath = externalRootPath + '/RICOMS';
+
+          //Create Directory (if not exist)
+          Directory externalAppDirectory = Directory(externalAppFolderPath);
+          if (!externalAppDirectory.existsSync()) {
+            //Creating Directory
+            try {
+              await externalAppDirectory.create(recursive: true);
+            } catch (e) {
+              return [false, e.toString()];
+            }
+            //Directory Created
+          } else {
+            //Directory Already Existed
+          }
+          String fullWrittenPath = '$externalAppFolderPath/$filename';
+          File file = File(fullWrittenPath);
+          print('start write');
+          await file.writeAsString(csv);
+          print('end write');
+          return [
+            true,
+            'Export chart data success',
+            fullWrittenPath,
+          ];
+        }
+      } else {
+        openAppSettings();
+        return [false, 'Please allow permission before you export your data.'];
+      }
+    } else {
+      return [
+        false,
+        'write file failed, export function not implement on ${Platform.operatingSystem} '
+      ];
+    }
+  }
+
+  Future<List<dynamic>> exportMultipleAxisChartData({
+    required String nodeName,
+    required Map<String, CheckBoxValue> checkBoxValues,
+    required Map<String, List<ChartDateValuePair>> chartDateValuePairs,
+  }) async {
+    List<List<String>> dataList = [];
+
+    List<String> header = [];
+
+    header.add('Date');
+
+    for (String oid in checkBoxValues.keys) {
+      header.add(checkBoxValues[oid]!.name);
+    }
+
+    dataList.add(header);
+
+    int length = chartDateValuePairs.values.toList()[0].length;
+    String dateTimeKey = checkBoxValues.keys.toList()[0];
+
+    // loop datetime
+    for (int i = 0; i < length; i++) {
+      List<String> row = [];
+      String dateTime = DateFormat('yyyy-MM-dd HH:mm:ss')
+          .format(chartDateValuePairs[dateTimeKey]![i].dateTime);
+      row.add(dateTime);
+
+      // loop each oid
+      for (String oid in checkBoxValues.keys) {
+        String value = chartDateValuePairs[oid]![i].value.toString();
+
+        row.add(value);
+      }
+      dataList.add(row);
+    }
 
     String csv = const ListToCsvConverter().convert(dataList);
 
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
 
-    String filename = '${nodeName}_${parameterName}_$timeStamp.csv';
+    String filename = '${nodeName}_$timeStamp.csv';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();

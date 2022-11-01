@@ -8,10 +8,12 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class MultipleAxisLineChart extends StatefulWidget {
   const MultipleAxisLineChart({
     Key? key,
+    required this.nodeName,
     required this.chartDateValues,
     required this.checkBoxValues,
   }) : super(key: key);
 
+  final String nodeName;
   final Map<String, List<ChartDateValuePair>> chartDateValues;
   final Map<String, CheckBoxValue> checkBoxValues;
 
@@ -120,8 +122,8 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
       ),
       legend: Legend(
         isVisible: true,
+        width: '100%',
         position: LegendPosition.bottom,
-        overflowMode: LegendItemOverflowMode.wrap,
       ),
       trackballBehavior: _trackballBehavior,
       zoomPanBehavior: _zoomPanBehavior,
