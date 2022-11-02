@@ -162,9 +162,14 @@ class RootForm extends StatelessWidget {
           appBar: AppBar(
             title: const _DynamicTitle(),
             leading: HomeDrawerToolTip.setToolTip(context),
+            elevation: 0.0,
             actions: const [
               _PopupMenu(),
             ],
+            bottom: const PreferredSize(
+              child: _NodeDirectory(),
+              preferredSize: Size.fromHeight(64.0),
+            ),
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,
@@ -180,7 +185,7 @@ class RootForm extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                _NodeDirectory(),
+                // _NodeDirectory(),
                 _NodeContent(),
               ],
             ),
@@ -689,6 +694,7 @@ class _NodeDirectory extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.fromLTRB(2.0, 10.0, 2.0, 10.0),
             child: Card(
+              elevation: 0.0,
               child: Row(
                 children: [
                   //home button

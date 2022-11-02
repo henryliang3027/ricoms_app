@@ -29,6 +29,7 @@ class DashboardForm extends StatelessWidget {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.dashboard),
           leading: HomeDrawerToolTip.setToolTip(context),
+          elevation: 0.0,
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,

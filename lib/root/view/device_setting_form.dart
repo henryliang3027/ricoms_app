@@ -37,14 +37,17 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            AppLocalizations.of(context)!.dialogTitle_settingUp,
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_settingUp,
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: const <Widget>[
+              CircularProgressIndicator(),
+            ],
           ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: const <Widget>[
-            CircularProgressIndicator(),
-          ],
         );
       },
     );

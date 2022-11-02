@@ -81,6 +81,7 @@ class BookmarksForm extends StatelessWidget {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.bookmarks),
             leading: HomeDrawerToolTip.setToolTip(context),
+            elevation: 0.0,
             actions: const [
               _PopupMenu(),
             ],

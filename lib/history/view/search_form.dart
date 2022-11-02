@@ -16,6 +16,7 @@ class SearchForm extends StatelessWidget {
         title: Text(
           AppLocalizations.of(context)!.filters,
         ),
+        elevation: 0.0,
       ),
       body: Stack(
         children: [

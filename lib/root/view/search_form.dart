@@ -20,6 +20,7 @@ class SearchForm extends StatelessWidget {
         title: Text(
           AppLocalizations.of(context)!.search,
         ),
+        elevation: 0.0,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

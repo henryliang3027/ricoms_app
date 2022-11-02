@@ -152,6 +152,7 @@ class AccountEditForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+            elevation: 0.0,
             title: _isEditing
                 ? Text(
                     AppLocalizations.of(context)!.editAccount,

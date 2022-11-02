@@ -29,6 +29,7 @@ class AdvancedForm extends StatelessWidget {
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.advanced),
           leading: HomeDrawerToolTip.setToolTip(context),
+          elevation: 0.0,
         ),
         bottomNavigationBar: HomeBottomNavigationBar(
           pageController: pageController,

@@ -101,6 +101,7 @@ class TrapForwardForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.trapForward),
+          elevation: 0.0,
           actions: const [
             _PopupMenu(),
           ],

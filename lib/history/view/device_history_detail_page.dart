@@ -23,6 +23,7 @@ class HistoryDetailPage extends StatelessWidget {
         title: Text(
           AppLocalizations.of(context)!.detail,
         ),
+        elevation: 0.0,
       ),
       body: SizedBox(
         width: double.maxFinite,

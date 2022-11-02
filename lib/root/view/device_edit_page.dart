@@ -48,6 +48,7 @@ class DeviceEditPage extends StatelessWidget {
         child: Scaffold(
           //resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            elevation: 0.0,
             title: isEditing
                 ? Text(AppLocalizations.of(context)!.editDevice)
                 : Text(AppLocalizations.of(context)!.addDevice),

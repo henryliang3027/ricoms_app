@@ -147,6 +147,7 @@ class SystemLogForm extends StatelessWidget {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.systemLog),
             leading: HomeDrawerToolTip.setToolTip(context),
+            elevation: 0.0,
             actions: const [
               _PopupMenu(),
             ],

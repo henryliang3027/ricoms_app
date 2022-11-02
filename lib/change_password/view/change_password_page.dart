@@ -32,6 +32,7 @@ class ChangePasswordPage extends StatelessWidget {
             AppLocalizations.of(context)!.changePassword,
             style: const TextStyle(fontSize: CommonStyle.sizeXXL),
           ),
+          elevation: 0.0,
         ),
         body: Container(
           height: double.maxFinite,

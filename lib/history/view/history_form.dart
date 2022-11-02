@@ -146,6 +146,7 @@ class HistoryForm extends StatelessWidget {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.history),
             leading: HomeDrawerToolTip.setToolTip(context),
+            elevation: 0.0,
             actions: const [
               _PopupMenu(),
             ],
