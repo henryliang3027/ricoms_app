@@ -18,27 +18,6 @@ class AuthenticationBloc
     _authenticationStatusSubscription = _authenticationRepository.report.listen(
       (report) => add(AuthenticationStatusChanged(report)),
     );
-
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-    _permissionStatusSubscription = dataStream.listen((event) async {
-      var result = await _authenticationRepository.checkUserPermission();
-
-      if (kDebugMode) {
-        print('permission change: ${result[1]}');
-      }
-
-      if (result[0]) {
-        if (result[1]) {
-          if (state.status == AuthenticationStatus.authenticated) {
-            add(const AuthenticationStatusChanged(AuthenticationReport(
-              status: AuthenticationStatus.unauthenticated,
-            )));
-          }
-        }
-      }
-    });
   }
 
   final AuthenticationRepository _authenticationRepository;
@@ -62,11 +41,36 @@ class AuthenticationBloc
     {
       switch (event.report.status) {
         case AuthenticationStatus.unauthenticated:
+          _permissionStatusSubscription.cancel();
           return emit(AuthenticationState.unauthenticated(
             msgTitle: event.report.msgTitle,
             msg: event.report.msg,
           ));
         case AuthenticationStatus.authenticated:
+          if (event.report.user.id != '0') {
+            final dataStream = Stream<int>.periodic(
+                const Duration(seconds: 3), (count) => count);
+
+            _permissionStatusSubscription = dataStream.listen((event) async {
+              var result =
+                  await _authenticationRepository.checkUserPermission();
+
+              if (kDebugMode) {
+                print('permission change: ${result[1]}');
+              }
+
+              if (result[0]) {
+                if (result[1]) {
+                  if (state.status == AuthenticationStatus.authenticated) {
+                    add(const AuthenticationStatusChanged(AuthenticationReport(
+                      status: AuthenticationStatus.unauthenticated,
+                    )));
+                  }
+                }
+              }
+            });
+          }
+
           return emit(AuthenticationState.authenticated(
             event.report.user,
             event.report.userFunction,

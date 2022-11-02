@@ -58,17 +58,12 @@ class MultipleAxisChartForm extends StatelessWidget {
             chartDateValuePairs: chartDateValuePairs,
             checkBoxValues: selectedCheckBoxValues,
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 20.0,
-            ),
-            child: SizedBox(
-              height: 400,
-              child: MultipleAxisLineChart(
-                nodeName: nodeName,
-                chartDateValues: chartDateValuePairs,
-                checkBoxValues: selectedCheckBoxValues,
-              ),
+          SizedBox(
+            height: 400,
+            child: MultipleAxisLineChart(
+              nodeName: nodeName,
+              chartDateValues: chartDateValuePairs,
+              checkBoxValues: selectedCheckBoxValues,
             ),
           ),
         ],
