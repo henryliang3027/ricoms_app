@@ -451,6 +451,7 @@ class _HistorySliverList extends StatelessWidget {
           return Container(
             color: Colors.grey.shade300,
             child: Scrollbar(
+              controller: _scrollController,
               thickness: 8.0,
               child: CustomScrollView(
                 controller: _scrollController,
