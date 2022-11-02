@@ -116,6 +116,7 @@ class AccountForm extends StatelessWidget {
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.account),
             leading: HomeDrawerToolTip.setToolTip(context),
+            elevation: 0.0,
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,
