@@ -122,7 +122,7 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
       ),
       legend: Legend(
         isVisible: true,
-        width: '100%',
+        width: '10000%', // take all screen width
         position: LegendPosition.bottom,
       ),
       trackballBehavior: _trackballBehavior,

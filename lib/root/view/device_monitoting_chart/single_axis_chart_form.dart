@@ -63,17 +63,17 @@ class SingleAxisChartForm extends StatelessWidget {
           top: 20.0,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _ChartTitle(
               name: name,
             ),
-            _ThresholdText(
-              majorH: majorH,
-              majorL: majorL,
-              majorHAnnotationColor: majorHAnnotationColor,
-              majorLAnnotationColor: majorLAnnotationColor,
-            ),
+            // _ThresholdText(
+            //   majorH: majorH,
+            //   majorL: majorL,
+            //   majorHAnnotationColor: majorHAnnotationColor,
+            //   majorLAnnotationColor: majorLAnnotationColor,
+            // ),
             _ExportButton(
               nodeName: nodeName,
               parameterName: name,

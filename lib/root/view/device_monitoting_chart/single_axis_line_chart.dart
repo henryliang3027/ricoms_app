@@ -112,7 +112,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     int factor = _maximumDataValue.toString().replaceFirst('-', '').length - 2;
 
     if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
-      maximumYAxisValue = _maximumDataValue + 100 * factor;
+      if (factor == 1) {
+        maximumYAxisValue = _maximumDataValue + 100 * (factor + 2);
+      } else {
+        maximumYAxisValue = _maximumDataValue + 100 * factor;
+      }
     } else {
       maximumYAxisValue = _maximumDataValue + 10 * factor;
     }
@@ -125,7 +129,11 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     int factor = _minimumDataValue.toString().replaceFirst('-', '').length - 2;
 
     if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
-      minimumYAxisValue = _minimumDataValue - 100 * factor;
+      if (factor == 1) {
+        minimumYAxisValue = _minimumDataValue - 100 * (factor + 2);
+      } else {
+        minimumYAxisValue = _minimumDataValue - 100 * factor;
+      }
     } else {
       minimumYAxisValue = _minimumDataValue - 10 * factor;
     }

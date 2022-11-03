@@ -24,11 +24,13 @@ class AuthenticationBloc
   late StreamSubscription<AuthenticationReport>
       _authenticationStatusSubscription;
 
-  late StreamSubscription<int> _permissionStatusSubscription;
+  StreamSubscription<int>? _permissionStatusSubscription;
 
   @override
   Future<void> close() {
-    _permissionStatusSubscription.cancel();
+    if (_permissionStatusSubscription != null) {
+      _permissionStatusSubscription!.cancel();
+    }
     _authenticationStatusSubscription.cancel();
     _authenticationRepository.dispose();
     return super.close();
@@ -41,7 +43,10 @@ class AuthenticationBloc
     {
       switch (event.report.status) {
         case AuthenticationStatus.unauthenticated:
-          _permissionStatusSubscription.cancel();
+          if (_permissionStatusSubscription != null) {
+            // if first time login, it will be null
+            _permissionStatusSubscription!.cancel();
+          }
           return emit(AuthenticationState.unauthenticated(
             msgTitle: event.report.msgTitle,
             msg: event.report.msg,
