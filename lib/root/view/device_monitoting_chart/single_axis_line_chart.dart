@@ -149,7 +149,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       plodBands.add(PlotBand(
         text: 'MinorHI: ${widget.minorH.toString()}',
         textStyle: TextStyle(
-          color: Colors.white,
+          color: CustomStyle.severityFontColor[2],
           backgroundColor: CustomStyle.severityColor[2]!,
         ),
         horizontalTextAlignment: TextAnchor.end,
@@ -165,7 +165,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       plodBands.add(PlotBand(
         text: 'MinorLO: ${widget.minorL.toString()}',
         textStyle: TextStyle(
-          color: Colors.white,
+          color: CustomStyle.severityFontColor[2],
           backgroundColor: CustomStyle.severityColor[2]!,
         ),
         horizontalTextAlignment: TextAnchor.end,
@@ -180,7 +180,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       plodBands.add(PlotBand(
         text: 'MajorHI: ${widget.majorH.toString()}',
         textStyle: TextStyle(
-          color: Colors.white,
+          color: CustomStyle.severityFontColor[3],
           backgroundColor: CustomStyle.severityColor[3]!,
         ),
         horizontalTextAlignment: TextAnchor.end,
@@ -195,7 +195,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
       plodBands.add(PlotBand(
         text: 'MajorLO: ${widget.majorL.toString()}',
         textStyle: TextStyle(
-          color: Colors.white,
+          color: CustomStyle.severityFontColor[3],
           backgroundColor: CustomStyle.severityColor[3]!,
         ),
         horizontalTextAlignment: TextAnchor.end,
