@@ -88,8 +88,8 @@ class MonitoringChartDisplayForm extends StatelessWidget {
             name: entry.value.name,
             majorH: entry.value.majorH,
             majorL: entry.value.majorL,
-            majorHAnnotationColor: Colors.red,
-            majorLAnnotationColor: Colors.red,
+            minorH: entry.value.minorH,
+            minorL: entry.value.minorL,
           );
         },
       );

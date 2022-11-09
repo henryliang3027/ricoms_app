@@ -17,8 +17,8 @@ class SingleAxisChartForm extends StatelessWidget {
     required this.name,
     this.majorH,
     this.majorL,
-    this.majorHAnnotationColor = Colors.red,
-    this.majorLAnnotationColor = Colors.red,
+    this.minorH,
+    this.minorL,
   }) : super(key: key);
 
   final String nodeName;
@@ -26,8 +26,8 @@ class SingleAxisChartForm extends StatelessWidget {
   final String name;
   final double? majorH;
   final double? majorL;
-  final Color? majorHAnnotationColor;
-  final Color? majorLAnnotationColor;
+  final double? minorH;
+  final double? minorL;
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +68,6 @@ class SingleAxisChartForm extends StatelessWidget {
             _ChartTitle(
               name: name,
             ),
-            // _ThresholdText(
-            //   majorH: majorH,
-            //   majorL: majorL,
-            //   majorHAnnotationColor: majorHAnnotationColor,
-            //   majorLAnnotationColor: majorLAnnotationColor,
-            // ),
             _ExportButton(
               nodeName: nodeName,
               parameterName: name,
@@ -84,8 +78,8 @@ class SingleAxisChartForm extends StatelessWidget {
               name: name,
               majorH: majorH,
               majorL: majorL,
-              majorHAnnotationColor: majorHAnnotationColor,
-              majorLAnnotationColor: majorLAnnotationColor,
+              minorH: minorH,
+              minorL: minorL,
             )
           ],
         ),
@@ -111,79 +105,6 @@ class _ChartTitle extends StatelessWidget {
               fontSize: CommonStyle.sizeXXL,
             ),
           ),
-        );
-      },
-    );
-  }
-}
-
-class _ThresholdText extends StatelessWidget {
-  const _ThresholdText({
-    Key? key,
-    this.majorH,
-    this.majorL,
-    this.majorHAnnotationColor,
-    this.majorLAnnotationColor,
-  }) : super(key: key);
-  final double? majorH;
-  final double? majorL;
-  final Color? majorHAnnotationColor;
-  final Color? majorLAnnotationColor;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _buildMajorHAnnotation() {
-      if (majorH != null) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
-          child: Container(
-            color: majorHAnnotationColor,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-              child: Text(
-                'MajorHI : $majorH',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    }
-
-    Widget _buildMajorLAnnotation() {
-      if (majorH != null) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0.0),
-          child: Container(
-            color: majorLAnnotationColor,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-              child: Text(
-                'MajorLO : $majorL',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    }
-
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
-      buildWhen: (previous, current) =>
-          previous.checkBoxValues != current.checkBoxValues,
-      builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildMajorLAnnotation(),
-            _buildMajorHAnnotation(),
-          ],
         );
       },
     );

@@ -32,8 +32,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+
+
   bloc: ^8.0.2
   flutter_bloc: ^8.1.1
+  bloc_concurrency: ^0.2.0
   formz: ^0.4.1
   dio: ^4.0.6
   hive: ^2.1.0

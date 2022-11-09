@@ -6,8 +6,18 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:stream_transform/stream_transform.dart';
 part 'root_event.dart';
 part 'root_state.dart';
+
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
@@ -18,7 +28,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         _rootRepository = rootRepository,
         _initialPath = initialPath,
         super(const RootState()) {
-    on<ChildDataRequested>(_onChildDataRequested);
+    on<ChildDataRequested>(
+      _onChildDataRequested,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<ChildDataUpdated>(_onChildDataUpdated);
