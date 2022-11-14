@@ -112,14 +112,14 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double maximumYAxisValue = 0.0;
     int factor = _maximumDataValue.toString().replaceFirst('-', '').length - 2;
 
-    if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
-      if (factor == 1) {
-        maximumYAxisValue = _maximumDataValue + 100 * (factor + 2);
-      } else {
-        maximumYAxisValue = _maximumDataValue + 100 * factor;
-      }
-    } else {
+    if ((_maximumDataValue - _minimumDataValue).abs() >= 1000) {
+      maximumYAxisValue = _maximumDataValue + 100 * (factor + 10);
+    } else if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
+      maximumYAxisValue = _maximumDataValue + 100 * (factor + 2);
+    } else if ((_maximumDataValue - _minimumDataValue).abs() >= 10) {
       maximumYAxisValue = _maximumDataValue + 10 * factor;
+    } else {
+      maximumYAxisValue = _maximumDataValue + (factor + 1);
     }
 
     return maximumYAxisValue;
@@ -129,14 +129,14 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double minimumYAxisValue = 0.0;
     int factor = _minimumDataValue.toString().replaceFirst('-', '').length - 2;
 
-    if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
-      if (factor == 1) {
-        minimumYAxisValue = _minimumDataValue - 100 * (factor + 2);
-      } else {
-        minimumYAxisValue = _minimumDataValue - 100 * factor;
-      }
-    } else {
+    if ((_maximumDataValue - _minimumDataValue).abs() >= 1000) {
+      minimumYAxisValue = _minimumDataValue - 100 * (factor + 10);
+    } else if ((_maximumDataValue - _minimumDataValue).abs() >= 100) {
+      minimumYAxisValue = _minimumDataValue - 100 * (factor + 2);
+    } else if ((_maximumDataValue - _minimumDataValue).abs() >= 10) {
       minimumYAxisValue = _minimumDataValue - 10 * factor;
+    } else {
+      minimumYAxisValue = _minimumDataValue - (factor + 1);
     }
 
     return minimumYAxisValue;
@@ -169,6 +169,7 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
           backgroundColor: CustomStyle.severityColor[2]!,
         ),
         horizontalTextAlignment: TextAnchor.end,
+        verticalTextAlignment: TextAnchor.end,
         start: widget.minorL,
         end: widget.minorL,
         borderWidth: 1,
