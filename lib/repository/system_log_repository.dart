@@ -40,12 +40,15 @@ class SystemLogRepository {
 
         for (var element in rawDataList) {
           if (element['id'] != null) {
-            String rawPath = element['path'];
-            List<String> nodeIdList =
-                rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
             List<int> path = [];
-            for (var nodeId in nodeIdList) {
-              path.add(int.parse(nodeId));
+            if (element['path'] != null) {
+              String rawPath = element['path'];
+              List<String> nodeIdList =
+                  rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
+
+              for (var nodeId in nodeIdList) {
+                path.add(int.parse(nodeId));
+              }
             }
 
             Log log = Log(
@@ -66,7 +69,7 @@ class SystemLogRepository {
               event: element['event'] ?? '',
               description: element['description'] ?? '',
               nodeId: element['node_id'] ?? -1,
-              type: int.parse(element['type'] ?? -1),
+              type: int.parse(element['type'] ?? '-1'),
               path: path,
             );
 
