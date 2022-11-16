@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/view/device_setting_style.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
@@ -60,6 +61,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       formStatus: FormStatus.requestInProgress,
     ));
 
+    List<List<ControllerProperty>> controllerPropertiesCollection = [];
+    Map<String, String> controllerValues = {};
+
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
       nodeId: _nodeId,
@@ -69,10 +73,24 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     //bool isEditable = _deviceRepository.isEditable(_pageName);
 
     if (data is List) {
+      for (List item in data) {
+        List<ControllerProperty> controllerProperties = [];
+        for (var e in item) {
+          DeviceSettingStyle.getSettingData(
+            e: e,
+            controllerProperties: controllerProperties,
+            controllerValues: controllerValues,
+          );
+        }
+        controllerPropertiesCollection.add(controllerProperties);
+      }
+
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         data: data,
+        controllerPropertiesCollection: controllerPropertiesCollection,
+        controllerValues: controllerValues,
         editable: _deviceBlock.editable,
       ));
     } else {
@@ -133,7 +151,14 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     ControllerValueChanged event,
     Emitter<DeviceState> emit,
   ) {
-    emit(state.copyWith(controllerValues: event.controllerValues));
+    Map<String, String> controllerValues = {};
+    controllerValues.addAll(state.controllerValues);
+
+    controllerValues[event.oid] = event.value;
+
+    emit(state.copyWith(
+      controllerValues: controllerValues,
+    ));
   }
 
   Future<void> _onDeviceParamSaved(

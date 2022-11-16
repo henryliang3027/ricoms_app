@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceSettingForm extends StatefulWidget {
@@ -239,7 +240,7 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
           } else if (state.formStatus.isRequestSuccess) {
             return Scaffold(
                 body: _buildBody(
-                  data: state.data,
+                  data: state.controllerPropertiesCollection,
                   isEditing: state.isEditing,
                 ),
                 floatingActionButton: _buildFloatingActionButton(
@@ -400,5 +401,344 @@ class CreateEditingTool extends StatelessWidget {
             },
             child: const Icon(Icons.edit),
           );
+  }
+}
+
+class _DeviceText extends StatelessWidget {
+  const _DeviceText({
+    Key? key,
+    required this.textProperty,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final TextProperty textProperty;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+        buildWhen: (previous, current) =>
+            previous.controllerPropertiesCollection !=
+            current.controllerPropertiesCollection,
+        builder: (context, state) {
+          return Expanded(
+            flex: textProperty.boxLength,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: textProperty.boxColor,
+                  border: Border.all(color: textProperty.borderColor),
+                ),
+                child: Text(
+                  textProperty.text,
+                  style: TextStyle(
+                      color: textProperty.textColor,
+                      fontSize: textProperty.fontSize),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class _DeviceTextField extends StatelessWidget {
+  const _DeviceTextField({
+    Key? key,
+    required this.textFieldProperty,
+    required this.textEditingController,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final TextFieldProperty textFieldProperty;
+  final TextEditingController textEditingController;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+        buildWhen: (previous, current) =>
+            previous.controllerValues[textFieldProperty.oid] !=
+            current.controllerValues[textFieldProperty.oid],
+        builder: (context, state) {
+          return Expanded(
+            flex: textFieldProperty.boxLength,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: TextField(
+                key: Key(textFieldProperty.oid),
+                controller: textEditingController
+                  ..text = textFieldProperty.text,
+                textAlign: TextAlign.center,
+                enabled: isEditing && !textFieldProperty.readOnly,
+                style: TextStyle(fontSize: textFieldProperty.fontSize),
+                onChanged: (text) {
+                  context
+                      .read<DeviceBloc>()
+                      .add(ControllerValueChanged(textFieldProperty.oid, text));
+                },
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: isEditing && !textFieldProperty.readOnly
+                      ? Colors.white
+                      : Colors.grey.shade300,
+                  isCollapsed: true,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class _DeviceCheckBox extends StatelessWidget {
+  const _DeviceCheckBox({
+    Key? key,
+    required this.checkBoxProperty,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final CheckBoxProperty checkBoxProperty;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      buildWhen: (previous, current) =>
+          previous.controllerValues[checkBoxProperty.oid] !=
+          current.controllerValues[checkBoxProperty.oid],
+      builder: (context, state) {
+        return Checkbox(
+          visualDensity: const VisualDensity(vertical: -4.0),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          value: state.controllerValues[checkBoxProperty.oid] == '1'
+              ? true
+              : false,
+          onChanged: isEditing && !checkBoxProperty.readOnly
+              ? (value) {
+                  if (value != null) {
+                    context.read<DeviceBloc>().add(ControllerValueChanged(
+                        checkBoxProperty.oid, value ? '1' : '0'));
+                  }
+                }
+              : null,
+        );
+      },
+    );
+  }
+}
+
+class _DeviceRadioButton extends StatelessWidget {
+  const _DeviceRadioButton({
+    Key? key,
+    required this.radioButtonProperty,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final RadioButtonProperty radioButtonProperty;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      buildWhen: (previous, current) =>
+          previous.controllerValues[radioButtonProperty.oid] !=
+          current.controllerValues[radioButtonProperty.oid],
+      builder: (context, state) {
+        return Row(
+          children: [
+            for (MapEntry<String, String> entry
+                in radioButtonProperty.items.entries) ...[
+              Expanded(
+                child: Row(
+                  children: [
+                    Radio(
+                      visualDensity: const VisualDensity(vertical: -4.0),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: entry.key, //selected value
+                      groupValue: radioButtonProperty
+                          .value, //determine which is selected
+                      onChanged: isEditing && !radioButtonProperty.readOnly
+                          ? (String? value) {
+                              context.read<DeviceBloc>().add(
+                                  ControllerValueChanged(
+                                      radioButtonProperty.oid, value!));
+                            }
+                          : null,
+                    ),
+                    Expanded(
+                      child: Text(
+                        entry.value,
+                        style:
+                            TextStyle(fontSize: radioButtonProperty.fontSize),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DeviceSlider extends StatelessWidget {
+  const _DeviceSlider({
+    Key? key,
+    required this.sliderProperty,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final SliderProperty sliderProperty;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    double truncateDecimal(double value) {
+      double fixDecimal = double.parse(value.toStringAsFixed(1));
+      return double.parse(fixDecimal.toStringAsFixed(
+          fixDecimal.truncateToDouble() == fixDecimal ? 0 : 1));
+    }
+
+    bool isInteger(num value) => value is int || value == value.roundToDouble();
+
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      buildWhen: (previous, current) =>
+          previous.controllerValues[sliderProperty.oid] !=
+          current.controllerValues[sliderProperty.oid],
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 6,
+              child: SliderTheme(
+                data: const SliderThemeData(
+                  valueIndicatorColor: Colors.red,
+                  showValueIndicator: ShowValueIndicator.always,
+                ),
+                child: Slider(
+                  min: sliderProperty.min,
+                  max: sliderProperty.max,
+                  divisions: ((sliderProperty.max - sliderProperty.min) ~/
+                          sliderProperty.interval)
+                      .toInt(),
+                  value: double.parse(sliderProperty.value),
+                  onChanged: isEditing && !sliderProperty.readOnly
+                      ? (value) {
+                          String strValue = isInteger(sliderProperty.interval)
+                              ? value.toInt().toString()
+                              : truncateDecimal(value).toString();
+
+                          context.read<DeviceBloc>().add(ControllerValueChanged(
+                              sliderProperty.oid, strValue));
+                        }
+                      : null,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
+                child: Text(
+                  sliderProperty.value,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: sliderProperty.fontSize),
+                ),
+              ),
+            ),
+            const Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DeviceDropDownMenu extends StatelessWidget {
+  const _DeviceDropDownMenu({
+    Key? key,
+    required this.dropDownMenuProperty,
+    required this.isEditing,
+  }) : super(key: key);
+
+  final DropDownMenuProperty dropDownMenuProperty;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      buildWhen: (previous, current) =>
+          previous.controllerValues[dropDownMenuProperty.oid] !=
+          current.controllerValues[dropDownMenuProperty.oid],
+      builder: (context, state) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+              color: isEditing && !dropDownMenuProperty.readOnly
+                  ? Colors.white
+                  : Colors.grey.shade300),
+          child: InputDecorator(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+              isDense: true,
+              contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                isDense: true,
+                isExpanded: true,
+                icon: const Icon(Icons.keyboard_arrow_down),
+                value: state.controllerValues[dropDownMenuProperty.oid],
+                items: [
+                  for (MapEntry<String, String> entry
+                      in dropDownMenuProperty.items.entries)
+                    DropdownMenuItem(
+                      value: entry.key,
+                      child: Center(
+                        child: Text(
+                          entry.value,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: dropDownMenuProperty.fontSize,
+                              color: isEditing && !dropDownMenuProperty.readOnly
+                                  ? Colors.black
+                                  : Colors.black),
+                        ),
+                      ),
+                    )
+                ],
+                onChanged: isEditing && !dropDownMenuProperty.readOnly
+                    ? (String? value) {
+                        context.read<DeviceBloc>().add(ControllerValueChanged(
+                            dropDownMenuProperty.oid, value!));
+                      }
+                    : null,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

@@ -9,6 +9,7 @@ class DeviceState extends Equatable {
     this.editable = false,
     this.isEditing = false,
     this.controllerValues = const <String, String>{},
+    this.controllerPropertiesCollection = const [],
   });
 
   final FormStatus formStatus;
@@ -18,6 +19,7 @@ class DeviceState extends Equatable {
   final bool editable;
   final bool isEditing;
   final Map<String, String> controllerValues;
+  final List<List<ControllerProperty>> controllerPropertiesCollection;
 
   DeviceState copyWith({
     FormStatus? formStatus,
@@ -27,6 +29,7 @@ class DeviceState extends Equatable {
     bool? editable,
     bool? isEditing,
     Map<String, String>? controllerValues,
+    List<List<ControllerProperty>>? controllerPropertiesCollection,
   }) {
     return DeviceState(
       formStatus: formStatus ?? this.formStatus,
@@ -36,6 +39,8 @@ class DeviceState extends Equatable {
       editable: editable ?? this.editable,
       isEditing: isEditing ?? this.isEditing,
       controllerValues: controllerValues ?? this.controllerValues,
+      controllerPropertiesCollection:
+          controllerPropertiesCollection ?? this.controllerPropertiesCollection,
     );
   }
 
@@ -47,6 +52,7 @@ class DeviceState extends Equatable {
         data,
         editable,
         isEditing,
-        controllerValues
+        controllerPropertiesCollection,
+        controllerValues,
       ];
 }

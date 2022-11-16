@@ -34,12 +34,16 @@ class FormStatusChanged extends DeviceEvent {
 
 // todo
 class ControllerValueChanged extends DeviceEvent {
-  const ControllerValueChanged(this.controllerValues);
+  const ControllerValueChanged(this.oid, this.value);
 
-  final Map<String, String> controllerValues;
+  final String oid;
+  final String value;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        oid,
+        value,
+      ];
 }
 
 class DeviceParamSaved extends DeviceEvent {

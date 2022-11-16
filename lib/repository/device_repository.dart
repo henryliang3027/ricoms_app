@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
+import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/storage_permission.dart';
 
