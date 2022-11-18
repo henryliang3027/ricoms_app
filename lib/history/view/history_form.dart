@@ -14,7 +14,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/display_style.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_safe/open_file_safe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
