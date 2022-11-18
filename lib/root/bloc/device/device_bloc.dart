@@ -139,7 +139,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     FormStatusChanged event,
     Emitter<DeviceState> emit,
   ) {
-    //emit(state.copyWith(formStatus: FormStatus.requestInProgress));
+    // emit(state.copyWith(formStatus: FormStatus.requestInProgress));
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,

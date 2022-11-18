@@ -124,8 +124,68 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
+    Widget _buildItem({
+      required ControllerProperty controllerProperty,
+      required bool isEditing,
+    }) {
+      if (controllerProperty.runtimeType == TextFieldProperty) {
+        return _DeviceTextField(
+          textFieldProperty: controllerProperty as TextFieldProperty,
+          textEditingController: TextEditingController(),
+          isEditing: isEditing,
+        );
+      } else if (controllerProperty.runtimeType == DropDownMenuProperty) {
+        return _DeviceDropDownMenu(
+          dropDownMenuProperty: controllerProperty as DropDownMenuProperty,
+          isEditing: isEditing,
+        );
+      } else if (controllerProperty.runtimeType == SliderProperty) {
+        return _DeviceSlider(
+          sliderProperty: controllerProperty as SliderProperty,
+          isEditing: isEditing,
+        );
+      } else if (controllerProperty.runtimeType == RadioButtonProperty) {
+        return _DeviceRadioButton(
+          radioButtonProperty: controllerProperty as RadioButtonProperty,
+          isEditing: isEditing,
+        );
+      } else if (controllerProperty.runtimeType == CheckBoxProperty) {
+        return _DeviceCheckBox(
+          checkBoxProperty: controllerProperty as CheckBoxProperty,
+          isEditing: isEditing,
+        );
+      } else if (controllerProperty.runtimeType == TextProperty) {
+        return _DeviceText(
+          textProperty: controllerProperty as TextProperty,
+        );
+      } else {
+        return Container(
+          color: Colors.grey,
+          child: const Text('----'),
+        );
+      }
+    }
+
+    Widget _buildRaw({
+      required List<ControllerProperty> controllerProperties,
+      required bool isEditing,
+    }) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (ControllerProperty controllerProperty
+              in controllerProperties) ...[
+            _buildItem(
+              controllerProperty: controllerProperty,
+              isEditing: isEditing,
+            ),
+          ]
+        ],
+      );
+    }
+
     Widget _buildBody({
-      required List<dynamic> data,
+      required List<List<ControllerProperty>> controllerPropertiesCollection,
       required bool isEditing,
     }) {
       return Container(
@@ -142,26 +202,12 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      for (var item in data) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            for (var e in item) ...[
-                              CustomStyle.getBox(
-                                e,
-                                isEditing: isEditing,
-                                checkBoxValues: widget.checkBoxValues,
-                                textFieldControllers:
-                                    widget.textFieldControllers,
-                                radioButtonValues: widget.radioButtonValues,
-                                sliderValues: widget.sliderValues,
-                                dropDownMenuValues: widget.dropDownMenuValues,
-                                controllerInitValues:
-                                    widget.controllerInitValues,
-                              ),
-                            ]
-                          ],
-                        )
+                      for (List<ControllerProperty> controllerProperties
+                          in controllerPropertiesCollection) ...[
+                        _buildRaw(
+                          controllerProperties: controllerProperties,
+                          isEditing: isEditing,
+                        ),
                       ],
                       const SizedBox(
                         height: 120,
@@ -230,7 +276,8 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
 
             return Scaffold(
                 body: _buildBody(
-                  data: state.data,
+                  controllerPropertiesCollection:
+                      state.controllerPropertiesCollection,
                   isEditing: state.isEditing,
                 ),
                 floatingActionButton: _buildFloatingActionButton(
@@ -240,7 +287,8 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
           } else if (state.formStatus.isRequestSuccess) {
             return Scaffold(
                 body: _buildBody(
-                  data: state.controllerPropertiesCollection,
+                  controllerPropertiesCollection:
+                      state.controllerPropertiesCollection,
                   isEditing: state.isEditing,
                 ),
                 floatingActionButton: _buildFloatingActionButton(
@@ -408,11 +456,9 @@ class _DeviceText extends StatelessWidget {
   const _DeviceText({
     Key? key,
     required this.textProperty,
-    required this.isEditing,
   }) : super(key: key);
 
   final TextProperty textProperty;
-  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -426,7 +472,7 @@ class _DeviceText extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: Container(
-                alignment: Alignment.center,
+                // alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: textProperty.boxColor,
                   border: Border.all(color: textProperty.borderColor),
@@ -460,8 +506,9 @@ class _DeviceTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DeviceBloc, DeviceState>(
         buildWhen: (previous, current) =>
+            previous.isEditing != current.isEditing ||
             previous.controllerValues[textFieldProperty.oid] !=
-            current.controllerValues[textFieldProperty.oid],
+                current.controllerValues[textFieldProperty.oid],
         builder: (context, state) {
           return Expanded(
             flex: textFieldProperty.boxLength,
@@ -470,8 +517,9 @@ class _DeviceTextField extends StatelessWidget {
               child: TextField(
                 key: Key(textFieldProperty.oid),
                 controller: textEditingController
-                  ..text = textFieldProperty.text,
-                textAlign: TextAlign.center,
+                  ..text = textFieldProperty.initValue,
+                textAlign: textFieldProperty.textAlign,
+                maxLines: textFieldProperty.maxLine,
                 enabled: isEditing && !textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
@@ -519,23 +567,27 @@ class _DeviceCheckBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DeviceBloc, DeviceState>(
       buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
           previous.controllerValues[checkBoxProperty.oid] !=
-          current.controllerValues[checkBoxProperty.oid],
+              current.controllerValues[checkBoxProperty.oid],
       builder: (context, state) {
-        return Checkbox(
-          visualDensity: const VisualDensity(vertical: -4.0),
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          value: state.controllerValues[checkBoxProperty.oid] == '1'
-              ? true
-              : false,
-          onChanged: isEditing && !checkBoxProperty.readOnly
-              ? (value) {
-                  if (value != null) {
-                    context.read<DeviceBloc>().add(ControllerValueChanged(
-                        checkBoxProperty.oid, value ? '1' : '0'));
+        return Expanded(
+          flex: checkBoxProperty.boxLength,
+          child: Checkbox(
+            visualDensity: const VisualDensity(vertical: -4.0),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            value: state.controllerValues[checkBoxProperty.oid] == '1'
+                ? true
+                : false,
+            onChanged: isEditing && !checkBoxProperty.readOnly
+                ? (value) {
+                    if (value != null) {
+                      context.read<DeviceBloc>().add(ControllerValueChanged(
+                          checkBoxProperty.oid, value ? '1' : '0'));
+                    }
                   }
-                }
-              : null,
+                : null,
+          ),
         );
       },
     );
@@ -556,42 +608,46 @@ class _DeviceRadioButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DeviceBloc, DeviceState>(
       buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
           previous.controllerValues[radioButtonProperty.oid] !=
-          current.controllerValues[radioButtonProperty.oid],
+              current.controllerValues[radioButtonProperty.oid],
       builder: (context, state) {
-        return Row(
-          children: [
-            for (MapEntry<String, String> entry
-                in radioButtonProperty.items.entries) ...[
-              Expanded(
-                child: Row(
-                  children: [
-                    Radio(
-                      visualDensity: const VisualDensity(vertical: -4.0),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: entry.key, //selected value
-                      groupValue: radioButtonProperty
-                          .value, //determine which is selected
-                      onChanged: isEditing && !radioButtonProperty.readOnly
-                          ? (String? value) {
-                              context.read<DeviceBloc>().add(
-                                  ControllerValueChanged(
-                                      radioButtonProperty.oid, value!));
-                            }
-                          : null,
-                    ),
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style:
-                            TextStyle(fontSize: radioButtonProperty.fontSize),
+        return Expanded(
+          flex: radioButtonProperty.boxLength,
+          child: Row(
+            children: [
+              for (MapEntry<String, String> entry
+                  in radioButtonProperty.items.entries) ...[
+                Expanded(
+                  child: Row(
+                    children: [
+                      Radio(
+                        visualDensity: const VisualDensity(vertical: -4.0),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: entry.key, //selected value
+                        groupValue: state.controllerValues[radioButtonProperty
+                            .oid], //determine which is selected
+                        onChanged: isEditing && !radioButtonProperty.readOnly
+                            ? (String? value) {
+                                context.read<DeviceBloc>().add(
+                                    ControllerValueChanged(
+                                        radioButtonProperty.oid, value!));
+                              }
+                            : null,
                       ),
-                    )
-                  ],
+                      Expanded(
+                        child: Text(
+                          entry.value,
+                          style:
+                              TextStyle(fontSize: radioButtonProperty.fontSize),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         );
       },
     );
@@ -620,56 +676,64 @@ class _DeviceSlider extends StatelessWidget {
 
     return BlocBuilder<DeviceBloc, DeviceState>(
       buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
           previous.controllerValues[sliderProperty.oid] !=
-          current.controllerValues[sliderProperty.oid],
+              current.controllerValues[sliderProperty.oid],
       builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 6,
-              child: SliderTheme(
-                data: const SliderThemeData(
-                  valueIndicatorColor: Colors.red,
-                  showValueIndicator: ShowValueIndicator.always,
-                ),
-                child: Slider(
-                  min: sliderProperty.min,
-                  max: sliderProperty.max,
-                  divisions: ((sliderProperty.max - sliderProperty.min) ~/
-                          sliderProperty.interval)
-                      .toInt(),
-                  value: double.parse(sliderProperty.value),
-                  onChanged: isEditing && !sliderProperty.readOnly
-                      ? (value) {
-                          String strValue = isInteger(sliderProperty.interval)
-                              ? value.toInt().toString()
-                              : truncateDecimal(value).toString();
+        return Expanded(
+          flex: sliderProperty.boxLength,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 6,
+                child: SliderTheme(
+                  data: const SliderThemeData(
+                    valueIndicatorColor: Colors.red,
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: Slider(
+                    min: sliderProperty.min,
+                    max: sliderProperty.max,
+                    divisions: ((sliderProperty.max - sliderProperty.min) ~/
+                            sliderProperty.interval)
+                        .toInt(),
+                    value: state.controllerValues[sliderProperty.oid] != null
+                        ? double.parse(
+                            state.controllerValues[sliderProperty.oid]!)
+                        : sliderProperty.min,
+                    onChanged: isEditing && !sliderProperty.readOnly
+                        ? (value) {
+                            String strValue = isInteger(sliderProperty.interval)
+                                ? value.toInt().toString()
+                                : truncateDecimal(value).toString();
 
-                          context.read<DeviceBloc>().add(ControllerValueChanged(
-                              sliderProperty.oid, strValue));
-                        }
-                      : null,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
+                            context.read<DeviceBloc>().add(
+                                ControllerValueChanged(
+                                    sliderProperty.oid, strValue));
+                          }
+                        : null,
                   ),
                 ),
-                child: Text(
-                  sliderProperty.value,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: sliderProperty.fontSize),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                  ),
+                  child: Text(
+                    sliderProperty.initValue,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: sliderProperty.fontSize),
+                  ),
                 ),
               ),
-            ),
-            const Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
-          ],
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 12.0)),
+            ],
+          ),
         );
       },
     );
@@ -690,8 +754,9 @@ class _DeviceDropDownMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DeviceBloc, DeviceState>(
       buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
           previous.controllerValues[dropDownMenuProperty.oid] !=
-          current.controllerValues[dropDownMenuProperty.oid],
+              current.controllerValues[dropDownMenuProperty.oid],
       builder: (context, state) {
         return DecoratedBox(
           decoration: BoxDecoration(

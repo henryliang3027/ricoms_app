@@ -5,7 +5,6 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 
 class DeviceSettingStyle {
   static void getSettingData({
-    bool isEditing = false,
     required dynamic e,
     required List<ControllerProperty> controllerProperties,
     required Map<String, String> controllerValues,
@@ -17,17 +16,17 @@ class DeviceSettingStyle {
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
     int status = e['status'] ?? 0;
     String rawParameter = e['parameter'] ?? '';
-    int readonly = e['readonly'] ?? 0;
+    int rawReadOnly = e['readonly'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
 
-    bool enabled = isEditing && readonly == 0;
+    bool readOnly = rawReadOnly == 0 ? false : true;
 
     switch (style) {
       case 0: //文字輸入方塊
         TextFieldProperty textFieldProperty = TextFieldProperty(
           oid: id,
-          text: value,
-          readOnly: enabled,
+          initValue: value,
+          readOnly: readOnly,
           boxLength: length,
           fontSize: font,
         );
@@ -40,9 +39,9 @@ class DeviceSettingStyle {
         items = {for (var e in parameter) e['value']: e['text']};
         DropDownMenuProperty dropDownMenuProperty = DropDownMenuProperty(
           oid: id,
-          value: value,
+          initValue: value,
           items: items,
-          readOnly: enabled,
+          readOnly: readOnly,
           boxLength: length,
           fontSize: font,
         );
@@ -66,11 +65,11 @@ class DeviceSettingStyle {
 
         SliderProperty sliderProperty = SliderProperty(
           oid: id,
-          value: value,
+          initValue: value,
           min: min,
           max: max,
           interval: interval,
-          readOnly: enabled,
+          readOnly: readOnly,
           boxLength: length,
           fontSize: font,
         );
@@ -87,9 +86,9 @@ class DeviceSettingStyle {
 
         RadioButtonProperty radioButtonProperty = RadioButtonProperty(
           oid: id,
-          value: value,
+          initValue: value,
           items: items,
-          readOnly: enabled,
+          readOnly: readOnly,
           boxLength: length,
           fontSize: font,
         );
@@ -101,11 +100,12 @@ class DeviceSettingStyle {
       case 98: //區塊型欄位表單 (TextArea)
         TextFieldProperty textFieldProperty = TextFieldProperty(
           oid: id,
-          text: value,
-          readOnly: enabled,
+          initValue: value,
+          readOnly: readOnly,
           boxLength: length,
           fontSize: font,
           maxLine: height,
+          textAlign: TextAlign.left,
         );
         controllerProperties.add(textFieldProperty);
         controllerValues[id] = value;
@@ -115,8 +115,8 @@ class DeviceSettingStyle {
         bool initValue = value == '0' || value == "" ? false : true;
         CheckBoxProperty checkBoxProperty = CheckBoxProperty(
           oid: id,
-          value: initValue,
-          readOnly: enabled,
+          initValue: initValue,
+          readOnly: readOnly,
           boxLength: length,
         );
         controllerProperties.add(checkBoxProperty);
@@ -535,25 +535,27 @@ class TextProperty extends ControllerProperty {
 class TextFieldProperty extends ControllerProperty {
   const TextFieldProperty({
     required this.oid,
-    required this.text,
+    required this.initValue,
     this.readOnly = false,
     this.maxLine = 1,
     this.boxLength = 1,
     this.fontSize = 14.0,
+    this.textAlign = TextAlign.center,
   });
 
   final String oid;
-  final String text;
+  final String initValue;
   final bool readOnly;
   final int maxLine;
   final int boxLength;
   final double fontSize;
+  final TextAlign textAlign;
 }
 
 class DropDownMenuProperty extends ControllerProperty {
   const DropDownMenuProperty({
     required this.oid,
-    required this.value,
+    required this.initValue,
     required this.items,
     this.readOnly = false,
     this.boxLength = 1,
@@ -561,7 +563,7 @@ class DropDownMenuProperty extends ControllerProperty {
   });
 
   final String oid;
-  final String value;
+  final String initValue;
   final Map<String, String> items;
   final bool readOnly;
   final int boxLength;
@@ -571,7 +573,7 @@ class DropDownMenuProperty extends ControllerProperty {
 class SliderProperty extends ControllerProperty {
   const SliderProperty({
     required this.oid,
-    required this.value,
+    required this.initValue,
     required this.min,
     required this.max,
     required this.interval,
@@ -581,7 +583,7 @@ class SliderProperty extends ControllerProperty {
   });
 
   final String oid;
-  final String value;
+  final String initValue;
   final double min;
   final double max;
   final num interval;
@@ -593,7 +595,7 @@ class SliderProperty extends ControllerProperty {
 class RadioButtonProperty extends ControllerProperty {
   const RadioButtonProperty({
     required this.oid,
-    required this.value,
+    required this.initValue,
     required this.items,
     this.readOnly = false,
     this.boxLength = 1,
@@ -601,7 +603,7 @@ class RadioButtonProperty extends ControllerProperty {
   });
 
   final String oid;
-  final String value;
+  final String initValue;
   final Map<String, String> items;
   final bool readOnly;
   final int boxLength;
@@ -611,13 +613,13 @@ class RadioButtonProperty extends ControllerProperty {
 class CheckBoxProperty extends ControllerProperty {
   const CheckBoxProperty({
     required this.oid,
+    required this.initValue,
     this.readOnly = false,
     this.boxLength = 1,
-    this.value = false,
   });
 
   final String oid;
+  final bool initValue;
   final bool readOnly;
   final int boxLength;
-  final bool value;
 }
