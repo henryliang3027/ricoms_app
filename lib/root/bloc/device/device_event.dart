@@ -1,7 +1,5 @@
 part of 'device_bloc.dart';
 
-enum RequestType { initial, update }
-
 abstract class DeviceEvent extends Equatable {
   const DeviceEvent();
 
@@ -10,7 +8,9 @@ abstract class DeviceEvent extends Equatable {
 }
 
 class DeviceDataRequested extends DeviceEvent {
-  const DeviceDataRequested();
+  const DeviceDataRequested(this.requestMode);
+
+  final RequestMode requestMode;
 
   @override
   List<Object> get props => [];
@@ -47,7 +47,5 @@ class ControllerValueChanged extends DeviceEvent {
 }
 
 class DeviceParamSaved extends DeviceEvent {
-  const DeviceParamSaved(this.param);
-
-  final List<Map<String, String>> param;
+  const DeviceParamSaved();
 }

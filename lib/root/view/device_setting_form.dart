@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
@@ -9,10 +8,11 @@ import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
-class DeviceSettingForm extends StatefulWidget {
-  DeviceSettingForm({
+class DeviceSettingForm extends StatelessWidget {
+  const DeviceSettingForm({
     Key? key,
     required this.nodeId,
     required this.deviceBlock,
@@ -20,104 +20,127 @@ class DeviceSettingForm extends StatefulWidget {
 
   final DeviceBlock deviceBlock;
   final int nodeId;
-  final Map<String, bool> checkBoxValues = <String, bool>{};
-  final Map<String, TextEditingController> textFieldControllers =
-      <String, TextEditingController>{};
-  final Map<String, String> radioButtonValues = <String, String>{};
-  final Map<String, String> sliderValues = <String, String>{};
-  final Map<String, String> dropDownMenuValues = <String, String>{};
-  final Map<String, String> controllerInitValues = <String, String>{};
 
   @override
-  State<DeviceSettingForm> createState() => _DeviceSettingFormState();
-}
-
-class _DeviceSettingFormState extends State<DeviceSettingForm> {
-  Future<void> _showInProgressDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            title: Text(
-              AppLocalizations.of(context)!.dialogTitle_settingUp,
-            ),
-            actionsAlignment: MainAxisAlignment.center,
-            actions: const <Widget>[
-              CircularProgressIndicator(),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _showSuccessDialog(String msg) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            getMessageLocalization(
-              msg: msg,
-              context: context,
-            ),
-            style: TextStyle(
-              color: CustomStyle.severityColor[1],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // pop dialog
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showFailureDialog(String msg) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            AppLocalizations.of(context)!.dialogTitle_error,
-            style: TextStyle(
-              color: CustomStyle.severityColor[3],
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(
-                  getMessageLocalization(
-                    msg: msg,
-                    context: context,
-                  ),
-                ),
+  Widget build(BuildContext context) {
+    Future<void> _showInProgressDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              title: Text(
+                AppLocalizations.of(context)!.dialogTitle_settingUp,
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: const <Widget>[
+                CircularProgressIndicator(),
               ],
             ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // pop dialog
-              },
+          );
+        },
+      );
+    }
+
+    Future<void> _showSuccessDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              getMessageLocalization(
+                msg: msg,
+                context: context,
+              ),
+              style: TextStyle(
+                color: CustomStyle.severityColor[1],
+              ),
             ),
-          ],
-        );
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_error,
+              style: TextStyle(
+                color: CustomStyle.severityColor[3],
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return BlocListener<DeviceBloc, DeviceState>(
+      listener: (context, state) async {
+        if (state.submissionStatus.isSubmissionInProgress) {
+          await _showInProgressDialog();
+        } else if (state.submissionStatus.isSubmissionSuccess) {
+          Navigator.of(context).pop();
+          _showSuccessDialog(state.saveResultMsg);
+          context
+              .read<DeviceBloc>()
+              .add(const DeviceDataRequested(RequestMode.update));
+        } else if (state.submissionStatus.isSubmissionFailure) {
+          Navigator.of(context).pop();
+          _showFailureDialog(state.saveResultMsg);
+          context
+              .read<DeviceBloc>()
+              .add(const DeviceDataRequested(RequestMode.update));
+        }
       },
+      child: _DeviceContent(
+        deviceBlock: deviceBlock,
+      ),
     );
   }
+}
+
+class _DeviceContent extends StatelessWidget {
+  const _DeviceContent({
+    Key? key,
+    required this.deviceBlock,
+  }) : super(key: key);
+
+  final DeviceBlock deviceBlock;
 
   @override
   Widget build(BuildContext context) {
@@ -129,9 +152,13 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
       required bool isEditing,
     }) {
       if (controllerProperty.runtimeType == TextFieldProperty) {
+        TextFieldProperty textFieldProperty =
+            controllerProperty as TextFieldProperty;
+
         return _DeviceTextField(
-          textFieldProperty: controllerProperty as TextFieldProperty,
-          textEditingController: TextEditingController(),
+          textFieldProperty: textFieldProperty,
+          textEditingController: TextEditingController()
+            ..text = textFieldProperty.initValue,
           isEditing: isEditing,
         );
       } else if (controllerProperty.runtimeType == DropDownMenuProperty) {
@@ -225,230 +252,123 @@ class _DeviceSettingFormState extends State<DeviceSettingForm> {
     Widget? _buildFloatingActionButton({
       required bool editable,
       required bool isEditing,
+      required Map<String, String> controllerValues,
     }) {
       return _userFunctionMap[13]
           ? editable
               ? CreateEditingTool(
                   isEditing: isEditing,
-                  pageName: widget.deviceBlock.name,
-                  checkBoxValues: widget.checkBoxValues,
-                  textFieldControllers: widget.textFieldControllers,
-                  radioButtonValues: widget.radioButtonValues,
-                  sliderValues: widget.sliderValues,
-                  dropDownMenuValues: widget.dropDownMenuValues,
-                  controllerInitValues: widget.controllerInitValues,
+                  pageName: deviceBlock.name,
+                  controllerValues: controllerValues,
                 )
               : null
           : null;
     }
 
-    return BlocListener<DeviceBloc, DeviceState>(
-      listener: (context, state) async {
-        if (state.submissionStatus.isSubmissionInProgress) {
-          await _showInProgressDialog();
-        } else if (state.submissionStatus.isSubmissionSuccess) {
-          Navigator.of(context).pop();
-          _showSuccessDialog(state.saveResultMsg);
-          context.read<DeviceBloc>().add(const DeviceDataUpdateRequested());
-        } else if (state.submissionStatus.isSubmissionFailure) {
-          Navigator.of(context).pop();
-          _showFailureDialog(state.saveResultMsg);
-          context.read<DeviceBloc>().add(const DeviceDataUpdateRequested());
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
+          previous.controllerPropertiesCollection !=
+              current.controllerPropertiesCollection,
+      builder: (context, state) {
+        if (state.formStatus.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.formStatus.isRequestSuccess) {
+          return Scaffold(
+              body: _buildBody(
+                controllerPropertiesCollection:
+                    state.controllerPropertiesCollection,
+                isEditing: state.isEditing,
+              ),
+              floatingActionButton: _buildFloatingActionButton(
+                editable: state.editable,
+                isEditing: state.isEditing,
+                controllerValues: state.controllerValues,
+              ));
+        } else {
+          return Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  AppLocalizations.of(context)!
+                      .dialogMessage_DeviceDoesNotRespond,
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
+          );
         }
       },
-      child: BlocBuilder<DeviceBloc, DeviceState>(
-        builder: (BuildContext context, state) {
-          if (state.formStatus.isRequestInProgress) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state.formStatus.isUpdating) {
-            // fetch new values and reset the values in all controllers and init value map
-            // ex: set the value from 1 to 2
-            // if you don't update init value map, the value is still 1
-            // when you set to 1 again, the value will be consider as not change and will not be write to the device
-            widget.controllerInitValues.clear();
-            widget.sliderValues.clear();
-            widget.textFieldControllers.clear();
-            widget.radioButtonValues.clear();
-            widget.checkBoxValues.clear();
-            widget.dropDownMenuValues.clear();
-
-            return Scaffold(
-                body: _buildBody(
-                  controllerPropertiesCollection:
-                      state.controllerPropertiesCollection,
-                  isEditing: state.isEditing,
-                ),
-                floatingActionButton: _buildFloatingActionButton(
-                  editable: state.editable,
-                  isEditing: state.isEditing,
-                ));
-          } else if (state.formStatus.isRequestSuccess) {
-            return Scaffold(
-                body: _buildBody(
-                  controllerPropertiesCollection:
-                      state.controllerPropertiesCollection,
-                  isEditing: state.isEditing,
-                ),
-                floatingActionButton: _buildFloatingActionButton(
-                  editable: state.editable,
-                  isEditing: state.isEditing,
-                ));
-          } else {
-            return Container(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.warning_rounded,
-                    size: 200,
-                    color: Color(0xffffc107),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!
-                        .dialogMessage_DeviceDoesNotRespond,
-                  ),
-                  const SizedBox(height: 40.0),
-                ],
-              ),
-            );
-          }
-        },
-      ),
     );
   }
 }
 
 class CreateEditingTool extends StatelessWidget {
-  const CreateEditingTool({
-    Key? key,
-    required this.isEditing,
-    required this.pageName,
-    required this.checkBoxValues,
-    required this.textFieldControllers,
-    required this.radioButtonValues,
-    required this.sliderValues,
-    required this.dropDownMenuValues,
-    required this.controllerInitValues,
-  }) : super(key: key);
+  const CreateEditingTool(
+      {Key? key,
+      required this.isEditing,
+      required this.pageName,
+      required this.controllerValues})
+      : super(key: key);
 
   final bool isEditing;
   final String pageName;
-  final Map<String, bool> checkBoxValues;
-  final Map<String, TextEditingController> textFieldControllers;
-  final Map<String, String> radioButtonValues;
-  final Map<String, String> sliderValues;
-  final Map<String, String> dropDownMenuValues;
-  final Map<String, String> controllerInitValues;
+  final Map<String, String> controllerValues;
 
   @override
   Widget build(BuildContext context) {
-    return isEditing
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                heroTag: null,
+    return BlocBuilder<DeviceBloc, DeviceState>(
+      builder: (context, state) {
+        return state.isEditing
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () {
+                      context.read<DeviceBloc>().add(const DeviceParamSaved());
+                    },
+                    child: const Icon(CustomIcons.check),
+                    //const Text('Save'),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      backgroundColor: const Color(0x742195F3),
+                      onPressed: () {
+                        context
+                            .read<DeviceBloc>()
+                            .add(const FormStatusChanged(false));
+                      },
+                      child: const Icon(CustomIcons.cancel)),
+                ],
+              )
+            : FloatingActionButton(
                 elevation: 0.0,
                 backgroundColor: const Color(0x742195F3),
                 onPressed: () {
-                  List<Map<String, String>> dataList = [];
-
-                  if (checkBoxValues.isNotEmpty) {
-                    checkBoxValues.forEach((key, value) {
-                      String _binValue = value ? '1' : '0';
-                      if (controllerInitValues[key] != _binValue) {
-                        dataList.add({'oid_id': key, 'value': _binValue});
-                      }
-                    });
-                  }
-
-                  if (textFieldControllers.isNotEmpty) {
-                    if (pageName == 'Description') {
-                      String nameId = '9998';
-                      String descriptionId = '9999';
-                      dataList.add({
-                        'oid_id': nameId,
-                        'value': textFieldControllers[nameId]!.text
-                      });
-                      dataList.add({
-                        'oid_id': descriptionId,
-                        'value': textFieldControllers[descriptionId]!.text
-                      });
-                    } else {
-                      textFieldControllers.forEach((key, value) {
-                        if (controllerInitValues[key] != value.text) {
-                          dataList.add({'oid_id': key, 'value': value.text});
-                        }
-                      });
-                    }
-                  }
-
-                  if (radioButtonValues.isNotEmpty) {
-                    radioButtonValues.forEach((key, value) {
-                      if (controllerInitValues[key] != value) {
-                        dataList.add({'oid_id': key, 'value': value});
-                      }
-                    });
-                  }
-
-                  if (sliderValues.isNotEmpty) {
-                    sliderValues.forEach((key, value) {
-                      if (controllerInitValues[key] != value) {
-                        dataList
-                            .add({'oid_id': key, 'value': value.toString()});
-                      }
-                    });
-                  }
-
-                  if (dropDownMenuValues.isNotEmpty) {
-                    dropDownMenuValues.forEach((key, value) {
-                      if (controllerInitValues[key] != value) {
-                        dataList.add({'oid_id': key, 'value': value});
-                      }
-                    });
-                  }
-
-                  if (kDebugMode) {
-                    for (var element in dataList) {
-                      element.forEach((key, value) => print('$key : $value'));
-                    }
-                  }
-                  context.read<DeviceBloc>().add(DeviceParamSaved(dataList));
-
-                  //widget.isEditing = false;
-                  //_showSuccessDialog();},
+                  context.read<DeviceBloc>().add(const FormStatusChanged(true));
                 },
-                child: const Icon(CustomIcons.check),
-                //const Text('Save'),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(6.0),
-              ),
-              FloatingActionButton(
-                  heroTag: null,
-                  elevation: 0.0,
-                  backgroundColor: const Color(0x742195F3),
-                  onPressed: () {
-                    context
-                        .read<DeviceBloc>()
-                        .add(const FormStatusChanged(false));
-                  },
-                  child: const Icon(CustomIcons.cancel)),
-            ],
-          )
-        : FloatingActionButton(
-            elevation: 0.0,
-            backgroundColor: const Color(0x742195F3),
-            onPressed: () {
-              context.read<DeviceBloc>().add(const FormStatusChanged(true));
-            },
-            child: const Icon(Icons.edit),
-          );
+                child: const Icon(Icons.edit),
+              );
+      },
+    );
   }
 }
 
@@ -516,8 +436,7 @@ class _DeviceTextField extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: TextField(
                 key: Key(textFieldProperty.oid),
-                controller: textEditingController
-                  ..text = textFieldProperty.initValue,
+                controller: textEditingController,
                 textAlign: textFieldProperty.textAlign,
                 maxLines: textFieldProperty.maxLine,
                 enabled: isEditing && !textFieldProperty.readOnly,
@@ -725,7 +644,7 @@ class _DeviceSlider extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    sliderProperty.initValue,
+                    state.controllerValues[sliderProperty.oid]!,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: sliderProperty.fontSize),
                   ),
@@ -758,47 +677,51 @@ class _DeviceDropDownMenu extends StatelessWidget {
           previous.controllerValues[dropDownMenuProperty.oid] !=
               current.controllerValues[dropDownMenuProperty.oid],
       builder: (context, state) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-              color: isEditing && !dropDownMenuProperty.readOnly
-                  ? Colors.white
-                  : Colors.grey.shade300),
-          child: InputDecorator(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-              isDense: true,
-              contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton(
+        return Expanded(
+          flex: dropDownMenuProperty.boxLength,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+                color: isEditing && !dropDownMenuProperty.readOnly
+                    ? Colors.white
+                    : Colors.grey.shade300),
+            child: InputDecorator(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                 isDense: true,
-                isExpanded: true,
-                icon: const Icon(Icons.keyboard_arrow_down),
-                value: state.controllerValues[dropDownMenuProperty.oid],
-                items: [
-                  for (MapEntry<String, String> entry
-                      in dropDownMenuProperty.items.entries)
-                    DropdownMenuItem(
-                      value: entry.key,
-                      child: Center(
-                        child: Text(
-                          entry.value,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: dropDownMenuProperty.fontSize,
-                              color: isEditing && !dropDownMenuProperty.readOnly
-                                  ? Colors.black
-                                  : Colors.black),
+                contentPadding: EdgeInsets.fromLTRB(1.0, 0, 0, 0),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton(
+                  isDense: true,
+                  isExpanded: true,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  value: state.controllerValues[dropDownMenuProperty.oid],
+                  items: [
+                    for (MapEntry<String, String> entry
+                        in dropDownMenuProperty.items.entries)
+                      DropdownMenuItem(
+                        value: entry.key,
+                        child: Center(
+                          child: Text(
+                            entry.value,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: dropDownMenuProperty.fontSize,
+                                color:
+                                    isEditing && !dropDownMenuProperty.readOnly
+                                        ? Colors.black
+                                        : Colors.black),
+                          ),
                         ),
-                      ),
-                    )
-                ],
-                onChanged: isEditing && !dropDownMenuProperty.readOnly
-                    ? (String? value) {
-                        context.read<DeviceBloc>().add(ControllerValueChanged(
-                            dropDownMenuProperty.oid, value!));
-                      }
-                    : null,
+                      )
+                  ],
+                  onChanged: isEditing && !dropDownMenuProperty.readOnly
+                      ? (String? value) {
+                          context.read<DeviceBloc>().add(ControllerValueChanged(
+                              dropDownMenuProperty.oid, value!));
+                        }
+                      : null,
+                ),
               ),
             ),
           ),

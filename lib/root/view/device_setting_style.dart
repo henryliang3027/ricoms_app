@@ -8,6 +8,7 @@ class DeviceSettingStyle {
     required dynamic e,
     required List<ControllerProperty> controllerProperties,
     required Map<String, String> controllerValues,
+    required Map<String, String> controllerInitialValues,
   }) {
     int style = e['style'] ?? -1;
     int length = e['length'] ?? 1;
@@ -31,7 +32,10 @@ class DeviceSettingStyle {
           fontSize: font,
         );
         controllerProperties.add(textFieldProperty);
+
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
+
         break;
       case 1: //下拉式功能表
         List parameter = jsonDecode(rawParameter.replaceAll('\'', '\"'));
@@ -48,6 +52,7 @@ class DeviceSettingStyle {
 
         controllerProperties.add(dropDownMenuProperty);
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
         break;
 
       case 2: //±值功能表
@@ -76,6 +81,7 @@ class DeviceSettingStyle {
 
         controllerProperties.add(sliderProperty);
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
         break;
 
       case 3: //單選按鈕組(radio button list)
@@ -95,6 +101,7 @@ class DeviceSettingStyle {
 
         controllerProperties.add(radioButtonProperty);
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
         break;
 
       case 98: //區塊型欄位表單 (TextArea)
@@ -108,7 +115,10 @@ class DeviceSettingStyle {
           textAlign: TextAlign.left,
         );
         controllerProperties.add(textFieldProperty);
+
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
+
         break;
 
       case 99: //勾選方塊
@@ -121,6 +131,7 @@ class DeviceSettingStyle {
         );
         controllerProperties.add(checkBoxProperty);
         controllerValues[id] = value;
+        controllerInitialValues[id] = value;
         break;
 
       case 100: //文字標籤 - 白底黑字

@@ -8,6 +8,7 @@ class DeviceState extends Equatable {
     this.data = const [],
     this.editable = false,
     this.isEditing = false,
+    this.controllerInitialValues = const <String, String>{},
     this.controllerValues = const <String, String>{},
     this.controllerPropertiesCollection = const [],
   });
@@ -18,6 +19,7 @@ class DeviceState extends Equatable {
   final List data;
   final bool editable;
   final bool isEditing;
+  final Map<String, String> controllerInitialValues;
   final Map<String, String> controllerValues;
   final List<List<ControllerProperty>> controllerPropertiesCollection;
 
@@ -28,6 +30,7 @@ class DeviceState extends Equatable {
     List? data,
     bool? editable,
     bool? isEditing,
+    Map<String, String>? controllerInitialValues,
     Map<String, String>? controllerValues,
     List<List<ControllerProperty>>? controllerPropertiesCollection,
   }) {
@@ -38,6 +41,8 @@ class DeviceState extends Equatable {
       data: data ?? this.data,
       editable: editable ?? this.editable,
       isEditing: isEditing ?? this.isEditing,
+      controllerInitialValues:
+          controllerInitialValues ?? this.controllerInitialValues,
       controllerValues: controllerValues ?? this.controllerValues,
       controllerPropertiesCollection:
           controllerPropertiesCollection ?? this.controllerPropertiesCollection,
@@ -53,6 +58,7 @@ class DeviceState extends Equatable {
         editable,
         isEditing,
         controllerPropertiesCollection,
+        controllerInitialValues,
         controllerValues,
       ];
 }

@@ -7,6 +7,7 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
@@ -28,13 +29,15 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     on<DeviceParamSaved>(_onDeviceParamSaved);
     on<ControllerValueChanged>(_onControllerValueChanged);
 
-    add(const DeviceDataRequested());
+    add(const DeviceDataRequested(RequestMode.initial));
     _dataStreamSubscription = _dataStream.listen((count) {
       if (kDebugMode) {
         print(
             'Device Setting update trigger times: $count, current state: ${_deviceBlock.name} => isEditing : ${state.isEditing}');
       }
-      state.isEditing == false ? add(const DeviceDataUpdateRequested()) : null;
+      state.isEditing == false
+          ? add(const DeviceDataRequested(RequestMode.update))
+          : null;
     });
   }
 
@@ -57,21 +60,21 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     DeviceDataRequested event,
     Emitter<DeviceState> emit,
   ) async {
-    emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
-    ));
+    if (event.requestMode == RequestMode.initial) {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestInProgress,
+      ));
+    }
 
     List<List<ControllerProperty>> controllerPropertiesCollection = [];
     Map<String, String> controllerValues = {};
+    Map<String, String> controllerInitialValues = {};
 
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
       nodeId: _nodeId,
       pageId: _deviceBlock.id,
     );
-
-    //bool isEditable = _deviceRepository.isEditable(_pageName);
-
     if (data is List) {
       for (List item in data) {
         List<ControllerProperty> controllerProperties = [];
@@ -80,6 +83,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
             e: e,
             controllerProperties: controllerProperties,
             controllerValues: controllerValues,
+            controllerInitialValues: controllerInitialValues,
           );
         }
         controllerPropertiesCollection.add(controllerProperties);
@@ -91,6 +95,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         data: data,
         controllerPropertiesCollection: controllerPropertiesCollection,
         controllerValues: controllerValues,
+        controllerInitialValues: controllerInitialValues,
         editable: _deviceBlock.editable,
       ));
     } else {
@@ -140,11 +145,21 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     Emitter<DeviceState> emit,
   ) {
     // emit(state.copyWith(formStatus: FormStatus.requestInProgress));
-    emit(state.copyWith(
-      formStatus: FormStatus.requestSuccess,
-      submissionStatus: SubmissionStatus.none,
-      isEditing: event.isEditing,
-    ));
+
+    if (event.isEditing) {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        isEditing: event.isEditing,
+      ));
+    } else {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        controllerValues: state.controllerInitialValues,
+        isEditing: event.isEditing,
+      ));
+    }
   }
 
   void _onControllerValueChanged(
@@ -170,8 +185,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     List result = [];
     if (_deviceBlock.name == 'Description') {
-      String name = event.param[0]['value']!;
-      String description = event.param[1]['value']!;
+      String name = state.controllerValues['9998']!;
+      String description = state.controllerValues['9999']!;
       result = await _deviceRepository.setDeviceDescription(
         user: _user,
         nodeId: _nodeId,
@@ -179,10 +194,21 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         description: description,
       );
     } else {
+      List<Map<String, String>> params = [];
+
+      for (MapEntry entry in state.controllerValues.entries) {
+        if (entry.value != state.controllerInitialValues[entry.key]) {
+          params.add({
+            "oid_id": entry.key,
+            "value": entry.value,
+          });
+        }
+      }
+
       result = await _deviceRepository.setDeviceParams(
         user: _user,
         nodeId: _nodeId,
-        params: event.param,
+        params: params,
       );
     }
 
