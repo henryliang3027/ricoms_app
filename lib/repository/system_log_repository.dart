@@ -291,7 +291,7 @@ class SystemLogRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      f.writeAsString(csv);
+      await f.writeAsString(csv);
       return [
         true,
         'Export system logs success',
@@ -327,7 +327,7 @@ class SystemLogRepository {
           }
           String fullWrittenPath = '$externalAppFolderPath/$filename';
           File file = File(fullWrittenPath);
-          file.writeAsString(csv);
+          await file.writeAsString(csv);
           return [
             true,
             'Export system log data success',
