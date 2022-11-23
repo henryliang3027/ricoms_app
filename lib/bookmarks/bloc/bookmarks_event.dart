@@ -35,7 +35,16 @@ class BookmarksItemToggled extends BookmarksEvent {
 }
 
 class BookmarksDeleted extends BookmarksEvent {
-  const BookmarksDeleted();
+  const BookmarksDeleted(this.device);
+
+  final Device device;
+
+  @override
+  List<Object?> get props => [device];
+}
+
+class MultipleBookmarksDeleted extends BookmarksEvent {
+  const MultipleBookmarksDeleted();
 
   @override
   List<Object?> get props => [];
