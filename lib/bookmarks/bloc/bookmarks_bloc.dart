@@ -19,6 +19,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     on<BookmarksDeletedModeEnabled>(_onBookmarksDeletedModeEnabled);
     on<BookmarksDeletedModeDisabled>(_onBookmarksDeletedModeDisabled);
     on<BookmarksDeleted>(_onBookmarksDeleted);
+    on<MultipleBookmarksDeleted>(_onMultipleBookmarksDeleted);
     on<BookmarksItemToggled>(_onBookmarksItemToggled);
     on<DeviceStatusChecked>(_onDeviceStatusChecked);
 
@@ -81,6 +82,53 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
   Future<void> _onBookmarksDeleted(
     BookmarksDeleted event,
+    Emitter<BookmarksState> emit,
+  ) async {
+    emit(state.copyWith(
+      deviceDeleteStatus: FormStatus.none,
+      targetDeviceStatus: FormStatus.none,
+      formStatus: FormStatus.requestInProgress,
+    ));
+
+    List<dynamic> resultOfDelete = await _bookmarksRepository.deleteDevices(
+      user: _user,
+      devices: [event.device],
+    );
+
+    if (resultOfDelete[0]) {
+      List<dynamic> resultOfRetrieve =
+          await _bookmarksRepository.getBookmarks(user: _user);
+
+      if (resultOfRetrieve[0]) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          deviceDeleteStatus: FormStatus.requestSuccess,
+          devices: resultOfRetrieve[1],
+          selectedDevices: const [],
+          isDeleteMode: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          deviceDeleteStatus: FormStatus.requestSuccess,
+          requestErrorMsg: resultOfRetrieve[1],
+          selectedDevices: const [],
+          isDeleteMode: false,
+        ));
+      }
+    } else {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestFailure,
+        deviceDeleteStatus: FormStatus.requestFailure,
+        deleteResultMsg: resultOfDelete[1],
+        selectedDevices: const [],
+        isDeleteMode: false,
+      ));
+    }
+  }
+
+  Future<void> _onMultipleBookmarksDeleted(
+    MultipleBookmarksDeleted event,
     Emitter<BookmarksState> emit,
   ) async {
     emit(state.copyWith(

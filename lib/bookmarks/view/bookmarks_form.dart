@@ -107,7 +107,7 @@ class BookmarksForm extends StatelessWidget {
 }
 
 enum Menu {
-  delete,
+  deleteAll,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -124,7 +124,7 @@ class _PopupMenu extends StatelessWidget {
           tooltip: '',
           onSelected: (Menu item) async {
             switch (item) {
-              case Menu.delete:
+              case Menu.deleteAll:
                 context
                     .read<BookmarksBloc>()
                     .add(const BookmarksDeletedModeEnabled());
@@ -135,7 +135,7 @@ class _PopupMenu extends StatelessWidget {
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
             PopupMenuItem<Menu>(
-              value: Menu.delete,
+              value: Menu.deleteAll,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -148,7 +148,7 @@ class _PopupMenu extends StatelessWidget {
                   const SizedBox(
                     width: 10.0,
                   ),
-                  Text(AppLocalizations.of(context)!.delete),
+                  Text(AppLocalizations.of(context)!.deleteAll),
                 ],
               ),
             ),
@@ -210,6 +210,18 @@ class _DeviceSliverList extends StatelessWidget {
                         pageController,
                       ));
                 }
+              },
+              onLongPress: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<BookmarksBloc>(),
+                    child: _BookmarksEditBottomMenu(
+                      superContext: context,
+                      device: device,
+                    ),
+                  ),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -420,7 +432,7 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
                         result
                             ? context
                                 .read<BookmarksBloc>()
-                                .add(const BookmarksDeleted())
+                                .add(const MultipleBookmarksDeleted())
                             : null;
                       }
                     },
@@ -453,5 +465,126 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
             return const Center();
           }
         });
+  }
+}
+
+class _BookmarksEditBottomMenu extends StatelessWidget {
+  const _BookmarksEditBottomMenu({
+    Key? key,
+    required this.superContext,
+    required this.device,
+  }) : super(key: key);
+
+  final BuildContext superContext;
+  final Device device;
+
+  @override
+  Widget build(BuildContext context) {
+    Future<bool?> _showConfirmDeleteDialog(Device device) async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_deleteBookmark,
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeDelete,
+                          style: const TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        TextSpan(
+                          text: device.name,
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' ?',
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.confirmDeleted,
+                  style: TextStyle(
+                    color: CustomStyle.severityColor[3],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return Wrap(
+      children: [
+        ListTile(
+          dense: true,
+          leading: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300, shape: BoxShape.circle),
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 24.0,
+                height: 24.0,
+                child: Icon(
+                  Icons.delete,
+                  size: 20.0,
+                ),
+              ),
+            ),
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.delete,
+            style: const TextStyle(fontSize: CommonStyle.sizeM),
+          ),
+          onTap: () async {
+            Navigator.pop(context);
+
+            bool? result = await _showConfirmDeleteDialog(device);
+            if (result != null) {
+              result
+                  ? superContext
+                      .read<BookmarksBloc>()
+                      .add((BookmarksDeleted(device)))
+                  : null;
+            }
+          },
+        ),
+      ],
+    );
   }
 }
