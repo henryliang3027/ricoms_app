@@ -6,9 +6,19 @@ import 'package:ricoms_app/history/model/search_critria.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 part 'history_event.dart';
 part 'history_state.dart';
+
+const throttleDuration = Duration(milliseconds: 1000);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   HistoryBloc({
@@ -19,10 +29,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         super(const HistoryState()) {
     on<HistoryRequested>(_onHistoryRequested);
     on<MoreRecordsRequested>(_onMoreRecordsRequested);
-    on<DeviceStatusChecked>(_onDeviceStatusChecked);
+
     on<HistoryRecordsExported>(_onHistoryRecordsExported);
     on<FloatingActionButtonHided>(_onFloatingActionButtonHided);
     on<FloatingActionButtonShowed>(_onFloatingActionButtonShowed);
+    on<DeviceStatusChecked>(
+      _onDeviceStatusChecked,
+      transformer: throttleDroppable(throttleDuration),
+    );
 
     add(HistoryRequested(SearchCriteria(
       startDate: DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
