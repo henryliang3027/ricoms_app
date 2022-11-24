@@ -18,10 +18,12 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     required DeviceRepository deviceRepository,
     required int nodeId,
     required DeviceBlock deviceBlock,
+    required VoidCallback descriptionChangedNotifier,
   })  : _user = user,
         _deviceRepository = deviceRepository,
         _nodeId = nodeId,
         _deviceBlock = deviceBlock,
+        _descriptionChangedNotifier = descriptionChangedNotifier,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceDataUpdateRequested>(_onDeviceDataUpdateRequested);
@@ -45,10 +47,40 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   final DeviceRepository _deviceRepository;
   final int _nodeId;
   final DeviceBlock _deviceBlock;
+  final VoidCallback _descriptionChangedNotifier;
 
   final _dataStream =
       Stream<int>.periodic(const Duration(seconds: 5), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
+
+  Future<bool> _getControllerData({
+    required List<List<ControllerProperty>> controllerPropertiesCollection,
+    required Map<String, String> controllerValues,
+    required Map<String, String> controllerInitialValues,
+  }) async {
+    dynamic data = await _deviceRepository.getDevicePage(
+      user: _user,
+      nodeId: _nodeId,
+      pageId: _deviceBlock.id,
+    );
+    if (data is List) {
+      for (List item in data) {
+        List<ControllerProperty> controllerProperties = [];
+        for (var e in item) {
+          DeviceSettingStyle.getSettingData(
+            e: e,
+            controllerProperties: controllerProperties,
+            controllerValues: controllerValues,
+            controllerInitialValues: controllerInitialValues,
+          );
+        }
+        controllerPropertiesCollection.add(controllerProperties);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Future<void> close() {
@@ -70,29 +102,16 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     Map<String, String> controllerValues = {};
     Map<String, String> controllerInitialValues = {};
 
-    dynamic data = await _deviceRepository.getDevicePage(
-      user: _user,
-      nodeId: _nodeId,
-      pageId: _deviceBlock.id,
+    bool resultOfGetControllerData = await _getControllerData(
+      controllerPropertiesCollection: controllerPropertiesCollection,
+      controllerValues: controllerValues,
+      controllerInitialValues: controllerInitialValues,
     );
-    if (data is List) {
-      for (List item in data) {
-        List<ControllerProperty> controllerProperties = [];
-        for (var e in item) {
-          DeviceSettingStyle.getSettingData(
-            e: e,
-            controllerProperties: controllerProperties,
-            controllerValues: controllerValues,
-            controllerInitialValues: controllerInitialValues,
-          );
-        }
-        controllerPropertiesCollection.add(controllerProperties);
-      }
 
+    if (resultOfGetControllerData) {
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
-        data: data,
         controllerPropertiesCollection: controllerPropertiesCollection,
         controllerValues: controllerValues,
         controllerInitialValues: controllerInitialValues,
@@ -102,7 +121,6 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
-        data: [data],
         editable: _deviceBlock.editable,
       ));
     }
@@ -127,14 +145,12 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       emit(state.copyWith(
         formStatus: FormStatus.updating,
         submissionStatus: SubmissionStatus.none,
-        data: data,
         editable: _deviceBlock.editable,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
-        data: [data],
         editable: _deviceBlock.editable,
       ));
     }
@@ -147,12 +163,14 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     // emit(state.copyWith(formStatus: FormStatus.requestInProgress));
 
     if (event.isEditing) {
+      _dataStreamSubscription?.pause();
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         isEditing: event.isEditing,
       ));
     } else {
+      _dataStreamSubscription?.resume();
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
@@ -213,12 +231,40 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     }
 
     if (result[0] == true) {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.submissionSuccess,
-        saveResultMsg: result[1],
-        isEditing: false,
-      ));
+      List<List<ControllerProperty>> controllerPropertiesCollection = [];
+      Map<String, String> controllerValues = {};
+      Map<String, String> controllerInitialValues = {};
+
+      bool resultOfGetControllerData = await _getControllerData(
+        controllerPropertiesCollection: controllerPropertiesCollection,
+        controllerValues: controllerValues,
+        controllerInitialValues: controllerInitialValues,
+      );
+
+      if (resultOfGetControllerData) {
+        _dataStreamSubscription?.resume();
+
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.submissionSuccess,
+          saveResultMsg: result[1],
+          controllerPropertiesCollection: controllerPropertiesCollection,
+          controllerValues: controllerValues,
+          controllerInitialValues: controllerInitialValues,
+          isEditing: false,
+        ));
+
+        if (_deviceBlock.name == 'Description') {
+          _descriptionChangedNotifier();
+        }
+      } else {
+        _dataStreamSubscription?.resume();
+        emit(state.copyWith(
+          submissionStatus: SubmissionStatus.submissionFailure,
+          saveResultMsg: result[1],
+        ));
+      }
     } else {
+      _dataStreamSubscription?.resume();
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionFailure,
         saveResultMsg: result[1],

@@ -106,13 +106,13 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       final dataStream =
           Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
 
-      _dataStreamSubscription?.cancel();
-      _dataStreamSubscription = dataStream.listen((count) {
-        if (kDebugMode) {
-          print('Device type node updated trigger times: $count');
-        }
-        add(const DeviceTypeNodeUpdated());
-      });
+      // _dataStreamSubscription?.cancel();
+      // _dataStreamSubscription = dataStream.listen((count) {
+      //   if (kDebugMode) {
+      //     print('Device type node updated trigger times: $count');
+      //   }
+      //   add(const DeviceTypeNodeUpdated());
+      // });
 
       if (result[0]) {
         if (result[1] == '') {
@@ -282,15 +282,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
 
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    // final dataStream =
+    //     Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
 
-    _dataStreamSubscription = dataStream.listen((count) {
-      if (kDebugMode) {
-        print('Device type node updated trigger times: $count');
-      }
-      add(const DeviceTypeNodeUpdated());
-    });
+    // _dataStreamSubscription = dataStream.listen((count) {
+    //   if (kDebugMode) {
+    //     print('Device type node updated trigger times: $count');
+    //   }
+    //   add(const DeviceTypeNodeUpdated());
+    // });
 
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
@@ -450,15 +450,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(path[0]);
 
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    // final dataStream =
+    //     Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
 
-    _dataStreamSubscription = dataStream.listen((count) {
-      if (kDebugMode) {
-        print('Device type node updated trigger times: $count');
-      }
-      add(const DeviceTypeNodeUpdated());
-    });
+    // _dataStreamSubscription = dataStream.listen((count) {
+    //   if (kDebugMode) {
+    //     print('Device type node updated trigger times: $count');
+    //   }
+    //   add(const DeviceTypeNodeUpdated());
+    // });
 
     if (result[0]) {
       if (result[1] is List) {

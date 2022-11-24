@@ -5,7 +5,6 @@ class DeviceState extends Equatable {
     this.formStatus = FormStatus.requestInProgress,
     this.submissionStatus = SubmissionStatus.none,
     this.saveResultMsg = '',
-    this.data = const [],
     this.editable = false,
     this.isEditing = false,
     this.controllerInitialValues = const <String, String>{},
@@ -16,7 +15,6 @@ class DeviceState extends Equatable {
   final FormStatus formStatus;
   final SubmissionStatus submissionStatus;
   final String saveResultMsg;
-  final List data;
   final bool editable;
   final bool isEditing;
   final Map<String, String> controllerInitialValues;
@@ -27,7 +25,6 @@ class DeviceState extends Equatable {
     FormStatus? formStatus,
     SubmissionStatus? submissionStatus,
     String? saveResultMsg,
-    List? data,
     bool? editable,
     bool? isEditing,
     Map<String, String>? controllerInitialValues,
@@ -38,7 +35,6 @@ class DeviceState extends Equatable {
       formStatus: formStatus ?? this.formStatus,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       saveResultMsg: saveResultMsg ?? this.saveResultMsg,
-      data: data ?? this.data,
       editable: editable ?? this.editable,
       isEditing: isEditing ?? this.isEditing,
       controllerInitialValues:
@@ -54,7 +50,6 @@ class DeviceState extends Equatable {
         formStatus,
         submissionStatus,
         saveResultMsg,
-        data,
         editable,
         isEditing,
         controllerPropertiesCollection,

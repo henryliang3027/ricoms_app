@@ -388,8 +388,12 @@ class _NodeContent extends StatelessWidget {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       if (state.formStatus.isRequestSuccess) {
         if (state.directory.last.type == 2 || state.directory.last.type == 5) {
+          descriptionChangeNotifier() =>
+              context.read<RootBloc>().add(const DeviceTypeNodeUpdated());
+
           return Expanded(
             child: DeviceSettingTabBar(
+              descriptionChangedNotifier: descriptionChangeNotifier,
               node: state.directory.last,
             ),
           );

@@ -14,9 +14,11 @@ import 'package:ricoms_app/utils/message_localization.dart';
 class DeviceSettingTabBar extends StatelessWidget {
   const DeviceSettingTabBar({
     Key? key,
+    required this.descriptionChangedNotifier,
     required this.node,
   }) : super(key: key);
 
+  final VoidCallback descriptionChangedNotifier;
   final Node node;
 
   @override
@@ -115,6 +117,8 @@ class DeviceSettingTabBar extends StatelessWidget {
                         if (isA8KPCM2()) ...[
                           for (DeviceBlock deviceBlock in deviceBlocks) ...[
                             DeviceSettingPage(
+                              descriptionChangedNotifier:
+                                  descriptionChangedNotifier,
                               deviceBlock: deviceBlock,
                               nodeId: node.id,
                             )
@@ -128,6 +132,8 @@ class DeviceSettingTabBar extends StatelessWidget {
                                     nodeName: node.name,
                                   )
                                 : DeviceSettingPage(
+                                    descriptionChangedNotifier:
+                                        descriptionChangedNotifier,
                                     deviceBlock: deviceBlock,
                                     nodeId: node.id,
                                   )
@@ -184,10 +190,12 @@ class DeviceSettingTabBar extends StatelessWidget {
 class DeviceSettingPage extends StatelessWidget {
   const DeviceSettingPage({
     Key? key,
+    required this.descriptionChangedNotifier,
     required this.nodeId,
     required this.deviceBlock,
   }) : super(key: key);
 
+  final VoidCallback descriptionChangedNotifier;
   final int nodeId;
   final DeviceBlock deviceBlock;
 
@@ -199,6 +207,7 @@ class DeviceSettingPage extends StatelessWidget {
         deviceRepository: RepositoryProvider.of<DeviceRepository>(context),
         nodeId: nodeId,
         deviceBlock: deviceBlock,
+        descriptionChangedNotifier: descriptionChangedNotifier,
       ),
       child: DeviceSettingForm(
         nodeId: nodeId,
