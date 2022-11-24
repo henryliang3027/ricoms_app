@@ -8,9 +8,19 @@ import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_request.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 part 'real_time_alarm_event.dart';
 part 'real_time_alarm_state.dart';
+
+const throttleDuration = Duration(milliseconds: 1000);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
   RealTimeAlarmBloc({
@@ -25,7 +35,10 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     on<NormalAlarmRequested>(_onNormalAlarmRequested);
     on<NoticeAlarmRequested>(_onNoticeAlarmRequested);
     on<AlarmPeriodicUpdated>(_onAlarmPeriodicUpdated);
-    on<CheckDeviceStatus>(_onCheckDeviceStatus);
+    on<CheckDeviceStatus>(
+      _onCheckDeviceStatus,
+      transformer: throttleDroppable(throttleDuration),
+    );
 
     add(const AllAlarmRequested(RequestMode.initial));
     add(const CriticalAlarmRequested(RequestMode.initial));

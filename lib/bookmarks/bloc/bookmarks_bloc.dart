@@ -4,9 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 part 'bookmarks_event.dart';
 part 'bookmarks_state.dart';
+
+const throttleDuration = Duration(milliseconds: 1000);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   BookmarksBloc({
@@ -21,7 +31,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     on<BookmarksDeleted>(_onBookmarksDeleted);
     on<MultipleBookmarksDeleted>(_onMultipleBookmarksDeleted);
     on<BookmarksItemToggled>(_onBookmarksItemToggled);
-    on<DeviceStatusChecked>(_onDeviceStatusChecked);
+    on<DeviceStatusChecked>(
+      _onDeviceStatusChecked,
+      transformer: throttleDroppable(throttleDuration),
+    );
 
     add(const BookmarksRequested());
   }
