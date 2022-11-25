@@ -392,7 +392,7 @@ class _DeviceText extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: Container(
-                // alignment: Alignment.center,
+                alignment: textProperty.alignment,
                 decoration: BoxDecoration(
                   color: textProperty.boxColor,
                   border: Border.all(color: textProperty.borderColor),

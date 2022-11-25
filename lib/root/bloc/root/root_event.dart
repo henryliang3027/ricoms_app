@@ -5,12 +5,13 @@ abstract class RootEvent extends Equatable {
 }
 
 class ChildDataRequested extends RootEvent {
-  const ChildDataRequested(this.parent);
+  const ChildDataRequested(this.parent, this.requestMode);
 
   final Node parent;
+  final RequestMode requestMode;
 
   @override
-  List<Object?> get props => [parent];
+  List<Object?> get props => [parent, requestMode];
 }
 
 class ChildDataUpdated extends RootEvent {

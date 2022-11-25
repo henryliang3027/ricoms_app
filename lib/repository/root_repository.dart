@@ -14,7 +14,10 @@ import 'package:ricoms_app/utils/storage_permission.dart';
 class RootRepository {
   RootRepository();
 
-  Future<dynamic> getChilds({required User user, required int parentId}) async {
+  Future<dynamic> getChilds({
+    required User user,
+    required int parentId,
+  }) async {
     Dio dio = Dio();
     dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
@@ -22,7 +25,9 @@ class RootRepository {
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
 
     try {
-      Response response = await dio.get(childsPath);
+      Response response = await dio.get(
+        childsPath,
+      );
 
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());

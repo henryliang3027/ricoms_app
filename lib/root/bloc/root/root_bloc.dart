@@ -6,6 +6,7 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:stream_transform/stream_transform.dart';
 part 'root_event.dart';
 part 'root_state.dart';
@@ -33,17 +34,28 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
-    on<ChildDataUpdated>(_onChildDataUpdated);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
     on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
 
-    add(const ChildDataRequested(Node(
-      id: 0,
-      type: 1,
-      name: 'Root',
-    )));
+    add(const ChildDataRequested(
+        Node(
+          id: 0,
+          type: 1,
+          name: 'Root',
+        ),
+        RequestMode.initial));
+
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      add(ChildDataRequested(state.directory.last, RequestMode.update));
+    });
   }
 
   final User _user;
@@ -62,21 +74,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-    _dataStreamSubscription?.cancel();
-    _dataStreamSubscription = dataStream.listen((count) {
-      if (kDebugMode) {
-        print('Root update trigger times: $count');
-      }
-      add(const ChildDataUpdated());
-    });
-
-    // emit(state.copyWith(
-    //   formStatus: FormStatus.requestInProgress,
-    //   submissionStatus: SubmissionStatus.none,
-    // ));
+    if (event.requestMode == RequestMode.initial) {
+      emit(state.copyWith(
+        formStatus: FormStatus.requestInProgress,
+        submissionStatus: SubmissionStatus.none,
+      ));
+    }
 
     dynamic data = await _rootRepository.getChilds(
       user: _user,
@@ -102,17 +105,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           directory: directory, path: _initialPath!);
 
       bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
-
-      final dataStream =
-          Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-      // _dataStreamSubscription?.cancel();
-      // _dataStreamSubscription = dataStream.listen((count) {
-      //   if (kDebugMode) {
-      //     print('Device type node updated trigger times: $count');
-      //   }
-      //   add(const DeviceTypeNodeUpdated());
-      // });
 
       if (result[0]) {
         if (result[1] == '') {
@@ -158,47 +150,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           errmsg: data,
         ));
       }
-    }
-  }
-
-  Future<void> _onChildDataUpdated(
-    ChildDataUpdated event,
-    Emitter<RootState> emit,
-  ) async {
-    // Ｔhe directory is empty because of no internet and user reload the page (switch back from another page)
-
-    // List<Node> directory = [];
-
-    // if (state.directory.isNotEmpty) {
-    //   directory.addAll(state.directory);
-    // } else {
-    //   directory.add(const Node(
-    //     id: 0,
-    //     type: 1,
-    //     name: 'Root',
-    //   ));
-    // }
-
-    var resultOfChilds = await _rootRepository.getChilds(
-      user: _user,
-      parentId: state.directory.last.id,
-    );
-
-    if (resultOfChilds is List) {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        data: resultOfChilds,
-        directory: state.directory,
-      ));
-    } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        submissionStatus: SubmissionStatus.none,
-        nodesExportStatus: FormStatus.none,
-        errmsg: resultOfChilds,
-      ));
     }
   }
 
@@ -281,16 +232,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         : null;
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
-
-    // final dataStream =
-    //     Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-    // _dataStreamSubscription = dataStream.listen((count) {
-    //   if (kDebugMode) {
-    //     print('Device type node updated trigger times: $count');
-    //   }
-    //   add(const DeviceTypeNodeUpdated());
-    // });
 
     emit(state.copyWith(
       formStatus: FormStatus.requestSuccess,
@@ -450,16 +391,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     bool isAddedToBookmarks = _checkDeviceInBookmarks(path[0]);
 
-    // final dataStream =
-    //     Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-    // _dataStreamSubscription = dataStream.listen((count) {
-    //   if (kDebugMode) {
-    //     print('Device type node updated trigger times: $count');
-    //   }
-    //   add(const DeviceTypeNodeUpdated());
-    // });
-
     if (result[0]) {
       if (result[1] is List) {
         // node
@@ -480,9 +411,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     } else {
       // already handle in realtimealarm bloc
     }
-
-    //avoid user click node and dataStream trigger at the same time, reaume update periodic
-    //_dataStreamSubscription?.resume();
   }
 
   bool _checkDeviceInBookmarks(int nodeId) {
