@@ -179,21 +179,28 @@ class _HistoryFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(
-      buildWhen: (previous, current) =>
-          previous.isShowFloatingActionButton !=
-          current.isShowFloatingActionButton,
       builder: (context, state) {
         return Visibility(
           visible: state.isShowFloatingActionButton,
           child: FloatingActionButton(
             elevation: 0.0,
             backgroundColor: const Color(0x742195F3),
-            onPressed: () {
-              context
-                  .read<HistoryBloc>()
-                  .add(MoreRecordsRequested(state.records.last.trapId));
-            },
-            child: const Icon(Icons.add),
+            onPressed: !state.moreRecordsStatus.isRequestInProgress
+                ? () {
+                    context
+                        .read<HistoryBloc>()
+                        .add(MoreRecordsRequested(state.records.last.trapId));
+                  }
+                : null,
+            child: state.moreRecordsStatus.isRequestInProgress
+                ? const SizedBox(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.add),
           ),
         );
       },

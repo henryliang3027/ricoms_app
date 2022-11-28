@@ -180,21 +180,28 @@ class _LogFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SystemLogBloc, SystemLogState>(
-      buildWhen: (previous, current) =>
-          previous.isShowFloatingActionButton !=
-          current.isShowFloatingActionButton,
       builder: (context, state) {
         return Visibility(
           visible: state.isShowFloatingActionButton,
           child: FloatingActionButton(
             elevation: 0.0,
             backgroundColor: const Color(0x742195F3),
-            onPressed: () {
-              context
-                  .read<SystemLogBloc>()
-                  .add(MoreLogsRequested(state.logs.last.id));
-            },
-            child: const Icon(Icons.add),
+            onPressed: !state.moreLogsStatus.isRequestInProgress
+                ? () {
+                    context
+                        .read<SystemLogBloc>()
+                        .add(MoreLogsRequested(state.logs.last.id));
+                  }
+                : null,
+            child: state.moreLogsStatus.isRequestInProgress
+                ? const SizedBox(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.add),
           ),
         );
       },

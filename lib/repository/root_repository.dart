@@ -387,7 +387,7 @@ class RootRepository {
         for (var element in dataList) {
           if (element['id'] == null) continue;
 
-          String rawPath = element['path'];
+          String rawPath = element['path'] ?? '';
           List<String> nodeIdList =
               rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
           List<int> path = [];

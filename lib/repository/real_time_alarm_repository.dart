@@ -31,7 +31,7 @@ class RealTimeAlarmRepository {
 
         for (var element in rawDataList) {
           if (element['node_id'] != null) {
-            String rawPath = element['path'];
+            String rawPath = element['path'] ?? '';
             List<String> nodeIdList =
                 rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
             List<int> path = [];

@@ -35,7 +35,7 @@ class BookmarksRepository {
           if (data['code'] == '200' || data['code'] == '404') {
             var element = data['data'][0];
 
-            String rawPath = element['path'];
+            String rawPath = element['path'] ?? '';
             List<String> nodeIdList =
                 rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
             List<int> path = [];

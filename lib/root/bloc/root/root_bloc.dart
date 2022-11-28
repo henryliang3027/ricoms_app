@@ -7,17 +7,8 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:ricoms_app/utils/common_request.dart';
-import 'package:stream_transform/stream_transform.dart';
 part 'root_event.dart';
 part 'root_state.dart';
-
-const throttleDuration = Duration(milliseconds: 100);
-
-EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) {
-    return droppable<E>().call(events.throttle(duration), mapper);
-  };
-}
 
 class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
@@ -30,7 +21,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         super(const RootState()) {
     on<ChildDataRequested>(
       _onChildDataRequested,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: restartable(),
+      // if the internet is slow or unstable, we could cancel pending event and process new event
+      // such as we could process tapping event first.
     );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
