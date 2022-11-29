@@ -27,6 +27,7 @@ class DashboardForm extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.dashboard),
           leading: HomeDrawerToolTip.setToolTip(context),
           elevation: 0.0,

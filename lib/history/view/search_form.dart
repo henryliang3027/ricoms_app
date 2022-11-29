@@ -13,6 +13,7 @@ class SearchForm extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           AppLocalizations.of(context)!.filters,
         ),

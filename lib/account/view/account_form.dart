@@ -114,6 +114,7 @@ class AccountForm extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
+            centerTitle: true,
             title: Text(AppLocalizations.of(context)!.account),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,

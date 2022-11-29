@@ -48,6 +48,7 @@ class GroupEditPage extends StatelessWidget {
         child: Scaffold(
           //resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            centerTitle: true,
             elevation: 0.0,
             title: isEditing
                 ? Text(AppLocalizations.of(context)!.editGroup)

@@ -100,6 +100,7 @@ class TrapForwardForm extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.trapForward),
           elevation: 0.0,
           actions: const [

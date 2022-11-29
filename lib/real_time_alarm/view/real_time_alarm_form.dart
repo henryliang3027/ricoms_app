@@ -78,6 +78,7 @@ class RealTimeAlarmForm extends StatelessWidget {
           length: 5,
           child: Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               title: Text(
                 AppLocalizations.of(context)!.realTimeAlarm,
               ),

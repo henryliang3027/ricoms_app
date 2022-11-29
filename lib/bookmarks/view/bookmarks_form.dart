@@ -79,6 +79,7 @@ class BookmarksForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(AppLocalizations.of(context)!.bookmarks),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,

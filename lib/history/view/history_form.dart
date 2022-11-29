@@ -144,6 +144,7 @@ class HistoryForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(AppLocalizations.of(context)!.history),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,

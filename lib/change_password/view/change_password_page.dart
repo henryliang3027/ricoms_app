@@ -28,6 +28,7 @@ class ChangePasswordPage extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          centerTitle: true,
           title: Text(
             AppLocalizations.of(context)!.changePassword,
             style: const TextStyle(fontSize: CommonStyle.sizeXXL),

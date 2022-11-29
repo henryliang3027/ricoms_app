@@ -160,6 +160,7 @@ class RootForm extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: const _DynamicTitle(),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,

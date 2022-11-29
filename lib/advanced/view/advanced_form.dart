@@ -27,6 +27,7 @@ class AdvancedForm extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
+          centerTitle: true,
           title: Text(AppLocalizations.of(context)!.advanced),
           leading: HomeDrawerToolTip.setToolTip(context),
           elevation: 0.0,

@@ -68,6 +68,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     if (event.requestMode == RequestMode.initial) {
+      _dataStreamSubscription?.pause();
       emit(state.copyWith(
         formStatus: FormStatus.requestInProgress,
         submissionStatus: SubmissionStatus.none,
@@ -144,6 +145,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         ));
       }
     }
+    _dataStreamSubscription?.resume();
   }
 
   Future<void> _onNodeDeleted(
@@ -201,7 +203,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) {
     //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    _dataStreamSubscription?.cancel();
+    //_dataStreamSubscription?.pause();
     emit(state.copyWith(
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
@@ -363,7 +365,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    _dataStreamSubscription?.pause();
+    // _dataStreamSubscription?.pause();
     emit(state.copyWith(
       nodesExportStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,

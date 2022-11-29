@@ -145,6 +145,7 @@ class SystemLogForm extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
+            centerTitle: true,
             title: Text(AppLocalizations.of(context)!.systemLog),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,
