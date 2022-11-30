@@ -126,11 +126,25 @@ class _KeywordInput extends StatelessWidget {
                   labelStyle: const TextStyle(
                     fontSize: CommonStyle.sizeL,
                   ),
+                  floatingLabelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
                   suffixIconConstraints: const BoxConstraints(
                       maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
                   suffixIcon: Material(
-                    type: MaterialType.transparency,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(4.0),
+                      bottomRight: Radius.circular(4.0),
+                    ),
+                    color: Colors.grey,
                     child: IconButton(
+                      color: Colors.white,
                       splashColor: Colors.blue.shade100,
                       iconSize: 22,
                       //padding: const EdgeInsets.fromLTRB(0.0, 0.0, 12.0, 0.0),
