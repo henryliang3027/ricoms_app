@@ -11,6 +11,13 @@ class BookmarksRequested extends BookmarksEvent {
   List<Object?> get props => [];
 }
 
+class MoreBookmarksRequested extends BookmarksEvent {
+  const MoreBookmarksRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class BookmarksDeletedModeEnabled extends BookmarksEvent {
   const BookmarksDeletedModeEnabled();
 

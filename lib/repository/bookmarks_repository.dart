@@ -8,22 +8,34 @@ class BookmarksRepository {
   BookmarksRepository();
 
   final Dio _dio = Dio();
+  final UserApi userApi = UserApi();
+
+  List<DeviceMeta> getDeviceMetas({
+    required User user,
+  }) {
+    return userApi.getBookmarksByUserId(user.id);
+  }
 
   Future<List<dynamic>> getBookmarks({
     required User user,
+    required List<DeviceMeta> deviceMetas,
+    int startIndex = 0,
   }) async {
     _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
 
     List<Device> devices = [];
-    UserApi userApi = UserApi();
+    int endIndex = startIndex + 10 < deviceMetas.length
+        ? startIndex + 10
+        : deviceMetas.length;
 
-    List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
+    // List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
 
-    if (bookmarks.isNotEmpty) {
-      for (var bookmark in bookmarks) {
-        String deviceStatusApiPath = '/device/${bookmark.id.toString()}';
+    if (deviceMetas.isNotEmpty) {
+      for (int i = startIndex; i < endIndex; i++) {
+        DeviceMeta deviceMeta = deviceMetas[i];
+        String deviceStatusApiPath = '/device/${deviceMeta.id.toString()}';
 
         try {
           Response response = await _dio.get(
@@ -45,7 +57,7 @@ class BookmarksRepository {
 
             if (element['device_id'] != null) {
               Device device = Device(
-                id: bookmark.id,
+                id: deviceMeta.id,
                 name: element['name'],
                 type: element['type'],
                 ip: element['ip'],
@@ -66,13 +78,13 @@ class BookmarksRepository {
             }
           } else {
             Device device = Device(
-              id: bookmark.id,
-              name: bookmark.name,
-              type: bookmark.type,
-              ip: bookmark.ip,
-              shelf: bookmark.shelf,
-              slot: bookmark.slot,
-              path: bookmark.path,
+              id: deviceMeta.id,
+              name: deviceMeta.name,
+              type: deviceMeta.type,
+              ip: deviceMeta.ip,
+              shelf: deviceMeta.shelf,
+              slot: deviceMeta.slot,
+              path: deviceMeta.path,
               status: 0,
             );
 

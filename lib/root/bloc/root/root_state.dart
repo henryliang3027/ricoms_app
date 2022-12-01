@@ -34,6 +34,7 @@ class RootState extends Equatable {
     String? nodesExportFilePath,
     List? data,
     List<Node>? directory,
+    bool? isUpdateData,
     bool? isAddedToBookmarks,
     String? deleteResultMsg,
     String? errmsg,

@@ -10,7 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 part 'bookmarks_event.dart';
 part 'bookmarks_state.dart';
 
-const throttleDuration = Duration(milliseconds: 1000);
+const throttleDuration = Duration(milliseconds: 100);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) {
@@ -26,6 +26,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         _bookmarksRepository = bookmarksRepository,
         super(const BookmarksState()) {
     on<BookmarksRequested>(_onBookmarksRequested);
+    on<MoreBookmarksRequested>(
+      _onMoreBookmarksRequested,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<BookmarksDeletedModeEnabled>(_onBookmarksDeletedModeEnabled);
     on<BookmarksDeletedModeDisabled>(_onBookmarksDeletedModeDisabled);
     on<BookmarksDeleted>(_onBookmarksDeleted);
@@ -41,6 +45,8 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
   final User _user;
   final BookmarksRepository _bookmarksRepository;
+  final List<DeviceMeta> _deviceMetas = [];
+  final List<Device> _devices = [];
 
   Future<void> _onBookmarksRequested(
     BookmarksRequested event,
@@ -52,16 +58,69 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       targetDeviceStatus: FormStatus.none,
     ));
 
-    List<dynamic> result = await _bookmarksRepository.getBookmarks(user: _user);
+    _deviceMetas.addAll(_bookmarksRepository.getDeviceMetas(user: _user));
+
+    List<dynamic> result = await _bookmarksRepository.getBookmarks(
+        user: _user,
+        deviceMetas: _deviceMetas,
+        startIndex: state.devices.length);
+
+    bool hasReachedMax = false;
 
     if (result[0]) {
+      List<Device> devices = result[1];
+      if (devices.length < _deviceMetas.length) {
+        hasReachedMax = false;
+      } else {
+        hasReachedMax = true;
+      }
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
         devices: result[1],
+        hasReachedMax: hasReachedMax,
       ));
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
+        requestErrorMsg: result[1],
+        hasReachedMax: true,
+      ));
+    }
+  }
+
+  Future<void> _onMoreBookmarksRequested(
+    MoreBookmarksRequested event,
+    Emitter<BookmarksState> emit,
+  ) async {
+    // emit(state.copyWith(
+    //   loadMoreDevicesStatus: FormStatus.requestInProgress,
+    //   deviceDeleteStatus: FormStatus.none,
+    //   targetDeviceStatus: FormStatus.none,
+    // ));
+
+    List<dynamic> result = await _bookmarksRepository.getBookmarks(
+        user: _user,
+        deviceMetas: _deviceMetas,
+        startIndex: state.devices.length);
+
+    if (result[0]) {
+      List<Device> originalDevices = List.of(state.devices);
+      List<Device> remainDevices = result[1];
+      bool hasReachMax = false;
+
+      if (remainDevices.isEmpty) {
+        hasReachMax = true;
+      } else {
+        originalDevices.addAll(remainDevices);
+      }
+
+      emit(state.copyWith(
+        hasReachedMax: hasReachMax,
+        devices: originalDevices,
+      ));
+    } else {
+      emit(state.copyWith(
+        hasReachedMax: true,
         requestErrorMsg: result[1],
       ));
     }
@@ -109,26 +168,38 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     );
 
     if (resultOfDelete[0]) {
-      List<dynamic> resultOfRetrieve =
-          await _bookmarksRepository.getBookmarks(user: _user);
+      List<Device> devices = [];
+      devices.addAll(state.devices);
+      devices.remove(event.device);
 
-      if (resultOfRetrieve[0]) {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          deviceDeleteStatus: FormStatus.requestSuccess,
-          devices: resultOfRetrieve[1],
-          selectedDevices: const [],
-          isDeleteMode: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          deviceDeleteStatus: FormStatus.requestSuccess,
-          requestErrorMsg: resultOfRetrieve[1],
-          selectedDevices: const [],
-          isDeleteMode: false,
-        ));
-      }
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        deviceDeleteStatus: FormStatus.requestSuccess,
+        devices: devices,
+        selectedDevices: const [],
+        isDeleteMode: false,
+      ));
+
+      // List<dynamic> resultOfRetrieve =
+      //     await _bookmarksRepository.getBookmarks(user: _user);
+
+      // if (resultOfRetrieve[0]) {
+      //   emit(state.copyWith(
+      //     formStatus: FormStatus.requestSuccess,
+      //     deviceDeleteStatus: FormStatus.requestSuccess,
+      //     devices: resultOfRetrieve[1],
+      //     selectedDevices: const [],
+      //     isDeleteMode: false,
+      //   ));
+      // } else {
+      //   emit(state.copyWith(
+      //     formStatus: FormStatus.requestFailure,
+      //     deviceDeleteStatus: FormStatus.requestSuccess,
+      //     requestErrorMsg: resultOfRetrieve[1],
+      //     selectedDevices: const [],
+      //     isDeleteMode: false,
+      //   ));
+      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
@@ -156,26 +227,41 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     );
 
     if (resultOfDelete[0]) {
-      List<dynamic> resultOfRetrieve =
-          await _bookmarksRepository.getBookmarks(user: _user);
+      List<Device> devices = [];
+      devices.addAll(state.devices);
 
-      if (resultOfRetrieve[0]) {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          deviceDeleteStatus: FormStatus.requestSuccess,
-          devices: resultOfRetrieve[1],
-          selectedDevices: const [],
-          isDeleteMode: false,
-        ));
-      } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          deviceDeleteStatus: FormStatus.requestSuccess,
-          requestErrorMsg: resultOfRetrieve[1],
-          selectedDevices: const [],
-          isDeleteMode: false,
-        ));
+      for (Device device in state.selectedDevices) {
+        devices.remove(device);
       }
+
+      emit(state.copyWith(
+        formStatus: FormStatus.requestSuccess,
+        deviceDeleteStatus: FormStatus.requestSuccess,
+        devices: devices,
+        selectedDevices: const [],
+        isDeleteMode: false,
+      ));
+
+      // List<dynamic> resultOfRetrieve =
+      //     await _bookmarksRepository.getBookmarks(user: _user);
+
+      // if (resultOfRetrieve[0]) {
+      //   emit(state.copyWith(
+      //     formStatus: FormStatus.requestSuccess,
+      //     deviceDeleteStatus: FormStatus.requestSuccess,
+      //     devices: resultOfRetrieve[1],
+      //     selectedDevices: const [],
+      //     isDeleteMode: false,
+      //   ));
+      // } else {
+      //   emit(state.copyWith(
+      //     formStatus: FormStatus.requestFailure,
+      //     deviceDeleteStatus: FormStatus.requestSuccess,
+      //     requestErrorMsg: resultOfRetrieve[1],
+      //     selectedDevices: const [],
+      //     isDeleteMode: false,
+      //   ));
+      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,

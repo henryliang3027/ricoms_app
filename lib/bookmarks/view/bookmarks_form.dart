@@ -161,7 +161,7 @@ class _PopupMenu extends StatelessWidget {
 }
 
 class _DeviceSliverList extends StatelessWidget {
-  const _DeviceSliverList({
+  _DeviceSliverList({
     Key? key,
     required this.pageController,
     required this.initialPath,
@@ -169,6 +169,7 @@ class _DeviceSliverList extends StatelessWidget {
 
   final List initialPath;
   final PageController pageController;
+  final ScrollController _scrollController = ScrollController();
 
   String _getDisplayName(Device device) {
     if (device.type == 5) {
@@ -190,9 +191,15 @@ class _DeviceSliverList extends StatelessWidget {
     required List initialPath,
     required bool isDeleteMode,
     required List<Device> selectedDevices,
+    required bool hasReachMax,
   }) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
+        if (index >= data.length) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         Device device = data[index];
         return Padding(
           padding: const EdgeInsets.all(1.0),
@@ -304,12 +311,28 @@ class _DeviceSliverList extends StatelessWidget {
           ),
         );
       },
-      childCount: data.length,
+      childCount: hasReachMax ? data.length : data.length + 1,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    bool _isBottom() {
+      if (!_scrollController.hasClients) return false;
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+      return currentScroll >= maxScroll;
+    }
+
+    void _onScroll() {
+      if (_isBottom()) {
+        print('BOTTOM');
+        context.read<BookmarksBloc>().add(const MoreBookmarksRequested());
+      }
+    }
+
+    _scrollController.addListener(_onScroll);
+
     return BlocBuilder<BookmarksBloc, BookmarksState>(
       builder: (context, state) {
         if (state.formStatus.isRequestInProgress) {
@@ -320,8 +343,10 @@ class _DeviceSliverList extends StatelessWidget {
           return Container(
             color: Colors.grey.shade300,
             child: Scrollbar(
+              controller: _scrollController,
               thickness: 8.0,
               child: CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   SliverList(
                     delegate: _deviceSliverChildBuilderDelegate(
@@ -329,8 +354,9 @@ class _DeviceSliverList extends StatelessWidget {
                       initialPath: initialPath,
                       isDeleteMode: state.isDeleteMode,
                       selectedDevices: state.selectedDevices,
+                      hasReachMax: state.hasReachedMax,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

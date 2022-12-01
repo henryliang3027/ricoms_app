@@ -3,6 +3,7 @@ part of 'bookmarks_bloc.dart';
 class BookmarksState extends Equatable {
   const BookmarksState({
     this.formStatus = FormStatus.none,
+    this.hasReachedMax = false,
     this.targetDeviceStatus = FormStatus.none,
     this.deviceDeleteStatus = FormStatus.none,
     this.devices = const [],
@@ -14,6 +15,7 @@ class BookmarksState extends Equatable {
   });
 
   final FormStatus formStatus;
+  final bool hasReachedMax;
   final FormStatus targetDeviceStatus;
   final FormStatus deviceDeleteStatus;
   final List<Device> devices;
@@ -25,6 +27,7 @@ class BookmarksState extends Equatable {
 
   BookmarksState copyWith({
     FormStatus? formStatus,
+    bool? hasReachedMax,
     FormStatus? targetDeviceStatus,
     FormStatus? deviceDeleteStatus,
     List<Device>? devices,
@@ -36,6 +39,7 @@ class BookmarksState extends Equatable {
   }) {
     return BookmarksState(
       formStatus: formStatus ?? this.formStatus,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       targetDeviceStatus: targetDeviceStatus ?? this.targetDeviceStatus,
       deviceDeleteStatus: deviceDeleteStatus ?? this.deviceDeleteStatus,
       devices: devices ?? this.devices,
@@ -50,6 +54,7 @@ class BookmarksState extends Equatable {
   @override
   List<Object> get props => [
         formStatus,
+        hasReachedMax,
         targetDeviceStatus,
         deviceDeleteStatus,
         devices,
