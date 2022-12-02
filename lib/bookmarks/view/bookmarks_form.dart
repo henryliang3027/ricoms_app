@@ -70,6 +70,8 @@ class BookmarksForm extends StatelessWidget {
           _showFailureDialog(state.targetDeviceMsg);
         } else if (state.deviceDeleteStatus.isRequestFailure) {
           _showFailureDialog(state.deleteResultMsg);
+        } else if (state.loadMoreDeviceStatus.isRequestFailure) {
+          _showFailureDialog(state.requestErrorMsg);
         }
       },
       child: WillPopScope(

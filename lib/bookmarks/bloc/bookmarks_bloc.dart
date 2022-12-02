@@ -46,7 +46,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   final User _user;
   final BookmarksRepository _bookmarksRepository;
   final List<DeviceMeta> _deviceMetas = [];
-  final List<Device> _devices = [];
 
   Future<void> _onBookmarksRequested(
     BookmarksRequested event,
@@ -115,11 +114,13 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       }
 
       emit(state.copyWith(
+        loadMoreDeviceStatus: FormStatus.requestSuccess,
         hasReachedMax: hasReachMax,
         devices: originalDevices,
       ));
     } else {
       emit(state.copyWith(
+        loadMoreDeviceStatus: FormStatus.requestFailure,
         hasReachedMax: true,
         requestErrorMsg: result[1],
       ));
@@ -132,6 +133,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   ) {
     if (state.devices.isNotEmpty) {
       emit(state.copyWith(
+        loadMoreDeviceStatus: FormStatus.none,
         deviceDeleteStatus: FormStatus.none,
         targetDeviceStatus: FormStatus.none,
         selectedDevices: state.devices,
@@ -145,6 +147,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     Emitter<BookmarksState> emit,
   ) {
     emit(state.copyWith(
+      loadMoreDeviceStatus: FormStatus.none,
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       selectedDevices: const [],
@@ -157,6 +160,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     Emitter<BookmarksState> emit,
   ) async {
     emit(state.copyWith(
+      loadMoreDeviceStatus: FormStatus.none,
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
@@ -216,6 +220,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     Emitter<BookmarksState> emit,
   ) async {
     emit(state.copyWith(
+      loadMoreDeviceStatus: FormStatus.none,
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
@@ -288,6 +293,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     }
 
     emit(state.copyWith(
+      loadMoreDeviceStatus: FormStatus.none,
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       selectedDevices: selectedDevices,
@@ -299,6 +305,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     Emitter<BookmarksState> emit,
   ) async {
     emit(state.copyWith(
+      loadMoreDeviceStatus: FormStatus.none,
       deviceDeleteStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.requestInProgress,
       isDeleteMode: false,
