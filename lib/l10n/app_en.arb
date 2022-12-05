@@ -165,12 +165,12 @@
       "description": "add device"
     },
 
-    "editGroup": "edit Group",
+    "editGroup": "Edit Group",
     "@all": {
       "description": "edit group"
     },
 
-    "editDevice": "edit Device",
+    "editDevice": "Edit Device",
     "@all": {
       "description": "edit device"
     },
