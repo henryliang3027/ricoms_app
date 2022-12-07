@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -122,7 +122,7 @@ class SystemLogForm extends StatelessWidget {
                 action: SnackBarAction(
                   label: AppLocalizations.of(context)!.open,
                   onPressed: () async {
-                    OpenFile.open(
+                    OpenFilex.open(
                       state.logExportFilePath,
                       type: 'text/comma-separated-values',
                       uti: 'public.comma-separated-values-text',

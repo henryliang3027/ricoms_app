@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -133,12 +133,13 @@ class RootForm extends StatelessWidget {
                 ),
                 action: SnackBarAction(
                   label: AppLocalizations.of(context)!.open,
-                  onPressed: () {
-                    OpenFile.open(
+                  onPressed: () async {
+                    OpenResult result = await OpenFilex.open(
                       state.nodesExportFilePath,
                       type: 'text/comma-separated-values',
                       uti: 'public.comma-separated-values-text',
                     );
+                    print(result.message);
                   },
                 ),
               ),

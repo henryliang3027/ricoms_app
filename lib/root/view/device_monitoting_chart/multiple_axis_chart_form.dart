@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
@@ -39,7 +39,7 @@ class MultipleAxisChartForm extends StatelessWidget {
                 action: SnackBarAction(
                   label: AppLocalizations.of(context)!.open,
                   onPressed: () {
-                    OpenFile.open(
+                    OpenFilex.open(
                       state.chartDataExportFilePath,
                       type: 'text/comma-separated-values',
                       uti: 'public.comma-separated-values-text',

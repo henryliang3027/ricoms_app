@@ -294,50 +294,20 @@ class SystemLogRepository {
       await f.writeAsString(csv);
       return [
         true,
-        'Export system logs success',
+        'Export system log data success',
         fullWrittenPath,
       ];
     } else if (Platform.isAndroid) {
-      bool isPermit = await requestPermission();
-      if (isPermit) {
-        Directory? externalStorageDirectory =
-            await getExternalStorageDirectory();
-        if (externalStorageDirectory == null) {
-          return [false, 'No Storage found'];
-        } else {
-          String externalStoragePath = externalStorageDirectory.path;
-          List<String> externalStoragePathList = externalStoragePath.split('/');
-          int indexOfAndroidDir = externalStoragePathList.indexOf('Android');
-          String externalRootPath =
-              externalStoragePathList.sublist(0, indexOfAndroidDir).join('/');
-          String externalAppFolderPath = externalRootPath + '/RICOMS';
-
-          //Create Directory (if not exist)
-          Directory externalAppDirectory = Directory(externalAppFolderPath);
-          if (!externalAppDirectory.existsSync()) {
-            //Creating Directory
-            try {
-              await externalAppDirectory.create(recursive: true);
-            } catch (e) {
-              return [false, e.toString()];
-            }
-            //Directory Created
-          } else {
-            //Directory Already Existed
-          }
-          String fullWrittenPath = '$externalAppFolderPath/$filename';
-          File file = File(fullWrittenPath);
-          await file.writeAsString(csv);
-          return [
-            true,
-            'Export system log data success',
-            fullWrittenPath,
-          ];
-        }
-      } else {
-        openAppSettings();
-        return [false, 'Please allow permission before you export your data.'];
-      }
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+      String fullWrittenPath = '$appDocPath/$filename';
+      File f = File(fullWrittenPath);
+      await f.writeAsString(csv);
+      return [
+        true,
+        'Export system log data success',
+        fullWrittenPath,
+      ];
     } else {
       return [
         false,

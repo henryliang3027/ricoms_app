@@ -14,8 +14,8 @@ Future<bool> requestPermission() async {
       return false;
     }
   } else {
-    //sdk 29, 30, (31-32), 33 Android 10, 11, 12, 13
-    //PermissionStatus storagePermission = await Permission.storage.request();
+    // sdk 29, 30, (31-32), 33 Android 10, 11, 12, 13
+    PermissionStatus storagePermission = await Permission.storage.request();
     PermissionStatus manageExternalStoragePermission =
         await Permission.manageExternalStorage.request();
     if (
@@ -25,5 +25,11 @@ Future<bool> requestPermission() async {
     } else {
       return false;
     }
+    // PermissionStatus storagePermission = await Permission.storage.request();
+    // if (storagePermission.isGranted) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 }

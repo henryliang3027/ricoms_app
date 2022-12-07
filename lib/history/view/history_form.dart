@@ -14,7 +14,7 @@ import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/display_style.dart';
-import 'package:open_file_safe/open_file_safe.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -122,11 +122,13 @@ class HistoryForm extends StatelessWidget {
                 action: SnackBarAction(
                   label: AppLocalizations.of(context)!.open,
                   onPressed: () async {
-                    OpenFile.open(
+                    OpenResult result = await OpenFilex.open(
                       state.historyExportFilePath,
                       type: 'text/comma-separated-values',
                       uti: 'public.comma-separated-values-text',
                     );
+
+                    print(result.message);
                   },
                 ),
               ),
