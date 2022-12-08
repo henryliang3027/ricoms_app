@@ -87,6 +87,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
           state.password,
           name,
           email,
+          mobile,
+          tel,
+          ext,
         ]),
       ));
     } else {}
@@ -107,6 +110,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
           state.password,
           state.name,
           state.email,
+          state.mobile,
+          state.tel,
+          state.ext,
         ]),
       ),
     );
@@ -127,6 +133,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
           password,
           state.name,
           state.email,
+          state.mobile,
+          state.tel,
+          state.ext,
         ]),
       ),
     );
@@ -160,6 +169,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
           state.password,
           name,
           state.email,
+          state.mobile,
+          state.tel,
+          state.ext,
         ]),
       ),
     );
@@ -206,6 +218,9 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
           state.password,
           state.name,
           email,
+          state.mobile,
+          state.tel,
+          state.ext,
         ]),
       ),
     );
@@ -222,6 +237,15 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
         mobile: mobile,
+        status: Formz.validate([
+          state.account,
+          state.password,
+          state.name,
+          state.email,
+          mobile,
+          state.tel,
+          state.ext,
+        ]),
       ),
     );
   }
@@ -237,6 +261,15 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
         tel: tel,
+        status: Formz.validate([
+          state.account,
+          state.password,
+          state.name,
+          state.email,
+          state.mobile,
+          tel,
+          state.ext,
+        ]),
       ),
     );
   }
@@ -252,6 +285,15 @@ class EditAccountBloc extends Bloc<EditAccountEvent, EditAccountState> {
         submissionStatus: SubmissionStatus.none,
         isInitController: false,
         ext: ext,
+        status: Formz.validate([
+          state.account,
+          state.password,
+          state.name,
+          state.email,
+          state.mobile,
+          state.tel,
+          ext,
+        ]),
       ),
     );
   }
