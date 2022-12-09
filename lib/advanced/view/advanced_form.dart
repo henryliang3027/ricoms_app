@@ -55,119 +55,60 @@ class _AdvancedOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _buildTrapOptions() {
-      return [
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.trapForward,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-              ),
-            ),
-          ),
-          onTap: () {
-            Navigator.push(context, TrapForwardPage.route());
-          },
-        ),
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.colorOfTrapAlarm,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.alarmSoundOfTrap,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-      ];
-    }
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
 
-    List<Widget> _buildSystemOptions() {
-      return [
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.serverIPSetting,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.clearLogRecordsSetting,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-      ];
-    }
+    List<String> _trapListTileTitles = [
+      AppLocalizations.of(context)!.trapForward,
+      AppLocalizations.of(context)!.colorOfTrapAlarm,
+      AppLocalizations.of(context)!.alarmSoundOfTrap,
+    ];
 
-    List<Widget> _buildDeviceOptions() {
-      return [
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.batchSetting,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-        ListTile(
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          title: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Text(
-              AppLocalizations.of(context)!.deviceWorkingCycle,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          onTap: () {},
-        ),
-      ];
-    }
+    List<String> _systemListTileTitles = [
+      AppLocalizations.of(context)!.serverIPSetting,
+      AppLocalizations.of(context)!.clearLogRecordsSetting,
+      AppLocalizations.of(context)!.resetToDefaultSettings,
+    ];
+
+    List<String> _deviceListTileTitles = [
+      AppLocalizations.of(context)!.batchSetting,
+      AppLocalizations.of(context)!.deviceWorkingCycle,
+    ];
+
+    List<int> _trapFunctionPermissions = [
+      22,
+      39,
+      40,
+    ];
+
+    List<int> _systemFunctionPermissions = [
+      27,
+      34,
+      38,
+    ];
+
+    List<int> _deviceFunctionPermissions = [
+      30,
+      36,
+    ];
+
+    List<Route> _trapFunctionRoutes = [
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+    ];
+
+    List<Route> _systemFunctionRoutes = [
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+    ];
+
+    List<Route> _deviceFunctionRoutes = [
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+      TrapForwardPage.route(),
+    ];
 
     Widget _buildCatecory({required IconData icon, required String title}) {
       return Padding(
@@ -194,27 +135,132 @@ class _AdvancedOptions extends StatelessWidget {
       );
     }
 
+    List<Widget> _buildTrapOptions() {
+      List<Widget> trapListTiles = [];
+
+      for (int i = 0; i < _trapFunctionPermissions.length; i++) {
+        if (_userFunctionMap[_trapFunctionPermissions[i]]) {
+          ListTile listTile = ListTile(
+            trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                _trapListTileTitles[i],
+                style: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(context, _trapFunctionRoutes[i]);
+            },
+          );
+          trapListTiles.add(listTile);
+        } else {
+          continue;
+        }
+      }
+
+      if (trapListTiles.isNotEmpty) {
+        trapListTiles.insert(
+          0,
+          _buildCatecory(
+            icon: CustomIcons.trap_alarm,
+            title: AppLocalizations.of(context)!.advancedTrap,
+          ),
+        );
+      }
+
+      return trapListTiles;
+    }
+
+    List<Widget> _buildSystemOptions() {
+      List<Widget> systemListTiles = [];
+
+      for (int i = 0; i < _systemFunctionPermissions.length; i++) {
+        if (_userFunctionMap[_systemFunctionPermissions[i]]) {
+          ListTile listTile = ListTile(
+            trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                _systemListTileTitles[i],
+                style: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(context, _systemFunctionRoutes[i]);
+            },
+          );
+          systemListTiles.add(listTile);
+        } else {
+          continue;
+        }
+      }
+
+      if (systemListTiles.isNotEmpty) {
+        systemListTiles.insert(
+          0,
+          _buildCatecory(
+            icon: CustomIcons.trap_alarm,
+            title: AppLocalizations.of(context)!.advancedSystem,
+          ),
+        );
+      }
+
+      return systemListTiles;
+    }
+
+    List<Widget> _buildDeviceOptions() {
+      List<Widget> deviceListTiles = [];
+
+      for (int i = 0; i < _deviceFunctionPermissions.length; i++) {
+        if (_userFunctionMap[_deviceFunctionPermissions[i]]) {
+          ListTile listTile = ListTile(
+            trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 12.0),
+              child: Text(
+                _deviceListTileTitles[i],
+                style: const TextStyle(
+                  fontSize: CommonStyle.sizeL,
+                ),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(context, _deviceFunctionRoutes[i]);
+            },
+          );
+          deviceListTiles.add(listTile);
+        } else {
+          continue;
+        }
+      }
+
+      if (deviceListTiles.isNotEmpty) {
+        deviceListTiles.insert(
+          0,
+          _buildCatecory(
+            icon: CustomIcons.trap_alarm,
+            title: AppLocalizations.of(context)!.advancedDevice,
+          ),
+        );
+      }
+
+      return deviceListTiles;
+    }
+
     return ListView(
       children: [
-        _buildCatecory(
-          icon: CustomIcons.trap_alarm,
-          title: AppLocalizations.of(context)!.advancedTrap,
-        ),
         ..._buildTrapOptions(),
         const SizedBox(
           height: 10.0,
         ),
-        _buildCatecory(
-          icon: CustomIcons.system,
-          title: AppLocalizations.of(context)!.advancedSystem,
-        ),
         ..._buildSystemOptions(),
         const SizedBox(
           height: 10.0,
-        ),
-        _buildCatecory(
-          icon: CustomIcons.device_simple,
-          title: AppLocalizations.of(context)!.advancedDevice,
         ),
         ..._buildDeviceOptions(),
         const SizedBox(

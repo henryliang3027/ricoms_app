@@ -696,7 +696,12 @@
 
     "clearLogRecordsSetting": "Clear Log Records Setting",
     "@all": {
-      "description": "clear Log Records Setting"
+      "description": "clear log records s etting"
+    },
+
+    "resetToDefaultSettings": "Reset To Default Settings",
+    "@all": {
+      "description": "reset to default settings"
     },
 
     "batchSetting": "Batch Setting",

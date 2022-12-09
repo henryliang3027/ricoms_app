@@ -74,8 +74,14 @@ class AuthenticationRepository {
 
         if (resultOfUserInfo[0]) {
           final List resultOfUserFunctions = await getUserFunctions();
+          final List resultOfUserAdvancedFunctions =
+              await getUserFunctions(functionId: '6');
           if (resultOfUserFunctions[0]) {
-            Map<int, bool> userFunction = resultOfUserFunctions[1];
+            Map<int, bool> userFunction = {};
+            userFunction.addAll(resultOfUserFunctions[1]);
+            if (resultOfUserAdvancedFunctions[0]) {
+              userFunction.addAll(resultOfUserAdvancedFunctions[1]);
+            }
             _controller.add(AuthenticationReport(
               status: AuthenticationStatus.authenticated,
               user: user,
@@ -155,8 +161,15 @@ class AuthenticationRepository {
 
         if (resultOfUserInfo[0]) {
           final List resultOfUserFunctions = await getUserFunctions();
+          final List resultOfUserAdvancedFunctions =
+              await getUserFunctions(functionId: '6');
           if (resultOfUserFunctions[0]) {
-            Map<int, bool> userFunction = resultOfUserFunctions[1];
+            Map<int, bool> userFunction = {};
+            userFunction.addAll(resultOfUserFunctions[1]);
+            if (resultOfUserAdvancedFunctions[0]) {
+              userFunction.addAll(resultOfUserAdvancedFunctions[1]);
+            }
+
             User? user = userApi.getActivateUser();
 
             if (user != null) {
