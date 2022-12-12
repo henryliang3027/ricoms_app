@@ -24,6 +24,10 @@ class RootRepository {
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
 
+    if (user.id == 'demo') {
+      return 'No node';
+    }
+
     try {
       Response response = await dio.get(
         childsPath,

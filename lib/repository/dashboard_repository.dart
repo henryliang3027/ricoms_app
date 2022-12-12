@@ -17,6 +17,19 @@ class DashboardRepository {
     _dio.options.receiveTimeout = 10000;
     String deviceStatusStatisticApiPath = '/statistics/device';
 
+    if (user.id == 'demo') {
+      List deviceStatistics = [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+      ];
+
+      return [true, deviceStatistics];
+    }
+
     try {
       Response response = await _dio.get(
         deviceStatusStatisticApiPath,
@@ -54,6 +67,15 @@ class DashboardRepository {
     _dio.options.receiveTimeout = 10000;
     String deviceSeverityStatisticApiPath =
         '/statistics/severity?type=${type.toString()}';
+
+    if (user.id == 'demo') {
+      List alarmStatistics = [
+        0,
+        0,
+        1,
+      ];
+      return [true, alarmStatistics];
+    }
 
     try {
       Response response = await _dio.get(

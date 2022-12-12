@@ -36,6 +36,10 @@ class HistoryRepository {
     String historyApiPath =
         '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
 
+    if (user.id == 'demo') {
+      return [true, <Record>[]];
+    }
+
     try {
       Response response = await dio.get(
         historyApiPath,

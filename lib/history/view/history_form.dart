@@ -290,6 +290,12 @@ class _PopupMenu extends StatelessWidget {
   }
 }
 
+Widget _showEmptyContent(BuildContext context) {
+  return Center(
+    child: Text(AppLocalizations.of(context)!.noMoreRecordToShow),
+  );
+}
+
 class _HistorySliverList extends StatelessWidget {
   _HistorySliverList({
     Key? key,
@@ -460,22 +466,24 @@ class _HistorySliverList extends StatelessWidget {
 
           return Container(
             color: Colors.grey.shade300,
-            child: Scrollbar(
-              controller: _scrollController,
-              thickness: 8.0,
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverList(
-                    delegate: _historySliverChildBuilderDelegate(
-                      state.records,
-                      initialPath,
-                      pageController,
+            child: state.records.isNotEmpty
+                ? Scrollbar(
+                    controller: _scrollController,
+                    thickness: 8.0,
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      slivers: [
+                        SliverList(
+                          delegate: _historySliverChildBuilderDelegate(
+                            state.records,
+                            initialPath,
+                            pageController,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  )
+                : _showEmptyContent(context),
           );
         } else if (state.status.isRequestFailure) {
           return Center(

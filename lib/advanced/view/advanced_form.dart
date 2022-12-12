@@ -5,6 +5,7 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,6 +51,12 @@ class AdvancedForm extends StatelessWidget {
   }
 }
 
+Widget _showEmptyContent(BuildContext context) {
+  return Center(
+    child: Text(AppLocalizations.of(context)!.noMoreRecordToShow),
+  );
+}
+
 class _AdvancedOptions extends StatelessWidget {
   const _AdvancedOptions({Key? key}) : super(key: key);
 
@@ -57,6 +64,8 @@ class _AdvancedOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
+
+    User user = context.read<AuthenticationBloc>().state.user;
 
     List<String> _trapListTileTitles = [
       AppLocalizations.of(context)!.trapForward,
@@ -92,22 +101,22 @@ class _AdvancedOptions extends StatelessWidget {
       36,
     ];
 
-    List<Route> _trapFunctionRoutes = [
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
+    List<bool> _trapFunctionAccessibility = [
+      true,
+      false,
+      false,
     ];
 
-    List<Route> _systemFunctionRoutes = [
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
+    List<bool> _systemFunctionAccessibility = [
+      false,
+      false,
+      false,
     ];
 
-    List<Route> _deviceFunctionRoutes = [
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
-      TrapForwardPage.route(),
+    List<bool> _deviceFunctionAccessibility = [
+      false,
+      false,
+      false,
     ];
 
     Widget _buildCatecory({required IconData icon, required String title}) {
@@ -146,14 +155,25 @@ class _AdvancedOptions extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               child: Text(
                 _trapListTileTitles[i],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: _trapFunctionAccessibility[i]
+                      ? Colors.black
+                      : Colors.grey,
                 ),
               ),
             ),
-            onTap: () {
-              Navigator.push(context, _trapFunctionRoutes[i]);
-            },
+            onTap: _trapFunctionAccessibility[i]
+                ? () {
+                    List<Route> trapFunctionRoutes = [
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                    ];
+
+                    Navigator.push(context, trapFunctionRoutes[i]);
+                  }
+                : null,
           );
           trapListTiles.add(listTile);
         } else {
@@ -185,14 +205,25 @@ class _AdvancedOptions extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               child: Text(
                 _systemListTileTitles[i],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: _systemFunctionAccessibility[i]
+                      ? Colors.black
+                      : Colors.grey,
                 ),
               ),
             ),
-            onTap: () {
-              Navigator.push(context, _systemFunctionRoutes[i]);
-            },
+            onTap: _systemFunctionAccessibility[i]
+                ? () {
+                    List<Route> systemFunctionRoutes = [
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                    ];
+
+                    Navigator.push(context, systemFunctionRoutes[i]);
+                  }
+                : null,
           );
           systemListTiles.add(listTile);
         } else {
@@ -224,14 +255,25 @@ class _AdvancedOptions extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               child: Text(
                 _deviceListTileTitles[i],
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: CommonStyle.sizeL,
+                  color: _deviceFunctionAccessibility[i]
+                      ? Colors.black
+                      : Colors.grey,
                 ),
               ),
             ),
-            onTap: () {
-              Navigator.push(context, _deviceFunctionRoutes[i]);
-            },
+            onTap: _deviceFunctionAccessibility[i]
+                ? () {
+                    List<Route> deviceFunctionRoutes = [
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                      TrapForwardPage.route(),
+                    ];
+
+                    Navigator.push(context, deviceFunctionRoutes[i]);
+                  }
+                : null,
           );
           deviceListTiles.add(listTile);
         } else {
@@ -252,21 +294,23 @@ class _AdvancedOptions extends StatelessWidget {
       return deviceListTiles;
     }
 
-    return ListView(
-      children: [
-        ..._buildTrapOptions(),
-        const SizedBox(
-          height: 10.0,
-        ),
-        ..._buildSystemOptions(),
-        const SizedBox(
-          height: 10.0,
-        ),
-        ..._buildDeviceOptions(),
-        const SizedBox(
-          height: 10.0,
-        ),
-      ],
-    );
+    return user.id == 'demo'
+        ? _showEmptyContent(context)
+        : ListView(
+            children: [
+              ..._buildTrapOptions(),
+              const SizedBox(
+                height: 10.0,
+              ),
+              ..._buildSystemOptions(),
+              const SizedBox(
+                height: 10.0,
+              ),
+              ..._buildDeviceOptions(),
+              const SizedBox(
+                height: 10.0,
+              ),
+            ],
+          );
   }
 }

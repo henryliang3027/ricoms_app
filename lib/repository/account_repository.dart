@@ -20,6 +20,10 @@ class AccountRepository {
     _dio.options.receiveTimeout = 10000;
     String accountListApiPath = '/accounts';
 
+    if (user.id == 'demo') {
+      return [false, 'There are no records to show'];
+    }
+
     try {
       Response response = await _dio.get(
         accountListApiPath,

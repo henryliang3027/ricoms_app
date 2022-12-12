@@ -52,7 +52,7 @@ class AuthenticationBloc
             msg: event.report.msg,
           ));
         case AuthenticationStatus.authenticated:
-          if (event.report.user.id != '0') {
+          if (event.report.user.id != '0' && event.report.user.id != 'demo') {
             final dataStream = Stream<int>.periodic(
                 const Duration(seconds: 3), (count) => count);
 

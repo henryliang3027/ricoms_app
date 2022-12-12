@@ -18,6 +18,10 @@ class RealTimeAlarmRepository {
     _dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/history/realtime?max=';
 
+    if (user.id == 'demo') {
+      return [true, []];
+    }
+
     try {
       Response response = await _dio.get(
         realTimeAlarmApiPath,

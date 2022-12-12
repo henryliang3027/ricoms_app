@@ -27,6 +27,10 @@ class SystemLogRepository {
     String systemLogApiPath =
         '/records/search?uid=${user.id}&start_time=$startDate&end_time=$endDate&next=$next&start_id=$startId&q=$queryData';
 
+    if (user.id == 'demo') {
+      return [true, <Log>[]];
+    }
+
     try {
       Response response = await dio.get(
         systemLogApiPath,

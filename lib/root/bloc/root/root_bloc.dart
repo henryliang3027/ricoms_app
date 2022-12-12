@@ -140,7 +140,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         if (kDebugMode) {
           print('Root update trigger times: $count');
         }
-        add(ChildDataRequested(state.directory.last, RequestMode.update));
+        if (state.directory.isNotEmpty) {
+          add(ChildDataRequested(state.directory.last, RequestMode.update));
+        }
       });
     }
     //_dataStreamSubscription?.resume();

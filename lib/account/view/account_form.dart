@@ -7,6 +7,7 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
+import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -133,10 +134,7 @@ class AccountForm extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: _KeywordInput(),
-                ),
+                _KeywordInput(),
                 Expanded(
                   child: _AccountSliverList(),
                 ),
@@ -157,23 +155,27 @@ class _AccountFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User user = context.read<AuthenticationBloc>().state.user;
+
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, state) {
-        return FloatingActionButton(
-          elevation: 0.0,
-          backgroundColor: const Color(0x742195F3),
-          onPressed: () async {
-            bool? isModify = await Navigator.push(
-                context, AccountEditPage.route(isEditing: false));
+        return user.id == 'demo'
+            ? Container()
+            : FloatingActionButton(
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
+                onPressed: () async {
+                  bool? isModify = await Navigator.push(
+                      context, AccountEditPage.route(isEditing: false));
 
-            if (isModify != null) {
-              if (isModify) {
-                context.read<AccountBloc>().add(const AccountRequested());
-              }
-            }
-          },
-          child: const Icon(Icons.add),
-        );
+                  if (isModify != null) {
+                    if (isModify) {
+                      context.read<AccountBloc>().add(const AccountRequested());
+                    }
+                  }
+                },
+                child: const Icon(Icons.add),
+              );
       },
     );
   }
@@ -184,67 +186,83 @@ class _KeywordInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User user = context.read<AuthenticationBloc>().state.user;
+
     return BlocBuilder<AccountBloc, AccountState>(
         buildWhen: (previous, current) => previous.keyword != current.keyword,
         builder: (context, state) {
-          return SizedBox(
-            child: TextFormField(
-              textInputAction: TextInputAction.search,
-              style: const TextStyle(
-                fontSize: CommonStyle.sizeL,
-              ),
-              onChanged: (String? keyword) {
-                if (keyword != null) {
-                  context.read<AccountBloc>().add(KeywordChanged(keyword));
-                }
-              },
-              onFieldSubmitted: (String? keyword) {
-                context.read<AccountBloc>().add(const AccountRequested());
-              },
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(5),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(width: 1.0),
-                ),
-                isDense: true,
-                filled: true,
-                fillColor: Colors.white,
-                labelText: AppLocalizations.of(context)!.searchHint,
-                labelStyle: const TextStyle(
-                  fontSize: CommonStyle.sizeL,
-                ),
-                floatingLabelStyle: const TextStyle(
-                  color: Colors.black,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                  borderSide: const BorderSide(
-                    color: Colors.black,
-                  ),
-                ),
-                suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
-                suffixIcon: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  color: Colors.grey,
-                  child: IconButton(
-                    color: Colors.white,
-                    splashColor: Colors.blue.shade100,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.search_outlined,
+          return user.id == 'demo'
+              ? Container()
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    child: TextFormField(
+                      textInputAction: TextInputAction.search,
+                      style: const TextStyle(
+                        fontSize: CommonStyle.sizeL,
+                      ),
+                      onChanged: (String? keyword) {
+                        if (keyword != null) {
+                          context
+                              .read<AccountBloc>()
+                              .add(KeywordChanged(keyword));
+                        }
+                      },
+                      onFieldSubmitted: (String? keyword) {
+                        context
+                            .read<AccountBloc>()
+                            .add(const AccountRequested());
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(5),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.0),
+                        ),
+                        isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelText: AppLocalizations.of(context)!.searchHint,
+                        labelStyle: const TextStyle(
+                          fontSize: CommonStyle.sizeL,
+                        ),
+                        floatingLabelStyle: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.0),
+                          borderSide: const BorderSide(
+                            color: Colors.black,
+                          ),
+                        ),
+                        suffixIconConstraints: const BoxConstraints(
+                            maxHeight: 36,
+                            maxWidth: 36,
+                            minHeight: 36,
+                            minWidth: 36),
+                        suffixIcon: Material(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(4.0),
+                            bottomRight: Radius.circular(4.0),
+                          ),
+                          color: Colors.grey,
+                          child: IconButton(
+                            color: Colors.white,
+                            splashColor: Colors.blue.shade100,
+                            iconSize: 22,
+                            icon: const Icon(
+                              Icons.search_outlined,
+                            ),
+                            onPressed: () {
+                              context
+                                  .read<AccountBloc>()
+                                  .add(const AccountRequested());
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      context.read<AccountBloc>().add(const AccountRequested());
-                    },
                   ),
-                ),
-              ),
-            ),
-          );
+                );
         });
   }
 }

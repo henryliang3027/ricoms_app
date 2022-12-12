@@ -53,6 +53,19 @@ class AuthenticationRepository {
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
 
+    if (user.id == 'demo') {
+      _controller.add(AuthenticationReport(
+        status: AuthenticationStatus.authenticated,
+        user: user,
+        userFunction: {
+          23: true,
+          5: true,
+          6: true,
+        },
+      ));
+      return;
+    }
+
     try {
       Response response = await dio.post(
         loginPath,
@@ -137,6 +150,31 @@ class AuthenticationRepository {
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
+
+    if (account == 'demo' && password == 'demo') {
+      List resultOfUserInfo = await setUserInfo(
+        ip: ip,
+        userId: 'demo',
+        account: account,
+        password: password,
+      );
+
+      User? user = userApi.getActivateUser();
+
+      if (user != null) {
+        _controller.add(AuthenticationReport(
+          status: AuthenticationStatus.authenticated,
+          user: user,
+          userFunction: {
+            23: true,
+            5: true,
+            6: true,
+          },
+        ));
+
+        return [true];
+      }
+    }
 
     try {
       Response response = await dio.post(
@@ -246,16 +284,18 @@ class AuthenticationRepository {
 
     String logOutPath = '/account/logout?uid=${user.id}';
 
-    try {
-      Response response = await dio.post(
-        logOutPath,
-      );
+    if (user.id != 'demo') {
+      try {
+        Response response = await dio.post(
+          logOutPath,
+        );
 
-      var data = jsonDecode(response.data.toString());
+        var data = jsonDecode(response.data.toString());
 
-      if (data['code'] == '200') {
-      } else {}
-    } on DioError catch (_) {}
+        if (data['code'] == '200') {
+        } else {}
+      } on DioError catch (_) {}
+    }
 
     bool _ = await userApi.deActivateUser(user.id);
     _controller.add(const AuthenticationReport(
@@ -318,6 +358,21 @@ class AuthenticationRepository {
         userId: userId,
         ip: ip,
         name: '',
+        account: account,
+        password: password,
+        permission: '2',
+        email: '',
+        mobile: '',
+        tel: '',
+        ext: '',
+      );
+      return [true];
+    } else if (userId == 'demo') {
+      // demo
+      await userApi.addUserByKey(
+        userId: userId,
+        ip: ip,
+        name: 'Demo',
         account: account,
         password: password,
         permission: '2',

@@ -288,6 +288,12 @@ class _PopupMenu extends StatelessWidget {
   }
 }
 
+Widget _showEmptyContent(BuildContext context) {
+  return Center(
+    child: Text(AppLocalizations.of(context)!.noMoreRecordToShow),
+  );
+}
+
 class _LogSliverList extends StatelessWidget {
   _LogSliverList({
     Key? key,
@@ -568,18 +574,20 @@ class _LogSliverList extends StatelessWidget {
             child: Scrollbar(
               controller: _scrollController,
               thickness: 8.0,
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverList(
-                    delegate: _logSliverChildBuilderDelegate(
-                      state.logs,
-                      initialPath,
-                      pageController,
-                    ),
-                  ),
-                ],
-              ),
+              child: state.logs.isNotEmpty
+                  ? CustomScrollView(
+                      controller: _scrollController,
+                      slivers: [
+                        SliverList(
+                          delegate: _logSliverChildBuilderDelegate(
+                            state.logs,
+                            initialPath,
+                            pageController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : _showEmptyContent(context),
             ),
           );
         } else if (state.status.isRequestFailure) {
