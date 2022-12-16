@@ -154,6 +154,7 @@
     "clearLogRecordsSetting": "清除紀錄相關參數設定",
     "resetToDefaultSettings": "回復預設設定",
     "batchSetting": "批次設定",
+    "batchSettingResult": "設定結果",
     "deviceWorkingCycle": "裝置輪詢週期",
 
 

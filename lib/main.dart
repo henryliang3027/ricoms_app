@@ -4,6 +4,7 @@ import 'package:ricoms_app/app.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
@@ -40,6 +41,7 @@ Future<void> main() async {
       systemLogRepository: SystemLogRepository(),
       accountRepository: AccountRepository(),
       trapForwardRepository: TrapForwardRepository(),
+      batchSettingRepository: BatchSettingRepository(),
     ),
   );
 }

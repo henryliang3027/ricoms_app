@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/advanced/view/trap_forward_page.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_result_page.dart';
+import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -103,20 +104,19 @@ class _AdvancedOptions extends StatelessWidget {
 
     List<bool> _trapFunctionAccessibility = [
       true,
-      false,
-      false,
+      true,
+      true,
     ];
 
     List<bool> _systemFunctionAccessibility = [
-      false,
-      false,
-      false,
+      true,
+      true,
+      true,
     ];
 
     List<bool> _deviceFunctionAccessibility = [
-      false,
-      false,
-      false,
+      true,
+      true,
     ];
 
     Widget _buildCatecory({required IconData icon, required String title}) {
@@ -266,9 +266,8 @@ class _AdvancedOptions extends StatelessWidget {
             onTap: _deviceFunctionAccessibility[i]
                 ? () {
                     List<Route> deviceFunctionRoutes = [
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
+                      BatchSettingResultPage.route(),
+                      BatchSettingResultPage.route(),
                     ];
 
                     Navigator.push(context, deviceFunctionRoutes[i]);

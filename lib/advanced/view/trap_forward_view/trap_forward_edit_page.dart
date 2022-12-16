@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/edit_trap_forward/edit_trap_forward_bloc.dart';
-import 'package:ricoms_app/advanced/view/trap_forward_edit_form.dart';
+import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_edit_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';

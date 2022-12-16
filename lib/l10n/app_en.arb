@@ -709,6 +709,11 @@
       "description": "batch setting"
     },
 
+    "batchSettingResult": "Setting Result",
+    "@all": {
+      "description": "setting result"
+    },
+
     "deviceWorkingCycle": "Device's Working Cycle",
     "@all": {
       "description": "device's working cycle"

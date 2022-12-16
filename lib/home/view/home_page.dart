@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/account/view/account_page.dart';
-import 'package:ricoms_app/advanced/view/advanced_page.dart';
+import 'package:ricoms_app/advanced/view/advanced_view/advanced_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks_page.dart';
 import 'package:ricoms_app/dashboard/view/dashboard_page.dart';

@@ -5,6 +5,7 @@ import 'package:ricoms_app/home/view/home_page.dart';
 import 'package:ricoms_app/login/view/login_page.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
     required this.systemLogRepository,
     required this.accountRepository,
     required this.trapForwardRepository,
+    required this.batchSettingRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -40,6 +42,7 @@ class App extends StatelessWidget {
   final SystemLogRepository systemLogRepository;
   final AccountRepository accountRepository;
   final TrapForwardRepository trapForwardRepository;
+  final BatchSettingRepository batchSettingRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +77,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<TrapForwardRepository>(
           create: (context) => trapForwardRepository,
+        ),
+        RepositoryProvider<BatchSettingRepository>(
+          create: (context) => batchSettingRepository,
         ),
       ],
       child: BlocProvider(
