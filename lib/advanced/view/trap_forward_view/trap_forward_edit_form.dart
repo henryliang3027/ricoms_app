@@ -6,7 +6,7 @@ import 'package:ricoms_app/repository/forward_detail.dart';
 import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 

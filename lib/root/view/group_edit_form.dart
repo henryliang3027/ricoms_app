@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/root/bloc/edit_group/edit_group_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

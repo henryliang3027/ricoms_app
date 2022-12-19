@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 
 class DeviceSettingStyle {
   static void getSettingData({

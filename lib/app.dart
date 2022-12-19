@@ -14,6 +14,7 @@ import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';
 
 class App extends StatelessWidget {
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
     required this.systemLogRepository,
     required this.accountRepository,
     required this.trapForwardRepository,
+    required this.trapAlarmColorRepository,
     required this.batchSettingRepository,
   }) : super(key: key);
 
@@ -42,6 +44,7 @@ class App extends StatelessWidget {
   final SystemLogRepository systemLogRepository;
   final AccountRepository accountRepository;
   final TrapForwardRepository trapForwardRepository;
+  final TrapAlarmColorRepository trapAlarmColorRepository;
   final BatchSettingRepository batchSettingRepository;
 
   @override
@@ -77,6 +80,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<TrapForwardRepository>(
           create: (context) => trapForwardRepository,
+        ),
+        RepositoryProvider<TrapAlarmColorRepository>(
+          create: (context) => trapAlarmColorRepository,
         ),
         RepositoryProvider<BatchSettingRepository>(
           create: (context) => batchSettingRepository,

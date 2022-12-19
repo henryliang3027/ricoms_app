@@ -9,7 +9,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_tabbar.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';

@@ -32,8 +32,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-
-
   bloc: ^8.0.2
   flutter_bloc: ^8.1.1
   bloc_concurrency: ^0.2.0
@@ -59,6 +57,7 @@ dependencies:
   fl_chart: ^0.55.0 # for dashboard piechart
   open_filex: ^4.3.1
   json_serializable: ^6.3.1
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -8,7 +8,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

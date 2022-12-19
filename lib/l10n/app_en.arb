@@ -684,6 +684,21 @@
       "description": "color of trap alarm"
     },
 
+    "trapAlarmBackgroundColor": "Background Color",
+    "@all": {
+      "description": "trap alarm background color"
+    },
+
+    "trapAlarmTextColor": "Text Color",
+    "@all": {
+      "description": "trap alarm text color"
+    },
+
+    "trapAlarmColorPreview": "Perview",
+    "@all": {
+      "description": "trap alarm color preview"
+    },
+
     "alarmSoundOfTrap": "Alarm Sound Of Trap",
     "@all": {
       "description": "alarm sound of trap"
