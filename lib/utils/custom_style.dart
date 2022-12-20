@@ -52,11 +52,11 @@ class CustomStyle {
     5: null, //slot
   };
 
-  static const List<Color> multiAxisLineChartSeriesColors = [
-    Color(0xffdc3545),
-    Color(0xffffc107),
-    Color(0xff28a745),
-    Color(0xff006cab),
+  static List<Color> multiAxisLineChartSeriesColors = [
+    const Color(0xffdc3545),
+    const Color(0xffffc107),
+    const Color(0xff28a745),
+    const Color(0xff006cab),
   ];
 
   static const Color customRed = Color(0xffdc3545);

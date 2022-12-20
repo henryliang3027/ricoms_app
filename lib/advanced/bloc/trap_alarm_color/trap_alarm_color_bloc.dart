@@ -142,6 +142,11 @@ class TrapAlarmColorBloc
     CustomStyle.statusColor[3] = Color(state.criticalBackgroundColor);
     CustomStyle.statusColor[2] = Color(state.warningBackgroundColor);
 
+    CustomStyle.multiAxisLineChartSeriesColors[0] =
+        Color(state.criticalBackgroundColor);
+    CustomStyle.multiAxisLineChartSeriesColors[1] =
+        Color(state.warningBackgroundColor);
+
     emit(state.copyWith(
       status: FormStatus.requestSuccess,
     ));
