@@ -55,8 +55,8 @@ class DeviceSettingForm extends StatelessWidget {
                 msg: msg,
                 context: context,
               ),
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             actions: <Widget>[
@@ -80,8 +80,8 @@ class DeviceSettingForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(

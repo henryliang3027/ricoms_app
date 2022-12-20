@@ -34,8 +34,8 @@ class RealTimeAlarmForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(

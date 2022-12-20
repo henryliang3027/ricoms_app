@@ -48,6 +48,7 @@
     "moduleSeries": "系列模組",
     "connect": "確認模組",
     "cancel": "取消",
+    "yes": "確認",
     "exit": "離開",
     "create": "建立",
     "save": "儲存",
@@ -160,7 +161,6 @@
     "batchSettingResult": "設定結果",
     "deviceWorkingCycle": "裝置輪詢週期",
 
-
     "dialogMessage_LoginFailed": "登入失敗，請重新確認你的帳號或密碼。",
     "dialogMessage_AllFileAccess": "請允許檔案存取權後再匯出您的資料",
     "dialogMessage_AskBeforeDelete": "確認刪除 ",
@@ -178,6 +178,7 @@
     "dialogMessage_ExportSystemLogDataSuccess": "匯出系統紀錄成功",
     "dialogMessage_changePasswordSuccessfully": "請重新登入。",
     "dialogMessage_lostConnectionToServerContent": "請檢查您的網路連線後再重新登入",
+    "dialogMessage_resetToRICOMSDefault": "確認回復 RICOMS 預設設定 ?",
     "dialogTitle_lostConnectionToServer": "失去與伺服器的連線",
     "dialogTitle_NoMoreData": "搜尋成功！",
     "dialogTitle_deletedSuccessfully": "刪除成功",
@@ -194,5 +195,6 @@
     "dialogTitle_connectToTheDeviceSuccess": "成功",
     "dialogTitle_createSuccess": "建立成功!",
     "dialogTitle_editSuccess": "儲存成功！",
-    "dialogTitle_AskBeforeExitApp": "您確定要退出應用程式嗎？"
+    "dialogTitle_AskBeforeExitApp": "您確定要退出應用程式嗎？",
+    "dialogTitle_resetToRICOMSDefault": "回復 RICOMS 預設設定"
 }

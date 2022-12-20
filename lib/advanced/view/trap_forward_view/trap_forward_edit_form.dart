@@ -55,12 +55,12 @@ class TrapForwardEditForm extends StatelessWidget {
                 ? Text(
                     AppLocalizations.of(context)!
                         .dialogTitle_editAccountSuccessfully,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(color: CustomStyle.customGreen),
                   )
                 : Text(
                     AppLocalizations.of(context)!
                         .dialogTitle_addAccountSuccessfully,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(color: CustomStyle.customGreen),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -100,8 +100,8 @@ class TrapForwardEditForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(

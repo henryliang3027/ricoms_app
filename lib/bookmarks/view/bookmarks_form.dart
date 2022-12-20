@@ -33,10 +33,10 @@ class BookmarksForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               CustomErrTitle.commonErrTitle,
               style: TextStyle(
-                color: CustomStyle.severityColor[3],
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -427,8 +427,8 @@ class _BookmarksFloatingActionButton extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {
@@ -563,8 +563,8 @@ class _BookmarksEditBottomMenu extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {

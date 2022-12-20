@@ -25,9 +25,7 @@ class CommonWidget {
             TextButton(
               child: Text(
                 AppLocalizations.of(context)!.exit,
-                style: TextStyle(
-                  color: CustomStyle.severityColor[3],
-                ),
+                style: const TextStyle(color: CustomStyle.customRed),
               ),
               onPressed: () {
                 Navigator.of(context).pop(true); // pop dialog

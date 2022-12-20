@@ -225,6 +225,11 @@
       "description": "cancel"
     },
 
+    "yes": "Yes",
+    "@all": {
+      "description": "yes"
+    },
+
     "exit": "Exit",
     "@all": {
       "description": "exit app"
@@ -734,7 +739,6 @@
       "description": "device's working cycle"
     },
 
-
     "dialogMessage_LoginFailed": "Login failed. Please reconfirm your account password.",
     "@all": {
       "description": "Login failed. Please reconfirm your account password."
@@ -821,6 +825,11 @@
       "description": "lost connection to server content"
     },
 
+    "dialogMessage_resetToRICOMSDefault": "Do you want to reset to RICOMS default ?",
+    "@all": {
+      "description": "Do you want to reset to RICOMS default ?"
+    },
+
     "dialogTitle_lostConnectionToServer": "Lost Connection To Server.",
     "@all": {
       "description": "lost connection to server."
@@ -904,6 +913,11 @@
     "dialogTitle_AskBeforeExitApp": "Are you sure you want to exit App ?",
     "@all": {
       "description": "Are you sure you want to exit app ?"
+    },
+
+    "dialogTitle_resetToRICOMSDefault": "Reset to RICOMS default",
+    "@all": {
+      "description": "reset to RICOMS default"
     }
 
 }

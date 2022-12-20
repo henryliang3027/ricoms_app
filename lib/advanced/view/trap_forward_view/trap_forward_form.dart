@@ -24,8 +24,8 @@ class TrapForwardForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_deletedSuccessfully,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(
@@ -61,8 +61,8 @@ class TrapForwardForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -215,8 +215,8 @@ class _AccountFloatingActionButton extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {
@@ -501,8 +501,8 @@ class _ForwardOutlineEditBottomMenu extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {

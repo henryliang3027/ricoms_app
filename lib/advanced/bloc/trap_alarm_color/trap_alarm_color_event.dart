@@ -83,8 +83,8 @@ class TrapAlarmColorSaved extends TrapAlarmColorEvent {
   List<Object?> get props => [];
 }
 
-class TrapAlarmColorRestored extends TrapAlarmColorEvent {
-  const TrapAlarmColorRestored();
+class TrapAlarmColorReseted extends TrapAlarmColorEvent {
+  const TrapAlarmColorReseted();
 
   @override
   List<Object?> get props => [];

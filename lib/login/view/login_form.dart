@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class LoginForm extends StatelessWidget {
@@ -19,7 +20,7 @@ class LoginForm extends StatelessWidget {
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
               style: const TextStyle(
-                color: Colors.red,
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(

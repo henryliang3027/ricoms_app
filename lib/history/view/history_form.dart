@@ -38,9 +38,7 @@ class HistoryForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
-              ),
+              style: const TextStyle(color: CustomStyle.customRed),
             ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -75,8 +73,8 @@ class HistoryForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_NoMoreData,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(

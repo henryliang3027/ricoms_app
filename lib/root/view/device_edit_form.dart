@@ -53,15 +53,21 @@ class DeviceEditForm extends StatelessWidget {
                     ? Text(
                         AppLocalizations.of(context)!
                             .dialogTitle_connectToTheDeviceSuccess,
-                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                        style: const TextStyle(
+                          color: CustomStyle.customGreen,
+                        ),
                       )
                     : Text(
                         AppLocalizations.of(context)!.dialogTitle_editSuccess,
-                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                        style: const TextStyle(
+                          color: CustomStyle.customGreen,
+                        ),
                       )
                 : Text(
                     AppLocalizations.of(context)!.dialogTitle_createSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -97,7 +103,9 @@ class DeviceEditForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(color: CustomStyle.severityColor[3]),
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
             ),
             content: SingleChildScrollView(
               child: ListBody(

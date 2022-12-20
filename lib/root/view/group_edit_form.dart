@@ -44,11 +44,15 @@ class GroupEditForm extends StatelessWidget {
             title: isEditing
                 ? Text(
                     AppLocalizations.of(context)!.dialogTitle_editSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   )
                 : Text(
                     AppLocalizations.of(context)!.dialogTitle_createSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -83,9 +87,11 @@ class GroupEditForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               CustomErrTitle.commonErrTitle,
-              style: TextStyle(color: CustomStyle.severityColor[3]),
+              style: TextStyle(
+                color: CustomStyle.customRed,
+              ),
             ),
             content: SingleChildScrollView(
               child: ListBody(
