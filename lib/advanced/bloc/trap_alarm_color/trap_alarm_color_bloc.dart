@@ -130,22 +130,27 @@ class TrapAlarmColorBloc
       status: FormStatus.requestInProgress,
     ));
 
-    CustomStyle.severityColor[3] = Color(state.criticalBackgroundColor);
-    CustomStyle.severityFontColor[3] = Color(state.criticalTextColor);
-    CustomStyle.severityColor[2] = Color(state.warningBackgroundColor);
-    CustomStyle.severityFontColor[2] = Color(state.warningTextColor);
-    CustomStyle.severityColor[1] = Color(state.normalBackgroundColor);
-    CustomStyle.severityFontColor[1] = Color(state.normalTextColor);
-    CustomStyle.severityColor[0] = Color(state.noticeBackgroundColor);
-    CustomStyle.severityFontColor[0] = Color(state.noticeTextColor);
+    CustomStyle.setSeverityColors([
+      state.noticeBackgroundColor,
+      state.normalBackgroundColor,
+      state.warningBackgroundColor,
+      state.criticalBackgroundColor,
+      state.noticeTextColor,
+      state.normalTextColor,
+      state.warningTextColor,
+      state.criticalTextColor,
+    ]);
 
-    CustomStyle.statusColor[3] = Color(state.criticalBackgroundColor);
-    CustomStyle.statusColor[2] = Color(state.warningBackgroundColor);
-
-    CustomStyle.multiAxisLineChartSeriesColors[0] =
-        Color(state.criticalBackgroundColor);
-    CustomStyle.multiAxisLineChartSeriesColors[1] =
-        Color(state.warningBackgroundColor);
+    _trapAlarmColorRepository.setTrapAlarmColor(user: _user, severityColors: [
+      state.noticeBackgroundColor,
+      state.normalBackgroundColor,
+      state.warningBackgroundColor,
+      state.criticalBackgroundColor,
+      state.noticeTextColor,
+      state.normalTextColor,
+      state.warningTextColor,
+      state.criticalTextColor,
+    ]);
 
     emit(state.copyWith(
       status: FormStatus.requestSuccess,
@@ -166,17 +171,5 @@ class TrapAlarmColorBloc
       noticeBackgroundColor: 0xff6c757d,
       noticeTextColor: 0xffffffff,
     ));
-
-    // CustomStyle.severityColor[3] = Color(0xffdc3545);
-    // CustomStyle.severityFontColor[3] = Color(0xffffffff);
-    // CustomStyle.severityColor[2] = Color(0xffffc107);
-    // CustomStyle.severityFontColor[2] = Color(0xff000000);
-    // CustomStyle.severityColor[1] = Color(0xff28a745);
-    // CustomStyle.severityFontColor[1] = Color(0xffffffff);
-    // CustomStyle.severityColor[0] = Color(0xff6c757d);
-    // CustomStyle.severityFontColor[0] = Color(0xffffffff);
-
-    // CustomStyle.statusColor[3] = Color(0xffdc3545);
-    // CustomStyle.statusColor[2] = Color(0xffffc107);
   }
 }

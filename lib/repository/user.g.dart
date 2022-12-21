@@ -30,13 +30,25 @@ class UserAdapter extends TypeAdapter<User> {
           fields[9] == null ? [] : (fields[9] as List).cast<DeviceMeta>(),
       isActivate: fields[10] == null ? false : fields[10] as bool,
       account: fields[11] == null ? '-' : fields[11] as String,
+      severityColors: fields[12] == null
+          ? [
+              4285298045,
+              4280854341,
+              4294951175,
+              4292621637,
+              4294967295,
+              4294967295,
+              4278190080,
+              4294967295
+            ]
+          : (fields[12] as List).cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -60,7 +72,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(10)
       ..write(obj.isActivate)
       ..writeByte(11)
-      ..write(obj.account);
+      ..write(obj.account)
+      ..writeByte(12)
+      ..write(obj.severityColors);
   }
 
   @override

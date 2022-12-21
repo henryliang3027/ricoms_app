@@ -81,9 +81,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? -double.maxFinite;
     double minorH = widget.minorH ?? -double.maxFinite;
     double minorL = widget.minorL ?? -double.maxFinite;
-    double maximumChartValue = widget.chartDateValuePairs
-        .reduce((current, next) => current.value > next.value ? current : next)
-        .value;
+    double maximumChartValue = widget.chartDateValuePairs.isNotEmpty
+        ? widget.chartDateValuePairs
+            .reduce(
+                (current, next) => current.value > next.value ? current : next)
+            .value
+        : 0.0;
     double maximum = 0.0;
 
     maximum = [majorH, majorL, minorH, minorL, maximumChartValue]
@@ -97,9 +100,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? double.maxFinite;
     double minorH = widget.minorH ?? double.maxFinite;
     double minorL = widget.minorL ?? double.maxFinite;
-    double minimumChartValue = widget.chartDateValuePairs
-        .reduce((current, next) => current.value < next.value ? current : next)
-        .value;
+    double minimumChartValue = widget.chartDateValuePairs.isNotEmpty
+        ? widget.chartDateValuePairs
+            .reduce(
+                (current, next) => current.value < next.value ? current : next)
+            .value
+        : 0.0;
     double minimum = 0.0;
 
     minimum = [majorH, majorL, minorH, minorL, minimumChartValue]

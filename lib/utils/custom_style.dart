@@ -59,6 +59,26 @@ class CustomStyle {
     const Color(0xff006cab),
   ];
 
+  static List<Color> multiAxisLineAnnotationColors = [
+    const Color(0xffffc107),
+    const Color(0xffdc3545),
+  ];
+
   static const Color customRed = Color(0xffdc3545);
   static const Color customGreen = Color(0xff28a745);
+
+  static setSeverityColors(List<int> severityColors) {
+    for (int i = 0; i < severityColors.length / 2; i++) {
+      severityColor[i] = Color(severityColors[i]);
+    }
+
+    for (int i = 4; i < severityColors.length; i++) {
+      severityFontColor[i] = Color(severityColors[i]);
+    }
+
+    CustomStyle.statusColor[3] = Color(severityColors[3]);
+    CustomStyle.statusColor[2] = Color(severityColors[2]);
+    CustomStyle.multiAxisLineAnnotationColors[1] = Color(severityColors[3]);
+    CustomStyle.multiAxisLineAnnotationColors[0] = Color(severityColors[2]);
+  }
 }

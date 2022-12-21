@@ -16,6 +16,16 @@ class User {
     required this.bookmarks,
     required this.isActivate,
     required this.account,
+    this.severityColors = const [
+      0xff6c757d, //notice background color
+      0xff28a745, //normal background color
+      0xffffc107, //warning background color
+      0xffdc3545, //critical background color
+      0xffffffff, //notice font color
+      0xffffffff, //normal font color
+      0xff000000, //warning font color
+      0xffffffff, //critical font color,
+    ],
   });
 
   const User.empty()
@@ -32,6 +42,7 @@ class User {
           bookmarks: const [],
           isActivate: false,
           account: '-',
+          severityColors: const [],
         );
 
   @HiveField(0, defaultValue: '-')
@@ -69,6 +80,18 @@ class User {
 
   @HiveField(11, defaultValue: '-')
   final String account;
+
+  @HiveField(12, defaultValue: [
+    0xff6c757d, //notice background color
+    0xff28a745, //normal background color
+    0xffffc107, //warning background color
+    0xffdc3545, //critical background color
+    0xffffffff, //notice font color
+    0xffffffff, //normal font color
+    0xff000000, //warning font color
+    0xffffffff, //critical font color
+  ])
+  final List<int> severityColors;
 }
 
 @HiveType(typeId: 2)

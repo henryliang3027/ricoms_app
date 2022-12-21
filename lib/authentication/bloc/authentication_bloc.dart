@@ -3,7 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -11,7 +13,9 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
+    required TrapAlarmColorRepository trapAlarmColorRepository,
   })  : _authenticationRepository = authenticationRepository,
+        _trapAlarmColorRepository = trapAlarmColorRepository,
         super(const AuthenticationState.unknown()) {
     on<AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
@@ -21,6 +25,7 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _authenticationRepository;
+  final TrapAlarmColorRepository _trapAlarmColorRepository;
   late StreamSubscription<AuthenticationReport>
       _authenticationStatusSubscription;
 
@@ -74,6 +79,13 @@ class AuthenticationBloc
                 }
               }
             });
+          }
+
+          List<dynamic> resultOfGetColor = await _trapAlarmColorRepository
+              .getTrapAlarmColor(user: event.report.user);
+
+          if (resultOfGetColor[0]) {
+            CustomStyle.setSeverityColors(resultOfGetColor[1]);
           }
 
           return emit(AuthenticationState.authenticated(

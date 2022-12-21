@@ -46,10 +46,12 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
 
     for (List<ChartDateValuePair> chartDateValuePairs
         in widget.chartDateValues.values) {
-      double max = chartDateValuePairs
-          .reduce(
-              (current, next) => current.value > next.value ? current : next)
-          .value;
+      double max = chartDateValuePairs.isNotEmpty
+          ? chartDateValuePairs
+              .reduce((current, next) =>
+                  current.value > next.value ? current : next)
+              .value
+          : 0.0;
 
       maximum = maximum < max ? max : maximum;
     }
@@ -69,10 +71,12 @@ class _MultipleAxisLineChartState extends State<MultipleAxisLineChart> {
 
     for (List<ChartDateValuePair> chartDateValuePairs
         in widget.chartDateValues.values) {
-      double min = chartDateValuePairs
-          .reduce(
-              (current, next) => current.value < next.value ? current : next)
-          .value;
+      double min = chartDateValuePairs.isNotEmpty
+          ? chartDateValuePairs
+              .reduce((current, next) =>
+                  current.value < next.value ? current : next)
+              .value
+          : 0.0;
 
       minimum = minimum > min ? min : minimum;
     }

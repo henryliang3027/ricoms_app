@@ -62,12 +62,15 @@ class TrapAlarmColorForm extends StatelessWidget {
                 const _NormalTrapColorCard(),
                 const _NoticeTrapColorCard(),
                 const _ResetButton(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    _CancelButton(),
-                    _SaveButton(),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 80.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      _CancelButton(),
+                      _SaveButton(),
+                    ],
+                  ),
                 ),
               ],
             ),
