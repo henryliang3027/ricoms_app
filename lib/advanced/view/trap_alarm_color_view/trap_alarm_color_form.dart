@@ -19,7 +19,7 @@ class TrapAlarmColorForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              AppLocalizations.of(context)!.dialogTitle_editAccountSuccessfully,
+              AppLocalizations.of(context)!.dialogTitle_editSuccess,
               style: const TextStyle(
                 color: CustomStyle.customGreen,
               ),
@@ -558,7 +558,7 @@ class _SaveButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: ElevatedButton(
-              key: const Key('trapAlarmSolorForm_save_raisedButton'),
+              key: const Key('trapAlarmColorForm_save_raisedButton'),
               child: Text(
                 AppLocalizations.of(context)!.save,
                 style: const TextStyle(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_result_page.dart';
 import 'package:ricoms_app/advanced/view/trap_alarm_color_view/trap_alarm_color_page.dart';
+import 'package:ricoms_app/advanced/view/trap_alarm_sound_view/trap_alarm_sound_page.dart';
 import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -72,7 +73,7 @@ class _AdvancedOptions extends StatelessWidget {
     List<String> _trapListTileTitles = [
       AppLocalizations.of(context)!.trapForward,
       AppLocalizations.of(context)!.colorOfTrapAlarm,
-      AppLocalizations.of(context)!.alarmSoundOfTrap,
+      AppLocalizations.of(context)!.trapAlarmSound,
     ];
 
     List<String> _systemListTileTitles = [
@@ -169,7 +170,7 @@ class _AdvancedOptions extends StatelessWidget {
                     List<Route> trapFunctionRoutes = [
                       TrapForwardPage.route(),
                       TrapAlarmColorPage.route(),
-                      TrapForwardPage.route(),
+                      TrapAlarmSoundPage.route(),
                     ];
 
                     Navigator.push(context, trapFunctionRoutes[i]);

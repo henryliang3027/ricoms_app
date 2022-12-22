@@ -704,9 +704,34 @@
       "description": "trap alarm color preview"
     },
 
-    "alarmSoundOfTrap": "Alarm Sound Of Trap",
+    "trapAlarmSound": "Alarm Sound Of Trap",
     "@all": {
       "description": "alarm sound of trap"
+    },
+
+    "trapAlarmSoundEnable": "Enable",
+    "@all": {
+      "description": "alarm sound enable"
+    },
+
+    "criticalTrapAlarmSound": "Alarm sound of critical trap",
+    "@all": {
+      "description": "alarm sound of critical trap"
+    },
+
+    "warningTrapAlarmSound": "Alarm sound of warning trap",
+    "@all": {
+      "description": "alarm sound of warning trap"
+    },
+
+    "normalTrapAlarmSound": "Alarm sound of normal trap",
+    "@all": {
+      "description": "alarm sound of normal trap"
+    },
+
+    "noticeTrapAlarmSound": "Alarm sound of notice trap",
+    "@all": {
+      "description": "alarm sound of notice trap"
     },
 
     "serverIPSetting": "Server IP Setting",
