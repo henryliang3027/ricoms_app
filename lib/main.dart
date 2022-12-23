@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
@@ -46,6 +47,7 @@ Future<void> main() async {
       trapAlarmColorRepository: TrapAlarmColorRepository(),
       trapAlarmSoundRepository: TrapAlarmSoundRepository(),
       batchSettingRepository: BatchSettingRepository(),
+      deviceWorkingCycleRepository: DeviceWorkingCycleRepository(),
     ),
   );
 }
