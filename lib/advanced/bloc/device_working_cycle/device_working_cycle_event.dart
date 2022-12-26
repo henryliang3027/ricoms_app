@@ -20,6 +20,20 @@ class DeviceWorkingCycleChanged extends DeviceWorkingCycleEvent {
   List<Object?> get props => [];
 }
 
+class EditModeEnabled extends DeviceWorkingCycleEvent {
+  const EditModeEnabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class EditModeDisabled extends DeviceWorkingCycleEvent {
+  const EditModeDisabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class DeviceWorkingCycleSaved extends DeviceWorkingCycleEvent {
   const DeviceWorkingCycleSaved();
 

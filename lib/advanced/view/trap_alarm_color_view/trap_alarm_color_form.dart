@@ -70,7 +70,7 @@ class TrapAlarmColorForm extends StatelessWidget {
             ),
           ),
         ),
-        floatingActionButton: const ColorEditFloatingActionButton(),
+        floatingActionButton: const _ColorEditFloatingActionButton(),
       ),
     );
   }
@@ -162,15 +162,7 @@ Widget _buildContent({
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: !isEditing
-                      ? const Icon(
-                          Icons.not_interested_outlined,
-                          color: Colors.white,
-                          shadows: <Shadow>[
-                            Shadow(color: Colors.black, blurRadius: 1.0)
-                          ],
-                        )
-                      : null,
+                  child: null,
                 ),
               ],
             ),
@@ -202,15 +194,7 @@ Widget _buildContent({
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: !isEditing
-                      ? const Icon(
-                          Icons.not_interested_sharp,
-                          color: Colors.white,
-                          shadows: <Shadow>[
-                            Shadow(color: Colors.black, blurRadius: 1.0)
-                          ],
-                        )
-                      : null,
+                  child: null,
                 ),
               ],
             ),
@@ -521,17 +505,18 @@ class _ResetButton extends StatelessWidget {
                 AppLocalizations.of(context)!.resetToDefaultSettings,
                 style: const TextStyle(fontSize: CommonStyle.sizeL),
               ),
-              enabled: state.isEditing,
-              onTap: () async {
-                bool? result = await _showConfirmResetDialog();
-                if (result != null) {
-                  result
-                      ? context
-                          .read<TrapAlarmColorBloc>()
-                          .add(const TrapAlarmColorReseted())
-                      : null;
-                }
-              },
+              onTap: state.isEditing
+                  ? () async {
+                      bool? result = await _showConfirmResetDialog();
+                      if (result != null) {
+                        result
+                            ? context
+                                .read<TrapAlarmColorBloc>()
+                                .add(const TrapAlarmColorReseted())
+                            : null;
+                      }
+                    }
+                  : null,
             ),
           ),
         );
@@ -540,8 +525,8 @@ class _ResetButton extends StatelessWidget {
   }
 }
 
-class ColorEditFloatingActionButton extends StatelessWidget {
-  const ColorEditFloatingActionButton({
+class _ColorEditFloatingActionButton extends StatelessWidget {
+  const _ColorEditFloatingActionButton({
     Key? key,
   }) : super(key: key);
 

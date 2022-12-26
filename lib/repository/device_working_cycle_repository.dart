@@ -47,6 +47,39 @@ class DeviceWorkingCycleRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
+
+  Future<List<dynamic>> setWorkingCycle(
+      {required User user, required String index}) async {
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardListApiPath = '/advanced/rotation';
+
+    Map<String, dynamic> requestData = {
+      'uid': user.id,
+      'index': index,
+    };
+
+    try {
+      Response response =
+          await dio.put(trapForwardListApiPath, data: requestData);
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [
+          true,
+        ];
+      } else {
+        return [
+          false,
+        ];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
 }
 
 class DeviceWorkingCycle {

@@ -73,7 +73,7 @@ class CustomStyle {
     }
 
     for (int i = 4; i < severityColors.length; i++) {
-      severityFontColor[i] = Color(severityColors[i]);
+      severityFontColor[i - 4] = Color(severityColors[i]);
     }
 
     CustomStyle.statusColor[3] = Color(severityColors[3]);

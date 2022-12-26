@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/device_working_cycle/device_working_cycle_bloc.dart';
+import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -47,29 +49,40 @@ class DeviceWorkingCycleForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.trapAlarmSound,
+            AppLocalizations.of(context)!.deviceWorkingCycle,
           ),
           elevation: 0.0,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Padding(
+          children: const [
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 14.0),
             ),
-            const _DeviceWorkingCycleDropDownMenu(),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 80.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  _CancelButton(),
-                  _SaveButton(),
-                ],
-              ),
-            ),
+            _DeviceWorkingCycleTitle(),
+            _DeviceWorkingCycleDropDownMenu(),
           ],
         ),
+        floatingActionButton:
+            const _DeviceWorkingCycleEditFloatingActionButton(),
+      ),
+    );
+  }
+}
+
+class _DeviceWorkingCycleTitle extends StatelessWidget {
+  const _DeviceWorkingCycleTitle({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 14.0),
+      child: Row(
+        children: [
+          Text(
+            AppLocalizations.of(context)!.deviceWorkingCycle,
+          ),
+        ],
       ),
     );
   }
@@ -91,6 +104,7 @@ class _DeviceWorkingCycleDropDownMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DeviceWorkingCycleBloc, DeviceWorkingCycleState>(
         buildWhen: (previous, current) =>
+            previous.isEditing != current.isEditing ||
             previous.deviceWorkingCycleIndex != current.deviceWorkingCycleIndex,
         builder: (context, state) {
           return Padding(
@@ -107,7 +121,8 @@ class _DeviceWorkingCycleDropDownMenu extends StatelessWidget {
                       color: Colors.grey.shade700,
                     ),
                     borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.white,
+                    color:
+                        state.isEditing ? Colors.white : Colors.grey.shade500,
                   ),
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
@@ -121,20 +136,24 @@ class _DeviceWorkingCycleDropDownMenu extends StatelessWidget {
                         child: Text(
                           deviceWorkingCycle.name,
                           textAlign: TextAlign.left,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: CommonStyle.sizeL,
-                            color: Colors.black,
+                            color: state.isEditing
+                                ? Colors.black
+                                : Colors.grey.shade700,
                           ),
                         ),
                       )
                   ],
-                  onChanged: (String? value) {
-                    if (value != null) {
-                      context
-                          .read<DeviceWorkingCycleBloc>()
-                          .add(DeviceWorkingCycleChanged(value));
-                    }
-                  },
+                  onChanged: state.isEditing
+                      ? (String? value) {
+                          if (value != null) {
+                            context
+                                .read<DeviceWorkingCycleBloc>()
+                                .add(DeviceWorkingCycleChanged(value));
+                          }
+                        }
+                      : null,
                 ),
               ),
             ),
@@ -143,60 +162,61 @@ class _DeviceWorkingCycleDropDownMenu extends StatelessWidget {
   }
 }
 
-class _CancelButton extends StatelessWidget {
-  const _CancelButton({Key? key}) : super(key: key);
+class _DeviceWorkingCycleEditFloatingActionButton extends StatelessWidget {
+  const _DeviceWorkingCycleEditFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(CommonStyle.lineSpacing),
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                side: BorderSide(width: 1.0, color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(4.0))),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          key: const Key('deviceWorkingCycleForm_cancel_raisedButton'),
-          child: Text(
-            AppLocalizations.of(context)!.cancel,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeM,
-              color: Colors.black,
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
-    );
-  }
-}
+    Map _userFunctionMap =
+        context.read<AuthenticationBloc>().state.userFunctionMap;
 
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
     return BlocBuilder<DeviceWorkingCycleBloc, DeviceWorkingCycleState>(
-      buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
-          child: ElevatedButton(
-              key: const Key('deviceWorkingCycleForm_save_raisedButton'),
-              child: Text(
-                AppLocalizations.of(context)!.save,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeM,
-                ),
-              ),
-              onPressed: () {
-                context
-                    .read<DeviceWorkingCycleBloc>()
-                    .add(const DeviceWorkingCycleSaved());
-              }),
-        );
+        return _userFunctionMap[37]
+            ? state.isEditing
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FloatingActionButton(
+                        heroTag: null,
+                        elevation: 0.0,
+                        backgroundColor: const Color(0x742195F3),
+                        onPressed: () {
+                          context
+                              .read<DeviceWorkingCycleBloc>()
+                              .add(const DeviceWorkingCycleSaved());
+                        },
+                        child: const Icon(CustomIcons.check),
+                        //const Text('Save'),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(6.0),
+                      ),
+                      FloatingActionButton(
+                          heroTag: null,
+                          elevation: 0.0,
+                          backgroundColor: const Color(0x742195F3),
+                          onPressed: () {
+                            context
+                                .read<DeviceWorkingCycleBloc>()
+                                .add(const EditModeDisabled());
+                          },
+                          child: const Icon(CustomIcons.cancel)),
+                    ],
+                  )
+                : FloatingActionButton(
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () {
+                      context
+                          .read<DeviceWorkingCycleBloc>()
+                          .add(const EditModeEnabled());
+                    },
+                    child: const Icon(Icons.edit),
+                  )
+            : Container();
       },
     );
   }

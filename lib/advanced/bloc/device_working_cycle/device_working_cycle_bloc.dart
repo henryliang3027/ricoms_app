@@ -19,6 +19,8 @@ class DeviceWorkingCycleBloc
     on<DeviceWorkingCycleRequested>(_onDeviceWorkingCycleRequested);
     on<DeviceWorkingCycleChanged>(_onDeviceWorkingCycleChanged);
     on<DeviceWorkingCycleSaved>(_onDeviceWorkingCycleSaved);
+    on<EditModeEnabled>(_onEditModeEnabled);
+    on<EditModeDisabled>(_onEditModeDisabled);
 
     add(const DeviceWorkingCycleRequested());
   }
@@ -36,12 +38,14 @@ class DeviceWorkingCycleBloc
     if (result[0]) {
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
         deviceWorkingCycleList: result[1],
         deviceWorkingCycleIndex: result[2],
       ));
     } else {
       emit(state.copyWith(
         status: FormStatus.requestFailure,
+        submissionStatus: SubmissionStatus.none,
         deviceWorkingCycleList: [],
         requestErrorMsg: result[1],
       ));
@@ -53,18 +57,58 @@ class DeviceWorkingCycleBloc
   void _onDeviceWorkingCycleSaved(
     DeviceWorkingCycleSaved event,
     Emitter<DeviceWorkingCycleState> emit,
-  ) {
-    emit(state.copyWith(status: FormStatus.requestInProgress));
+  ) async {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      submissionStatus: SubmissionStatus.submissionInProgress,
+    ));
 
-    //repo
+    List<dynamic> result = await _deviceWorkingCycleRepository.setWorkingCycle(
+        user: _user, index: state.deviceWorkingCycleIndex);
 
-    emit(state.copyWith(status: FormStatus.requestSuccess));
+    if (result[0]) {
+      emit(state.copyWith(
+        submissionStatus: SubmissionStatus.submissionSuccess,
+        isEditing: false,
+      ));
+    } else {
+      emit(state.copyWith(
+        submissionStatus: SubmissionStatus.submissionFailure,
+        isEditing: true,
+      ));
+    }
   }
 
   void _onDeviceWorkingCycleChanged(
     DeviceWorkingCycleChanged event,
     Emitter<DeviceWorkingCycleState> emit,
   ) {
-    emit(state.copyWith(deviceWorkingCycleIndex: event.index));
+    emit(state.copyWith(
+      status: FormStatus.none,
+      submissionStatus: SubmissionStatus.none,
+      deviceWorkingCycleIndex: event.index,
+    ));
+  }
+
+  void _onEditModeEnabled(
+    EditModeEnabled event,
+    Emitter<DeviceWorkingCycleState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      submissionStatus: SubmissionStatus.none,
+      isEditing: true,
+    ));
+  }
+
+  void _onEditModeDisabled(
+    EditModeDisabled event,
+    Emitter<DeviceWorkingCycleState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      submissionStatus: SubmissionStatus.none,
+      isEditing: false,
+    ));
   }
 }

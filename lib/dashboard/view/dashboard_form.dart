@@ -414,8 +414,8 @@ class _DeviceStatisticsGridView extends StatelessWidget {
     CustomStyle.severityColor[3]!, // critical
     CustomStyle.severityColor[2]!, // warning
     CustomStyle.severityColor[1]!, // normal
-    const Color(0xFF6C757D), // offline
-    const Color(0xFF6C757D), //unknown
+    CustomStyle.severityColor[0]!, // offline
+    const Color(0xFF6C757D), // unknown
   ];
 
   final _fontColors = [
@@ -423,8 +423,8 @@ class _DeviceStatisticsGridView extends StatelessWidget {
     CustomStyle.severityFontColor[3]!, // critical
     CustomStyle.severityFontColor[2]!, // warning
     CustomStyle.severityFontColor[1]!, // normal
-    Colors.white, // offline
-    Colors.white, //unknown
+    CustomStyle.severityFontColor[0]!, // offline
+    Colors.white, // unknown
   ];
 
   @override
@@ -601,10 +601,11 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[3]!,
+          ),
         );
       case 1:
         return PieChartSectionData(
@@ -612,10 +613,11 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[2]!,
+          ),
         );
       case 2:
         return PieChartSectionData(
@@ -623,10 +625,11 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[1]!,
+          ),
         );
       default:
         return PieChartSectionData(
