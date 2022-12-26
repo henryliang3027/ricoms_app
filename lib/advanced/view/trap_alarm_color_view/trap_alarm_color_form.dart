@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/trap_alarm_color/trap_alarm_color_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
@@ -56,26 +57,20 @@ class TrapAlarmColorForm extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const _CriticalTrapColorCard(),
-                const _WarningTrapColorCard(),
-                const _NormalTrapColorCard(),
-                const _NoticeTrapColorCard(),
-                const _ResetButton(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 80.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      _CancelButton(),
-                      _SaveButton(),
-                    ],
-                  ),
+              children: const [
+                _CriticalTrapColorCard(),
+                _WarningTrapColorCard(),
+                _NormalTrapColorCard(),
+                _NoticeTrapColorCard(),
+                _ResetButton(),
+                SizedBox(
+                  height: 140.0,
                 ),
               ],
             ),
           ),
         ),
+        floatingActionButton: const ColorEditFloatingActionButton(),
       ),
     );
   }
@@ -113,6 +108,7 @@ Future<int?> _showColorPickerDialog({
 
 Widget _buildContent({
   required BuildContext context,
+  required bool isEditing,
   required String trapAlarmTitle,
   required int trapAlarmBackgroundColor,
   required int trapAlarmTextColor,
@@ -151,19 +147,30 @@ Widget _buildContent({
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    onChangeBackgroundColor();
-                  },
+                  onPressed: isEditing
+                      ? () {
+                          onChangeBackgroundColor();
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     elevation: 0.0,
                     backgroundColor: Color(trapAlarmBackgroundColor),
+                    disabledBackgroundColor: Color(trapAlarmBackgroundColor),
                     shape: const RoundedRectangleBorder(
                         side: BorderSide(width: 1.0, color: Colors.black),
                         borderRadius: BorderRadius.all(Radius.circular(1.0))),
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: null,
+                  child: !isEditing
+                      ? const Icon(
+                          Icons.not_interested_outlined,
+                          color: Colors.white,
+                          shadows: <Shadow>[
+                            Shadow(color: Colors.black, blurRadius: 1.0)
+                          ],
+                        )
+                      : null,
                 ),
               ],
             ),
@@ -180,19 +187,30 @@ Widget _buildContent({
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    onChangeTextColor();
-                  },
+                  onPressed: isEditing
+                      ? () {
+                          onChangeTextColor();
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     elevation: 0.0,
                     backgroundColor: Color(trapAlarmTextColor),
+                    disabledBackgroundColor: Color(trapAlarmTextColor),
                     shape: const RoundedRectangleBorder(
                         side: BorderSide(width: 1.0, color: Colors.black),
                         borderRadius: BorderRadius.all(Radius.circular(1.0))),
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: null,
+                  child: !isEditing
+                      ? const Icon(
+                          Icons.not_interested_sharp,
+                          color: Colors.white,
+                          shadows: <Shadow>[
+                            Shadow(color: Colors.black, blurRadius: 1.0)
+                          ],
+                        )
+                      : null,
                 ),
               ],
             ),
@@ -271,6 +289,7 @@ class _CriticalTrapColorCard extends StatelessWidget {
 
         return _buildContent(
           context: context,
+          isEditing: state.isEditing,
           trapAlarmTitle: AppLocalizations.of(context)!.critical,
           trapAlarmBackgroundColor: state.criticalBackgroundColor,
           trapAlarmTextColor: state.criticalTextColor,
@@ -317,6 +336,7 @@ class _WarningTrapColorCard extends StatelessWidget {
 
         return _buildContent(
           context: context,
+          isEditing: state.isEditing,
           trapAlarmTitle: AppLocalizations.of(context)!.warning,
           trapAlarmBackgroundColor: state.warningBackgroundColor,
           trapAlarmTextColor: state.warningTextColor,
@@ -363,6 +383,7 @@ class _NormalTrapColorCard extends StatelessWidget {
 
         return _buildContent(
           context: context,
+          isEditing: state.isEditing,
           trapAlarmTitle: AppLocalizations.of(context)!.normal,
           trapAlarmBackgroundColor: state.normalBackgroundColor,
           trapAlarmTextColor: state.normalTextColor,
@@ -409,6 +430,7 @@ class _NoticeTrapColorCard extends StatelessWidget {
 
         return _buildContent(
           context: context,
+          isEditing: state.isEditing,
           trapAlarmTitle: AppLocalizations.of(context)!.notice,
           trapAlarmBackgroundColor: state.noticeBackgroundColor,
           trapAlarmTextColor: state.noticeTextColor,
@@ -499,6 +521,7 @@ class _ResetButton extends StatelessWidget {
                 AppLocalizations.of(context)!.resetToDefaultSettings,
                 style: const TextStyle(fontSize: CommonStyle.sizeL),
               ),
+              enabled: state.isEditing,
               onTap: () async {
                 bool? result = await _showConfirmResetDialog();
                 if (result != null) {
@@ -517,60 +540,56 @@ class _ResetButton extends StatelessWidget {
   }
 }
 
-class _CancelButton extends StatelessWidget {
-  const _CancelButton({Key? key}) : super(key: key);
+class ColorEditFloatingActionButton extends StatelessWidget {
+  const ColorEditFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(CommonStyle.lineSpacing),
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                side: BorderSide(width: 1.0, color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(4.0))),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          key: const Key('trapAlarmColorForm_cancel_raisedButton'),
-          child: Text(
-            AppLocalizations.of(context)!.cancel,
-            style: const TextStyle(
-              fontSize: CommonStyle.sizeM,
-              color: Colors.black,
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
-    );
-  }
-}
-
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TrapAlarmColorBloc, TrapAlarmColorState>(
-      buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.all(CommonStyle.lineSpacing),
-          child: ElevatedButton(
-              key: const Key('trapAlarmColorForm_save_raisedButton'),
-              child: Text(
-                AppLocalizations.of(context)!.save,
-                style: const TextStyle(
-                  fontSize: CommonStyle.sizeM,
-                ),
-              ),
-              onPressed: () {
-                context
-                    .read<TrapAlarmColorBloc>()
-                    .add(const TrapAlarmColorSaved());
-              }),
-        );
+        return state.isEditing
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () {
+                      context
+                          .read<TrapAlarmColorBloc>()
+                          .add(const TrapAlarmColorSaved());
+                    },
+                    child: const Icon(CustomIcons.check),
+                    //const Text('Save'),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      backgroundColor: const Color(0x742195F3),
+                      onPressed: () {
+                        context
+                            .read<TrapAlarmColorBloc>()
+                            .add(const EditModeDisabled());
+                      },
+                      child: const Icon(CustomIcons.cancel)),
+                ],
+              )
+            : FloatingActionButton(
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
+                onPressed: () {
+                  context
+                      .read<TrapAlarmColorBloc>()
+                      .add(const EditModeEnabled());
+                },
+                child: const Icon(Icons.edit),
+              );
       },
     );
   }

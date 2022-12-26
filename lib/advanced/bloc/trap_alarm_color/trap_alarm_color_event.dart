@@ -76,6 +76,20 @@ class NoticeBackgroundColorChanged extends TrapAlarmColorEvent {
   List<Object?> get props => [noticeBackgroundColor];
 }
 
+class EditModeEnabled extends TrapAlarmColorEvent {
+  const EditModeEnabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class EditModeDisabled extends TrapAlarmColorEvent {
+  const EditModeDisabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TrapAlarmColorSaved extends TrapAlarmColorEvent {
   const TrapAlarmColorSaved();
 

@@ -3,6 +3,7 @@ part of 'trap_alarm_color_bloc.dart';
 class TrapAlarmColorState extends Equatable {
   const TrapAlarmColorState({
     this.status = FormStatus.none,
+    this.isEditing = false,
     this.criticalTextColor = 0xffffffff,
     this.criticalBackgroundColor = 0xffdc3545,
     this.warningTextColor = 0xff000000,
@@ -14,6 +15,7 @@ class TrapAlarmColorState extends Equatable {
   });
 
   final FormStatus status;
+  final bool isEditing;
   final int criticalTextColor;
   final int criticalBackgroundColor;
   final int warningTextColor;
@@ -25,6 +27,7 @@ class TrapAlarmColorState extends Equatable {
 
   TrapAlarmColorState copyWith({
     FormStatus? status,
+    bool? isEditing,
     int? criticalTextColor,
     int? criticalBackgroundColor,
     int? warningTextColor,
@@ -36,6 +39,7 @@ class TrapAlarmColorState extends Equatable {
   }) {
     return TrapAlarmColorState(
       status: status ?? this.status,
+      isEditing: isEditing ?? this.isEditing,
       criticalTextColor: criticalTextColor ?? this.criticalTextColor,
       criticalBackgroundColor:
           criticalBackgroundColor ?? this.criticalBackgroundColor,
@@ -54,6 +58,7 @@ class TrapAlarmColorState extends Equatable {
   @override
   List<Object> get props => [
         status,
+        isEditing,
         criticalTextColor,
         criticalBackgroundColor,
         warningTextColor,

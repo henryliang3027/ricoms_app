@@ -35,6 +35,8 @@ class TrapAlarmColorBloc
     on<NormalTextColorChanged>(_onNormalTextColorChanged);
     on<NoticeBackgroundColorChanged>(_onNoticeBackgroundColorChanged);
     on<NoticeTextColorChanged>(_onNoticeTextColorChanged);
+    on<EditModeEnabled>(_onEditModeEnabled);
+    on<EditModeDisabled>(_onEditModeDisabled);
     on<TrapAlarmColorSaved>(_onTrapAlarmColorSaved);
     on<TrapAlarmColorReseted>(_onTrapAlarmColorReseted);
   }
@@ -122,6 +124,34 @@ class TrapAlarmColorBloc
     ));
   }
 
+  void _onEditModeEnabled(
+    EditModeEnabled event,
+    Emitter<TrapAlarmColorState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      isEditing: true,
+    ));
+  }
+
+  void _onEditModeDisabled(
+    EditModeDisabled event,
+    Emitter<TrapAlarmColorState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      isEditing: false,
+      criticalBackgroundColor: CustomStyle.severityColor[3]!.value,
+      criticalTextColor: CustomStyle.severityFontColor[3]!.value,
+      warningBackgroundColor: CustomStyle.severityColor[2]!.value,
+      warningTextColor: CustomStyle.severityFontColor[2]!.value,
+      normalBackgroundColor: CustomStyle.severityColor[1]!.value,
+      normalTextColor: CustomStyle.severityFontColor[1]!.value,
+      noticeBackgroundColor: CustomStyle.severityColor[0]!.value,
+      noticeTextColor: CustomStyle.severityFontColor[0]!.value,
+    ));
+  }
+
   void _onTrapAlarmColorSaved(
     TrapAlarmColorSaved event,
     Emitter<TrapAlarmColorState> emit,
@@ -154,6 +184,7 @@ class TrapAlarmColorBloc
 
     emit(state.copyWith(
       status: FormStatus.requestSuccess,
+      isEditing: false,
     ));
   }
 
@@ -162,6 +193,7 @@ class TrapAlarmColorBloc
     Emitter<TrapAlarmColorState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       criticalBackgroundColor: 0xffdc3545,
       criticalTextColor: 0xffffffff,
       warningBackgroundColor: 0xffffc107,
