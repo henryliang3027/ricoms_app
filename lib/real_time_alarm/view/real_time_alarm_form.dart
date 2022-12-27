@@ -23,9 +23,14 @@ class RealTimeAlarmForm extends StatelessWidget {
 
   final PageController pageController;
   final List initialPath;
+  // final AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   Widget build(BuildContext context) {
+    // assetsAudioPlayer.open(
+    //   Audio("assets/audios/trap_sound.mp3"),
+    // );
+
     Future<void> _showFailureDialog(String msg) async {
       return showDialog<void>(
         context: context,
@@ -78,6 +83,14 @@ class RealTimeAlarmForm extends StatelessWidget {
           length: 5,
           child: Scaffold(
             appBar: AppBar(
+              // actions: [
+              //   ElevatedButton(
+              //       onPressed: () async {
+              //         assetsAudioPlayer.play();
+              //         await Future.delayed(Duration(milliseconds: 100));
+              //       },
+              //       child: Icon(Icons.play_arrow))
+              // ],
               centerTitle: true,
               title: Text(
                 AppLocalizations.of(context)!.realTimeAlarm,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 
@@ -162,7 +163,7 @@ enum AlarmType {
   notice, // 0
 }
 
-class Alarm {
+class Alarm extends Equatable {
   const Alarm({
     required this.id, //device id
     this.event = '',
@@ -186,4 +187,18 @@ class Alarm {
   final int severity;
   final int type;
   final List<int> path;
+
+  @override
+  List<Object?> get props => [
+        id,
+        event,
+        name,
+        receivedTime,
+        ip,
+        shelf,
+        slot,
+        severity,
+        type,
+        path,
+      ];
 }

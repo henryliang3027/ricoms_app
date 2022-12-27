@@ -53,6 +53,15 @@ class AlarmPeriodicUpdated extends RealTimeAlarmEvent {
   List<Object?> get props => [alarmType];
 }
 
+class AlarmSoundPlayed extends RealTimeAlarmEvent {
+  const AlarmSoundPlayed(this.latestAlarm);
+
+  final Alarm latestAlarm;
+
+  @override
+  List<Object?> get props => [latestAlarm];
+}
+
 class AlarmItemTapped extends RealTimeAlarmEvent {
   const AlarmItemTapped(this.path);
 
