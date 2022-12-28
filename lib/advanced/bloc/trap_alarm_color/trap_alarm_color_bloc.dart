@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
@@ -155,7 +153,7 @@ class TrapAlarmColorBloc
   void _onTrapAlarmColorSaved(
     TrapAlarmColorSaved event,
     Emitter<TrapAlarmColorState> emit,
-  ) {
+  ) async {
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
     ));
@@ -171,7 +169,8 @@ class TrapAlarmColorBloc
       state.criticalTextColor,
     ]);
 
-    _trapAlarmColorRepository.setTrapAlarmColor(user: _user, severityColors: [
+    List<dynamic> result = await _trapAlarmColorRepository
+        .setTrapAlarmColor(user: _user, severityColors: [
       state.noticeBackgroundColor,
       state.normalBackgroundColor,
       state.warningBackgroundColor,
@@ -182,10 +181,18 @@ class TrapAlarmColorBloc
       state.criticalTextColor,
     ]);
 
-    emit(state.copyWith(
-      status: FormStatus.requestSuccess,
-      isEditing: false,
-    ));
+    if (result[0]) {
+      emit(state.copyWith(
+        status: FormStatus.requestSuccess,
+        isEditing: false,
+      ));
+    } else {
+      emit(state.copyWith(
+        status: FormStatus.requestFailure,
+        isEditing: false,
+        errmsg: result[1],
+      ));
+    }
   }
 
   void _onTrapAlarmColorReseted(

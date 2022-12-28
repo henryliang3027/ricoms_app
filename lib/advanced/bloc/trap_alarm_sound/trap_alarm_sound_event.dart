@@ -49,6 +49,20 @@ class NoticeAlarmSoundEnabled extends TrapAlarmSoundEvent {
   List<Object?> get props => [enableNoticeAlarmSound];
 }
 
+class EditModeEnabled extends TrapAlarmSoundEvent {
+  const EditModeEnabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class EditModeDisabled extends TrapAlarmSoundEvent {
+  const EditModeDisabled();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TrapAlarmSoundEnableSaved extends TrapAlarmSoundEvent {
   const TrapAlarmSoundEnableSaved();
 

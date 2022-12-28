@@ -38,10 +38,44 @@ class TrapAlarmColorForm extends StatelessWidget {
       );
     }
 
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_error,
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<TrapAlarmColorBloc, TrapAlarmColorState>(
       listener: (context, state) {
         if (state.status.isRequestSuccess) {
           _showSuccessDialog();
+        } else if (state.status.isRequestFailure) {
+          _showFailureDialog(state.errmsg);
         }
       },
       child: Scaffold(

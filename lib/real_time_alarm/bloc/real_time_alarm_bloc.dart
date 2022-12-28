@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/utils/alarm_sound_switch.dart';
+import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -75,8 +75,8 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     AlarmSoundPlayed event,
     Emitter<RealTimeAlarmState> emit,
   ) {
-    if (AlarmSoundSwitch.activateAlarm) {
-      if (AlarmSoundSwitch.enableTrapAlarmSound[event.latestAlarm.severity]) {
+    if (AlarmSoundConfig.activateAlarm) {
+      if (AlarmSoundConfig.enableTrapAlarmSound[event.latestAlarm.severity]) {
         _assetsAudioPlayer.play();
       }
     }

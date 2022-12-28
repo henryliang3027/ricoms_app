@@ -3,47 +3,53 @@ part 'user.g.dart';
 
 @HiveType(typeId: 1)
 class User {
-  const User({
-    required this.id,
-    required this.ip,
-    required this.name,
-    required this.password,
-    required this.permission,
-    required this.email,
-    required this.mobile,
-    required this.tel,
-    required this.ext,
-    required this.bookmarks,
-    required this.isActivate,
-    required this.account,
-    this.severityColors = const [
-      0xff6c757d, //notice background color
-      0xff28a745, //normal background color
-      0xffffc107, //warning background color
-      0xffdc3545, //critical background color
-      0xffffffff, //notice font color
-      0xffffffff, //normal font color
-      0xff000000, //warning font color
-      0xffffffff, //critical font color,
-    ],
-  });
+  const User(
+      {required this.id,
+      required this.ip,
+      required this.name,
+      required this.password,
+      required this.permission,
+      required this.email,
+      required this.mobile,
+      required this.tel,
+      required this.ext,
+      required this.bookmarks,
+      required this.isActivate,
+      required this.account,
+      this.severityColors = const [
+        0xff6c757d, //notice background color
+        0xff28a745, //normal background color
+        0xffffc107, //warning background color
+        0xffdc3545, //critical background color
+        0xffffffff, //notice font color
+        0xffffffff, //normal font color
+        0xff000000, //warning font color
+        0xffffffff, //critical font color,
+      ],
+      this.alarmSoundEnableValues = const [
+        false, // activate alarm
+        false, // AlarmType.notice
+        false, // AlarmType.normal
+        false, // AlarmType.warning
+        false, // AlarmType.critical
+      ]});
 
   const User.empty()
       : this(
-          id: '-',
-          ip: '-',
-          name: '-',
-          password: '-',
-          permission: '-',
-          email: '-',
-          mobile: '-',
-          tel: '-',
-          ext: '-',
-          bookmarks: const [],
-          isActivate: false,
-          account: '-',
-          severityColors: const [],
-        );
+            id: '-',
+            ip: '-',
+            name: '-',
+            password: '-',
+            permission: '-',
+            email: '-',
+            mobile: '-',
+            tel: '-',
+            ext: '-',
+            bookmarks: const [],
+            isActivate: false,
+            account: '-',
+            severityColors: const [],
+            alarmSoundEnableValues: const []);
 
   @HiveField(0, defaultValue: '-')
   final String id;
@@ -92,6 +98,15 @@ class User {
     0xffffffff, //critical font color
   ])
   final List<int> severityColors;
+
+  @HiveField(13, defaultValue: [
+    false, // activate alarm
+    false, // AlarmType.notice
+    false, // AlarmType.normal
+    false, // AlarmType.warning
+    false, // AlarmType.critical
+  ])
+  final List<bool> alarmSoundEnableValues;
 }
 
 @HiveType(typeId: 2)

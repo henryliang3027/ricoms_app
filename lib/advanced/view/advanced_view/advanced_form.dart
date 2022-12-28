@@ -89,20 +89,20 @@ class _AdvancedOptions extends StatelessWidget {
     ];
 
     List<int> _trapFunctionPermissions = [
-      22,
-      39,
-      40,
+      22, // TrapForward
+      39, // TrapAlarmColorPage
+      40, // TrapAlarmSoundPage
     ];
 
     List<int> _systemFunctionPermissions = [
-      27,
-      34,
-      38,
+      27, // ServerIPSetting
+      34, // ClearLogRecordsSetting
+      38, // ResetToDefaultSettings
     ];
 
     List<int> _deviceFunctionPermissions = [
-      30,
-      36,
+      30, // BatchSettingPage
+      36, // DeviceWorkingCyclePage
     ];
 
     List<bool> _trapFunctionAccessibility = [

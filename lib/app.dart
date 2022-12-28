@@ -104,6 +104,7 @@ class App extends StatelessWidget {
         create: (_) => AuthenticationBloc(
           authenticationRepository: authenticationRepository,
           trapAlarmColorRepository: trapAlarmColorRepository,
+          trapAlarmSoundRepository: trapAlarmSoundRepository,
         ),
         child: const AppView(),
       ),

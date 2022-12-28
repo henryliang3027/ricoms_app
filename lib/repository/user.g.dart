@@ -42,13 +42,16 @@ class UserAdapter extends TypeAdapter<User> {
               4294967295
             ]
           : (fields[12] as List).cast<int>(),
+      alarmSoundEnableValues: fields[13] == null
+          ? [false, false, false, false, false]
+          : (fields[13] as List).cast<bool>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -74,7 +77,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(11)
       ..write(obj.account)
       ..writeByte(12)
-      ..write(obj.severityColors);
+      ..write(obj.severityColors)
+      ..writeByte(13)
+      ..write(obj.alarmSoundEnableValues);
   }
 
   @override

@@ -12,6 +12,7 @@ class TrapAlarmColorState extends Equatable {
     this.normalBackgroundColor = 0xff28a745,
     this.noticeTextColor = 0xffffffff,
     this.noticeBackgroundColor = 0xff6c757d,
+    this.errmsg = '',
   });
 
   final FormStatus status;
@@ -24,6 +25,7 @@ class TrapAlarmColorState extends Equatable {
   final int normalBackgroundColor;
   final int noticeTextColor;
   final int noticeBackgroundColor;
+  final String errmsg;
 
   TrapAlarmColorState copyWith({
     FormStatus? status,
@@ -36,6 +38,7 @@ class TrapAlarmColorState extends Equatable {
     int? normalBackgroundColor,
     int? noticeTextColor,
     int? noticeBackgroundColor,
+    String? errmsg,
   }) {
     return TrapAlarmColorState(
       status: status ?? this.status,
@@ -52,6 +55,7 @@ class TrapAlarmColorState extends Equatable {
       noticeTextColor: noticeTextColor ?? this.noticeTextColor,
       noticeBackgroundColor:
           noticeBackgroundColor ?? this.noticeBackgroundColor,
+      errmsg: errmsg ?? this.errmsg,
     );
   }
 
@@ -67,5 +71,6 @@ class TrapAlarmColorState extends Equatable {
         normalBackgroundColor,
         noticeTextColor,
         noticeBackgroundColor,
+        errmsg,
       ];
 }

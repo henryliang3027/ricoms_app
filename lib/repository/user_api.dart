@@ -93,6 +93,7 @@ class UserApi {
         bookmarks: user.bookmarks, //get user's latest bookbarks
         isActivate: true,
         severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
     }
@@ -133,6 +134,7 @@ class UserApi {
         bookmarks: newBookmarks,
         isActivate: true,
         severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
@@ -165,6 +167,7 @@ class UserApi {
         bookmarks: newBookmarks,
         isActivate: true,
         severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
@@ -199,6 +202,7 @@ class UserApi {
         bookmarks: newBookmarks,
         isActivate: true,
         severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
@@ -208,7 +212,7 @@ class UserApi {
     }
   }
 
-  Future<bool> setTrapAlarmColorByUserId(
+  Future<dynamic> setTrapAlarmColorByUserId(
     String userId,
     List<int> severityColors,
   ) async {
@@ -229,13 +233,14 @@ class UserApi {
         bookmarks: user.bookmarks,
         isActivate: true,
         severityColors: severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
 
       await _userBox.put(userId, updatedUser);
 
-      return true;
+      return [true];
     } else {
-      return false;
+      return [false, 'User does not exist.'];
     }
   }
 
@@ -246,6 +251,50 @@ class UserApi {
 
     if (user != null) {
       return [true, user.severityColors];
+    } else {
+      return [false, 'User does not exist.'];
+    }
+  }
+
+  Future<dynamic> setAlarmSoundEnableValuesByUserId(
+    String userId,
+    List<bool> alarmSoundEnableValues,
+  ) async {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      User updatedUser = User(
+        id: user.id,
+        ip: user.ip,
+        name: user.name,
+        account: user.account,
+        password: user.password,
+        permission: user.permission,
+        email: user.email,
+        mobile: user.mobile,
+        tel: user.tel,
+        ext: user.ext,
+        bookmarks: user.bookmarks,
+        isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: alarmSoundEnableValues,
+      );
+
+      await _userBox.put(userId, updatedUser);
+
+      return [true];
+    } else {
+      return [false, 'User does not exist.'];
+    }
+  }
+
+  List<dynamic> getAlarmSoundEnableValuesByUserId(
+    String userId,
+  ) {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      return [true, user.alarmSoundEnableValues];
     } else {
       return [false, 'User does not exist.'];
     }

@@ -415,7 +415,7 @@ class _DeviceStatisticsGridView extends StatelessWidget {
     CustomStyle.severityColor[2]!, // warning
     CustomStyle.severityColor[1]!, // normal
     CustomStyle.severityColor[0]!, // offline
-    const Color(0xFF6C757D), // unknown
+    Colors.black, // unknown
   ];
 
   final _fontColors = [

@@ -4,7 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -14,8 +16,10 @@ class AuthenticationBloc
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
     required TrapAlarmColorRepository trapAlarmColorRepository,
+    required TrapAlarmSoundRepository trapAlarmSoundRepository,
   })  : _authenticationRepository = authenticationRepository,
         _trapAlarmColorRepository = trapAlarmColorRepository,
+        _trapAlarmSoundRepository = trapAlarmSoundRepository,
         super(const AuthenticationState.unknown()) {
     on<AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
@@ -26,6 +30,7 @@ class AuthenticationBloc
 
   final AuthenticationRepository _authenticationRepository;
   final TrapAlarmColorRepository _trapAlarmColorRepository;
+  final TrapAlarmSoundRepository _trapAlarmSoundRepository;
   late StreamSubscription<AuthenticationReport>
       _authenticationStatusSubscription;
 
@@ -86,6 +91,15 @@ class AuthenticationBloc
 
           if (resultOfGetColor[0]) {
             CustomStyle.setSeverityColors(resultOfGetColor[1]);
+          }
+
+          List<dynamic> resultOfGetAlarmSoundEnableValues =
+              await _trapAlarmSoundRepository.getAlarmSoundEnableValues(
+                  user: event.report.user);
+
+          if (resultOfGetAlarmSoundEnableValues[0]) {
+            AlarmSoundConfig.setAlarmSoundEnableValues(
+                resultOfGetAlarmSoundEnableValues[1]);
           }
 
           return emit(AuthenticationState.authenticated(

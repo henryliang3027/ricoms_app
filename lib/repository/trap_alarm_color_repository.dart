@@ -19,7 +19,13 @@ class TrapAlarmColorRepository {
     required User user,
     required List<int> severityColors,
   }) async {
-    _userApi.setTrapAlarmColorByUserId(user.id, severityColors);
-    return true;
+    List<dynamic> result =
+        await _userApi.setTrapAlarmColorByUserId(user.id, severityColors);
+
+    if (result[0]) {
+      return [true];
+    } else {
+      return [false, result[1]];
+    }
   }
 }

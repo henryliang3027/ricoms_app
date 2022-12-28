@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/utils/alarm_sound_config.dart';
 
 part 'trap_alarm_sound_event.dart';
 part 'trap_alarm_sound_state.dart';
@@ -14,12 +15,20 @@ class TrapAlarmSoundBloc
     required TrapAlarmSoundRepository trapAlarmSoundRepository,
   })  : _user = user,
         _trapAlarmSoundRepository = trapAlarmSoundRepository,
-        super(const TrapAlarmSoundState()) {
+        super(TrapAlarmSoundState(
+          enableTrapAlarmSound: AlarmSoundConfig.activateAlarm,
+          enableCriticalAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[3],
+          enableWarningAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[2],
+          enableNormalAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[1],
+          enableNoticeAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[0],
+        )) {
     on<TrapAlarmSoundEnabled>(_onTrapAlarmSoundEnabled);
     on<CriticalAlarmSoundEnabled>(_onCriticalAlarmSoundEnabled);
     on<WarningAlarmSoundEnabled>(_onWarningAlarmSoundEnabled);
     on<NormalAlarmSoundEnabled>(_onNormalAlarmSoundEnabled);
     on<NoticeAlarmSoundEnabled>(_onNoticeAlarmSoundEnabled);
+    on<EditModeEnabled>(_onEditModeEnabled);
+    on<EditModeDisabled>(_onEditModeDisabled);
     on<TrapAlarmSoundEnableSaved>(_onTrapAlarmSoundEnableSaved);
   }
 
@@ -31,6 +40,7 @@ class TrapAlarmSoundBloc
     Emitter<TrapAlarmSoundState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       enableTrapAlarmSound: event.enableTrapAlarmSound,
     ));
   }
@@ -40,6 +50,7 @@ class TrapAlarmSoundBloc
     Emitter<TrapAlarmSoundState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       enableCriticalAlarmSound: event.enableCriticalAlarmSound,
     ));
   }
@@ -49,6 +60,7 @@ class TrapAlarmSoundBloc
     Emitter<TrapAlarmSoundState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       enableWarningAlarmSound: event.enableWarningAlarmSound,
     ));
   }
@@ -58,6 +70,7 @@ class TrapAlarmSoundBloc
     Emitter<TrapAlarmSoundState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       enableNormalAlarmSound: event.enableNormalAlarmSound,
     ));
   }
@@ -67,18 +80,65 @@ class TrapAlarmSoundBloc
     Emitter<TrapAlarmSoundState> emit,
   ) {
     emit(state.copyWith(
+      status: FormStatus.none,
       enableNoticeAlarmSound: event.enableNoticeAlarmSound,
+    ));
+  }
+
+  void _onEditModeEnabled(
+    EditModeEnabled event,
+    Emitter<TrapAlarmSoundState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      isEditing: true,
+    ));
+  }
+
+  void _onEditModeDisabled(
+    EditModeDisabled event,
+    Emitter<TrapAlarmSoundState> emit,
+  ) {
+    emit(state.copyWith(
+      status: FormStatus.none,
+      isEditing: false,
     ));
   }
 
   void _onTrapAlarmSoundEnableSaved(
     TrapAlarmSoundEnableSaved event,
     Emitter<TrapAlarmSoundState> emit,
-  ) {
+  ) async {
     emit(state.copyWith(status: FormStatus.requestInProgress));
 
-    //repo
+    AlarmSoundConfig.setAlarmSoundEnableValues([
+      state.enableTrapAlarmSound,
+      state.enableNoticeAlarmSound,
+      state.enableNormalAlarmSound,
+      state.enableWarningAlarmSound,
+      state.enableCriticalAlarmSound,
+    ]);
 
-    emit(state.copyWith(status: FormStatus.requestSuccess));
+    List<dynamic> result = await _trapAlarmSoundRepository
+        .setAlarmSoundEnableValues(user: _user, alarmSoundEnableValues: [
+      state.enableTrapAlarmSound,
+      state.enableNoticeAlarmSound,
+      state.enableNormalAlarmSound,
+      state.enableWarningAlarmSound,
+      state.enableCriticalAlarmSound,
+    ]);
+
+    if (result[0]) {
+      emit(state.copyWith(
+        status: FormStatus.requestSuccess,
+        isEditing: false,
+      ));
+    } else {
+      emit(state.copyWith(
+        status: FormStatus.requestFailure,
+        isEditing: false,
+        errmsg: result[1],
+      ));
+    }
   }
 }
