@@ -12,6 +12,7 @@ import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
 import 'package:ricoms_app/repository/system_log_repository.dart';
 import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
 import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
@@ -46,6 +47,7 @@ Future<void> main() async {
       trapForwardRepository: TrapForwardRepository(),
       trapAlarmColorRepository: TrapAlarmColorRepository(),
       trapAlarmSoundRepository: TrapAlarmSoundRepository(),
+      serverIPSettingRepository: ServerIPSettingRepository(),
       batchSettingRepository: BatchSettingRepository(),
       deviceWorkingCycleRepository: DeviceWorkingCycleRepository(),
     ),

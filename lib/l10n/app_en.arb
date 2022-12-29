@@ -739,6 +739,31 @@
       "description": "server IP setting"
     },
 
+    "masterServerIP": "Master server IP",
+    "@all": {
+      "description": "master server IP"
+    },
+
+    "slaveServerIP": "Slave server IP",
+    "@all": {
+      "description": "slave server IP"
+    },
+
+    "synchronizationInterval": "Waiting time of synchronization (s)",
+    "@all": {
+      "description": "waiting time of synchronization (s)"
+    },
+
+    "onlineServerIP": "Current operating IP",
+    "@all": {
+      "description": "current operating IP"
+    },
+
+    "serverIPSettingHint": "The synchronous setting function of the master-slave server needs to use MYSQL related parameter settings to operate normally.",
+    "@all": {
+      "description": "server IP setting hint"
+    },
+
     "clearLogRecordsSetting": "Clear Log Records Setting",
     "@all": {
       "description": "clear log records s etting"
