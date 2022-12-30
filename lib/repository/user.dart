@@ -36,20 +36,21 @@ class User {
 
   const User.empty()
       : this(
-            id: '-',
-            ip: '-',
-            name: '-',
-            password: '-',
-            permission: '-',
-            email: '-',
-            mobile: '-',
-            tel: '-',
-            ext: '-',
-            bookmarks: const [],
-            isActivate: false,
-            account: '-',
-            severityColors: const [],
-            alarmSoundEnableValues: const []);
+          id: '-',
+          ip: '-',
+          name: '-',
+          password: '-',
+          permission: '-',
+          email: '-',
+          mobile: '-',
+          tel: '-',
+          ext: '-',
+          bookmarks: const [],
+          isActivate: false,
+          account: '-',
+          severityColors: const [],
+          alarmSoundEnableValues: const [],
+        );
 
   @HiveField(0, defaultValue: '-')
   final String id;
