@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class DeviceWorkingCycleRepository {
   Future<List<dynamic>> getWorkingCycleList({required User user}) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String trapForwardListApiPath = '/advanced/rotation';
@@ -48,10 +51,14 @@ class DeviceWorkingCycleRepository {
     }
   }
 
-  Future<List<dynamic>> setWorkingCycle(
-      {required User user, required String index}) async {
+  Future<List<dynamic>> setWorkingCycle({
+    required User user,
+    required String index,
+  }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String trapForwardListApiPath = '/advanced/rotation';
