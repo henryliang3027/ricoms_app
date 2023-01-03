@@ -4,10 +4,9 @@ import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class SystemLogRepository {
   SystemLogRepository();
@@ -21,7 +20,9 @@ class SystemLogRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String systemLogApiPath =
@@ -102,7 +103,9 @@ class SystemLogRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String systemLogApiPath =
@@ -172,7 +175,9 @@ class SystemLogRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
@@ -206,7 +211,9 @@ class SystemLogRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 

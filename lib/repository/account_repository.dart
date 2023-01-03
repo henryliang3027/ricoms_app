@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/account_detail.dart';
 import 'package:ricoms_app/repository/account_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class AccountRepository {
   AccountRepository();
@@ -15,7 +16,9 @@ class AccountRepository {
     required User user,
     String? keyword,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String accountListApiPath = '/accounts';
@@ -104,7 +107,9 @@ class AccountRepository {
     required User user,
     required int accountId,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String accountDetailApiPath = '/accounts/$accountId';
@@ -166,7 +171,9 @@ class AccountRepository {
     String? tel,
     String? ext,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String createAccountApiPath = '/accounts';
@@ -243,7 +250,9 @@ class AccountRepository {
     String? tel,
     String? ext,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String updateAccountApiPath = '/accounts/$accountId';
@@ -311,7 +320,9 @@ class AccountRepository {
     required User user,
     required int accountId,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String deleteAccountApiPath = '/accounts/$accountId';

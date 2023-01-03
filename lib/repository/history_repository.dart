@@ -4,12 +4,11 @@ import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class HistoryRepository {
   HistoryRepository();
@@ -30,7 +29,9 @@ class HistoryRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String historyApiPath =
@@ -120,7 +121,9 @@ class HistoryRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String historyApiPath =
@@ -198,7 +201,9 @@ class HistoryRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
@@ -232,7 +237,9 @@ class HistoryRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 

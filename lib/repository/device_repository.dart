@@ -6,11 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class DeviceRepository {
   DeviceRepository();
@@ -20,7 +19,9 @@ class DeviceRepository {
     required int nodeId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceStatusPath = '/device/' + nodeId.toString() + '/block';
@@ -63,7 +64,9 @@ class DeviceRepository {
     required int pageId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -136,7 +139,9 @@ class DeviceRepository {
     required List<Map<String, String>> params,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 120000; //120s
     dio.options.receiveTimeout = 120000;
     String deviceWritingPath = '/device/' + nodeId.toString() + '/write';
@@ -169,7 +174,9 @@ class DeviceRepository {
     required int nodeId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -205,7 +212,9 @@ class DeviceRepository {
     required String description,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceDescriptionPath = '/device/' + nodeId.toString();
@@ -238,7 +247,9 @@ class DeviceRepository {
     required int nodeId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceStatusPath =
@@ -301,7 +312,9 @@ class DeviceRepository {
     required String next,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceStatusPath =
@@ -364,7 +377,9 @@ class DeviceRepository {
     required List<String> oids,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -402,7 +417,9 @@ class DeviceRepository {
     required String oid,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deviceChartDataPath =
@@ -487,7 +504,6 @@ class DeviceRepository {
 
     dataList.add(header);
 
-    print('start add');
     for (ChartDateValuePair chartDateValuePair in chartDateValuePairs) {
       String dateTime =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(chartDateValuePair.dateTime);
@@ -501,11 +517,8 @@ class DeviceRepository {
 
       dataList.add(row);
     }
-    print('end add');
 
-    print('start convert');
     String csv = const ListToCsvConverter().convert(dataList);
-    print('end convert');
 
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();

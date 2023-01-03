@@ -1,33 +1,37 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:ricoms_app/repository/user.dart';
 
-Future<List<dynamic>> getSlaveServerIP({
-  required User user,
-  required Dio dio,
-}) async {
-  dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-  dio.options.connectTimeout = 3000; //10s
-  dio.options.receiveTimeout = 3000;
-  String serverIPInformationPath = '/advanced/masterslave';
+class MasterSlaveServerInfo {
+  static String masterServerIP = '';
+  static String slaveServerIP = '';
+  static String onlineServerIP = '';
 
-  try {
-    Response response = await dio.get(
-      serverIPInformationPath,
-    );
+  static Future<String> getOnlineServerIP({
+    required String loginIP,
+    required Dio dio,
+  }) async {
+    dio.options.baseUrl = 'http://' + loginIP + '/aci/api';
+    dio.options.connectTimeout = 3000; //10s
+    dio.options.receiveTimeout = 3000;
+    String serverIPInformationPath = '/advanced/masterslave';
 
-    var data = jsonDecode(response.data.toString());
+    try {
+      Response response = await dio.get(
+        serverIPInformationPath,
+      );
 
-    if (data['code'] == '200') {
-      return [
-        true,
-        data['data']['server_online'],
-      ];
-    } else {
-      return [false, user.ip];
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        MasterSlaveServerInfo.masterServerIP = data['data'][0]['server_master'];
+        MasterSlaveServerInfo.slaveServerIP = data['data'][0]['server_slave'];
+        MasterSlaveServerInfo.onlineServerIP = data['data'][0]['server_online'];
+        return MasterSlaveServerInfo.onlineServerIP;
+      } else {
+        return loginIP;
+      }
+    } on DioError catch (_) {
+      return MasterSlaveServerInfo.slaveServerIP;
     }
-  } on DioError catch (_) {
-    return [false, user.ip];
   }
 }

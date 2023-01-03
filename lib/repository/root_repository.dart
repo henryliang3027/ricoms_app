@@ -5,11 +5,10 @@ import 'package:dio/dio.dart';
 import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class RootRepository {
   RootRepository();
@@ -19,7 +18,9 @@ class RootRepository {
     required int parentId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
@@ -71,7 +72,9 @@ class RootRepository {
     required int deviceId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -100,7 +103,9 @@ class RootRepository {
   Future<List<dynamic>> getNodeInfo(
       {required User user, required int nodeId}) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + nodeId.toString();
@@ -150,7 +155,9 @@ class RootRepository {
     String? location,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String createNodePath = '/net/node/' + parentId.toString() + '/childs/new';
@@ -217,7 +224,9 @@ class RootRepository {
     String? location,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String updateNodePath = '/net/node/' + currentNode.id.toString();
@@ -273,7 +282,9 @@ class RootRepository {
     required int deviceId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String devicePath = '/net/node/' + deviceId.toString();
@@ -303,7 +314,9 @@ class RootRepository {
     required String read,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String connectDevicePath = '/net/node/' + currentNodeID.toString() + '/try';
@@ -335,7 +348,9 @@ class RootRepository {
     required Node currentNode,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deleteNodePath = '/net/node/' + currentNode.id.toString();
@@ -367,7 +382,9 @@ class RootRepository {
     required String keyword,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deleteNodePath = '/device/search/';
@@ -426,7 +443,9 @@ class RootRepository {
 
   Future<List<dynamic>> exportNodes({required User user}) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String nodeExportApiPath = '/net/node';

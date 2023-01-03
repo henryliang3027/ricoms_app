@@ -5,6 +5,7 @@ import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user_function.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 enum AuthenticationStatus { authenticated, unauthenticated }
 
@@ -48,7 +49,10 @@ class AuthenticationRepository {
     required User user,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
@@ -146,7 +150,10 @@ class AuthenticationRepository {
     required String password,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    String onlineIP =
+        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
@@ -162,6 +169,8 @@ class AuthenticationRepository {
       User? user = userApi.getActivateUser();
 
       if (user != null) {
+        // MasterSlaveServerInfo.setMasterSlaveServerIP(user: user, dio: dio);
+
         _controller.add(AuthenticationReport(
           status: AuthenticationStatus.authenticated,
           user: user,
@@ -278,7 +287,10 @@ class AuthenticationRepository {
     // Call the api to let the server record the log out log
 
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -310,7 +322,10 @@ class AuthenticationRepository {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 
@@ -348,7 +363,9 @@ class AuthenticationRepository {
     required String password,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    String onlineIP =
+        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -383,8 +400,7 @@ class AuthenticationRepository {
       );
       return [true];
     } else {
-      String accountInformationPath =
-          'http://' + ip + '/aci/api/accounts/' + userId;
+      String accountInformationPath = '/accounts/' + userId;
       try {
         Response response = await dio.get(
           accountInformationPath,
@@ -422,12 +438,16 @@ class AuthenticationRepository {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+
+      print('checkUserPermission online ip: ${onlineIP}');
+
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 
-      String accountInformationPath =
-          'http://' + user.ip + '/aci/api/accounts/' + user.id;
+      String accountInformationPath = '/accounts/' + user.id;
 
       try {
         Response response = await dio.get(
@@ -462,7 +482,9 @@ class AuthenticationRepository {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 
