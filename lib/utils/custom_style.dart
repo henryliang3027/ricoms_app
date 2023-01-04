@@ -20,6 +20,7 @@ class CustomStyle {
 
   static Map<int, Color> severityColor = {
     // device severity
+    -2: const Color(0xff000000), //unknown
     0: const Color(0xff6c757d), //notice
     1: const Color(0xff28a745), //normal
     2: const Color(0xffffc107), //warning

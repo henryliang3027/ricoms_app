@@ -41,6 +41,64 @@ class LogRecordSettingRepository {
       return [false, CustomErrMsg.connectionFailed];
     }
   }
+
+  Future<List<dynamic>> setLogRecordSetting({
+    required User user,
+    required String archivedHistoricalRecordQuanitiy,
+    required String enableApiLogPreservation,
+    required String apiLogPreservedQuantity,
+    required String apiLogPreservedDays,
+    required String enableUserSystemLogPreservation,
+    required String userSystemLogPreservedQuantity,
+    required String userSystemLogPreservedDays,
+    required String enableDeviceSystemLogPreservation,
+    required String deviceSystemLogPreservedQuantity,
+    required String deviceSystemLogPreservedDays,
+  }) async {
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String trapForwardListApiPath = '/advanced/datasave';
+
+    try {
+      LogRecordSetting logRecordSetting = LogRecordSetting(
+        archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy,
+        enableApiLogPreservation: enableApiLogPreservation,
+        apiLogPreservedQuantity: apiLogPreservedQuantity,
+        apiLogPreservedDays: apiLogPreservedDays,
+        enableUserSystemLogPreservation: enableUserSystemLogPreservation,
+        userSystemLogPreservedQuantity: userSystemLogPreservedQuantity,
+        userSystemLogPreservedDays: userSystemLogPreservedDays,
+        enableDeviceSystemLogPreservation: enableDeviceSystemLogPreservation,
+        deviceSystemLogPreservedQuantity: deviceSystemLogPreservedQuantity,
+        deviceSystemLogPreservedDays: deviceSystemLogPreservedDays,
+      );
+
+      Map<String, dynamic> requestData = logRecordSetting.toJson();
+      requestData['uid'] = user.id;
+
+      Response response = await dio.put(
+        trapForwardListApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [
+          true,
+          logRecordSetting,
+        ];
+      } else {
+        return [false, data['msg']];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
 }
 
 // class LogRecordSetting {
