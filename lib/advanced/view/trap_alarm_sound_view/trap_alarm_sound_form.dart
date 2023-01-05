@@ -122,11 +122,11 @@ Widget _buildTrapAlarmSoundSwitchTile({
       title: Text(title),
       visualDensity: const VisualDensity(vertical: -4.0),
       value: initValue,
-      onChanged: (bool value) {
-        if (isEditing) {
-          onChange(value);
-        }
-      },
+      onChanged: isEditing
+          ? (bool value) {
+              onChange(value);
+            }
+          : null,
     ),
   );
 }

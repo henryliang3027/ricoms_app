@@ -102,6 +102,11 @@ class TrapAlarmSoundBloc
     emit(state.copyWith(
       status: FormStatus.none,
       isEditing: false,
+      enableTrapAlarmSound: AlarmSoundConfig.activateAlarm,
+      enableCriticalAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[3],
+      enableWarningAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[2],
+      enableNormalAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[1],
+      enableNoticeAlarmSound: AlarmSoundConfig.enableTrapAlarmSound[0],
     ));
   }
 

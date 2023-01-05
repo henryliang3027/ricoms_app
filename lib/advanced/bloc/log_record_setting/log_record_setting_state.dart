@@ -16,6 +16,7 @@ class LogRecordSettingState extends Equatable {
     this.deviceSystemLogPreservedQuantity = '',
     this.deviceSystemLogPreservedDays = '',
     this.requestErrorMsg = '',
+    this.submissionErrorMsg = '',
   });
 
   final FormStatus status;
@@ -32,6 +33,7 @@ class LogRecordSettingState extends Equatable {
   final String deviceSystemLogPreservedQuantity;
   final String deviceSystemLogPreservedDays;
   final String requestErrorMsg;
+  final String submissionErrorMsg;
 
   LogRecordSettingState copyWith({
     FormStatus? status,
@@ -48,6 +50,7 @@ class LogRecordSettingState extends Equatable {
     String? deviceSystemLogPreservedQuantity,
     String? deviceSystemLogPreservedDays,
     String? requestErrorMsg,
+    String? submissionErrorMsg,
   }) {
     return LogRecordSettingState(
       status: status ?? this.status,
@@ -73,6 +76,7 @@ class LogRecordSettingState extends Equatable {
       deviceSystemLogPreservedDays:
           deviceSystemLogPreservedDays ?? this.deviceSystemLogPreservedDays,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
+      submissionErrorMsg: submissionErrorMsg ?? this.submissionErrorMsg,
     );
   }
 
@@ -92,5 +96,6 @@ class LogRecordSettingState extends Equatable {
         deviceSystemLogPreservedQuantity,
         deviceSystemLogPreservedDays,
         requestErrorMsg,
+        submissionErrorMsg,
       ];
 }

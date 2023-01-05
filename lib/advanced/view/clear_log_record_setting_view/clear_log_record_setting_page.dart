@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/advanced/bloc/log_record_setting/log_record_setting_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+
+import 'clear_log_record_setting_form.dart';
 
 class LogRecordSettingPage extends StatelessWidget {
   const LogRecordSettingPage({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class LogRecordSettingPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => LogRecordSettingBloc(
         user: context.read<AuthenticationBloc>().state.user,
-        deviceWorkingCycleRepository:
+        logRecordSettingRepository:
             RepositoryProvider.of<LogRecordSettingRepository>(context),
       ),
       child: const LogRecordSettingForm(),

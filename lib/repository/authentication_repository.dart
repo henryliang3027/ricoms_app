@@ -441,6 +441,7 @@ class AuthenticationRepository {
       String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
           loginIP: user.ip, dio: dio);
 
+      print('checkUserPermission login ip: ${user.ip}');
       print('checkUserPermission online ip: ${onlineIP}');
 
       dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
