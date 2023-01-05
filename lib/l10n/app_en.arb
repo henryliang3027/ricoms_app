@@ -769,6 +769,41 @@
       "description": "clear log records s etting"
     },
 
+    "trapHistory": "History",
+    "@all": {
+      "description": "trap history"
+    },
+
+    "apiLog": "API log",
+    "@all": {
+      "description": "api log"
+    },
+
+    "userSystemLog": "System log from user",
+    "@all": {
+      "description": "system log from user"
+    },
+
+    "deviceSystemLog": "System log from device",
+    "@all": {
+      "description": "system log from device"
+    },
+
+    "archivedHistoricalRecordQuanitiy": "The number of archived historical records",
+    "@all": {
+      "description": "the number of archived historical records"
+    },
+
+    "preservedQuantity": "The preserved amount",
+    "@all": {
+      "description": "the preserved amount"
+    },
+
+    "preservedDays": "The preserved days",
+    "@all": {
+      "description": "the preserved days"
+    },
+
     "resetToDefaultSettings": "Reset To Default Settings",
     "@all": {
       "description": "reset to default settings"

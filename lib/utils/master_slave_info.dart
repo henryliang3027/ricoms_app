@@ -11,8 +11,8 @@ class MasterSlaveServerInfo {
     required Dio dio,
   }) async {
     dio.options.baseUrl = 'http://' + loginIP + '/aci/api';
-    dio.options.connectTimeout = 3000; //10s
-    dio.options.receiveTimeout = 3000;
+    dio.options.connectTimeout = 1000; //10s
+    dio.options.receiveTimeout = 1000;
     String serverIPInformationPath = '/advanced/masterslave';
 
     try {

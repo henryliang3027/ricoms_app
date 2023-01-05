@@ -11,6 +11,7 @@ import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/log_record_setting_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,6 +37,7 @@ class App extends StatelessWidget {
     required this.trapAlarmColorRepository,
     required this.trapAlarmSoundRepository,
     required this.serverIPSettingRepository,
+    required this.logRecordSettingRepository,
     required this.batchSettingRepository,
     required this.deviceWorkingCycleRepository,
   }) : super(key: key);
@@ -53,6 +55,7 @@ class App extends StatelessWidget {
   final TrapAlarmColorRepository trapAlarmColorRepository;
   final TrapAlarmSoundRepository trapAlarmSoundRepository;
   final ServerIPSettingRepository serverIPSettingRepository;
+  final LogRecordSettingRepository logRecordSettingRepository;
   final BatchSettingRepository batchSettingRepository;
   final DeviceWorkingCycleRepository deviceWorkingCycleRepository;
 
@@ -98,6 +101,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<ServerIPSettingRepository>(
           create: (context) => serverIPSettingRepository,
+        ),
+        RepositoryProvider<LogRecordSettingRepository>(
+          create: (context) => logRecordSettingRepository,
         ),
         RepositoryProvider<BatchSettingRepository>(
           create: (context) => batchSettingRepository,

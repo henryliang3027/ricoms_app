@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_result_page.dart';
+import 'package:ricoms_app/advanced/view/clear_log_record_setting_view/clear_log_record_setting_page.dart';
 import 'package:ricoms_app/advanced/view/device_working_cycle_view/device_working_cycle_page.dart';
 import 'package:ricoms_app/advanced/view/server_ip_setting_view/server_ip_setting_page.dart';
 import 'package:ricoms_app/advanced/view/trap_alarm_color_view/trap_alarm_color_page.dart';
@@ -221,7 +222,7 @@ class _AdvancedOptions extends StatelessWidget {
                 ? () {
                     List<Route> systemFunctionRoutes = [
                       ServerIPSettingPage.route(),
-                      TrapForwardPage.route(),
+                      LogRecordSettingPage.route(),
                       TrapForwardPage.route(),
                     ];
 

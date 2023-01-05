@@ -6,13 +6,13 @@ class LogRecordSettingState extends Equatable {
     this.submissionStatus = SubmissionStatus.none,
     this.isEditing = false,
     this.archivedHistoricalRecordQuanitiy = '',
-    this.enableApiLogPreservation = '',
+    this.enableApiLogPreservation = false,
     this.apiLogPreservedQuantity = '',
     this.apiLogPreservedDays = '',
-    this.enableUserSystemLogPreservation = '',
+    this.enableUserSystemLogPreservation = false,
     this.userSystemLogPreservedQuantity = '',
     this.userSystemLogPreservedDays = '',
-    this.enableDeviceSystemLogPreservation = '',
+    this.enableDeviceSystemLogPreservation = false,
     this.deviceSystemLogPreservedQuantity = '',
     this.deviceSystemLogPreservedDays = '',
     this.requestErrorMsg = '',
@@ -23,13 +23,13 @@ class LogRecordSettingState extends Equatable {
   final SubmissionStatus submissionStatus;
   final bool isEditing;
   final String archivedHistoricalRecordQuanitiy;
-  final String enableApiLogPreservation;
+  final bool enableApiLogPreservation;
   final String apiLogPreservedQuantity;
   final String apiLogPreservedDays;
-  final String enableUserSystemLogPreservation;
+  final bool enableUserSystemLogPreservation;
   final String userSystemLogPreservedQuantity;
   final String userSystemLogPreservedDays;
-  final String enableDeviceSystemLogPreservation;
+  final bool enableDeviceSystemLogPreservation;
   final String deviceSystemLogPreservedQuantity;
   final String deviceSystemLogPreservedDays;
   final String requestErrorMsg;
@@ -40,13 +40,13 @@ class LogRecordSettingState extends Equatable {
     SubmissionStatus? submissionStatus,
     bool? isEditing,
     String? archivedHistoricalRecordQuanitiy,
-    String? enableApiLogPreservation,
+    bool? enableApiLogPreservation,
     String? apiLogPreservedQuantity,
     String? apiLogPreservedDays,
-    String? enableUserSystemLogPreservation,
+    bool? enableUserSystemLogPreservation,
     String? userSystemLogPreservedQuantity,
     String? userSystemLogPreservedDays,
-    String? enableDeviceSystemLogPreservation,
+    bool? enableDeviceSystemLogPreservation,
     String? deviceSystemLogPreservedQuantity,
     String? deviceSystemLogPreservedDays,
     String? requestErrorMsg,
@@ -59,9 +59,9 @@ class LogRecordSettingState extends Equatable {
       archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy ??
           this.archivedHistoricalRecordQuanitiy,
       enableApiLogPreservation:
-          apiLogPreservedQuantity ?? this.apiLogPreservedQuantity,
-      apiLogPreservedQuantity:
           enableApiLogPreservation ?? this.enableApiLogPreservation,
+      apiLogPreservedQuantity:
+          apiLogPreservedQuantity ?? this.apiLogPreservedQuantity,
       apiLogPreservedDays: apiLogPreservedDays ?? this.apiLogPreservedDays,
       enableUserSystemLogPreservation: enableUserSystemLogPreservation ??
           this.enableUserSystemLogPreservation,
