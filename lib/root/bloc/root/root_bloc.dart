@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:stream_transform/stream_transform.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 part 'root_event.dart';
 part 'root_state.dart';
@@ -35,6 +33,18 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           name: 'Root',
         ),
         RequestMode.initial));
+
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      if (state.directory.isNotEmpty) {
+        add(ChildDataRequested(state.directory.last, RequestMode.update));
+      }
+    });
   }
 
   final User _user;
@@ -54,7 +64,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     if (event.requestMode == RequestMode.initial) {
-      _dataStreamSubscription?.cancel();
+      _dataStreamSubscription?.pause();
       emit(state.copyWith(
         formStatus: FormStatus.requestInProgress,
         submissionStatus: SubmissionStatus.none,
@@ -133,18 +143,25 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
 
     if (event.requestMode == RequestMode.initial) {
-      final dataStream =
-          Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-      _dataStreamSubscription = dataStream.listen((count) {
-        if (kDebugMode) {
-          print('Root update trigger times: $count');
+      if (_dataStreamSubscription != null) {
+        if (_dataStreamSubscription!.isPaused) {
+          _dataStreamSubscription?.resume();
         }
-        if (state.directory.isNotEmpty) {
-          add(ChildDataRequested(state.directory.last, RequestMode.update));
-        }
-      });
+      }
     }
+    // if (event.requestMode == RequestMode.initial) {
+    //   final dataStream =
+    //       Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    //   _dataStreamSubscription = dataStream.listen((count) {
+    //     if (kDebugMode) {
+    //       print('Root update trigger times: $count');
+    //     }
+    //     if (state.directory.isNotEmpty) {
+    //       add(ChildDataRequested(state.directory.last, RequestMode.update));
+    //     }
+    //   });
+    // }
     //_dataStreamSubscription?.resume();
   }
 
