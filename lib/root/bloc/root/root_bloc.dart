@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
@@ -18,7 +19,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         _rootRepository = rootRepository,
         _initialPath = initialPath,
         super(const RootState()) {
-    on<ChildDataRequested>(_onChildDataRequested);
+    on<ChildDataRequested>(
+      _onChildDataRequested,
+      transformer: sequential(),
+    );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
@@ -63,106 +67,118 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
-    if (event.requestMode == RequestMode.initial) {
-      _dataStreamSubscription?.pause();
+    if (event.parent.id == 2 || event.parent.id == 5) {
+      List<Node> directory = [];
+      directory.addAll(state.directory);
+
+      //_deviceRepository.deviceNodeId = event.node.id.toString();
+
+      !directory.contains(event.parent) ? directory.add(event.parent) : null;
+      int currentIndex = directory
+          .indexOf(event.parent); // -1 represent to element does not exist
+      currentIndex != -1
+          ? directory.removeRange(
+              currentIndex + 1 < directory.length
+                  ? currentIndex + 1
+                  : directory.length,
+              directory.length)
+          : null;
+
+      bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
+
       emit(state.copyWith(
-        formStatus: FormStatus.requestInProgress,
-        submissionStatus: SubmissionStatus.none,
+        formStatus: FormStatus.requestSuccess,
+        directory: directory,
+        isAddedToBookmarks: isAddedToBookmarks,
       ));
-    }
+    } else {
+      if (event.requestMode == RequestMode.initial) {
+        _dataStreamSubscription?.pause();
+        emit(state.copyWith(
+          formStatus: FormStatus.requestInProgress,
+          submissionStatus: SubmissionStatus.none,
+        ));
+      }
 
-    dynamic data = await _rootRepository.getChilds(
-      user: _user,
-      parentId: event.parent.id,
-    );
+      dynamic data = await _rootRepository.getChilds(
+        user: _user,
+        parentId: event.parent.id,
+      );
 
-    List<Node> directory = [];
-    directory.addAll(state.directory);
+      List<Node> directory = [];
+      directory.addAll(state.directory);
 
-    !directory.contains(event.parent) ? directory.add(event.parent) : null;
-    int currentIndex = directory
-        .indexOf(event.parent); // -1 represent to element does not exist
-    currentIndex != -1
-        ? directory.removeRange(
-            currentIndex + 1 < directory.length
-                ? currentIndex + 1
-                : directory.length,
-            directory.length)
-        : null;
+      !directory.contains(event.parent) ? directory.add(event.parent) : null;
+      int currentIndex = directory
+          .indexOf(event.parent); // -1 represent to element does not exist
+      currentIndex != -1
+          ? directory.removeRange(
+              currentIndex + 1 < directory.length
+                  ? currentIndex + 1
+                  : directory.length,
+              directory.length)
+          : null;
 
-    if (_initialPath!.isNotEmpty) {
-      List<dynamic> result = await _buildDirectorybyPath(
-          directory: directory, path: _initialPath!);
+      if (_initialPath!.isNotEmpty) {
+        List<dynamic> result = await _buildDirectorybyPath(
+            directory: directory, path: _initialPath!);
 
-      bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
+        bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
 
-      if (result[0]) {
-        if (result[1] == '') {
-          // device setting page
+        if (result[0]) {
+          if (result[1] == '') {
+            // device setting page
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              isAddedToBookmarks: isAddedToBookmarks,
+              directory: directory,
+            ));
+          } else {
+            // node
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              isAddedToBookmarks: false,
+              directory: directory,
+              data: result[1],
+            ));
+          }
+        } else {
+          // already handle in realtimealarm bloc
+        }
+
+        // clear path to avoid go to previous device setting page when user switch back from another page.
+        _initialPath!.clear();
+      } else {
+        if (data is List) {
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
-            isAddedToBookmarks: isAddedToBookmarks,
+            data: data,
             directory: directory,
           ));
         } else {
-          // node
           emit(state.copyWith(
-            formStatus: FormStatus.requestSuccess,
+            formStatus: FormStatus.requestFailure,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
-            isAddedToBookmarks: false,
-            directory: directory,
-            data: result[1],
+            errmsg: data,
           ));
         }
-      } else {
-        // already handle in realtimealarm bloc
       }
 
-      // clear path to avoid go to previous device setting page when user switch back from another page.
-      _initialPath!.clear();
-    } else {
-      if (data is List) {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          data: data,
-          directory: directory,
-        ));
-      } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          errmsg: data,
-        ));
-      }
-    }
-
-    if (event.requestMode == RequestMode.initial) {
-      if (_dataStreamSubscription != null) {
-        if (_dataStreamSubscription!.isPaused) {
-          _dataStreamSubscription?.resume();
+      if (event.requestMode == RequestMode.initial) {
+        if (_dataStreamSubscription != null) {
+          if (_dataStreamSubscription!.isPaused) {
+            _dataStreamSubscription?.resume();
+          }
         }
       }
     }
-    // if (event.requestMode == RequestMode.initial) {
-    //   final dataStream =
-    //       Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-    //   _dataStreamSubscription = dataStream.listen((count) {
-    //     if (kDebugMode) {
-    //       print('Root update trigger times: $count');
-    //     }
-    //     if (state.directory.isNotEmpty) {
-    //       add(ChildDataRequested(state.directory.last, RequestMode.update));
-    //     }
-    //   });
-    // }
-    //_dataStreamSubscription?.resume();
   }
 
   Future<void> _onNodeDeleted(
