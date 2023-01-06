@@ -44,15 +44,6 @@ class NodesExported extends RootEvent {
   List<Object?> get props => [];
 }
 
-class DeviceDataRequested extends RootEvent {
-  const DeviceDataRequested(this.node);
-
-  final Node node;
-
-  @override
-  List<Object?> get props => [node];
-}
-
 class DeviceNavigateRequested extends RootEvent {
   const DeviceNavigateRequested(this.path);
 

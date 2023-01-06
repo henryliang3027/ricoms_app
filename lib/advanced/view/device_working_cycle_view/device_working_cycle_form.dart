@@ -122,7 +122,7 @@ class _DeviceWorkingCycleDropDownMenu extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(4.0),
                     color:
-                        state.isEditing ? Colors.white : Colors.grey.shade500,
+                        state.isEditing ? Colors.white : Colors.grey.shade300,
                   ),
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
@@ -202,6 +202,10 @@ class _DeviceWorkingCycleEditFloatingActionButton extends StatelessWidget {
                             context
                                 .read<DeviceWorkingCycleBloc>()
                                 .add(const EditModeDisabled());
+
+                            context
+                                .read<DeviceWorkingCycleBloc>()
+                                .add(const DeviceWorkingCycleRequested());
                           },
                           child: const Icon(CustomIcons.cancel)),
                     ],

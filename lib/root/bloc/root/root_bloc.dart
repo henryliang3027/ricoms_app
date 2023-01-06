@@ -26,7 +26,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
-    on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
 
@@ -229,43 +228,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         nodesExportFilePath: '',
       ));
     }
-  }
-
-  void _onDeviceDataRequested(
-    DeviceDataRequested event,
-    Emitter<RootState> emit,
-  ) {
-    //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    //_dataStreamSubscription?.pause();
-    emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
-      submissionStatus: SubmissionStatus.none,
-      nodesExportStatus: FormStatus.none,
-    ));
-
-    List<Node> directory = [];
-    directory.addAll(state.directory);
-
-    //_deviceRepository.deviceNodeId = event.node.id.toString();
-
-    !directory.contains(event.node) ? directory.add(event.node) : null;
-    int currentIndex =
-        directory.indexOf(event.node); // -1 represent to element does not exist
-    currentIndex != -1
-        ? directory.removeRange(
-            currentIndex + 1 < directory.length
-                ? currentIndex + 1
-                : directory.length,
-            directory.length)
-        : null;
-
-    bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
-
-    emit(state.copyWith(
-      formStatus: FormStatus.requestSuccess,
-      directory: directory,
-      isAddedToBookmarks: isAddedToBookmarks,
-    ));
   }
 
   // When current form has device setting page
