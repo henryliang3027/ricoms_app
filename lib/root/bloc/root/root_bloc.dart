@@ -360,7 +360,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    // _dataStreamSubscription?.pause();
+    _dataStreamSubscription?.pause();
     emit(state.copyWith(
       nodesExportStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
@@ -400,6 +400,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
     } else {
       // already handle in realtimealarm bloc
+    }
+
+    if (_dataStreamSubscription != null) {
+      if (_dataStreamSubscription!.isPaused) {
+        _dataStreamSubscription?.resume();
+      }
     }
   }
 
