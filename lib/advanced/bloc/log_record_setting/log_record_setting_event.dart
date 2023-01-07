@@ -4,8 +4,8 @@ abstract class LogRecordSettingEvent extends Equatable {
   const LogRecordSettingEvent();
 }
 
-class LogRecordSettingRequest extends LogRecordSettingEvent {
-  const LogRecordSettingRequest();
+class LogRecordSettingRequested extends LogRecordSettingEvent {
+  const LogRecordSettingRequested();
 
   @override
   List<Object?> get props => [];

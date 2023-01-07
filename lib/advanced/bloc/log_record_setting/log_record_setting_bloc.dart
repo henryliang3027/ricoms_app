@@ -17,7 +17,7 @@ class LogRecordSettingBloc
   })  : _user = user,
         _logRecordSettingRepository = logRecordSettingRepository,
         super(const LogRecordSettingState()) {
-    on<LogRecordSettingRequest>(_onLogRecordSettingRequested);
+    on<LogRecordSettingRequested>(_onLogRecordSettingRequested);
     on<ArchivedHistoricalRecordQuanitiyChanged>(
         _onArchivedHistoricalRecordQuanitiyChanged);
     on<ApiLogPreservationEnabled>(_onApiLogPreservationEnabled);
@@ -37,7 +37,7 @@ class LogRecordSettingBloc
     on<EditModeEnabled>(_onEditModeEnabled);
     on<EditModeDisabled>(_onEditModeDisabled);
 
-    add(const LogRecordSettingRequest());
+    add(const LogRecordSettingRequested());
   }
 
   final User _user;
@@ -52,7 +52,7 @@ class LogRecordSettingBloc
   }
 
   void _onLogRecordSettingRequested(
-    LogRecordSettingEvent event,
+    LogRecordSettingRequested event,
     Emitter<LogRecordSettingState> emit,
   ) async {
     List<dynamic> result =

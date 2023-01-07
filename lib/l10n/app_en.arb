@@ -809,6 +809,21 @@
       "description": "reset to default settings"
     },
 
+    "clearingFeature": "The feature of clearing",
+    "@all": {
+      "description": "the feature of clearing"
+    },
+
+    "defaultValue": "Default: ",
+    "@all": {
+      "description": "default value"
+    },
+
+    "currentValue": "Current: ",
+    "@all": {
+      "description": "current value"
+    },
+
     "batchSetting": "Batch Setting",
     "@all": {
       "description": "batch setting"

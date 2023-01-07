@@ -13,11 +13,11 @@ class DeviceWorkingCycleRepository {
     dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String trapForwardListApiPath = '/advanced/rotation';
+    String deviceWorkingCycleApiPath = '/advanced/rotation';
 
     try {
       Response response = await dio.get(
-        trapForwardListApiPath,
+        deviceWorkingCycleApiPath,
       );
 
       var data = jsonDecode(response.data.toString());

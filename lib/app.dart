@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/authentication_repository.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
+import 'package:ricoms_app/repository/default_setting_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
@@ -38,6 +39,7 @@ class App extends StatelessWidget {
     required this.trapAlarmSoundRepository,
     required this.serverIPSettingRepository,
     required this.logRecordSettingRepository,
+    required this.defaultSettingRepository,
     required this.batchSettingRepository,
     required this.deviceWorkingCycleRepository,
   }) : super(key: key);
@@ -56,6 +58,7 @@ class App extends StatelessWidget {
   final TrapAlarmSoundRepository trapAlarmSoundRepository;
   final ServerIPSettingRepository serverIPSettingRepository;
   final LogRecordSettingRepository logRecordSettingRepository;
+  final DefaultSettingRepository defaultSettingRepository;
   final BatchSettingRepository batchSettingRepository;
   final DeviceWorkingCycleRepository deviceWorkingCycleRepository;
 
@@ -104,6 +107,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider<LogRecordSettingRepository>(
           create: (context) => logRecordSettingRepository,
+        ),
+        RepositoryProvider<DefaultSettingRepository>(
+          create: (context) => defaultSettingRepository,
         ),
         RepositoryProvider<BatchSettingRepository>(
           create: (context) => batchSettingRepository,

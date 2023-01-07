@@ -112,13 +112,13 @@ class LogRecordSettingForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.deviceWorkingCycle,
+            AppLocalizations.of(context)!.clearLogRecordsSetting,
           ),
           elevation: 0.0,
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36.0),
+            padding: const EdgeInsets.symmetric(horizontal: 36.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -865,7 +865,7 @@ class _LogRecordSettingEditFloatingActionButton extends StatelessWidget {
                                 .add(const EditModeDisabled());
                             context
                                 .read<LogRecordSettingBloc>()
-                                .add(const LogRecordSettingRequest());
+                                .add(const LogRecordSettingRequested());
                           },
                           child: const Icon(CustomIcons.cancel)),
                     ],

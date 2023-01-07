@@ -16,22 +16,22 @@ class LogRecordSetting {
   @JsonKey(name: 'log_max_save_days')
   final String apiLogPreservedDays;
 
-  @JsonKey(name: 'device_schedule')
+  @JsonKey(name: 'user_schedule')
   final String enableUserSystemLogPreservation;
 
-  @JsonKey(name: 'device_max_size')
+  @JsonKey(name: 'user_max_size')
   final String userSystemLogPreservedQuantity;
 
-  @JsonKey(name: 'device_max_save_days')
+  @JsonKey(name: 'user_max_save_days')
   final String userSystemLogPreservedDays;
 
-  @JsonKey(name: 'user_schedule')
+  @JsonKey(name: 'device_schedule')
   final String enableDeviceSystemLogPreservation;
 
-  @JsonKey(name: 'user_max_size')
+  @JsonKey(name: 'device_max_size')
   final String deviceSystemLogPreservedQuantity;
 
-  @JsonKey(name: 'user_max_save_days')
+  @JsonKey(name: 'device_max_save_days')
   final String deviceSystemLogPreservedDays;
 
   LogRecordSetting({

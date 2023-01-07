@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
+import 'package:ricoms_app/repository/default_setting_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
@@ -70,6 +71,7 @@ Future<void> main() async {
       trapAlarmSoundRepository: TrapAlarmSoundRepository(),
       serverIPSettingRepository: ServerIPSettingRepository(),
       logRecordSettingRepository: LogRecordSettingRepository(),
+      defaultSettingRepository: DefaultSettingRepository(),
       batchSettingRepository: BatchSettingRepository(),
       deviceWorkingCycleRepository: DeviceWorkingCycleRepository(),
     ),
