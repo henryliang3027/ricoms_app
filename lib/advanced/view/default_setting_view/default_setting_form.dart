@@ -73,8 +73,7 @@ class DefaultSettingForm extends StatelessWidget {
 
     return BlocListener<DefaultSettingBloc, DefaultSettingState>(
       listener: (context, state) {
-        if (state.status.isRequestSuccess) {
-        } else if (state.status.isRequestFailure) {
+        if (state.status.isRequestFailure) {
           _showFailureDialog(state.requestErrorMsg);
         } else if (state.submissionStatus.isSubmissionSuccess) {
           _showSuccessDialog();
@@ -85,42 +84,12 @@ class DefaultSettingForm extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.deviceWorkingCycle,
+            AppLocalizations.of(context)!.resetToDefaultSettings,
           ),
           elevation: 0.0,
         ),
-        body: const SingleChildScrollView(
-          child: _DefaultSettingContent(),
-        ),
+        body: const _DefaultSettingContent(),
         floatingActionButton: const _DefaultSettingEditFloatingActionButton(),
-      ),
-    );
-  }
-}
-
-class _SettingTitle extends StatelessWidget {
-  const _SettingTitle({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 30.0,
-        right: 30.0,
-        top: 30.0,
-        bottom: 10.0,
-      ),
-      child: Row(
-        children: [
-          Text(
-            title,
-          ),
-        ],
       ),
     );
   }
@@ -131,6 +100,27 @@ class _DefaultSettingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildSettingTitle({required String title}) {
+      return Padding(
+        padding: const EdgeInsets.only(
+          left: 20.0,
+          right: 20.0,
+          top: 20.0,
+          bottom: 10.0,
+        ),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     Widget _buildDefaultSettingCustomTile({
       required String name,
       required int index,
@@ -138,76 +128,92 @@ class _DefaultSettingContent extends StatelessWidget {
       required DefaultSettingItem defaultSettingItem,
       required Function onSelect,
     }) {
-      return Padding(
-        padding: const EdgeInsets.only(
-          left: 30.0,
-          right: 30.0,
-          top: 10.0,
-          bottom: 10.0,
-        ),
-        child: Material(
-          child: InkWell(
-              onTap: isEditing
-                  ? () {
-                      context
-                          .read<DefaultSettingBloc>()
-                          .add(DefaultSettingItemToggled(index));
-                    }
-                  : null,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          name,
-                          style: const TextStyle(
-                            fontSize: CommonStyle.sizeL,
-                          ),
+      return Material(
+        child: InkWell(
+          onTap: isEditing
+              ? () {
+                  context
+                      .read<DefaultSettingBloc>()
+                      .add(DefaultSettingItemToggled(index));
+                }
+              : null,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 20.0,
+              top: 10.0,
+              bottom: 10.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: CommonStyle.sizeXL,
                         ),
                       ),
-                      isEditing
-                          ? defaultSettingItem.isSelected
-                              ? const Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Colors.amber,
-                                )
-                              : const Icon(
-                                  Icons.circle_outlined,
-                                  color: Colors.amber,
-                                )
-                          : const Icon(
-                              Icons.circle_outlined,
-                              color: Colors.transparent,
-                            ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.defaultValue,
+                    ),
+                    isEditing
+                        ? defaultSettingItem.isSelected
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: Colors.amber,
+                              )
+                            : const Icon(
+                                Icons.circle_outlined,
+                                color: Colors.amber,
+                              )
+                        : const Icon(
+                            Icons.circle_outlined,
+                            color: Colors.transparent,
+                          ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.defaultValue,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
                       ),
-                      Text(
-                        defaultSettingItem.defaultValue,
+                    ),
+                    Text(
+                      defaultSettingItem.defaultValue,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.currentValue,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.currentValue,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
                       ),
-                      Text(
-                        defaultSettingItem.currentValue,
+                    ),
+                    Text(
+                      defaultSettingItem.currentValue,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
                       ),
-                    ],
-                  ),
-                ],
-              )),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -215,252 +221,167 @@ class _DefaultSettingContent extends StatelessWidget {
     return BlocBuilder<DefaultSettingBloc, DefaultSettingState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _SettingTitle(
-                title: AppLocalizations.of(context)!.deviceWorkingCycle,
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.deviceWorkingCycle,
-                index: 0,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[0],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(0));
-                },
-              ),
-              const Divider(
-                color: Colors.grey,
-                height: 1,
-              ),
-              _SettingTitle(
-                title: AppLocalizations.of(context)!.trapHistory,
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!
-                    .archivedHistoricalRecordQuanitiy,
-                index: 1,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[1],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(1));
-                },
-              ),
-              const Divider(
-                color: Colors.grey,
-                height: 1,
-              ),
-              _SettingTitle(
-                title: AppLocalizations.of(context)!.apiLog,
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.clearingFeature,
-                index: 2,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[2],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(2));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedQuantity,
-                index: 3,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[3],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(3));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedDays,
-                index: 4,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[4],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(4));
-                },
-              ),
-              const Divider(
-                color: Colors.grey,
-                height: 1,
-              ),
-              _SettingTitle(
-                title: AppLocalizations.of(context)!.userSystemLog,
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.clearingFeature,
-                index: 5,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[5],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(5));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedQuantity,
-                index: 6,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[6],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(6));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedDays,
-                index: 7,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[7],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(7));
-                },
-              ),
-              const Divider(
-                color: Colors.grey,
-                height: 1,
-              ),
-              _SettingTitle(
-                title: AppLocalizations.of(context)!.deviceSystemLog,
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.clearingFeature,
-                index: 8,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[8],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(8));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedQuantity,
-                index: 9,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[9],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(9));
-                },
-              ),
-              _buildDefaultSettingCustomTile(
-                name: AppLocalizations.of(context)!.preservedDays,
-                index: 10,
-                isEditing: state.isEditing,
-                defaultSettingItem: state.defaultSettingItems[10],
-                onSelect: () {
-                  context
-                      .read<DefaultSettingBloc>()
-                      .add(const DefaultSettingItemToggled(10));
-                },
-              ),
-            ],
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-}
-
-class _DefaultSettingListItem extends StatelessWidget {
-  const _DefaultSettingListItem({
-    Key? key,
-    required this.index,
-    required this.name,
-  }) : super(key: key);
-
-  final int index;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<DefaultSettingBloc, DefaultSettingState>(
-      builder: (context, state) {
-        if (state.status.isRequestSuccess) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Material(
-              child: InkWell(
-                  onTap: state.isEditing
-                      ? () {
-                          context
-                              .read<DefaultSettingBloc>()
-                              .add(DefaultSettingItemToggled(index));
-                        }
-                      : null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.deviceWorkingCycle,
-                            style: const TextStyle(
-                              fontSize: CommonStyle.sizeL,
-                            ),
-                          ),
-                          state.isEditing
-                              ? state.defaultSettingItems[index].isSelected
-                                  ? const Icon(
-                                      Icons.check_circle_rounded,
-                                      color: Colors.amber,
-                                    )
-                                  : const Icon(
-                                      Icons.circle_outlined,
-                                      color: Colors.amber,
-                                    )
-                              : const Icon(
-                                  Icons.circle_outlined,
-                                  color: Colors.transparent,
-                                ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.defaultValue,
-                          ),
-                          Text(
-                            state.defaultSettingItems[index].defaultValue,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.currentValue,
-                          ),
-                          Text(
-                            state.defaultSettingItems[index].currentValue,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildSettingTitle(
+                  title: AppLocalizations.of(context)!.deviceWorkingCycle,
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.deviceWorkingCycle,
+                  index: 0,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[0],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(0));
+                  },
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                _buildSettingTitle(
+                  title: AppLocalizations.of(context)!.trapHistory,
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!
+                      .archivedHistoricalRecordQuanitiy,
+                  index: 1,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[1],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(1));
+                  },
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                _buildSettingTitle(
+                  title: AppLocalizations.of(context)!.apiLog,
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.clearingFeature,
+                  index: 2,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[2],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(2));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedQuantity,
+                  index: 3,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[3],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(3));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedDays,
+                  index: 4,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[4],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(4));
+                  },
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                _buildSettingTitle(
+                  title: AppLocalizations.of(context)!.userSystemLog,
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.clearingFeature,
+                  index: 5,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[5],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(5));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedQuantity,
+                  index: 6,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[6],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(6));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedDays,
+                  index: 7,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[7],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(7));
+                  },
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                _buildSettingTitle(
+                  title: AppLocalizations.of(context)!.deviceSystemLog,
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.clearingFeature,
+                  index: 8,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[8],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(8));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedQuantity,
+                  index: 9,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[9],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(9));
+                  },
+                ),
+                _buildDefaultSettingCustomTile(
+                  name: AppLocalizations.of(context)!.preservedDays,
+                  index: 10,
+                  isEditing: state.isEditing,
+                  defaultSettingItem: state.defaultSettingItems[10],
+                  onSelect: () {
+                    context
+                        .read<DefaultSettingBloc>()
+                        .add(const DefaultSettingItemToggled(10));
+                  },
+                ),
+                const SizedBox(
+                  height: 160.0,
+                ),
+              ],
             ),
           );
         } else {
@@ -483,6 +404,61 @@ class _DefaultSettingEditFloatingActionButton extends StatelessWidget {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
 
+    Future<bool?> _showConfirmResetDialog() async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_resetToDefaultSetting,
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_resetToDefaultSetting,
+                          style: const TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.yes,
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocBuilder<DefaultSettingBloc, DefaultSettingState>(
       builder: (context, state) {
         return _userFunctionMap[37]
@@ -493,13 +469,23 @@ class _DefaultSettingEditFloatingActionButton extends StatelessWidget {
                       FloatingActionButton(
                         heroTag: null,
                         elevation: 0.0,
-                        backgroundColor: const Color(0x742195F3),
-                        onPressed: () {
-                          context
-                              .read<DefaultSettingBloc>()
-                              .add(const DefaultSettingSaved());
+                        backgroundColor: const Color(0x74F32121),
+                        onPressed: () async {
+                          bool? result = await _showConfirmResetDialog();
+                          if (result != null) {
+                            if (result) {
+                              context
+                                  .read<DefaultSettingBloc>()
+                                  .add(const DefaultSettingSaved());
+                              context
+                                  .read<DefaultSettingBloc>()
+                                  .add(const DefaultSettingRequested());
+                            }
+                          }
                         },
-                        child: const Icon(CustomIcons.check),
+                        child: const Icon(
+                          CustomIcons.check,
+                        ),
                         //const Text('Save'),
                       ),
                       const Padding(
@@ -513,9 +499,6 @@ class _DefaultSettingEditFloatingActionButton extends StatelessWidget {
                             context
                                 .read<DefaultSettingBloc>()
                                 .add(const EditModeDisabled());
-                            context
-                                .read<DefaultSettingBloc>()
-                                .add(const DefaultSettingRequested());
                           },
                           child: const Icon(CustomIcons.cancel)),
                     ],

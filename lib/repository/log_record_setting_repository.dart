@@ -61,7 +61,7 @@ class LogRecordSettingRepository {
     dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
-    String trapForwardListApiPath = '/advanced/datasave';
+    String logRecordSettingApiPath = '/advanced/datasave';
 
     try {
       LogRecordSetting logRecordSetting = LogRecordSetting(
@@ -81,7 +81,7 @@ class LogRecordSettingRepository {
       requestData['uid'] = user.id;
 
       Response response = await dio.put(
-        trapForwardListApiPath,
+        logRecordSettingApiPath,
         data: requestData,
       );
 

@@ -48,7 +48,7 @@ class LogRecordSettingBloc
   }
 
   String _boolToString(bool enable) {
-    return enable ? '1' : '2';
+    return enable ? '1' : '0';
   }
 
   void _onLogRecordSettingRequested(

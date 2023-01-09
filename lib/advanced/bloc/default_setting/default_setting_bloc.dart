@@ -25,6 +25,7 @@ class DefaultSettingBloc
         super(const DefaultSettingState()) {
     on<DefaultSettingRequested>(_onDefaultSettingRequested);
     on<DefaultSettingItemToggled>(_onDefaultSettingItemToggled);
+    on<DefaultSettingSaved>(_onDefaultSettingSaved);
     on<EditModeEnabled>(_onEditModeEnabled);
     on<EditModeDisabled>(_onEditModeDisabled);
 
@@ -40,8 +41,8 @@ class DefaultSettingBloc
     return enable == 1 || enable == '1' ? 'enable' : 'disable';
   }
 
-  int _stringToInt(String enable) {
-    return enable == '1' ? 1 : 0;
+  String _boolStringToIntString(String enable) {
+    return enable == 'enable' ? '1' : '0';
   }
 
   void _onDefaultSettingRequested(
@@ -195,46 +196,128 @@ class DefaultSettingBloc
       isEditing: false,
     ));
 
-    // for(int i= 0; i < state.defaultSettingItems.length; i++){
-    //   if(i == 0) {
-    //     DefaultSettingItem defaultSettingItem = state.defaultSettingItems[0];
-    //     if(defaultSettingItem.isSelected){
+    bool resetLogRecord = false;
+    bool resetWorkingCycle = false;
+    bool setWorkingCycleSuccessful = false;
+    bool setLogRecordSuccessful = false;
 
-    //     }
+    for (int i = 0; i < state.defaultSettingItems.length; i++) {
+      if (i == 0) {
+        if (state.defaultSettingItems[0].isSelected) {
+          resetWorkingCycle = true;
+        }
+      } else {
+        if (state.defaultSettingItems[i].isSelected) {
+          resetLogRecord = true;
+          break;
+        }
+      }
+    }
 
-    //   }
-    //   else {
+    if (resetWorkingCycle == false && resetLogRecord == false) {
+      emit(state.copyWith(
+        status: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.submissionSuccess,
+        isEditing: false,
+      ));
+    } else if (resetWorkingCycle == true && resetLogRecord == false) {
+      setWorkingCycleSuccessful = await _updateDeviceWorkingCycle();
 
-    //   }
-    // }
+      if (setWorkingCycleSuccessful) {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionSuccess,
+          isEditing: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionFailure,
+          isEditing: false,
+        ));
+      }
+    } else if (resetWorkingCycle == false && resetLogRecord == true) {
+      setLogRecordSuccessful = await _updateLogRecordSetting();
 
-    // List<dynamic> result =
-    //     await _logRecordSettingRepository.(
-    //   user: _user,
-    //   archivedHistoricalRecordQuanitiy: state.archivedHistoricalRecordQuanitiy,
-    //   enableApiLogPreservation: _boolToString(state.enableApiLogPreservation),
-    //   apiLogPreservedQuantity: state.apiLogPreservedQuantity,
-    //   apiLogPreservedDays: state.apiLogPreservedDays,
-    //   enableUserSystemLogPreservation:
-    //       _boolToString(state.enableUserSystemLogPreservation),
-    //   userSystemLogPreservedQuantity: state.userSystemLogPreservedQuantity,
-    //   userSystemLogPreservedDays: state.userSystemLogPreservedDays,
-    //   enableDeviceSystemLogPreservation:
-    //       _boolToString(state.enableDeviceSystemLogPreservation),
-    //   deviceSystemLogPreservedQuantity: state.deviceSystemLogPreservedQuantity,
-    //   deviceSystemLogPreservedDays: state.deviceSystemLogPreservedDays,
-    // );
+      if (setLogRecordSuccessful) {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionSuccess,
+          isEditing: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionFailure,
+          isEditing: false,
+        ));
+      }
+    } else {
+      setWorkingCycleSuccessful = await _updateDeviceWorkingCycle();
+      setLogRecordSuccessful = await _updateLogRecordSetting();
 
-    // if (result[0]) {
-    //   emit(state.copyWith(
-    //     submissionStatus: SubmissionStatus.submissionSuccess,
-    //   ));
-    // } else {
-    //   emit(state.copyWith(
-    //     submissionStatus: SubmissionStatus.submissionFailure,
-    //     submissionErrorMsg: result[1],
-    //   ));
-    // }
+      if (setWorkingCycleSuccessful && setLogRecordSuccessful) {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionSuccess,
+          isEditing: false,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.submissionFailure,
+          isEditing: false,
+        ));
+      }
+    }
+  }
+
+  Future<bool> _updateDeviceWorkingCycle() async {
+    List<dynamic> resultOfSetWorkingCycle =
+        await _deviceWorkingCycleRepository.setWorkingCycle(
+      user: _user,
+      index: state.defaultSettingItems[0].defaultIdx,
+    );
+
+    return resultOfSetWorkingCycle[0];
+  }
+
+  Future<bool> _updateLogRecordSetting() async {
+    List<dynamic> resultOfSetLogRecord =
+        await _logRecordSettingRepository.setLogRecordSetting(
+      user: _user,
+      archivedHistoricalRecordQuanitiy: state.defaultSettingItems[1].isSelected
+          ? state.defaultSettingItems[1].defaultValue
+          : state.defaultSettingItems[1].currentValue,
+      enableApiLogPreservation: state.defaultSettingItems[2].isSelected
+          ? _boolStringToIntString(state.defaultSettingItems[2].defaultValue)
+          : _boolStringToIntString(state.defaultSettingItems[2].currentValue),
+      apiLogPreservedQuantity: state.defaultSettingItems[3].isSelected
+          ? state.defaultSettingItems[3].defaultValue
+          : state.defaultSettingItems[3].currentValue,
+      apiLogPreservedDays: state.defaultSettingItems[4].isSelected
+          ? state.defaultSettingItems[4].defaultValue
+          : state.defaultSettingItems[4].currentValue,
+      enableUserSystemLogPreservation: state.defaultSettingItems[5].isSelected
+          ? _boolStringToIntString(state.defaultSettingItems[5].defaultValue)
+          : _boolStringToIntString(state.defaultSettingItems[5].currentValue),
+      userSystemLogPreservedQuantity: state.defaultSettingItems[6].isSelected
+          ? state.defaultSettingItems[6].defaultValue
+          : state.defaultSettingItems[6].currentValue,
+      userSystemLogPreservedDays: state.defaultSettingItems[7].isSelected
+          ? state.defaultSettingItems[7].defaultValue
+          : state.defaultSettingItems[7].currentValue,
+      enableDeviceSystemLogPreservation: state.defaultSettingItems[8].isSelected
+          ? _boolStringToIntString(state.defaultSettingItems[8].defaultValue)
+          : _boolStringToIntString(state.defaultSettingItems[8].currentValue),
+      deviceSystemLogPreservedQuantity: state.defaultSettingItems[9].isSelected
+          ? state.defaultSettingItems[9].defaultValue
+          : state.defaultSettingItems[9].currentValue,
+      deviceSystemLogPreservedDays: state.defaultSettingItems[10].isSelected
+          ? state.defaultSettingItems[10].defaultValue
+          : state.defaultSettingItems[10].currentValue,
+    );
+    return resultOfSetLogRecord[0];
   }
 
   void _onEditModeEnabled(
@@ -252,6 +335,26 @@ class DefaultSettingBloc
     EditModeDisabled event,
     Emitter<DefaultSettingState> emit,
   ) {
+    List<DefaultSettingItem> newDefaultSettingItems = [];
+
+    for (DefaultSettingItem defaultSettingItem in state.defaultSettingItems) {
+      DefaultSettingItem newDefaultSettingItem = DefaultSettingItem(
+        defaultValue: defaultSettingItem.defaultValue,
+        currentValue: defaultSettingItem.currentValue,
+        defaultIdx: defaultSettingItem.defaultIdx,
+        currentIdx: defaultSettingItem.currentIdx,
+        isSelected: false,
+      );
+
+      newDefaultSettingItems.add(newDefaultSettingItem);
+    }
+
+    emit(state.copyWith(
+      status: FormStatus.requestSuccess,
+      submissionStatus: SubmissionStatus.none,
+      defaultSettingItems: newDefaultSettingItems,
+    ));
+
     emit(state.copyWith(
       status: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,

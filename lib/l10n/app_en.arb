@@ -930,6 +930,16 @@
       "description": "Do you want to reset to RICOMS default ?"
     },
 
+    "dialogMessage_resetToDefaultSetting": "Do you want to reset these setting to default ?",
+    "@all": {
+      "description": "Do you want to reset these setting to default ?"
+    },
+
+    "dialogTitle_resetToDefaultSetting": "Reset",
+    "@all": {
+      "description": "reset"
+    },
+
     "dialogTitle_lostConnectionToServer": "Lost Connection To Server.",
     "@all": {
       "description": "lost connection to server."
