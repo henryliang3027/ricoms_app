@@ -43,10 +43,6 @@ class LogRecordSettingBloc
   final User _user;
   final LogRecordSettingRepository _logRecordSettingRepository;
 
-  bool _stringToBool(String enable) {
-    return enable == '1' ? true : false;
-  }
-
   String _boolToString(bool enable) {
     return enable ? '1' : '0';
   }
@@ -65,23 +61,7 @@ class LogRecordSettingBloc
         status: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         isEditing: false,
-        archivedHistoricalRecordQuanitiy:
-            logRecordSetting.archivedHistoricalRecordQuanitiy,
-        enableApiLogPreservation:
-            _stringToBool(logRecordSetting.enableApiLogPreservation),
-        apiLogPreservedQuantity: logRecordSetting.apiLogPreservedQuantity,
-        apiLogPreservedDays: logRecordSetting.apiLogPreservedDays,
-        enableUserSystemLogPreservation:
-            _stringToBool(logRecordSetting.enableUserSystemLogPreservation),
-        userSystemLogPreservedQuantity:
-            logRecordSetting.userSystemLogPreservedQuantity,
-        userSystemLogPreservedDays: logRecordSetting.userSystemLogPreservedDays,
-        enableDeviceSystemLogPreservation:
-            _stringToBool(logRecordSetting.enableDeviceSystemLogPreservation),
-        deviceSystemLogPreservedQuantity:
-            logRecordSetting.deviceSystemLogPreservedQuantity,
-        deviceSystemLogPreservedDays:
-            logRecordSetting.deviceSystemLogPreservedDays,
+        logRecordSetting: logRecordSetting,
       ));
     } else {
       emit(state.copyWith(
@@ -97,8 +77,12 @@ class LogRecordSettingBloc
     ArchivedHistoricalRecordQuanitiyChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       archivedHistoricalRecordQuanitiy: event.archivedHistoricalRecordQuanitiy,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -106,8 +90,12 @@ class LogRecordSettingBloc
     ApiLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
   ) {
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
+      enableApiLogPreservation: _boolToString(event.enableApiLogPreservation),
+    );
+
     emit(state.copyWith(
-      enableApiLogPreservation: event.enableApiLogPreservation,
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -115,8 +103,12 @@ class LogRecordSettingBloc
     ApiLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       apiLogPreservedQuantity: event.apiLogPreservedQuantity,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -124,8 +116,12 @@ class LogRecordSettingBloc
     ApiLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       apiLogPreservedDays: event.apiLogPreservedDays,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -133,8 +129,13 @@ class LogRecordSettingBloc
     UserSystemLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
   ) {
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
+      enableUserSystemLogPreservation:
+          _boolToString(event.enableUserSystemLogPreservation),
+    );
+
     emit(state.copyWith(
-      enableUserSystemLogPreservation: event.enableUserSystemLogPreservation,
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -142,8 +143,12 @@ class LogRecordSettingBloc
     UserSystemLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       userSystemLogPreservedQuantity: event.userSystemLogPreservedQuantity,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -151,8 +156,12 @@ class LogRecordSettingBloc
     UserSystemLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       userSystemLogPreservedDays: event.userSystemLogPreservedDays,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -160,9 +169,13 @@ class LogRecordSettingBloc
     DeviceSystemLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       enableDeviceSystemLogPreservation:
-          event.enableDeviceSystemLogPreservation,
+          _boolToString(event.enableDeviceSystemLogPreservation),
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -170,8 +183,12 @@ class LogRecordSettingBloc
     DeviceSystemLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       deviceSystemLogPreservedQuantity: event.deviceSystemLogPreservedQuantity,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -179,8 +196,12 @@ class LogRecordSettingBloc
     DeviceSystemLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
   ) {
-    emit(state.copyWith(
+    LogRecordSetting logRecordSetting = state.logRecordSetting.copyWith(
       deviceSystemLogPreservedDays: event.deviceSystemLogPreservedDays,
+    );
+
+    emit(state.copyWith(
+      logRecordSetting: logRecordSetting,
     ));
   }
 
@@ -197,18 +218,7 @@ class LogRecordSettingBloc
     List<dynamic> result =
         await _logRecordSettingRepository.setLogRecordSetting(
       user: _user,
-      archivedHistoricalRecordQuanitiy: state.archivedHistoricalRecordQuanitiy,
-      enableApiLogPreservation: _boolToString(state.enableApiLogPreservation),
-      apiLogPreservedQuantity: state.apiLogPreservedQuantity,
-      apiLogPreservedDays: state.apiLogPreservedDays,
-      enableUserSystemLogPreservation:
-          _boolToString(state.enableUserSystemLogPreservation),
-      userSystemLogPreservedQuantity: state.userSystemLogPreservedQuantity,
-      userSystemLogPreservedDays: state.userSystemLogPreservedDays,
-      enableDeviceSystemLogPreservation:
-          _boolToString(state.enableDeviceSystemLogPreservation),
-      deviceSystemLogPreservedQuantity: state.deviceSystemLogPreservedQuantity,
-      deviceSystemLogPreservedDays: state.deviceSystemLogPreservedDays,
+      logRecordSetting: state.logRecordSetting,
     );
 
     if (result[0]) {

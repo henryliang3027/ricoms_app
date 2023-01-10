@@ -89,18 +89,19 @@ class LogRecordSettingForm extends StatelessWidget {
       listener: (context, state) {
         if (state.status.isRequestSuccess) {
           _archivedHistoricalRecordQuanitiyController.text =
-              state.archivedHistoricalRecordQuanitiy;
+              state.logRecordSetting.archivedHistoricalRecordQuanitiy;
           apiLogPreservedQuantityController.text =
-              state.apiLogPreservedQuantity;
-          apiLogPreservedDaysController.text = state.apiLogPreservedDays;
+              state.logRecordSetting.apiLogPreservedQuantity;
+          apiLogPreservedDaysController.text =
+              state.logRecordSetting.apiLogPreservedDays;
           userSystemLogPreservedQuantityController.text =
-              state.userSystemLogPreservedQuantity;
+              state.logRecordSetting.userSystemLogPreservedQuantity;
           userSystemLogPreservedDaysController.text =
-              state.userSystemLogPreservedDays;
+              state.logRecordSetting.userSystemLogPreservedDays;
           deviceSystemLogPreservedQuantityController.text =
-              state.deviceSystemLogPreservedQuantity;
+              state.logRecordSetting.deviceSystemLogPreservedQuantity;
           deviceSystemLogPreservedDaysController.text =
-              state.deviceSystemLogPreservedDays;
+              state.logRecordSetting.deviceSystemLogPreservedDays;
         } else if (state.status.isRequestFailure) {
           _showFailureDialog(state.requestErrorMsg);
         } else if (state.submissionStatus.isSubmissionSuccess) {
@@ -269,8 +270,8 @@ class _ArchivedHistoricalRecordQuanitiyInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.archivedHistoricalRecordQuanitiy !=
-              current.archivedHistoricalRecordQuanitiy,
+          previous.logRecordSetting.archivedHistoricalRecordQuanitiy !=
+              current.logRecordSetting.archivedHistoricalRecordQuanitiy,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -328,6 +329,10 @@ class _ArchivedHistoricalRecordQuanitiyInput extends StatelessWidget {
   }
 }
 
+bool _stringToBool(String enable) {
+  return enable == '1' ? true : false;
+}
+
 class _ApiLogPreservationSwitchTile extends StatelessWidget {
   const _ApiLogPreservationSwitchTile({Key? key}) : super(key: key);
 
@@ -336,10 +341,11 @@ class _ApiLogPreservationSwitchTile extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.enableApiLogPreservation != current.enableApiLogPreservation,
+          previous.logRecordSetting.enableApiLogPreservation !=
+              current.logRecordSetting.enableApiLogPreservation,
       builder: (context, state) {
         return Switch(
-          value: state.enableApiLogPreservation,
+          value: _stringToBool(state.logRecordSetting.enableApiLogPreservation),
           onChanged: state.isEditing
               ? (value) {
                   context
@@ -365,7 +371,8 @@ class _ApiLogPreservedQuantityInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.apiLogPreservedQuantity != current.apiLogPreservedQuantity,
+          previous.logRecordSetting.apiLogPreservedQuantity !=
+              current.logRecordSetting.apiLogPreservedQuantity,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -434,7 +441,8 @@ class _ApiLogPreservedDaysInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.apiLogPreservedDays != current.apiLogPreservedDays,
+          previous.logRecordSetting.apiLogPreservedDays !=
+              current.logRecordSetting.apiLogPreservedDays,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -499,11 +507,12 @@ class _UserSystemLogPreservationSwitchTile extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.enableUserSystemLogPreservation !=
-              current.enableUserSystemLogPreservation,
+          previous.logRecordSetting.enableUserSystemLogPreservation !=
+              current.logRecordSetting.enableUserSystemLogPreservation,
       builder: (context, state) {
         return Switch(
-          value: state.enableUserSystemLogPreservation,
+          value: _stringToBool(
+              state.logRecordSetting.enableUserSystemLogPreservation),
           onChanged: state.isEditing
               ? (value) {
                   context
@@ -529,8 +538,8 @@ class _UserSystemLogPreservedQuantityInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.userSystemLogPreservedQuantity !=
-              current.userSystemLogPreservedQuantity,
+          previous.logRecordSetting.userSystemLogPreservedQuantity !=
+              current.logRecordSetting.userSystemLogPreservedQuantity,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -599,8 +608,8 @@ class _UserSystemLogPreservedDaysInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.userSystemLogPreservedDays !=
-              current.userSystemLogPreservedDays,
+          previous.logRecordSetting.userSystemLogPreservedDays !=
+              current.logRecordSetting.userSystemLogPreservedDays,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -665,11 +674,12 @@ class _DeviceSystemLogPreservationSwitchTile extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.enableDeviceSystemLogPreservation !=
-              current.enableDeviceSystemLogPreservation,
+          previous.logRecordSetting.enableDeviceSystemLogPreservation !=
+              current.logRecordSetting.enableDeviceSystemLogPreservation,
       builder: (context, state) {
         return Switch(
-          value: state.enableDeviceSystemLogPreservation,
+          value: _stringToBool(
+              state.logRecordSetting.enableDeviceSystemLogPreservation),
           onChanged: state.isEditing
               ? (value) {
                   context
@@ -695,8 +705,8 @@ class _DeviceSystemLogPreservedQuantityInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.deviceSystemLogPreservedQuantity !=
-              current.deviceSystemLogPreservedQuantity,
+          previous.logRecordSetting.deviceSystemLogPreservedQuantity !=
+              current.logRecordSetting.deviceSystemLogPreservedQuantity,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -765,8 +775,8 @@ class _DeviceSystemLogPreservedDaysInput extends StatelessWidget {
     return BlocBuilder<LogRecordSettingBloc, LogRecordSettingState>(
       buildWhen: (previous, current) =>
           previous.isEditing != current.isEditing ||
-          previous.deviceSystemLogPreservedDays !=
-              current.deviceSystemLogPreservedDays,
+          previous.logRecordSetting.deviceSystemLogPreservedDays !=
+              current.logRecordSetting.deviceSystemLogPreservedDays,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(

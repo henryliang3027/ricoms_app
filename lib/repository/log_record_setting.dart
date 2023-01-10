@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'log_record_setting.g.dart';
 
 @JsonSerializable()
-class LogRecordSetting {
+class LogRecordSetting extends Equatable {
   @JsonKey(name: 'history_max_table_size')
   final String archivedHistoricalRecordQuanitiy;
 
@@ -34,7 +35,7 @@ class LogRecordSetting {
   @JsonKey(name: 'device_max_save_days')
   final String deviceSystemLogPreservedDays;
 
-  LogRecordSetting({
+  const LogRecordSetting({
     required this.archivedHistoricalRecordQuanitiy,
     required this.enableApiLogPreservation,
     required this.apiLogPreservedQuantity,
@@ -47,6 +48,41 @@ class LogRecordSetting {
     required this.deviceSystemLogPreservedDays,
   });
 
+  LogRecordSetting copyWith({
+    String? archivedHistoricalRecordQuanitiy,
+    String? enableApiLogPreservation,
+    String? apiLogPreservedQuantity,
+    String? apiLogPreservedDays,
+    String? enableUserSystemLogPreservation,
+    String? userSystemLogPreservedQuantity,
+    String? userSystemLogPreservedDays,
+    String? enableDeviceSystemLogPreservation,
+    String? deviceSystemLogPreservedQuantity,
+    String? deviceSystemLogPreservedDays,
+  }) {
+    return LogRecordSetting(
+      archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy ??
+          this.archivedHistoricalRecordQuanitiy,
+      enableApiLogPreservation:
+          enableApiLogPreservation ?? this.enableApiLogPreservation,
+      apiLogPreservedQuantity:
+          apiLogPreservedQuantity ?? this.apiLogPreservedQuantity,
+      apiLogPreservedDays: apiLogPreservedDays ?? this.apiLogPreservedDays,
+      enableUserSystemLogPreservation: enableUserSystemLogPreservation ??
+          this.enableUserSystemLogPreservation,
+      userSystemLogPreservedQuantity:
+          userSystemLogPreservedQuantity ?? this.userSystemLogPreservedQuantity,
+      userSystemLogPreservedDays:
+          userSystemLogPreservedDays ?? this.userSystemLogPreservedDays,
+      enableDeviceSystemLogPreservation: enableDeviceSystemLogPreservation ??
+          this.enableDeviceSystemLogPreservation,
+      deviceSystemLogPreservedQuantity: deviceSystemLogPreservedQuantity ??
+          this.deviceSystemLogPreservedQuantity,
+      deviceSystemLogPreservedDays:
+          deviceSystemLogPreservedDays ?? this.deviceSystemLogPreservedDays,
+    );
+  }
+
   /// Connect the generated [_$LogRecordSettingFromJson] function to the `fromJson`
   /// factory.
   factory LogRecordSetting.fromJson(Map<String, dynamic> json) =>
@@ -54,4 +90,18 @@ class LogRecordSetting {
 
   /// Connect the generated [_$LogRecordSettingToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$LogRecordSettingToJson(this);
+
+  @override
+  List<Object?> get props => [
+        archivedHistoricalRecordQuanitiy,
+        enableApiLogPreservation,
+        apiLogPreservedQuantity,
+        apiLogPreservedDays,
+        enableUserSystemLogPreservation,
+        userSystemLogPreservedQuantity,
+        userSystemLogPreservedDays,
+        enableDeviceSystemLogPreservation,
+        deviceSystemLogPreservedQuantity,
+        deviceSystemLogPreservedDays,
+      ];
 }

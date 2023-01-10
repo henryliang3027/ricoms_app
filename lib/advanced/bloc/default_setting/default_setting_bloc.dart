@@ -283,9 +283,7 @@ class DefaultSettingBloc
   }
 
   Future<bool> _updateLogRecordSetting() async {
-    List<dynamic> resultOfSetLogRecord =
-        await _logRecordSettingRepository.setLogRecordSetting(
-      user: _user,
+    LogRecordSetting logRecordSetting = LogRecordSetting(
       archivedHistoricalRecordQuanitiy: state.defaultSettingItems[1].isSelected
           ? state.defaultSettingItems[1].defaultValue
           : state.defaultSettingItems[1].currentValue,
@@ -316,6 +314,12 @@ class DefaultSettingBloc
       deviceSystemLogPreservedDays: state.defaultSettingItems[10].isSelected
           ? state.defaultSettingItems[10].defaultValue
           : state.defaultSettingItems[10].currentValue,
+    );
+
+    List<dynamic> resultOfSetLogRecord =
+        await _logRecordSettingRepository.setLogRecordSetting(
+      user: _user,
+      logRecordSetting: logRecordSetting,
     );
     return resultOfSetLogRecord[0];
   }

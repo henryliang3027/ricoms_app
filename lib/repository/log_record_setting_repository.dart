@@ -44,16 +44,17 @@ class LogRecordSettingRepository {
 
   Future<List<dynamic>> setLogRecordSetting({
     required User user,
-    required String archivedHistoricalRecordQuanitiy,
-    required String enableApiLogPreservation,
-    required String apiLogPreservedQuantity,
-    required String apiLogPreservedDays,
-    required String enableUserSystemLogPreservation,
-    required String userSystemLogPreservedQuantity,
-    required String userSystemLogPreservedDays,
-    required String enableDeviceSystemLogPreservation,
-    required String deviceSystemLogPreservedQuantity,
-    required String deviceSystemLogPreservedDays,
+    required LogRecordSetting logRecordSetting,
+    // required String archivedHistoricalRecordQuanitiy,
+    // required String enableApiLogPreservation,
+    // required String apiLogPreservedQuantity,
+    // required String apiLogPreservedDays,
+    // required String enableUserSystemLogPreservation,
+    // required String userSystemLogPreservedQuantity,
+    // required String userSystemLogPreservedDays,
+    // required String enableDeviceSystemLogPreservation,
+    // required String deviceSystemLogPreservedQuantity,
+    // required String deviceSystemLogPreservedDays,
   }) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -64,18 +65,18 @@ class LogRecordSettingRepository {
     String logRecordSettingApiPath = '/advanced/datasave';
 
     try {
-      LogRecordSetting logRecordSetting = LogRecordSetting(
-        archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy,
-        enableApiLogPreservation: enableApiLogPreservation,
-        apiLogPreservedQuantity: apiLogPreservedQuantity,
-        apiLogPreservedDays: apiLogPreservedDays,
-        enableUserSystemLogPreservation: enableUserSystemLogPreservation,
-        userSystemLogPreservedQuantity: userSystemLogPreservedQuantity,
-        userSystemLogPreservedDays: userSystemLogPreservedDays,
-        enableDeviceSystemLogPreservation: enableDeviceSystemLogPreservation,
-        deviceSystemLogPreservedQuantity: deviceSystemLogPreservedQuantity,
-        deviceSystemLogPreservedDays: deviceSystemLogPreservedDays,
-      );
+      // LogRecordSetting logRecordSetting = LogRecordSetting(
+      //   archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy,
+      //   enableApiLogPreservation: enableApiLogPreservation,
+      //   apiLogPreservedQuantity: apiLogPreservedQuantity,
+      //   apiLogPreservedDays: apiLogPreservedDays,
+      //   enableUserSystemLogPreservation: enableUserSystemLogPreservation,
+      //   userSystemLogPreservedQuantity: userSystemLogPreservedQuantity,
+      //   userSystemLogPreservedDays: userSystemLogPreservedDays,
+      //   enableDeviceSystemLogPreservation: enableDeviceSystemLogPreservation,
+      //   deviceSystemLogPreservedQuantity: deviceSystemLogPreservedQuantity,
+      //   deviceSystemLogPreservedDays: deviceSystemLogPreservedDays,
+      // );
 
       Map<String, dynamic> requestData = logRecordSetting.toJson();
       requestData['uid'] = user.id;
