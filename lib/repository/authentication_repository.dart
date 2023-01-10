@@ -169,8 +169,6 @@ class AuthenticationRepository {
       User? user = userApi.getActivateUser();
 
       if (user != null) {
-        // MasterSlaveServerInfo.setMasterSlaveServerIP(user: user, dio: dio);
-
         _controller.add(AuthenticationReport(
           status: AuthenticationStatus.authenticated,
           user: user,
@@ -191,7 +189,6 @@ class AuthenticationRepository {
         data: {'account': account, 'pwd': password},
       );
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -228,46 +225,24 @@ class AuthenticationRepository {
 
               return [true];
             } else {
-              // _controller.add(const AuthenticationReport(
-              //   status: AuthenticationStatus.unauthenticated,
-              //   msg: 'failed to get activated user from local database.',
-              // ));
-
               return [
                 false,
                 CustomErrMsg.getActivatedUserErrMsg,
               ];
             }
           } else {
-            //maybe receive 'Failed to get user function' from server
-            // _controller.add(AuthenticationReport(
-            //   status: AuthenticationStatus.unauthenticated,
-            //   msg: resultOfUserFunctions[1],
-            // ));
-
             return [
               false,
               resultOfUserFunctions[1],
             ];
           }
         } else {
-          //may receive invalid User message from server
-          // _controller.add(AuthenticationReport(
-          //   status: AuthenticationStatus.unauthenticated,
-          //   msg: resultOfUserInfo[1],
-          // ));
-
           return [
             false,
             resultOfUserInfo[1],
           ];
         }
       } else {
-        // _controller.add(AuthenticationReport(
-        //   status: AuthenticationStatus.unauthenticated,
-        //   msg: data['msg'],
-        // ));
-
         return [
           false,
           data['msg'],
