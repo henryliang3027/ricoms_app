@@ -163,6 +163,27 @@ class RootRepository {
     }
   }
 
+  Future<List<dynamic>> getDataSheetURL({
+    required User user,
+    required int nodeId,
+  }) async {
+    List<dynamic> resultOfGetInfo =
+        await getNodeInfo(user: user, nodeId: nodeId);
+
+    if (resultOfGetInfo[0]) {
+      Info info = resultOfGetInfo[1];
+      String onlineIP = MasterSlaveServerInfo.onlineServerIP;
+      String moduleSeries = info.series.replaceAll(' ', '%20');
+      String moduleName = info.module.replaceAll(' ', '%20');
+      String dataSheetURL =
+          'http://$onlineIP/aci/ricoms/datasheet/$moduleSeries/$moduleName.pdf';
+
+      return [true, dataSheetURL];
+    } else {
+      return [false, resultOfGetInfo[1]];
+    }
+  }
+
   Future<List<dynamic>> createNode({
     required User user,
     required int parentId,

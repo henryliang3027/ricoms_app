@@ -6,6 +6,8 @@ class RootState extends Equatable {
     this.submissionStatus = SubmissionStatus.none,
     this.nodesExportStatus = FormStatus.none,
     this.nodesExportFilePath = '',
+    this.dataSheetOpenStatus = FormStatus.none,
+    this.dataSheetOpenPath = '',
     this.data = const [],
     this.directory = const [],
     this.isAddedToBookmarks = false,
@@ -13,12 +15,15 @@ class RootState extends Equatable {
     this.errmsg = '',
     this.bookmarksMsg = '',
     this.nodesExportMsg = '',
+    this.dataSheetOpenMsg = '',
   });
 
   final FormStatus formStatus;
   final SubmissionStatus submissionStatus;
   final FormStatus nodesExportStatus;
   final String nodesExportFilePath;
+  final FormStatus dataSheetOpenStatus;
+  final String dataSheetOpenPath;
   final List data;
   final List<Node> directory;
   final bool isAddedToBookmarks;
@@ -26,12 +31,15 @@ class RootState extends Equatable {
   final String errmsg;
   final String bookmarksMsg;
   final String nodesExportMsg;
+  final String dataSheetOpenMsg;
 
   RootState copyWith({
     FormStatus? formStatus,
     SubmissionStatus? submissionStatus,
     FormStatus? nodesExportStatus,
     String? nodesExportFilePath,
+    FormStatus? dataSheetOpenStatus,
+    String? dataSheetOpenPath,
     List? data,
     List<Node>? directory,
     bool? isUpdateData,
@@ -40,12 +48,15 @@ class RootState extends Equatable {
     String? errmsg,
     String? bookmarksMsg,
     String? nodesExportMsg,
+    String? dataSheetOpenMsg,
   }) {
     return RootState(
       formStatus: formStatus ?? this.formStatus,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       nodesExportStatus: nodesExportStatus ?? this.nodesExportStatus,
       nodesExportFilePath: nodesExportFilePath ?? this.nodesExportFilePath,
+      dataSheetOpenStatus: dataSheetOpenStatus ?? this.dataSheetOpenStatus,
+      dataSheetOpenPath: dataSheetOpenPath ?? this.dataSheetOpenPath,
       data: data ?? this.data,
       directory: directory ?? this.directory,
       isAddedToBookmarks: isAddedToBookmarks ?? this.isAddedToBookmarks,
@@ -53,6 +64,7 @@ class RootState extends Equatable {
       errmsg: errmsg ?? this.errmsg,
       bookmarksMsg: bookmarksMsg ?? this.bookmarksMsg,
       nodesExportMsg: nodesExportMsg ?? this.nodesExportMsg,
+      dataSheetOpenMsg: dataSheetOpenMsg ?? this.dataSheetOpenMsg,
     );
   }
 
@@ -62,6 +74,8 @@ class RootState extends Equatable {
         submissionStatus,
         nodesExportStatus,
         nodesExportFilePath,
+        dataSheetOpenStatus,
+        dataSheetOpenPath,
         data,
         directory,
         isAddedToBookmarks,
@@ -69,5 +83,6 @@ class RootState extends Equatable {
         errmsg,
         bookmarksMsg,
         nodesExportMsg,
+        dataSheetOpenMsg,
       ];
 }

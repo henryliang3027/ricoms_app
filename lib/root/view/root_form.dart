@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_file/internet_file.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -119,6 +121,20 @@ class RootForm extends StatelessWidget {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
+        } else if (state.dataSheetOpenStatus.isRequestSuccess) {
+          final pdfControllerPinch = PdfControllerPinch(
+            document:
+                PdfDocument.openData(InternetFile.get(state.dataSheetOpenPath)),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CustomPDFViewer(pdfControllerPinch: pdfControllerPinch)),
+          );
+        } else if (state.dataSheetOpenStatus.isRequestFailure) {
+          Navigator.of(context).pop();
+          _showFailureDialog(state.dataSheetOpenMsg);
         } else if (state.nodesExportStatus.isRequestSuccess) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -198,6 +214,29 @@ class RootForm extends StatelessWidget {
   }
 }
 
+class CustomPDFViewer extends StatelessWidget {
+  const CustomPDFViewer({
+    Key? key,
+    required this.pdfControllerPinch,
+  }) : super(key: key);
+
+  final PdfControllerPinch pdfControllerPinch;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            AppLocalizations.of(context)!.datasheet,
+          ),
+        ),
+        body: PdfViewPinch(
+          controller: pdfControllerPinch,
+        ));
+  }
+}
+
 class _DynamicTitle extends StatelessWidget {
   const _DynamicTitle({Key? key}) : super(key: key);
 
@@ -224,6 +263,7 @@ enum Menu {
   search,
   export,
   favorite,
+  datasheet,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -232,6 +272,122 @@ class _PopupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      List<PopupMenuEntry<Menu>> _buildPopupMenu() {
+        if (state.directory.last.type == 5 || state.directory.last.type == 2) {
+          return [
+            PopupMenuItem<Menu>(
+              value: Menu.search,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.search,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.favorite,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  state.isAddedToBookmarks
+                      ? const Icon(
+                          Icons.star_outlined,
+                          size: 20.0,
+                          color: Colors.amber,
+                        )
+                      : const Icon(
+                          Icons.star_border_outlined,
+                          size: 20.0,
+                          color: Colors.black,
+                        ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.favorite,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.datasheet,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.assignment_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.datasheet,
+                  ),
+                ],
+              ),
+            ),
+          ];
+        } else {
+          return [
+            PopupMenuItem<Menu>(
+              value: Menu.search,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.search,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.export,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    CustomIcons.export,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.export,
+                  ),
+                ],
+              ),
+            )
+          ];
+        }
+      }
+
       if (state.formStatus.isRequestSuccess) {
         return PopupMenuButton<Menu>(
           tooltip: '',
@@ -259,79 +415,16 @@ class _PopupMenu extends StatelessWidget {
                     .read<RootBloc>()
                     .add(BookmarksChanged(state.directory.last));
                 break;
+              case Menu.datasheet:
+                context
+                    .read<RootBloc>()
+                    .add(DataSheetOpened(state.directory.last));
+                break;
               default:
                 break;
             }
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
-              ),
-            ),
-            state.directory.last.type == 5 || state.directory.last.type == 2
-                ? PopupMenuItem<Menu>(
-                    value: Menu.favorite,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        state.isAddedToBookmarks
-                            ? const Icon(
-                                Icons.star_outlined,
-                                size: 20.0,
-                                color: Colors.amber,
-                              )
-                            : const Icon(
-                                Icons.star_border_outlined,
-                                size: 20.0,
-                                color: Colors.black,
-                              ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.favorite,
-                        ),
-                      ],
-                    ),
-                  )
-                : PopupMenuItem<Menu>(
-                    value: Menu.export,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          CustomIcons.export,
-                          size: 20.0,
-                          color: Colors.black,
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.export,
-                        ),
-                      ],
-                    ),
-                  )
-          ],
+          itemBuilder: (BuildContext context) => _buildPopupMenu(),
         );
       } else {
         return Container();

@@ -7,6 +7,8 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_request.dart';
+import 'package:pdfx/pdfx.dart';
+import 'package:internet_file/internet_file.dart';
 part 'root_event.dart';
 part 'root_state.dart';
 
@@ -28,6 +30,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
+    on<DataSheetOpened>(_onDataSheetOpened);
 
     add(const ChildDataRequested(
         Node(
@@ -87,6 +90,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
       emit(state.copyWith(
         formStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        dataSheetOpenStatus: FormStatus.none,
+        nodesExportStatus: FormStatus.none,
         directory: directory,
         isAddedToBookmarks: isAddedToBookmarks,
       ));
@@ -96,6 +102,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestInProgress,
           submissionStatus: SubmissionStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          nodesExportStatus: FormStatus.none,
         ));
       }
 
@@ -131,6 +139,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               formStatus: FormStatus.requestSuccess,
               submissionStatus: SubmissionStatus.none,
               nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: isAddedToBookmarks,
               directory: directory,
             ));
@@ -140,6 +149,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               formStatus: FormStatus.requestSuccess,
               submissionStatus: SubmissionStatus.none,
               nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: false,
               directory: directory,
               data: result[1],
@@ -157,6 +167,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
             data: data,
             directory: directory,
           ));
@@ -165,6 +176,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             formStatus: FormStatus.requestFailure,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
             errmsg: data,
           ));
         }
@@ -187,6 +199,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     emit(state.copyWith(
       nodesExportStatus: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<dynamic> msg =
@@ -211,6 +224,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.none,
       nodesExportStatus: FormStatus.requestInProgress,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<dynamic> result = await _rootRepository.exportNodes(user: _user);
@@ -244,6 +258,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         //if current formStatus isRequestFailure, refresh device page content
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           directory: state.directory,
         ));
       } else {
@@ -275,6 +292,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
             emit(state.copyWith(
               formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
               directory: directory,
             ));
           }
@@ -306,6 +326,36 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
+  Future<void> _onDataSheetOpened(
+    DataSheetOpened event,
+    Emitter<RootState> emit,
+  ) async {
+    List<dynamic> result = await _rootRepository.getDataSheetURL(
+      user: _user,
+      nodeId: event.node.id,
+    );
+
+    if (result[0]) {
+      emit(state.copyWith(
+        dataSheetOpenStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
+        dataSheetOpenPath: result[1],
+      ));
+      // print(result[1]);
+      // final document = await PdfDocument.openData(InternetFile.get(result[1]));
+      // final page = document.getPage(1);
+
+    } else {
+      emit(state.copyWith(
+        dataSheetOpenStatus: FormStatus.requestFailure,
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
+        dataSheetOpenMsg: result[1],
+      ));
+    }
+  }
+
   Future<void> _onBookmarksChanged(
     BookmarksChanged event,
     Emitter<RootState> emit,
@@ -321,6 +371,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: false,
           bookmarksMsg: 'Removed from bookmarks',
         ));
@@ -328,6 +379,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           bookmarksMsg:
               'Unable to delete from bookmarks, please check your account and login again.',
         ));
@@ -341,6 +393,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: true,
           bookmarksMsg: 'Added to bookmarks',
         ));
@@ -348,6 +401,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           bookmarksMsg:
               'Unable to add to bookmarks, please check your account and login again.',
         ));
@@ -365,6 +419,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       nodesExportStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<Node> directory = [];

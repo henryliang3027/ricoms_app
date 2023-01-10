@@ -155,6 +155,11 @@
       "description": "add to bookmarks"
     },
 
+    "datasheet": "Datasheet",
+    "@all": {
+      "description": "open datasheet"
+    },
+
     "addGroup": "Add Group",
     "@all": {
       "description": "add group"

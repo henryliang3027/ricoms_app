@@ -61,3 +61,12 @@ class BookmarksChanged extends RootEvent {
   @override
   List<Object?> get props => [node];
 }
+
+class DataSheetOpened extends RootEvent {
+  const DataSheetOpened(this.node); //edfa id or a8k slot id
+
+  final Node node;
+
+  @override
+  List<Object?> get props => [node];
+}
