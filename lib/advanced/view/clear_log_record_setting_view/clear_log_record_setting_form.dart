@@ -202,42 +202,6 @@ class LogRecordSettingForm extends StatelessWidget {
   }
 }
 
-// class _LogRecordSettingPanel extends StatelessWidget {
-//   const _LogRecordSettingPanel({
-//     Key? key,
-//     required this.panelTitle,
-//     required this.preservedQuantityController,
-//     required this.preservedDaysController,
-//   }) : super(key: key);
-
-//   final String panelTitle;
-//   final TextEditingController preservedQuantityController;
-//   final TextEditingController preservedDaysController;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             _SettingTitle(
-//               title: panelTitle,
-//             ),
-//             const _DeviceSystemLogPreservationSwitchTile(),
-//           ],
-//         ),
-//         _UserSystemLogPreservedQuantityInput(
-//           userSystemLogPreservedQuantityController: preservedQuantityController,
-//         ),
-//         _UserSystemLogPreservedDaysInput(
-//           userSystemLogPreservedDaysController: preservedDaysController,
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 class _SettingTitle extends StatelessWidget {
   const _SettingTitle({
     Key? key,
