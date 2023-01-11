@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ricoms_app/about/about_page.dart';
 import 'package:ricoms_app/account/view/account_page.dart';
 import 'package:ricoms_app/advanced/view/advanced_view/advanced_page.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks_page.dart';
@@ -57,6 +58,9 @@ class _HomePageState extends State<HomePage> {
             pageController: _pageController,
           ),
           AdvancedPage(
+            pageController: _pageController,
+          ),
+          AboutPage(
             pageController: _pageController,
           ),
         ],
