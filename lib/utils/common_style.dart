@@ -5,7 +5,7 @@ class CommonStyle {
   static const double sizeXL = 18.0;
   static const double sizeXXL = 20.0; // app bar title
 
-  static const String version = 'V 0.9.8';
+  static const String version = 'V 1.1.0';
 
   static const double severityRectangleWidth = 20;
   static const double severityRectangleHeight = 40;

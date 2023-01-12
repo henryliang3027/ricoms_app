@@ -74,6 +74,11 @@
       "description": "about"
     },
 
+    "contactUs": "Contact Us",
+    "@setting": {
+      "description": "contact us"
+    },
+
     "aboutArticleParagraph1": "Twoway Communications, Inc., founded in October 1992, is Taiwan's largest broadband amplifier and optical workstation equipment corporation, as well as Asia's first HFC ( Hybrid Fiber-Coaxial ) transmission equipment R&D manufacturer that has passed the certification of major North American MSO ( Multiple-System Operators ).",
     "@setting": {
       "description": "about article paragraph 1"
