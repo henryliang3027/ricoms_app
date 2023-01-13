@@ -7,8 +7,6 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_request.dart';
-import 'package:pdfx/pdfx.dart';
-import 'package:internet_file/internet_file.dart';
 part 'root_event.dart';
 part 'root_state.dart';
 

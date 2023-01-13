@@ -35,6 +35,14 @@ class CustomStyle {
     3: const Color(0xffdc3545), //critical
   };
 
+  static Map<int, Color> statusFontColor = {
+    // for device setting status tabview
+    0: const Color(0xff000000), //notice
+    1: const Color(0xff000000), //normal
+    2: const Color(0xff000000), //warning
+    3: const Color(0xffffffff), //critical
+  };
+
   static const Map<int, Icon?> typeIcon = {
     0: null, //Root
     1: Icon(
@@ -79,6 +87,9 @@ class CustomStyle {
 
     CustomStyle.statusColor[3] = Color(severityColors[3]);
     CustomStyle.statusColor[2] = Color(severityColors[2]);
+    CustomStyle.statusFontColor[3] = Color(severityColors[7]);
+    CustomStyle.statusFontColor[2] = Color(severityColors[6]);
+
     CustomStyle.multiAxisLineAnnotationColors[1] = Color(severityColors[3]);
     CustomStyle.multiAxisLineAnnotationColors[0] = Color(severityColors[2]);
   }
