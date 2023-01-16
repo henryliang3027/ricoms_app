@@ -23,10 +23,15 @@ class MasterSlaveServerInfo {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
+        int model = data['data'][0]['model'];
         MasterSlaveServerInfo.masterServerIP = data['data'][0]['server_master'];
         MasterSlaveServerInfo.slaveServerIP = data['data'][0]['server_slave'];
         MasterSlaveServerInfo.onlineServerIP = data['data'][0]['server_online'];
-        return MasterSlaveServerInfo.onlineServerIP;
+        if (model == 1) {
+          return MasterSlaveServerInfo.onlineServerIP;
+        } else {
+          return loginIP;
+        }
       } else {
         return loginIP;
       }
