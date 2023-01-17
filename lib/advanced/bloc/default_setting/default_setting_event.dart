@@ -20,6 +20,13 @@ class DefaultSettingItemToggled extends DefaultSettingEvent {
   List<Object?> get props => [index];
 }
 
+class AllItemsSelected extends DefaultSettingEvent {
+  const AllItemsSelected();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class EditModeEnabled extends DefaultSettingEvent {
   const EditModeEnabled();
 

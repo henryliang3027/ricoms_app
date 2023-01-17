@@ -45,3 +45,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+ios/Gemfile
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
+ios/fastlane/.env.default
+ios/fastlane/Appfile
+ios/fastlane/Fastfile
+ios/fastlane/README.md
+ios/fastlane/report.xml

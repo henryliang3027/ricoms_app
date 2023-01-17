@@ -85,13 +85,74 @@ class DefaultSettingForm extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             AppLocalizations.of(context)!.resetToDefaultSettings,
+            overflow: TextOverflow.visible,
           ),
           elevation: 0.0,
+          actions: const [
+            _PopupMenu(),
+          ],
         ),
         body: const _DefaultSettingContent(),
         floatingActionButton: const _DefaultSettingEditFloatingActionButton(),
       ),
     );
+  }
+}
+
+enum Menu {
+  selectAll,
+}
+
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DefaultSettingBloc, DefaultSettingState>(
+        builder: (context, state) {
+      if (state.status.isRequestSuccess) {
+        if (state.isEditing) {
+          return PopupMenuButton<Menu>(
+            tooltip: '',
+            onSelected: (Menu item) async {
+              switch (item) {
+                case Menu.selectAll:
+                  context
+                      .read<DefaultSettingBloc>()
+                      .add(const AllItemsSelected());
+                  break;
+                default:
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+              PopupMenuItem<Menu>(
+                value: Menu.selectAll,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.delete_outline,
+                      size: 20.0,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    Text(AppLocalizations.of(context)!.selectAll),
+                  ],
+                ),
+              ),
+            ],
+          );
+        } else {
+          return Container();
+        }
+      } else {
+        return Container();
+      }
+    });
   }
 }
 

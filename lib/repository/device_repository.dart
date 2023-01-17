@@ -530,7 +530,7 @@ class DeviceRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsString('\uFEFF\n' + csv);
       return [
         true,
         'Export chart data success',
@@ -541,7 +541,7 @@ class DeviceRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsString('\uFEFF\n' + csv);
 
       return [
         true,
@@ -604,7 +604,7 @@ class DeviceRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsString('\uFEFF' + csv);
       return [
         true,
         'Export chart data success',
@@ -616,7 +616,11 @@ class DeviceRepository {
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
 
-      await f.writeAsString(csv);
+      // List<int> excelCsvBytes = [0xEF, 0xBB, 0xBF]..addAll(utf8.encode(csv));
+
+      // String base64ExcelCsvBytes = base64Encode(excelCsvBytes);
+
+      await f.writeAsString('\uFEFF' + csv);
       return [
         true,
         'Export chart data success',

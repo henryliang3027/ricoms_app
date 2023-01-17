@@ -322,7 +322,7 @@ class HistoryRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsString('\uFEFF\n' + csv);
       return [
         true,
         'Export history data success',
@@ -333,7 +333,7 @@ class HistoryRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsString('\uFEFF\n' + csv);
 
       return [
         true,

@@ -25,6 +25,7 @@ class DefaultSettingBloc
         super(const DefaultSettingState()) {
     on<DefaultSettingRequested>(_onDefaultSettingRequested);
     on<DefaultSettingItemToggled>(_onDefaultSettingItemToggled);
+    on<AllItemsSelected>(_onAllItemsSelected);
     on<DefaultSettingSaved>(_onDefaultSettingSaved);
     on<EditModeEnabled>(_onEditModeEnabled);
     on<EditModeDisabled>(_onEditModeDisabled);
@@ -183,6 +184,32 @@ class DefaultSettingBloc
       status: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,
       defaultSettingItems: defaultSettingItems,
+    ));
+  }
+
+  void _onAllItemsSelected(
+    AllItemsSelected event,
+    Emitter<DefaultSettingState> emit,
+  ) {
+    List<DefaultSettingItem> newDefaultSettingItems = [];
+
+    for (DefaultSettingItem defaultSettingItem in state.defaultSettingItems) {
+      DefaultSettingItem newDfaultSettingItem = DefaultSettingItem(
+        defaultValue: defaultSettingItem.defaultValue,
+        currentValue: defaultSettingItem.currentValue,
+        defaultIdx: defaultSettingItem.defaultIdx,
+        currentIdx: defaultSettingItem.currentIdx,
+        isSelected: true,
+      );
+
+      newDefaultSettingItems.add(newDfaultSettingItem);
+    }
+
+    emit(state.copyWith(
+      status: FormStatus.requestSuccess,
+      submissionStatus: SubmissionStatus.none,
+      defaultSettingItems: newDefaultSettingItems,
+      isEditing: true,
     ));
   }
 
@@ -357,11 +384,6 @@ class DefaultSettingBloc
       status: FormStatus.requestSuccess,
       submissionStatus: SubmissionStatus.none,
       defaultSettingItems: newDefaultSettingItems,
-    ));
-
-    emit(state.copyWith(
-      status: FormStatus.requestSuccess,
-      submissionStatus: SubmissionStatus.none,
       isEditing: false,
     ));
   }
