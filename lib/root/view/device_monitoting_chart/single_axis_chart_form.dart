@@ -49,8 +49,8 @@ class SingleAxisChartForm extends StatelessWidget {
                   onPressed: () {
                     OpenFilex.open(
                       state.chartDataExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
                   },
                 ),

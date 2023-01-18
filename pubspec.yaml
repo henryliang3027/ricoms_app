@@ -43,7 +43,6 @@ dependencies:
   path_provider: ^2.0.11 # for getting external storage directory
   permission_handler: ^10.0.0 # for asking storage read/write permission
   device_info: ^2.0.3 # for checking android sdk version
-  csv: ^5.0.1
   intl: ^0.17.0 # format datetime
   syncfusion_flutter_charts: ^20.3.56
   firebase_core: ^2.4.1
@@ -62,7 +61,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   assets_audio_player: ^3.0.6
   pdfx: ^2.3.0
-  internet_file: ^1.2.0
+  internet_file: ^1.2.0 # get pdf from net
+  excel: ^2.0.1 
 
 
 dev_dependencies:

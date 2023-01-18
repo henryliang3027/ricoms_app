@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,7 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
+import 'package:excel/excel.dart';
 
 class DeviceRepository {
   DeviceRepository();
@@ -494,17 +494,18 @@ class DeviceRepository {
     required String parameterName,
     required List<ChartDateValuePair> chartDateValuePairs,
   }) async {
-    List<List<String>> dataList = [];
-
     List<String> header = [];
+    Excel excel = Excel.createExcel();
+    Sheet sheet = excel['Sheet1'];
 
     header
       ..add('Date')
       ..add(parameterName);
 
-    dataList.add(header);
+    sheet.insertRowIterables(header, 0);
 
-    for (ChartDateValuePair chartDateValuePair in chartDateValuePairs) {
+    for (int i = 0; i < chartDateValuePairs.length; i++) {
+      ChartDateValuePair chartDateValuePair = chartDateValuePairs[i];
       String dateTime =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(chartDateValuePair.dateTime);
 
@@ -515,22 +516,22 @@ class DeviceRepository {
         ..add(dateTime)
         ..add(value);
 
-      dataList.add(row);
+      sheet.insertRowIterables(row, i + 1);
     }
 
-    String csv = const ListToCsvConverter().convert(dataList);
+    var fileBytes = excel.save();
 
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
 
-    String filename = '${nodeName}_${parameterName}_$timeStamp.csv';
+    String filename = '${nodeName}_${parameterName}_$timeStamp.xlsx';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export chart data success',
@@ -541,7 +542,7 @@ class DeviceRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
 
       return [
         true,
@@ -561,9 +562,9 @@ class DeviceRepository {
     required Map<String, CheckBoxValue> checkBoxValues,
     required Map<String, List<ChartDateValuePair>> chartDateValuePairs,
   }) async {
-    List<List<String>> dataList = [];
-
     List<String> header = [];
+    Excel excel = Excel.createExcel();
+    Sheet sheet = excel['Sheet1'];
 
     header.add('Date');
 
@@ -571,7 +572,7 @@ class DeviceRepository {
       header.add(checkBoxValues[oid]!.name);
     }
 
-    dataList.add(header);
+    sheet.insertRowIterables(header, 0);
 
     int length = chartDateValuePairs.values.toList()[0].length;
     String dateTimeKey = checkBoxValues.keys.toList()[0];
@@ -589,22 +590,22 @@ class DeviceRepository {
 
         row.add(value);
       }
-      dataList.add(row);
+      sheet.insertRowIterables(row, i + 1);
     }
 
-    String csv = const ListToCsvConverter().convert(dataList);
+    var fileBytes = excel.save();
 
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
 
-    String filename = '${nodeName}_$timeStamp.csv';
+    String filename = '${nodeName}_$timeStamp.xlsx';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export chart data success',
@@ -615,12 +616,7 @@ class DeviceRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-
-      // List<int> excelCsvBytes = [0xEF, 0xBB, 0xBF]..addAll(utf8.encode(csv));
-
-      // String base64ExcelCsvBytes = base64Encode(excelCsvBytes);
-
-      await f.writeAsString('\uFEFF' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export chart data success',

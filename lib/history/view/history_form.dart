@@ -122,8 +122,8 @@ class HistoryForm extends StatelessWidget {
                   onPressed: () async {
                     OpenResult result = await OpenFilex.open(
                       state.historyExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
 
                     print(result.message);

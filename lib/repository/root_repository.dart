@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:csv/csv.dart';
+import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -503,28 +503,31 @@ class RootRepository {
       rawData = rawData.replaceAll('\"', '');
 
       List<String> rawDataList = rawData.split('\n');
-      List<List<String>> dataList = [];
 
-      for (var element in rawDataList) {
-        if (element.isNotEmpty) {
-          List<String> line = element.split(',');
-          dataList.add(line);
+      Excel excel = Excel.createExcel();
+      Sheet sheet = excel['Sheet1'];
+
+      for (int i = 0; i < rawDataList.length; i++) {
+        if (rawDataList[i].isNotEmpty) {
+          List<String> line = rawDataList[i].split(',');
+
+          sheet.insertRowIterables(line, i);
         }
       }
 
-      String csv = const ListToCsvConverter().convert(dataList);
+      var fileBytes = excel.save();
 
       String timeStamp =
           DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
 
-      String filename = 'root_data_$timeStamp.csv';
+      String filename = 'root_data_$timeStamp.xlsx';
 
       if (Platform.isIOS) {
         Directory appDocDir = await getApplicationDocumentsDirectory();
         String appDocPath = appDocDir.path;
         String fullWrittenPath = '$appDocPath/$filename';
         File f = File(fullWrittenPath);
-        await f.writeAsString('\uFEFF\n' + csv);
+        await f.writeAsBytes(fileBytes!);
         return [
           true,
           'Export root data success',
@@ -535,7 +538,7 @@ class RootRepository {
         String appDocPath = appDocDir.path;
         String fullWrittenPath = '$appDocPath/$filename';
         File f = File(fullWrittenPath);
-        await f.writeAsString('\uFEFF\n' + csv);
+        await f.writeAsBytes(fileBytes!);
 
         return [
           true,

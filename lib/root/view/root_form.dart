@@ -151,8 +151,8 @@ class RootForm extends StatelessWidget {
                   onPressed: () async {
                     OpenResult result = await OpenFilex.open(
                       state.nodesExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
                     print(result.message);
                   },

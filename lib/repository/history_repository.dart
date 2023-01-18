@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -269,8 +269,9 @@ class HistoryRepository {
     required User user,
     required List<Record> records,
   }) async {
-    List<List<String>> rows = [];
     List<String> header = [];
+    Excel excel = Excel.createExcel();
+    Sheet sheet = excel['Sheet1'];
 
     header
       ..add('Severity')
@@ -283,9 +284,11 @@ class HistoryRepository {
       ..add('Time Received')
       ..add('Clear Time')
       ..add('Alarm Duration');
-    rows.add(header);
 
-    for (Record record in records) {
+    sheet.insertRowIterables(header, 0);
+
+    for (int i = 0; i < records.length; i++) {
+      Record record = records[i];
       List<String> row = [];
       String severity = CustomStyle.severityName[record.severity] ?? '';
       String ip = record.ip;
@@ -309,20 +312,21 @@ class HistoryRepository {
         ..add(clearTime)
         ..add(alarmDuration);
 
-      rows.add(row);
+      sheet.insertRowIterables(row, i + 1);
     }
 
-    String csv = const ListToCsvConverter().convert(rows);
+    var fileBytes = excel.save();
+
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
-    String filename = 'history_data_$timeStamp.csv';
+    String filename = 'history_data_$timeStamp.xlsx';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export history data success',
@@ -333,7 +337,7 @@ class HistoryRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
 
       return [
         true,

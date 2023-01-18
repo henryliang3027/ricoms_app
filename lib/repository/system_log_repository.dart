@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
+import 'package:ricoms_app/utils/storage_permission.dart';
 
 class SystemLogRepository {
   SystemLogRepository();
@@ -243,8 +245,9 @@ class SystemLogRepository {
     required User user,
     required List<Log> logs,
   }) async {
-    List<List<String>> rows = [];
     List<String> header = [];
+    Excel excel = Excel.createExcel();
+    Sheet sheet = excel['Sheet1'];
 
     header
       ..add('Type')
@@ -259,9 +262,11 @@ class SystemLogRepository {
       ..add('Name')
       ..add('Event')
       ..add('Description');
-    rows.add(header);
 
-    for (Log log in logs) {
+    sheet.insertRowIterables(header, 0);
+
+    for (int i = 0; i < logs.length; i++) {
+      Log log = logs[i];
       List<String> row = [];
       String logType = log.logType;
       String account = log.account;
@@ -289,20 +294,20 @@ class SystemLogRepository {
         ..add(event)
         ..add(description);
 
-      rows.add(row);
+      sheet.insertRowIterables(row, i + 1);
     }
 
-    String csv = const ListToCsvConverter().convert(rows);
+    var fileBytes = excel.save();
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
-    String filename = 'system_log_data_$timeStamp.csv';
+    String filename = 'system_log_data_$timeStamp.xlsx';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export system log data success',
@@ -313,7 +318,7 @@ class SystemLogRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString('\uFEFF\n' + csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export system log data success',

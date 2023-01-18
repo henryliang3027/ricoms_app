@@ -124,8 +124,8 @@ class SystemLogForm extends StatelessWidget {
                   onPressed: () async {
                     OpenFilex.open(
                       state.logExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
                   },
                 ),
