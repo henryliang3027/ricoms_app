@@ -20,7 +20,7 @@ import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
 import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 
