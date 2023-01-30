@@ -5,7 +5,6 @@ import 'package:ricoms_app/advanced/bloc/batch_setting/batch_setting_bloc.dart';
 import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
-import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class BatchSettingForm extends StatelessWidget {
@@ -115,7 +114,7 @@ class _KeywordInput extends StatelessWidget {
 class _ModuleListView extends StatelessWidget {
   const _ModuleListView({Key? key}) : super(key: key);
 
-  SliverChildBuilderDelegate _ModuleSliverChildBuilderDelegate({
+  SliverChildBuilderDelegate _moduleSliverChildBuilderDelegate({
     required List<Module> data,
   }) {
     return SliverChildBuilderDelegate(
@@ -178,7 +177,7 @@ class _ModuleListView extends StatelessWidget {
               child: CustomScrollView(
                 slivers: [
                   SliverList(
-                      delegate: _ModuleSliverChildBuilderDelegate(
+                      delegate: _moduleSliverChildBuilderDelegate(
                     data: state.modules,
                   )),
                 ],
@@ -186,15 +185,15 @@ class _ModuleListView extends StatelessWidget {
             ),
           );
         } else if (state.status.isRequestInProgress) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
           return Center(
             child: Text(getMessageLocalization(
               msg: state.requestErrorMsg,
               context: context,
             )),
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
           );
         }
       },

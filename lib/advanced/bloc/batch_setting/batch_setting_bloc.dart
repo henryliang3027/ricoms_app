@@ -16,12 +16,14 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
         _batchSettingRepository = batchSettingRepository,
         super(const BatchSettingState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
+    on<KeywordChanged>(_onKeywordChanged);
 
     add(const ModuleDataRequested());
   }
 
   final User _user;
   final BatchSettingRepository _batchSettingRepository;
+  final List<Module> _allModules = [];
 
   void _onModulleDataRequested(
     ModuleDataRequested event,
@@ -36,6 +38,7 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
 
     if (result[0]) {
       List<Module> modules = result[1];
+      _allModules.addAll(modules);
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
         modules: modules,
@@ -45,6 +48,28 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
         status: FormStatus.requestFailure,
         modules: [],
         requestErrorMsg: result[1],
+      ));
+    }
+  }
+
+  void _onKeywordChanged(
+    KeywordChanged event,
+    Emitter<BatchSettingState> emit,
+  ) {
+    if (event.keyword.isNotEmpty) {
+      List<Module> modules = [];
+
+      modules = _allModules
+          .where((module) =>
+              module.name.toLowerCase().contains(event.keyword.toLowerCase()))
+          .toList();
+
+      emit(state.copyWith(
+        modules: modules,
+      ));
+    } else {
+      emit(state.copyWith(
+        modules: _allModules,
       ));
     }
   }
