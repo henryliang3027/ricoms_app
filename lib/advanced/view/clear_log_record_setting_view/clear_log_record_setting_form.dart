@@ -7,6 +7,7 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class LogRecordSettingForm extends StatelessWidget {
   const LogRecordSettingForm({Key? key}) : super(key: key);
@@ -27,6 +28,24 @@ class LogRecordSettingForm extends StatelessWidget {
         TextEditingController();
     TextEditingController deviceSystemLogPreservedDaysController =
         TextEditingController();
+
+    Future<void> _showInProgressDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_saving,
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: const <Widget>[
+              CircularProgressIndicator(),
+            ],
+          );
+        },
+      );
+    }
 
     Future<void> _showSuccessDialog() async {
       return showDialog<void>(
@@ -105,9 +124,13 @@ class LogRecordSettingForm extends StatelessWidget {
         } else if (state.status.isRequestFailure) {
           _showFailureDialog(state.requestErrorMsg);
         } else if (state.submissionStatus.isSubmissionSuccess) {
+          Navigator.of(context).pop();
           _showSuccessDialog();
         } else if (state.submissionStatus.isSubmissionFailure) {
+          Navigator.of(context).pop();
           _showFailureDialog(state.submissionErrorMsg);
+        } else if (state.submissionStatus.isSubmissionInProgress) {
+          _showInProgressDialog();
         }
       },
       child: Scaffold(
