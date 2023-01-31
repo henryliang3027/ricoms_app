@@ -1,21 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
-part 'batch_setting_event.dart';
-part 'batch_setting_state.dart';
+part 'batch_device_setting_event.dart';
+part 'batch_device_setting_state.dart';
 
-class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
-  BatchSettingBloc({
+class BatchDeviceSettingBloc
+    extends Bloc<BatchDeviceSettingEvent, BatchDeviceSettingState> {
+  BatchDeviceSettingBloc({
     required User user,
     required BatchSettingRepository batchSettingRepository,
   })  : _user = user,
         _batchSettingRepository = batchSettingRepository,
-        super(const BatchSettingState()) {
+        super(const BatchDeviceSettingState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
     on<KeywordChanged>(_onKeywordChanged);
     on<ModuleDataSearched>(_onModuleDataSearched);
@@ -29,7 +29,7 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
 
   void _onModulleDataRequested(
     ModuleDataRequested event,
-    Emitter<BatchSettingState> emit,
+    Emitter<BatchDeviceSettingState> emit,
   ) async {
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
@@ -56,7 +56,7 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
 
   void _onKeywordChanged(
     KeywordChanged event,
-    Emitter<BatchSettingState> emit,
+    Emitter<BatchDeviceSettingState> emit,
   ) {
     emit(state.copyWith(
       keyword: event.keyword,
@@ -65,7 +65,7 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
 
   void _onModuleDataSearched(
     ModuleDataSearched event,
-    Emitter<BatchSettingState> emit,
+    Emitter<BatchDeviceSettingState> emit,
   ) {
     if (state.keyword.isNotEmpty) {
       List<Module> modules = [];

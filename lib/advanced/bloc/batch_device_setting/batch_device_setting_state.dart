@@ -1,7 +1,7 @@
-part of 'batch_setting_bloc.dart';
+part of 'batch_device_setting_bloc.dart';
 
-class BatchSettingState extends Equatable {
-  const BatchSettingState({
+class BatchDeviceSettingState extends Equatable {
+  const BatchDeviceSettingState({
     this.status = FormStatus.none,
     this.keyword = '',
     this.modules = const [],
@@ -13,13 +13,13 @@ class BatchSettingState extends Equatable {
   final List<Module> modules;
   final String requestErrorMsg;
 
-  BatchSettingState copyWith({
+  BatchDeviceSettingState copyWith({
     FormStatus? status,
     String? keyword,
     List<Module>? modules,
     String? requestErrorMsg,
   }) {
-    return BatchSettingState(
+    return BatchDeviceSettingState(
       status: status ?? this.status,
       keyword: keyword ?? this.keyword,
       modules: modules ?? this.modules,

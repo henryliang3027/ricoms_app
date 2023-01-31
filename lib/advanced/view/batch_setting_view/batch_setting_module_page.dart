@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/advanced/bloc/batch_setting/batch_setting_bloc.dart';
-import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_form.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting_module/batch_setting_module_bloc.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_module_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
 
-class BatchSettingPage extends StatelessWidget {
-  const BatchSettingPage({Key? key}) : super(key: key);
+class BatchSettingModulePage extends StatelessWidget {
+  const BatchSettingModulePage({Key? key}) : super(key: key);
 
   static Route route() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
-          const BatchSettingPage(),
+          const BatchSettingModulePage(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
@@ -31,12 +31,12 @@ class BatchSettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BatchSettingBloc(
+      create: (context) => BatchSettingModuleBloc(
         user: context.read<AuthenticationBloc>().state.user,
         batchSettingRepository:
             RepositoryProvider.of<BatchSettingRepository>(context),
       ),
-      child: const BatchSettingForm(),
+      child: const BatchSettingModuleForm(),
     );
   }
 }

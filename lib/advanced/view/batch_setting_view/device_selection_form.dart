@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/select_device/select_device_bloc.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/batch_device_setting_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -345,7 +346,9 @@ class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
                     heroTag: null,
                     elevation: 0.0,
                     backgroundColor: const Color(0x742195F3),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      Navigator.push(context, BatchDeviceSettingPage.route());
+                    },
                     child: const Icon(
                       CustomIcons.check,
                     ),

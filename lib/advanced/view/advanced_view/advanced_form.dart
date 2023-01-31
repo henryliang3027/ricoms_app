@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_page.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/batch_setting_module_page.dart';
 import 'package:ricoms_app/advanced/view/clear_log_record_setting_view/clear_log_record_setting_page.dart';
 import 'package:ricoms_app/advanced/view/default_setting_view/default_setting_page.dart';
 import 'package:ricoms_app/advanced/view/device_working_cycle_view/device_working_cycle_page.dart';
@@ -272,7 +272,7 @@ class _AdvancedOptions extends StatelessWidget {
             onTap: _deviceFunctionAccessibility[i]
                 ? () {
                     List<Route> deviceFunctionRoutes = [
-                      BatchSettingPage.route(),
+                      BatchSettingModulePage.route(),
                       DeviceWorkingCyclePage.route(),
                     ];
 

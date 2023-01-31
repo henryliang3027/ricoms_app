@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ricoms_app/advanced/bloc/batch_setting/batch_setting_bloc.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting_module/batch_setting_module_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/device_selection_page.dart';
 import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
-class BatchSettingForm extends StatelessWidget {
-  const BatchSettingForm({Key? key}) : super(key: key);
+class BatchSettingModuleForm extends StatelessWidget {
+  const BatchSettingModuleForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BatchSettingBloc, BatchSettingState>(
+    return BlocListener<BatchSettingModuleBloc, BatchSettingModuleState>(
       listener: (context, state) {},
       child: Scaffold(
         appBar: AppBar(
@@ -44,7 +44,7 @@ class _KeywordInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchSettingBloc, BatchSettingState>(
+    return BlocBuilder<BatchSettingModuleBloc, BatchSettingModuleState>(
         buildWhen: (previous, current) => previous.keyword != current.keyword,
         builder: (context, state) {
           return Padding(
@@ -57,12 +57,14 @@ class _KeywordInput extends StatelessWidget {
               ),
               onChanged: (String? keyword) {
                 if (keyword != null) {
-                  context.read<BatchSettingBloc>().add(KeywordChanged(keyword));
+                  context
+                      .read<BatchSettingModuleBloc>()
+                      .add(KeywordChanged(keyword));
                 }
               },
               onFieldSubmitted: (String? keyword) {
                 context
-                    .read<BatchSettingBloc>()
+                    .read<BatchSettingModuleBloc>()
                     .add(const ModuleDataSearched());
               },
               decoration: InputDecoration(
@@ -103,7 +105,7 @@ class _KeywordInput extends StatelessWidget {
                     ),
                     onPressed: () {
                       context
-                          .read<BatchSettingBloc>()
+                          .read<BatchSettingModuleBloc>()
                           .add(const ModuleDataSearched());
                     },
                   ),
@@ -174,7 +176,7 @@ class _ModuleListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchSettingBloc, BatchSettingState>(
+    return BlocBuilder<BatchSettingModuleBloc, BatchSettingModuleState>(
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
           return Container(
