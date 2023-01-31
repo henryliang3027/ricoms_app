@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/select_device/select_device_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -21,7 +22,9 @@ class DeviceSelectionForm extends StatelessWidget {
             AppLocalizations.of(context)!.selectDevice,
           ),
           elevation: 0.0,
-          actions: [],
+          actions: const [
+            _PopupMenu(),
+          ],
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -32,8 +35,62 @@ class DeviceSelectionForm extends StatelessWidget {
             ),
           ],
         ),
+        floatingActionButton: const _DeviceSelectionEditFloatingActionButton(),
       ),
     );
+  }
+}
+
+enum Menu {
+  selectAll,
+}
+
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SelectDeviceBloc, SelectDeviceState>(
+        builder: (context, state) {
+      if (state.status.isRequestSuccess) {
+        return PopupMenuButton<Menu>(
+          tooltip: '',
+          onSelected: (Menu item) async {
+            switch (item) {
+              case Menu.selectAll:
+                context
+                    .read<SelectDeviceBloc>()
+                    .add(const AllDeviceItemsSelected());
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.selectAll,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.delete_outline,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(AppLocalizations.of(context)!.selectAll),
+                ],
+              ),
+            ),
+          ],
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 }
 
@@ -266,6 +323,50 @@ class _DeviceListView extends StatelessWidget {
             )),
           );
         }
+      },
+    );
+  }
+}
+
+class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
+  const _DeviceSelectionEditFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SelectDeviceBloc, SelectDeviceState>(
+      builder: (context, state) {
+        return state.selectedDeviceIds.values.contains(true)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () async {},
+                    child: const Icon(
+                      CustomIcons.check,
+                    ),
+                    //const Text('Save'),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      backgroundColor: const Color(0x742195F3),
+                      onPressed: () {
+                        context
+                            .read<SelectDeviceBloc>()
+                            .add(const AllDeviceItemsDeselected());
+                      },
+                      child: const Icon(CustomIcons.cancel)),
+                ],
+              )
+            : Container();
       },
     );
   }

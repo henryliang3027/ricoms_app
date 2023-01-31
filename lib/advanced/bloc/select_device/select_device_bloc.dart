@@ -21,6 +21,8 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     on<KeywordChanged>(_onKeywordChanged);
     on<DeviceDataSearched>(_onDeviceDataSearched);
     on<DeviceItemToggled>(_onDeviceItemToggled);
+    on<AllDeviceItemsSelected>(_onAllDeviceItemsSelected);
+    on<AllDeviceItemsDeselected>(_onAllDeviceItemsDeselected);
 
     add(const DeviceDataRequested());
   }
@@ -114,6 +116,40 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
 
     selectedDeviceIds.addAll(state.selectedDeviceIds);
     selectedDeviceIds[event.id] = event.value;
+
+    emit(state.copyWith(
+      selectedDeviceIds: selectedDeviceIds,
+    ));
+  }
+
+  void _onAllDeviceItemsSelected(
+    AllDeviceItemsSelected event,
+    Emitter<SelectDeviceState> emit,
+  ) {
+    Map<int, bool> selectedDeviceIds = {};
+
+    selectedDeviceIds.addAll(state.selectedDeviceIds);
+
+    for (int id in selectedDeviceIds.keys) {
+      selectedDeviceIds[id] = true;
+    }
+
+    emit(state.copyWith(
+      selectedDeviceIds: selectedDeviceIds,
+    ));
+  }
+
+  void _onAllDeviceItemsDeselected(
+    AllDeviceItemsDeselected event,
+    Emitter<SelectDeviceState> emit,
+  ) {
+    Map<int, bool> selectedDeviceIds = {};
+
+    selectedDeviceIds.addAll(state.selectedDeviceIds);
+
+    for (int id in selectedDeviceIds.keys) {
+      selectedDeviceIds[id] = false;
+    }
 
     emit(state.copyWith(
       selectedDeviceIds: selectedDeviceIds,

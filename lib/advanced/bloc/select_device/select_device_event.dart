@@ -49,3 +49,10 @@ class AllDeviceItemsSelected extends SelectDeviceEvent {
   @override
   List<Object?> get props => [];
 }
+
+class AllDeviceItemsDeselected extends SelectDeviceEvent {
+  const AllDeviceItemsDeselected();
+
+  @override
+  List<Object?> get props => [];
+}
