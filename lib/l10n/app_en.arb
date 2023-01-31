@@ -899,6 +899,16 @@
       "description": "batch setting"
     },
 
+    "selectDevice": "Select Device",
+    "@all": {
+      "description": "select device"
+    },
+
+    "deviceSetting": "Device Setting",
+    "@all": {
+      "description": "device setting"
+    },
+
     "batchSettingResult": "Setting Result",
     "@all": {
       "description": "setting result"

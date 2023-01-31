@@ -212,7 +212,6 @@ class LogRecordSettingBloc
     emit(state.copyWith(
       status: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
-      isEditing: false,
     ));
 
     List<dynamic> result =
@@ -224,6 +223,7 @@ class LogRecordSettingBloc
     if (result[0]) {
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionSuccess,
+        isEditing: false,
       ));
     } else {
       emit(state.copyWith(

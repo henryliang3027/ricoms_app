@@ -192,6 +192,8 @@
     "defaultValue": "預設: ",
     "currentValue": "當前: ",
     "batchSetting": "批次設定",
+    "selectDevice": "選擇裝置",
+    "deviceSetting": "裝置設定",
     "batchSettingResult": "設定結果",
     "deviceWorkingCycle": "裝置輪詢週期",
 

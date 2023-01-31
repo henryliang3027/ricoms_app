@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -17,6 +18,7 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
         super(const BatchSettingState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
     on<KeywordChanged>(_onKeywordChanged);
+    on<ModuleDataSearched>(_onModuleDataSearched);
 
     add(const ModuleDataRequested());
   }
@@ -56,12 +58,21 @@ class BatchSettingBloc extends Bloc<BatchSettingEvent, BatchSettingState> {
     KeywordChanged event,
     Emitter<BatchSettingState> emit,
   ) {
-    if (event.keyword.isNotEmpty) {
+    emit(state.copyWith(
+      keyword: event.keyword,
+    ));
+  }
+
+  void _onModuleDataSearched(
+    ModuleDataSearched event,
+    Emitter<BatchSettingState> emit,
+  ) {
+    if (state.keyword.isNotEmpty) {
       List<Module> modules = [];
 
       modules = _allModules
           .where((module) =>
-              module.name.toLowerCase().contains(event.keyword.toLowerCase()))
+              module.name.toLowerCase().contains(state.keyword.toLowerCase()))
           .toList();
 
       emit(state.copyWith(

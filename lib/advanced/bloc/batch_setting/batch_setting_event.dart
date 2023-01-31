@@ -19,3 +19,10 @@ class KeywordChanged extends BatchSettingEvent {
   @override
   List<Object?> get props => [keyword];
 }
+
+class ModuleDataSearched extends BatchSettingEvent {
+  const ModuleDataSearched();
+
+  @override
+  List<Object?> get props => [];
+}

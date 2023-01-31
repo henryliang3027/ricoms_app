@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
@@ -32,6 +33,43 @@ class BatchSettingRepository {
         return [
           true,
           modules,
+        ];
+      } else {
+        return [false, 'There are no records to show'];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  Future<dynamic> getDeviceData({
+    required User user,
+    required int moduleId,
+  }) async {
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String batchSettingDevicesApiPath =
+        '/advanced/modulebatch/$moduleId/devices';
+
+    try {
+      Response response = await dio.get(
+        batchSettingDevicesApiPath,
+      );
+
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        List<BatchSettingDevice> devices = List<BatchSettingDevice>.from(
+            data['data']
+                .map((element) => BatchSettingDevice.fromJson(element)));
+
+        return [
+          true,
+          devices,
         ];
       } else {
         return [false, 'There are no records to show'];
