@@ -46,7 +46,9 @@ class DeviceSelectionPage extends StatelessWidget {
         batchSettingRepository:
             RepositoryProvider.of<BatchSettingRepository>(context),
       ),
-      child: const DeviceSelectionForm(),
+      child: DeviceSelectionForm(
+        moduleId: moduleId,
+      ),
     );
   }
 }

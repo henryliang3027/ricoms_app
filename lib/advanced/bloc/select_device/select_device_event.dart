@@ -56,3 +56,10 @@ class AllDeviceItemsDeselected extends SelectDeviceEvent {
   @override
   List<Object?> get props => [];
 }
+
+class BatchDeviceSettingPageRequested extends SelectDeviceEvent {
+  const BatchDeviceSettingPageRequested();
+
+  @override
+  List<Object?> get props => [];
+}

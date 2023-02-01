@@ -3,26 +3,37 @@ part of 'batch_device_setting_bloc.dart';
 class BatchDeviceSettingState extends Equatable {
   const BatchDeviceSettingState({
     this.status = FormStatus.none,
-    this.keyword = '',
-    this.modules = const [],
+    this.deviceBlocks = const [],
+    this.controllerPropertiesCollectionMap = const {},
+    this.controllerValuesMap = const {},
+    this.controllerInitialValuesMap = const {},
     this.requestErrorMsg = '',
   });
 
   final FormStatus status;
-  final String keyword;
-  final List<Module> modules;
+  final List<DeviceBlock> deviceBlocks;
+  final Map<int, List<List<ControllerProperty>>>
+      controllerPropertiesCollectionMap;
+  final Map<int, Map<String, String>> controllerValuesMap;
+  final Map<int, Map<String, String>> controllerInitialValuesMap;
   final String requestErrorMsg;
 
   BatchDeviceSettingState copyWith({
     FormStatus? status,
-    String? keyword,
-    List<Module>? modules,
+    List<DeviceBlock>? deviceBlocks,
+    Map<int, List<List<ControllerProperty>>>? controllerPropertiesCollectionMap,
+    Map<int, Map<String, String>>? controllerValuesMap,
+    Map<int, Map<String, String>>? controllerInitialValuesMap,
     String? requestErrorMsg,
   }) {
     return BatchDeviceSettingState(
       status: status ?? this.status,
-      keyword: keyword ?? this.keyword,
-      modules: modules ?? this.modules,
+      deviceBlocks: deviceBlocks ?? this.deviceBlocks,
+      controllerPropertiesCollectionMap: controllerPropertiesCollectionMap ??
+          this.controllerPropertiesCollectionMap,
+      controllerInitialValuesMap:
+          controllerInitialValuesMap ?? this.controllerInitialValuesMap,
+      controllerValuesMap: controllerValuesMap ?? this.controllerValuesMap,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
     );
   }
@@ -30,8 +41,10 @@ class BatchDeviceSettingState extends Equatable {
   @override
   List<Object> get props => [
         status,
-        keyword,
-        modules,
+        deviceBlocks,
+        controllerPropertiesCollectionMap,
+        controllerValuesMap,
+        controllerInitialValuesMap,
         requestErrorMsg,
       ];
 }

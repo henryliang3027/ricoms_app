@@ -10,7 +10,12 @@ import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceSelectionForm extends StatelessWidget {
-  const DeviceSelectionForm({Key? key}) : super(key: key);
+  const DeviceSelectionForm({
+    Key? key,
+    required this.moduleId,
+  }) : super(key: key);
+
+  final int moduleId;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,9 @@ class DeviceSelectionForm extends StatelessWidget {
             ),
           ],
         ),
-        floatingActionButton: const _DeviceSelectionEditFloatingActionButton(),
+        floatingActionButton: _DeviceSelectionEditFloatingActionButton(
+          moduleId: moduleId,
+        ),
       ),
     );
   }
@@ -332,7 +339,10 @@ class _DeviceListView extends StatelessWidget {
 class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
   const _DeviceSelectionEditFloatingActionButton({
     Key? key,
+    required this.moduleId,
   }) : super(key: key);
+
+  final int moduleId;
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +357,16 @@ class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
                     elevation: 0.0,
                     backgroundColor: const Color(0x742195F3),
                     onPressed: () async {
-                      Navigator.push(context, BatchDeviceSettingPage.route());
+                      Navigator.push(
+                          context,
+                          BatchDeviceSettingPage.route(
+                            moduleId: moduleId,
+                            nodeIds: [
+                              for (MapEntry entry
+                                  in state.selectedDeviceIds.entries)
+                                if (entry.value == true) ...[entry.key]
+                            ],
+                          ));
                     },
                     child: const Icon(
                       CustomIcons.check,

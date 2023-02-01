@@ -27,7 +27,7 @@ class DeviceSettingStyle {
     String value = e['value'] ?? '';
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
     int status = e['status'] ?? 0;
-    String rawParameter = e['parameter'] ?? '';
+    String rawParameter = (e['parameter'] ?? '').toString();
     int rawReadOnly = e['readonly'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
 

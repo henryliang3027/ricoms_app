@@ -4,24 +4,34 @@ abstract class BatchDeviceSettingEvent extends Equatable {
   const BatchDeviceSettingEvent();
 }
 
-class ModuleDataRequested extends BatchDeviceSettingEvent {
-  const ModuleDataRequested();
+class DeviceSettingDataRequested extends BatchDeviceSettingEvent {
+  const DeviceSettingDataRequested();
 
   @override
   List<Object?> get props => [];
 }
 
-class KeywordChanged extends BatchDeviceSettingEvent {
-  const KeywordChanged(this.keyword);
+class ControllerValueChanged extends BatchDeviceSettingEvent {
+  const ControllerValueChanged(
+    this.pageId,
+    this.oid,
+    this.value,
+  );
 
-  final String keyword;
+  final int pageId;
+  final String oid;
+  final String value;
 
   @override
-  List<Object?> get props => [keyword];
+  List<Object?> get props => [
+        pageId,
+        oid,
+        value,
+      ];
 }
 
-class ModuleDataSearched extends BatchDeviceSettingEvent {
-  const ModuleDataSearched();
+class SettingDataSaved extends BatchDeviceSettingEvent {
+  const SettingDataSaved();
 
   @override
   List<Object?> get props => [];

@@ -74,11 +74,11 @@ class DeviceRepository {
     //   return 'Page id does not exist! please look up block and give a page id';
     // }
 
-    String deviceThresholdPath =
+    String devicePagePath =
         '/device/' + nodeId.toString() + '/block/' + pageId.toString();
 
     try {
-      Response response = await dio.get(deviceThresholdPath);
+      Response response = await dio.get(devicePagePath);
 
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
