@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/batch_device_setting/batch_device_setting_bloc.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/device_setting_result_page.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
+import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class BatchDeviceSettingForm extends StatelessWidget {
-  const BatchDeviceSettingForm({Key? key}) : super(key: key);
+  const BatchDeviceSettingForm({
+    Key? key,
+    required this.devices,
+  }) : super(key: key);
+
+  final List<BatchSettingDevice> devices;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +31,225 @@ class BatchDeviceSettingForm extends StatelessWidget {
           elevation: 0.0,
         ),
         body: const _DeviceSettingTabView(),
+        floatingActionButton:
+            _DeviceSettingEditFloatingActionButton(devices: devices),
       ),
     );
   }
 }
+
+// class DeviceSettingTabView extends StatefulWidget {
+//   const DeviceSettingTabView({Key? key}) : super(key: key);
+
+//   @override
+//   State<DeviceSettingTabView> createState() => _DeviceSettingTabViewState();
+// }
+
+// class _DeviceSettingTabViewState extends State<DeviceSettingTabView> with SingleTickerProviderStateMixin {
+
+//  Widget _buildItem({
+//     required int pageId,
+//     required ControllerProperty controllerProperty,
+//   }) {
+//     if (controllerProperty.runtimeType == TextFieldProperty) {
+//       TextFieldProperty textFieldProperty =
+//           controllerProperty as TextFieldProperty;
+
+//       return _DeviceTextField(
+//         pageId: pageId,
+//         textFieldProperty: textFieldProperty,
+//         textEditingController: TextEditingController()
+//           ..text = textFieldProperty.initValue,
+//       );
+//     } else if (controllerProperty.runtimeType == DropDownMenuProperty) {
+//       return _DeviceDropDownMenu(
+//         pageId: pageId,
+//         dropDownMenuProperty: controllerProperty as DropDownMenuProperty,
+//       );
+//     } else if (controllerProperty.runtimeType == SliderProperty) {
+//       return _DeviceSlider(
+//         pageId: pageId,
+//         sliderProperty: controllerProperty as SliderProperty,
+//       );
+//     } else if (controllerProperty.runtimeType == RadioButtonProperty) {
+//       return _DeviceRadioButton(
+//         pageId: pageId,
+//         radioButtonProperty: controllerProperty as RadioButtonProperty,
+//       );
+//     } else if (controllerProperty.runtimeType == CheckBoxProperty) {
+//       return _DeviceCheckBox(
+//         pageId: pageId,
+//         checkBoxProperty: controllerProperty as CheckBoxProperty,
+//       );
+//     } else if (controllerProperty.runtimeType == TextProperty) {
+//       return _DeviceText(
+//         pageId: pageId,
+//         textProperty: controllerProperty as TextProperty,
+//       );
+//     } else {
+//       return Container(
+//         color: Colors.grey,
+//         child: const Text('----'),
+//       );
+//     }
+//   }
+
+//   Widget _buildRaw({
+//     required int pageId,
+//     required List<ControllerProperty> controllerProperties,
+//   }) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         for (ControllerProperty controllerProperty in controllerProperties) ...[
+//           _buildItem(
+//             pageId: pageId,
+//             controllerProperty: controllerProperty,
+//           ),
+//         ]
+//       ],
+//     );
+//   }
+
+//   Widget _buildBody({
+//     required int pageId,
+//     required List<List<ControllerProperty>> controllerPropertiesCollection,
+//   }) {
+//     return Container(
+//       width: double.maxFinite,
+//       height: double.maxFinite,
+//       color: Colors.white,
+//       child: Padding(
+//         padding: const EdgeInsets.all(10.0),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.start,
+//           children: [
+//             Expanded(
+//               child: SingleChildScrollView(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.start,
+//                   children: [
+//                     for (List<ControllerProperty> controllerProperties
+//                         in controllerPropertiesCollection) ...[
+//                       _buildRaw(
+//                         pageId: pageId,
+//                         controllerProperties: controllerProperties,
+//                       ),
+//                     ],
+//                     const SizedBox(
+//                       height: 120,
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+//       buildWhen: (previous, current) =>
+//           previous.isInitialController == true &&
+//           current.isInitialController == true,
+//       builder: (context, state) {
+//         if (state.status.isRequestSuccess) {
+//           print('isRequestSuccess');
+//           return DefaultTabController(
+//             length: state.deviceBlocks.length,
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Container(
+//                   width: double.maxFinite,
+//                   color: Colors.blue,
+//                   child: Center(
+//                     child: TabBar(
+//                         unselectedLabelColor: Colors.white,
+//                         labelColor: Colors.blue,
+//                         isScrollable: true,
+//                         indicatorSize: TabBarIndicatorSize.tab,
+//                         indicator: const BoxDecoration(
+//                           borderRadius: BorderRadius.only(
+//                               topLeft: Radius.circular(10),
+//                               topRight: Radius.circular(10)),
+//                           color: Colors.white,
+//                         ),
+//                         labelPadding:
+//                             const EdgeInsets.symmetric(horizontal: 24.0),
+//                         tabs: [
+//                           for (DeviceBlock deviceBlock in state.deviceBlocks)
+//                             Tab(
+//                               child: SizedBox(
+//                                 width: 130,
+//                                 child: Center(
+//                                   child: Text(
+//                                     getMessageLocalization(
+//                                       msg: deviceBlock.name,
+//                                       context: context,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                         ]),
+//                   ),
+//                 ),
+//                 Expanded(
+//                   child: TabBarView(
+//                     physics: const NeverScrollableScrollPhysics(),
+//                     children: [
+//                       for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
+//                         _buildBody(
+//                           pageId: deviceBlock.id,
+//                           controllerPropertiesCollection:
+//                               state.controllerPropertiesCollectionMap[
+//                                   deviceBlock.id]!,
+//                         ),
+//                       ],
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         } else if (state.status.isRequestFailure) {
+//           return Container(
+//             width: double.maxFinite,
+//             height: double.maxFinite,
+//             color: Colors.white,
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 const Icon(
+//                   Icons.warning_rounded,
+//                   size: 200,
+//                   color: Color(0xffffc107),
+//                 ),
+//                 Text(
+//                   getMessageLocalization(
+//                     msg: state.requestErrorMsg,
+//                     context: context,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 40.0),
+//               ],
+//             ),
+//           );
+//         } else {
+//           return const Scaffold(
+//             body: Center(
+//               child: CircularProgressIndicator(),
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
 
 class _DeviceSettingTabView extends StatelessWidget {
   const _DeviceSettingTabView({Key? key}) : super(key: key);
@@ -136,6 +359,9 @@ class _DeviceSettingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+      buildWhen: (previous, current) =>
+          previous.isInitialController == true &&
+          current.isInitialController == true,
       builder: (context, state) {
         if (state.status.isRequestSuccess) {
           print('isRequestSuccess');
@@ -232,6 +458,71 @@ class _DeviceSettingTabView extends StatelessWidget {
   }
 }
 
+class _DeviceSettingEditFloatingActionButton extends StatelessWidget {
+  const _DeviceSettingEditFloatingActionButton({
+    Key? key,
+    required this.devices,
+  }) : super(key: key);
+
+  final List<BatchSettingDevice> devices;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+      builder: (context, state) {
+        return state.isControllerContainValue
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    heroTag: null,
+                    elevation: 0.0,
+                    backgroundColor: const Color(0x742195F3),
+                    onPressed: () async {
+                      List<Map<String, String>> values =
+                          state.controllerValuesMap.values.toList();
+
+                      Map<String, String> deviceParamMap = {};
+                      for (Map<String, String> map in values) {
+                        deviceParamMap.addAll(map);
+                      }
+
+                      deviceParamMap.removeWhere((key, value) => value == '');
+                      ;
+
+                      Navigator.push(
+                          context,
+                          DeviceSettingResultPage.route(
+                            devices: devices,
+                            devicesParamMap: deviceParamMap,
+                          ));
+                    },
+                    child: const Icon(
+                      CustomIcons.check,
+                    ),
+                    //const Text('Save'),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      backgroundColor: const Color(0x742195F3),
+                      onPressed: () {
+                        context
+                            .read<BatchDeviceSettingBloc>()
+                            .add(const ControllerValueCleared());
+                      },
+                      child: const Icon(CustomIcons.cancel)),
+                ],
+              )
+            : Container();
+      },
+    );
+  }
+}
+
 class _DeviceText extends StatelessWidget {
   const _DeviceText({
     Key? key,
@@ -286,11 +577,16 @@ class _DeviceTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build _DeviceTextField');
     return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
         buildWhen: (previous, current) =>
             previous.controllerValuesMap[pageId]![textFieldProperty.oid] !=
             current.controllerValuesMap[pageId]![textFieldProperty.oid],
         builder: (context, state) {
+          if (state
+              .controllerValuesMap[pageId]![textFieldProperty.oid]!.isEmpty) {
+            textEditingController.clear();
+          }
           return Expanded(
             flex: textFieldProperty.boxLength,
             child: Padding(
@@ -363,7 +659,7 @@ class _DeviceCheckBox extends StatelessWidget {
                 state.controllerValuesMap[pageId]![checkBoxProperty.oid] == '1'
                     ? true
                     : false,
-            onChanged: checkBoxProperty.readOnly
+            onChanged: !checkBoxProperty.readOnly
                 ? (value) {
                     if (value != null) {
                       context.read<BatchDeviceSettingBloc>().add(
@@ -396,6 +692,7 @@ class _DeviceRadioButton extends StatelessWidget {
           previous.controllerValuesMap[pageId]![radioButtonProperty.oid] !=
           current.controllerValuesMap[pageId]![radioButtonProperty.oid],
       builder: (context, state) {
+        print('build radio button');
         return Expanded(
           flex: radioButtonProperty.boxLength,
           child: Row(

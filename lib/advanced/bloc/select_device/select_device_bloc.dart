@@ -47,17 +47,17 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
 
     if (result[0]) {
       List<BatchSettingDevice> devices = result[1];
-      Map<int, bool> selectedDeviceIds = {};
+      Map<BatchSettingDevice, bool> selectedDevices = {};
 
       for (BatchSettingDevice device in devices) {
-        selectedDeviceIds[device.id] = false;
+        selectedDevices[device] = false;
       }
 
       _allDevices.addAll(devices);
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
         devices: devices,
-        selectedDeviceIds: selectedDeviceIds,
+        selectedDevices: selectedDevices,
       ));
     } else {
       emit(state.copyWith(
@@ -112,13 +112,13 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     DeviceItemToggled event,
     Emitter<SelectDeviceState> emit,
   ) {
-    Map<int, bool> selectedDeviceIds = {};
+    Map<BatchSettingDevice, bool> selectedDevices = {};
 
-    selectedDeviceIds.addAll(state.selectedDeviceIds);
-    selectedDeviceIds[event.id] = event.value;
+    selectedDevices.addAll(state.selectedDevices);
+    selectedDevices[event.device] = event.value;
 
     emit(state.copyWith(
-      selectedDeviceIds: selectedDeviceIds,
+      selectedDevices: selectedDevices,
     ));
   }
 
@@ -126,16 +126,16 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     AllDeviceItemsSelected event,
     Emitter<SelectDeviceState> emit,
   ) {
-    Map<int, bool> selectedDeviceIds = {};
+    Map<BatchSettingDevice, bool> selectedDevices = {};
 
-    selectedDeviceIds.addAll(state.selectedDeviceIds);
+    selectedDevices.addAll(state.selectedDevices);
 
-    for (int id in selectedDeviceIds.keys) {
-      selectedDeviceIds[id] = true;
+    for (BatchSettingDevice device in selectedDevices.keys) {
+      selectedDevices[device] = true;
     }
 
     emit(state.copyWith(
-      selectedDeviceIds: selectedDeviceIds,
+      selectedDevices: selectedDevices,
     ));
   }
 
@@ -143,16 +143,16 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     AllDeviceItemsDeselected event,
     Emitter<SelectDeviceState> emit,
   ) {
-    Map<int, bool> selectedDeviceIds = {};
+    Map<BatchSettingDevice, bool> selectedDevices = {};
 
-    selectedDeviceIds.addAll(state.selectedDeviceIds);
+    selectedDevices.addAll(state.selectedDevices);
 
-    for (int id in selectedDeviceIds.keys) {
-      selectedDeviceIds[id] = false;
+    for (BatchSettingDevice device in selectedDevices.keys) {
+      selectedDevices[device] = false;
     }
 
     emit(state.copyWith(
-      selectedDeviceIds: selectedDeviceIds,
+      selectedDevices: selectedDevices,
     ));
   }
 }

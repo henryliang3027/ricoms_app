@@ -29,16 +29,16 @@ class DeviceDataSearched extends SelectDeviceEvent {
 
 class DeviceItemToggled extends SelectDeviceEvent {
   const DeviceItemToggled(
-    this.id,
+    this.device,
     this.value,
   );
 
-  final int id;
+  final BatchSettingDevice device;
   final bool value;
 
   @override
   List<Object?> get props => [
-        id,
+        device,
         value,
       ];
 }

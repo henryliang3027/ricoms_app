@@ -7,6 +7,8 @@ class BatchDeviceSettingState extends Equatable {
     this.controllerPropertiesCollectionMap = const {},
     this.controllerValuesMap = const {},
     this.controllerInitialValuesMap = const {},
+    this.isControllerContainValue = false,
+    this.isInitialController = false,
     this.requestErrorMsg = '',
   });
 
@@ -16,6 +18,8 @@ class BatchDeviceSettingState extends Equatable {
       controllerPropertiesCollectionMap;
   final Map<int, Map<String, String>> controllerValuesMap;
   final Map<int, Map<String, String>> controllerInitialValuesMap;
+  final bool isControllerContainValue;
+  final bool isInitialController;
   final String requestErrorMsg;
 
   BatchDeviceSettingState copyWith({
@@ -24,6 +28,8 @@ class BatchDeviceSettingState extends Equatable {
     Map<int, List<List<ControllerProperty>>>? controllerPropertiesCollectionMap,
     Map<int, Map<String, String>>? controllerValuesMap,
     Map<int, Map<String, String>>? controllerInitialValuesMap,
+    bool? isControllerContainValue,
+    bool? isInitialController,
     String? requestErrorMsg,
   }) {
     return BatchDeviceSettingState(
@@ -34,6 +40,9 @@ class BatchDeviceSettingState extends Equatable {
       controllerInitialValuesMap:
           controllerInitialValuesMap ?? this.controllerInitialValuesMap,
       controllerValuesMap: controllerValuesMap ?? this.controllerValuesMap,
+      isControllerContainValue:
+          isControllerContainValue ?? this.isControllerContainValue,
+      isInitialController: isInitialController ?? this.isInitialController,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
     );
   }
@@ -45,6 +54,8 @@ class BatchDeviceSettingState extends Equatable {
         controllerPropertiesCollectionMap,
         controllerValuesMap,
         controllerInitialValuesMap,
+        isControllerContainValue,
+        isInitialController,
         requestErrorMsg,
       ];
 }

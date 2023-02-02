@@ -5,28 +5,28 @@ class SelectDeviceState extends Equatable {
     this.status = FormStatus.none,
     this.keyword = '',
     this.devices = const [],
-    this.selectedDeviceIds = const {},
+    this.selectedDevices = const {},
     this.requestErrorMsg = '',
   });
 
   final FormStatus status;
   final String keyword;
   final List<BatchSettingDevice> devices;
-  final Map<int, bool> selectedDeviceIds;
+  final Map<BatchSettingDevice, bool> selectedDevices;
   final String requestErrorMsg;
 
   SelectDeviceState copyWith({
     FormStatus? status,
     String? keyword,
     List<BatchSettingDevice>? devices,
-    Map<int, bool>? selectedDeviceIds,
+    Map<BatchSettingDevice, bool>? selectedDevices,
     String? requestErrorMsg,
   }) {
     return SelectDeviceState(
       status: status ?? this.status,
       keyword: keyword ?? this.keyword,
       devices: devices ?? this.devices,
-      selectedDeviceIds: selectedDeviceIds ?? this.selectedDeviceIds,
+      selectedDevices: selectedDevices ?? this.selectedDevices,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
     );
   }
@@ -36,7 +36,7 @@ class SelectDeviceState extends Equatable {
         status,
         keyword,
         devices,
-        selectedDeviceIds,
+        selectedDevices,
         requestErrorMsg,
       ];
 }

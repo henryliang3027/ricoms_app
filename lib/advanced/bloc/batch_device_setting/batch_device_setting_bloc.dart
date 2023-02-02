@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
@@ -16,26 +14,21 @@ class BatchDeviceSettingBloc
   BatchDeviceSettingBloc({
     required User user,
     required int moduleId,
-    required List<int> nodeIds,
     required BatchSettingRepository batchSettingRepository,
-    required DeviceRepository deviceRepository,
   })  : _user = user,
         _moduleId = moduleId,
-        _nodeIds = nodeIds,
         _batchSettingRepository = batchSettingRepository,
-        _deviceRepository = deviceRepository,
         super(const BatchDeviceSettingState()) {
     on<DeviceSettingDataRequested>(_onDeviceSettingDataRequested);
     on<ControllerValueChanged>(_onControllerValueChanged);
+    on<ControllerValueCleared>(_onControllerValueCleared);
 
     add(const DeviceSettingDataRequested());
   }
 
   final User _user;
   final int _moduleId;
-  final List<int> _nodeIds;
   final BatchSettingRepository _batchSettingRepository;
-  final DeviceRepository _deviceRepository;
 
   Future<List<dynamic>> _getControllerData({
     required int pageId,
@@ -72,6 +65,7 @@ class BatchDeviceSettingBloc
     Emitter<BatchDeviceSettingState> emit,
   ) async {
     emit(state.copyWith(
+      isInitialController: true,
       status: FormStatus.requestInProgress,
     ));
 
@@ -134,17 +128,40 @@ class BatchDeviceSettingBloc
     ControllerValueChanged event,
     Emitter<BatchDeviceSettingState> emit,
   ) {
-    emit(state.copyWith(
-      status: FormStatus.requestInProgress,
-    ));
+    // emit(state.copyWith(
+    //   status: FormStatus.requestInProgress,
+    // ));
     Map<int, Map<String, String>> controllerValuesMap = {};
-    controllerValuesMap.addAll(state.controllerValuesMap);
+
+    // the below modification would not consider as different object
+    // controllerValuesMap.addAll(state.controllerValuesMap);
+    // controllerValuesMap[event.pageId]![event.oid] = event.value;
+
+    // Use deep copy instead
+    for (int pageId in state.controllerValuesMap.keys) {
+      controllerValuesMap[pageId] = {};
+      for (MapEntry entry in state.controllerValuesMap[pageId]!.entries) {
+        controllerValuesMap[pageId]![entry.key] = entry.value;
+      }
+    }
     controllerValuesMap[event.pageId]![event.oid] = event.value;
-    // print(controllerValuesMap[event.pageId]![event.oid]);
 
     emit(state.copyWith(
-      status: FormStatus.requestSuccess,
+      // status: FormStatus.requestSuccess,
       controllerValuesMap: controllerValuesMap,
+      isControllerContainValue: true,
+      isInitialController: false,
+    ));
+  }
+
+  void _onControllerValueCleared(
+    ControllerValueCleared event,
+    Emitter<BatchDeviceSettingState> emit,
+  ) {
+    emit(state.copyWith(
+      controllerValuesMap: state.controllerInitialValuesMap,
+      isControllerContainValue: false,
+      isInitialController: false,
     ));
   }
 

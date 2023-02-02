@@ -36,3 +36,10 @@ class SettingDataSaved extends BatchDeviceSettingEvent {
   @override
   List<Object?> get props => [];
 }
+
+class ControllerValueCleared extends BatchDeviceSettingEvent {
+  const ControllerValueCleared();
+
+  @override
+  List<Object?> get props => [];
+}

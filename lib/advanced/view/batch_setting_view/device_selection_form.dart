@@ -200,7 +200,7 @@ class _DeviceListView extends StatelessWidget {
 
   SliverChildBuilderDelegate _deviceSliverChildBuilderDelegate({
     required List<BatchSettingDevice> data,
-    required Map<int, bool> selectedDeviceIds,
+    required Map<BatchSettingDevice, bool> selectedDevices,
   }) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
@@ -212,8 +212,8 @@ class _DeviceListView extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 context.read<SelectDeviceBloc>().add(DeviceItemToggled(
-                      device.id,
-                      !selectedDeviceIds[device.id]!,
+                      device,
+                      !selectedDevices[device]!,
                     ));
               },
               child: Padding(
@@ -280,11 +280,11 @@ class _DeviceListView extends StatelessWidget {
                     Checkbox(
                       visualDensity: const VisualDensity(vertical: -4.0),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: selectedDeviceIds[device.id],
+                      value: selectedDevices[device],
                       onChanged: (value) => context
                           .read<SelectDeviceBloc>()
                           .add(DeviceItemToggled(
-                            device.id,
+                            device,
                             value ?? false,
                           )),
                     ),
@@ -313,7 +313,7 @@ class _DeviceListView extends StatelessWidget {
                   SliverList(
                       delegate: _deviceSliverChildBuilderDelegate(
                     data: state.devices,
-                    selectedDeviceIds: state.selectedDeviceIds,
+                    selectedDevices: state.selectedDevices,
                   )),
                 ],
               ),
@@ -348,7 +348,7 @@ class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SelectDeviceBloc, SelectDeviceState>(
       builder: (context, state) {
-        return state.selectedDeviceIds.values.contains(true)
+        return state.selectedDevices.values.contains(true)
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -361,9 +361,9 @@ class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
                           context,
                           BatchDeviceSettingPage.route(
                             moduleId: moduleId,
-                            nodeIds: [
+                            devices: [
                               for (MapEntry entry
-                                  in state.selectedDeviceIds.entries)
+                                  in state.selectedDevices.entries)
                                 if (entry.value == true) ...[entry.key]
                             ],
                           ));
