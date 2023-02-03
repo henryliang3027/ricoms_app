@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -9,6 +10,51 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
+
+// class BatchDeviceSettingForm extends StatefulWidget {
+//   const BatchDeviceSettingForm({
+//     Key? key,
+//     required this.devices,
+//   }) : super(key: key);
+
+//   final List<BatchSettingDevice> devices;
+
+//   @override
+//   State<BatchDeviceSettingForm> createState() => _BatchDeviceSettingFormState();
+// }
+
+// class _BatchDeviceSettingFormState extends State<BatchDeviceSettingForm> {
+//   late int currentTabViewIndex;
+
+//   @override
+//   void initState() {
+//     currentTabViewIndex = 0;
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocListener<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+//       listener: (context, state) {},
+//       child: Scaffold(
+//         appBar: AppBar(
+//           centerTitle: true,
+//           title: Text(
+//             AppLocalizations.of(context)!.deviceSetting,
+//           ),
+//           elevation: 0.0,
+//         ),
+//         body: DeviceSettingTabView(
+//           currentTabViewIndex: currentTabViewIndex,
+//         ),
+//         floatingActionButton: _DeviceSettingEditFloatingActionButton(
+//           devices: widget.devices,
+//           currentTabViewIndex: currentTabViewIndex,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class BatchDeviceSettingForm extends StatelessWidget {
   const BatchDeviceSettingForm({
@@ -30,24 +76,27 @@ class BatchDeviceSettingForm extends StatelessWidget {
           ),
           elevation: 0.0,
         ),
-        body: const _DeviceSettingTabView(),
-        floatingActionButton:
-            _DeviceSettingEditFloatingActionButton(devices: devices),
+        body: _DeviceSettingTabView(devices: devices),
       ),
     );
   }
 }
 
 // class DeviceSettingTabView extends StatefulWidget {
-//   const DeviceSettingTabView({Key? key}) : super(key: key);
+//   DeviceSettingTabView({Key? key, required this.currentTabViewIndex})
+//       : super(key: key);
+
+//   int currentTabViewIndex;
 
 //   @override
 //   State<DeviceSettingTabView> createState() => _DeviceSettingTabViewState();
 // }
 
-// class _DeviceSettingTabViewState extends State<DeviceSettingTabView> with SingleTickerProviderStateMixin {
+// class _DeviceSettingTabViewState extends State<DeviceSettingTabView>
+//     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+//   late TabController _tabController;
 
-//  Widget _buildItem({
+//   Widget _buildItem({
 //     required int pageId,
 //     required ControllerProperty controllerProperty,
 //   }) {
@@ -151,70 +200,77 @@ class BatchDeviceSettingForm extends StatelessWidget {
 
 //   @override
 //   Widget build(BuildContext context) {
+//     super.build(context);
 //     return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
 //       buildWhen: (previous, current) =>
 //           previous.isInitialController == true &&
 //           current.isInitialController == true,
 //       builder: (context, state) {
 //         if (state.status.isRequestSuccess) {
-//           print('isRequestSuccess');
-//           return DefaultTabController(
+//           _tabController = TabController(
+//             vsync: this,
 //             length: state.deviceBlocks.length,
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Container(
-//                   width: double.maxFinite,
-//                   color: Colors.blue,
-//                   child: Center(
-//                     child: TabBar(
-//                         unselectedLabelColor: Colors.white,
-//                         labelColor: Colors.blue,
-//                         isScrollable: true,
-//                         indicatorSize: TabBarIndicatorSize.tab,
-//                         indicator: const BoxDecoration(
-//                           borderRadius: BorderRadius.only(
-//                               topLeft: Radius.circular(10),
-//                               topRight: Radius.circular(10)),
-//                           color: Colors.white,
-//                         ),
-//                         labelPadding:
-//                             const EdgeInsets.symmetric(horizontal: 24.0),
-//                         tabs: [
-//                           for (DeviceBlock deviceBlock in state.deviceBlocks)
-//                             Tab(
-//                               child: SizedBox(
-//                                 width: 130,
-//                                 child: Center(
-//                                   child: Text(
-//                                     getMessageLocalization(
-//                                       msg: deviceBlock.name,
-//                                       context: context,
-//                                     ),
+//           );
+//           print('isRequestSuccess');
+//           return Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Container(
+//                 width: double.maxFinite,
+//                 color: Colors.blue,
+//                 child: Center(
+//                   child: TabBar(
+//                       controller: _tabController,
+//                       unselectedLabelColor: Colors.white,
+//                       labelColor: Colors.blue,
+//                       isScrollable: true,
+//                       indicatorSize: TabBarIndicatorSize.tab,
+//                       indicator: const BoxDecoration(
+//                         borderRadius: BorderRadius.only(
+//                             topLeft: Radius.circular(10),
+//                             topRight: Radius.circular(10)),
+//                         color: Colors.white,
+//                       ),
+//                       labelPadding:
+//                           const EdgeInsets.symmetric(horizontal: 24.0),
+//                       tabs: [
+//                         for (DeviceBlock deviceBlock in state.deviceBlocks)
+//                           Tab(
+//                             child: SizedBox(
+//                               width: 130,
+//                               child: Center(
+//                                 child: Text(
+//                                   getMessageLocalization(
+//                                     msg: deviceBlock.name,
+//                                     context: context,
 //                                   ),
 //                                 ),
 //                               ),
 //                             ),
-//                         ]),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TabBarView(
-//                     physics: const NeverScrollableScrollPhysics(),
-//                     children: [
-//                       for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
-//                         _buildBody(
-//                           pageId: deviceBlock.id,
-//                           controllerPropertiesCollection:
-//                               state.controllerPropertiesCollectionMap[
-//                                   deviceBlock.id]!,
-//                         ),
+//                           ),
 //                       ],
-//                     ],
-//                   ),
+//                       onTap: (value) {
+//                         print('_tabController.index ${_tabController.index}');
+//                         widget.currentTabViewIndex = _tabController.index;
+//                       }),
 //                 ),
-//               ],
-//             ),
+//               ),
+//               Expanded(
+//                 child: TabBarView(
+//                   controller: _tabController,
+//                   physics: const NeverScrollableScrollPhysics(),
+//                   children: [
+//                     for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
+//                       _buildBody(
+//                         pageId: deviceBlock.id,
+//                         controllerPropertiesCollection: state
+//                             .controllerPropertiesCollectionMap[deviceBlock.id]!,
+//                       ),
+//                     ],
+//                   ],
+//                 ),
+//               ),
+//             ],
 //           );
 //         } else if (state.status.isRequestFailure) {
 //           return Container(
@@ -249,11 +305,147 @@ class BatchDeviceSettingForm extends StatelessWidget {
 //       },
 //     );
 //   }
+
+//   @override
+//   // TODO: implement wantKeepAlive
+//   bool get wantKeepAlive => true;
+
+//   @override
+//   void dispose() {
+//     print('dispose');
+//     super.dispose();
+//   }
 // }
 
 class _DeviceSettingTabView extends StatelessWidget {
-  const _DeviceSettingTabView({Key? key}) : super(key: key);
+  const _DeviceSettingTabView({Key? key, required this.devices})
+      : super(key: key);
 
+  final List<BatchSettingDevice> devices;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+      buildWhen: (previous, current) =>
+          previous.isInitialController == true &&
+          current.isInitialController == true,
+      builder: (context, state) {
+        if (state.status.isRequestSuccess) {
+          print('isRequestSuccess');
+          return DefaultTabController(
+            length: state.deviceBlocks.length,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  color: Colors.blue,
+                  child: Center(
+                    child: TabBar(
+                      unselectedLabelColor: Colors.white,
+                      labelColor: Colors.blue,
+                      isScrollable: true,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: Colors.white,
+                      ),
+                      labelPadding:
+                          const EdgeInsets.symmetric(horizontal: 24.0),
+                      tabs: [
+                        for (DeviceBlock deviceBlock in state.deviceBlocks)
+                          Tab(
+                            child: SizedBox(
+                              width: 130,
+                              child: Center(
+                                child: Text(
+                                  getMessageLocalization(
+                                    msg: deviceBlock.name,
+                                    context: context,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
+                        _DeviceSettingSubPage(
+                          pageId: deviceBlock.id,
+                          controllerPropertiesCollection:
+                              state.controllerPropertiesCollectionMap[
+                                  deviceBlock.id]!,
+                          devices: devices,
+                        )
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else if (state.status.isRequestFailure) {
+          return Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
+          );
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+// Using AutomaticKeepAliveClientMixin to keep the widget state so it will not be disppose
+class _DeviceSettingSubPage extends StatefulWidget {
+  const _DeviceSettingSubPage({
+    Key? key,
+    required this.pageId,
+    required this.controllerPropertiesCollection,
+    required this.devices,
+  }) : super(key: key);
+
+  final int pageId;
+  final List<List<ControllerProperty>> controllerPropertiesCollection;
+  final List<BatchSettingDevice> devices;
+
+  @override
+  State<_DeviceSettingSubPage> createState() => __DeviceSettingSubPageState();
+}
+
+class __DeviceSettingSubPageState extends State<_DeviceSettingSubPage>
+    with AutomaticKeepAliveClientMixin {
   Widget _buildItem({
     required int pageId,
     required ControllerProperty controllerProperty,
@@ -318,10 +510,7 @@ class _DeviceSettingTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildBody({
-    required int pageId,
-    required List<List<ControllerProperty>> controllerPropertiesCollection,
-  }) {
+  Widget _buildBody() {
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
@@ -337,9 +526,9 @@ class _DeviceSettingTabView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     for (List<ControllerProperty> controllerProperties
-                        in controllerPropertiesCollection) ...[
+                        in widget.controllerPropertiesCollection) ...[
                       _buildRaw(
-                        pageId: pageId,
+                        pageId: widget.pageId,
                         controllerProperties: controllerProperties,
                       ),
                     ],
@@ -358,169 +547,76 @@ class _DeviceSettingTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
-      buildWhen: (previous, current) =>
-          previous.isInitialController == true &&
-          current.isInitialController == true,
-      builder: (context, state) {
-        if (state.status.isRequestSuccess) {
-          print('isRequestSuccess');
-          return DefaultTabController(
-            length: state.deviceBlocks.length,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: double.maxFinite,
-                  color: Colors.blue,
-                  child: Center(
-                    child: TabBar(
-                        unselectedLabelColor: Colors.white,
-                        labelColor: Colors.blue,
-                        isScrollable: true,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        indicator: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10)),
-                          color: Colors.white,
-                        ),
-                        labelPadding:
-                            const EdgeInsets.symmetric(horizontal: 24.0),
-                        tabs: [
-                          for (DeviceBlock deviceBlock in state.deviceBlocks)
-                            Tab(
-                              child: SizedBox(
-                                width: 130,
-                                child: Center(
-                                  child: Text(
-                                    getMessageLocalization(
-                                      msg: deviceBlock.name,
-                                      context: context,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ]),
-                  ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
-                        _buildBody(
-                          pageId: deviceBlock.id,
-                          controllerPropertiesCollection:
-                              state.controllerPropertiesCollectionMap[
-                                  deviceBlock.id]!,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else if (state.status.isRequestFailure) {
-          return Container(
-            width: double.maxFinite,
-            height: double.maxFinite,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.warning_rounded,
-                  size: 200,
-                  color: Color(0xffffc107),
-                ),
-                Text(
-                  getMessageLocalization(
-                    msg: state.requestErrorMsg,
-                    context: context,
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-              ],
-            ),
-          );
-        } else {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
-    );
-  }
-}
-
-class _DeviceSettingEditFloatingActionButton extends StatelessWidget {
-  const _DeviceSettingEditFloatingActionButton({
-    Key? key,
-    required this.devices,
-  }) : super(key: key);
-
-  final List<BatchSettingDevice> devices;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
-      builder: (context, state) {
-        return state.isControllerContainValue
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    heroTag: null,
-                    elevation: 0.0,
-                    backgroundColor: const Color(0x742195F3),
-                    onPressed: () async {
-                      List<Map<String, String>> values =
-                          state.controllerValuesMap.values.toList();
-
-                      Map<String, String> deviceParamMap = {};
-                      for (Map<String, String> map in values) {
-                        deviceParamMap.addAll(map);
-                      }
-
-                      deviceParamMap.removeWhere((key, value) => value == '');
-                      ;
-
-                      Navigator.push(
-                          context,
-                          DeviceSettingResultPage.route(
-                            devices: devices,
-                            devicesParamMap: deviceParamMap,
-                          ));
-                    },
-                    child: const Icon(
-                      CustomIcons.check,
-                    ),
-                    //const Text('Save'),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(6.0),
-                  ),
-                  FloatingActionButton(
+    super.build(context);
+    return Scaffold(
+      body: _buildBody(),
+      floatingActionButton:
+          BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+        builder: (context, state) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              state.isControllerContainValue.values.contains(true)
+                  ? FloatingActionButton(
                       heroTag: null,
                       elevation: 0.0,
                       backgroundColor: const Color(0x742195F3),
-                      onPressed: () {
-                        context
-                            .read<BatchDeviceSettingBloc>()
-                            .add(const ControllerValueCleared());
+                      onPressed: () async {
+                        List<Map<String, String>> values =
+                            state.controllerValuesMap.values.toList();
+
+                        Map<String, String> deviceParamMap = {};
+                        for (Map<String, String> map in values) {
+                          deviceParamMap.addAll(map);
+                        }
+
+                        deviceParamMap.removeWhere((key, value) => value == '');
+                        ;
+
+                        Navigator.push(
+                            context,
+                            DeviceSettingResultPage.route(
+                              devices: widget.devices,
+                              devicesParamMap: deviceParamMap,
+                            ));
                       },
-                      child: const Icon(CustomIcons.cancel)),
-                ],
-              )
-            : Container();
-      },
+                      child: const Icon(
+                        CustomIcons.check,
+                      ),
+                      //const Text('Save'),
+                    )
+                  : const SizedBox(
+                      height: 0.0,
+                      width: 0.0,
+                    ),
+              state.isControllerContainValue[widget.pageId]!
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 6.0),
+                      child: FloatingActionButton(
+                        heroTag: null,
+                        elevation: 0.0,
+                        backgroundColor: const Color(0x742195F3),
+                        onPressed: () {
+                          context
+                              .read<BatchDeviceSettingBloc>()
+                              .add(ControllerValueCleared(widget.pageId));
+                        },
+                        child: const Icon(CustomIcons.cancel),
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 0.0,
+                      width: 0.0,
+                    ),
+            ],
+          );
+        },
+      ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _DeviceText extends StatelessWidget {

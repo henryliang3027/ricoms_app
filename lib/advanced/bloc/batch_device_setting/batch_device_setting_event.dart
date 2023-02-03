@@ -38,7 +38,9 @@ class SettingDataSaved extends BatchDeviceSettingEvent {
 }
 
 class ControllerValueCleared extends BatchDeviceSettingEvent {
-  const ControllerValueCleared();
+  const ControllerValueCleared(this.pageId);
+
+  final int pageId;
 
   @override
   List<Object?> get props => [];

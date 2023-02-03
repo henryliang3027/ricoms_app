@@ -82,11 +82,13 @@ class BatchDeviceSettingBloc
 
       Map<int, Map<String, String>> controllerValuesMap = {};
       Map<int, Map<String, String>> controllerInitialValuesMap = {};
+      Map<int, bool> isControllerContainValue = {};
 
       for (DeviceBlock deviceBlock in deviceBlocks) {
         List<List<ControllerProperty>> controllerPropertiesCollection = [];
         Map<String, String> controllerValues = {};
         Map<String, String> controllerInitialValues = {};
+        isControllerContainValue[deviceBlock.id] = false;
 
         List<dynamic> resultOfGetControllerData = await _getControllerData(
           pageId: deviceBlock.id,
@@ -115,6 +117,7 @@ class BatchDeviceSettingBloc
         controllerPropertiesCollectionMap: controllerPropertiesCollectionMap,
         controllerInitialValuesMap: controllerInitialValuesMap,
         controllerValuesMap: controllerValuesMap,
+        isControllerContainValue: isControllerContainValue,
       ));
     } else {
       emit(state.copyWith(
@@ -132,11 +135,14 @@ class BatchDeviceSettingBloc
     //   status: FormStatus.requestInProgress,
     // ));
     Map<int, Map<String, String>> controllerValuesMap = {};
+    Map<int, bool> isControllContainValue = {};
+
+    isControllContainValue.addAll(state.isControllerContainValue);
+    isControllContainValue[event.pageId] = true;
 
     // the below modification would not consider as different object
     // controllerValuesMap.addAll(state.controllerValuesMap);
     // controllerValuesMap[event.pageId]![event.oid] = event.value;
-
     // Use deep copy instead
     for (int pageId in state.controllerValuesMap.keys) {
       controllerValuesMap[pageId] = {};
@@ -149,7 +155,7 @@ class BatchDeviceSettingBloc
     emit(state.copyWith(
       // status: FormStatus.requestSuccess,
       controllerValuesMap: controllerValuesMap,
-      isControllerContainValue: true,
+      isControllerContainValue: isControllContainValue,
       isInitialController: false,
     ));
   }
@@ -158,9 +164,28 @@ class BatchDeviceSettingBloc
     ControllerValueCleared event,
     Emitter<BatchDeviceSettingState> emit,
   ) {
+    Map<int, bool> isControllContainValue = {};
+    Map<int, Map<String, String>> controllerValuesMap = {};
+
+    isControllContainValue.addAll(state.isControllerContainValue);
+    isControllContainValue[event.pageId] = false;
+
+    for (int pageId in state.controllerValuesMap.keys) {
+      controllerValuesMap[pageId] = {};
+      if (pageId == event.pageId) {
+        for (MapEntry entry in state.controllerValuesMap[pageId]!.entries) {
+          controllerValuesMap[pageId]![entry.key] = '';
+        }
+      } else {
+        for (MapEntry entry in state.controllerValuesMap[pageId]!.entries) {
+          controllerValuesMap[pageId]![entry.key] = entry.value;
+        }
+      }
+    }
+
     emit(state.copyWith(
-      controllerValuesMap: state.controllerInitialValuesMap,
-      isControllerContainValue: false,
+      controllerValuesMap: controllerValuesMap,
+      isControllerContainValue: isControllContainValue,
       isInitialController: false,
     ));
   }

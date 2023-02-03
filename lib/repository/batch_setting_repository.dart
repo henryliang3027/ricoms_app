@@ -155,34 +155,48 @@ class BatchSettingRepository {
     }
   }
 
-  Future<bool> setDeviceParameter({
+  Future<List<dynamic>> setDeviceParameter({
     required User user,
+    required int nodeId,
+    required Map<String, String> oidValuePairMap,
   }) async {
-    await Future.delayed(const Duration(seconds: 3));
-    return true;
-    // Dio dio = Dio();
-    // dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
-    // dio.options.connectTimeout = 10000; //10s
-    // dio.options.receiveTimeout = 10000;
-    // String trapForwardListApiPath = '/advanced/forward';
+    // await Future.delayed(const Duration(seconds: 1));
+    // return [true];
 
-    // try {
-    //   Response response = await dio.get(
-    //     trapForwardListApiPath,
-    //   );
+    Dio dio = Dio();
+    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String batchDeviceSettingApiPath = '/advanced/modulebatch';
 
-    //   var data = jsonDecode(response.data.toString());
+    try {
+      List<Map<String, String>> paramMapList = [];
 
-    //   if (data['code'] == '200') {
-    //     // List<ForwardOutline> forwardOutlineList = List<ForwardOutline>.from(
-    //     //     data['data'].map((element) => ForwardOutline.fromJson(element)));
+      for (MapEntry entry in oidValuePairMap.entries) {
+        paramMapList.add({'oid_id': entry.key, 'value': entry.value});
+      }
 
-    //     return [true, []];
-    //   } else {
-    //     return [false, 'There are no records to show'];
-    //   }
-    // } on DioError catch (_) {
-    //   return [false, CustomErrMsg.connectionFailed];
-    // }
+      var requestData = {
+        'uid': user.id,
+        'node_id': nodeId,
+        'data': paramMapList
+      };
+
+      Response response = await dio.put(
+        batchDeviceSettingApiPath,
+        data: requestData,
+      );
+
+      var data = jsonDecode(response.data.toString());
+      String modifyResult = data['data'][0]['modify_result'];
+
+      if (data['code'] == '200') {
+        return [true, modifyResult];
+      } else {
+        return [false, data['msg'], modifyResult];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
   }
 }
