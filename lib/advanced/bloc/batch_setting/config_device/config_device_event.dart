@@ -1,17 +1,17 @@
-part of 'batch_device_setting_bloc.dart';
+part of 'config_device_bloc.dart';
 
-abstract class BatchDeviceSettingEvent extends Equatable {
-  const BatchDeviceSettingEvent();
+abstract class ConfigDeviceEvent extends Equatable {
+  const ConfigDeviceEvent();
 }
 
-class DeviceSettingDataRequested extends BatchDeviceSettingEvent {
+class DeviceSettingDataRequested extends ConfigDeviceEvent {
   const DeviceSettingDataRequested();
 
   @override
   List<Object?> get props => [];
 }
 
-class ControllerValueChanged extends BatchDeviceSettingEvent {
+class ControllerValueChanged extends ConfigDeviceEvent {
   const ControllerValueChanged(
     this.pageId,
     this.oid,
@@ -30,14 +30,14 @@ class ControllerValueChanged extends BatchDeviceSettingEvent {
       ];
 }
 
-class SettingDataSaved extends BatchDeviceSettingEvent {
+class SettingDataSaved extends ConfigDeviceEvent {
   const SettingDataSaved();
 
   @override
   List<Object?> get props => [];
 }
 
-class ControllerValueCleared extends BatchDeviceSettingEvent {
+class ControllerValueCleared extends ConfigDeviceEvent {
   const ControllerValueCleared(this.pageId);
 
   final int pageId;

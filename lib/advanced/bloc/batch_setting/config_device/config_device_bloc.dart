@@ -6,19 +6,18 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 
-part 'batch_device_setting_event.dart';
-part 'batch_device_setting_state.dart';
+part 'config_device_event.dart';
+part 'config_device_state.dart';
 
-class BatchDeviceSettingBloc
-    extends Bloc<BatchDeviceSettingEvent, BatchDeviceSettingState> {
-  BatchDeviceSettingBloc({
+class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
+  ConfigDeviceBloc({
     required User user,
     required int moduleId,
     required BatchSettingRepository batchSettingRepository,
   })  : _user = user,
         _moduleId = moduleId,
         _batchSettingRepository = batchSettingRepository,
-        super(const BatchDeviceSettingState()) {
+        super(const ConfigDeviceState()) {
     on<DeviceSettingDataRequested>(_onDeviceSettingDataRequested);
     on<ControllerValueChanged>(_onControllerValueChanged);
     on<ControllerValueCleared>(_onControllerValueCleared);
@@ -62,7 +61,7 @@ class BatchDeviceSettingBloc
 
   void _onDeviceSettingDataRequested(
     DeviceSettingDataRequested event,
-    Emitter<BatchDeviceSettingState> emit,
+    Emitter<ConfigDeviceState> emit,
   ) async {
     emit(state.copyWith(
       isInitialController: true,
@@ -129,7 +128,7 @@ class BatchDeviceSettingBloc
 
   void _onControllerValueChanged(
     ControllerValueChanged event,
-    Emitter<BatchDeviceSettingState> emit,
+    Emitter<ConfigDeviceState> emit,
   ) {
     // emit(state.copyWith(
     //   status: FormStatus.requestInProgress,
@@ -162,7 +161,7 @@ class BatchDeviceSettingBloc
 
   void _onControllerValueCleared(
     ControllerValueCleared event,
-    Emitter<BatchDeviceSettingState> emit,
+    Emitter<ConfigDeviceState> emit,
   ) {
     Map<int, bool> isControllContainValue = {};
     Map<int, Map<String, String>> controllerValuesMap = {};
@@ -189,26 +188,4 @@ class BatchDeviceSettingBloc
       isInitialController: false,
     ));
   }
-
-  // void _onModuleDataSearched(
-  //   ModuleDataSearched event,
-  //   Emitter<BatchDeviceSettingState> emit,
-  // ) {
-  //   if (state.keyword.isNotEmpty) {
-  //     List<Module> modules = [];
-
-  //     modules = _allModules
-  //         .where((module) =>
-  //             module.name.toLowerCase().contains(state.keyword.toLowerCase()))
-  //         .toList();
-
-  //     emit(state.copyWith(
-  //       modules: modules,
-  //     ));
-  //   } else {
-  //     emit(state.copyWith(
-  //       modules: _allModules,
-  //     ));
-  //   }
-  // }
 }

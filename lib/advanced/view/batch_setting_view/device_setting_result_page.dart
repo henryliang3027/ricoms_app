@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/advanced/bloc/device_setting_result/device_setting_result_bloc.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting/device_setting_result/device_setting_result_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/device_setting_result_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';

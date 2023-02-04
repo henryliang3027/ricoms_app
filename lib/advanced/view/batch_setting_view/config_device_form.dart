@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ricoms_app/advanced/bloc/batch_device_setting/batch_device_setting_bloc.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting/config_device/config_device_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/device_setting_result_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
@@ -11,53 +10,8 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
-// class BatchDeviceSettingForm extends StatefulWidget {
-//   const BatchDeviceSettingForm({
-//     Key? key,
-//     required this.devices,
-//   }) : super(key: key);
-
-//   final List<BatchSettingDevice> devices;
-
-//   @override
-//   State<BatchDeviceSettingForm> createState() => _BatchDeviceSettingFormState();
-// }
-
-// class _BatchDeviceSettingFormState extends State<BatchDeviceSettingForm> {
-//   late int currentTabViewIndex;
-
-//   @override
-//   void initState() {
-//     currentTabViewIndex = 0;
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocListener<BatchDeviceSettingBloc, BatchDeviceSettingState>(
-//       listener: (context, state) {},
-//       child: Scaffold(
-//         appBar: AppBar(
-//           centerTitle: true,
-//           title: Text(
-//             AppLocalizations.of(context)!.deviceSetting,
-//           ),
-//           elevation: 0.0,
-//         ),
-//         body: DeviceSettingTabView(
-//           currentTabViewIndex: currentTabViewIndex,
-//         ),
-//         floatingActionButton: _DeviceSettingEditFloatingActionButton(
-//           devices: widget.devices,
-//           currentTabViewIndex: currentTabViewIndex,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-class BatchDeviceSettingForm extends StatelessWidget {
-  const BatchDeviceSettingForm({
+class ConfigDeviceForm extends StatelessWidget {
+  const ConfigDeviceForm({
     Key? key,
     required this.devices,
   }) : super(key: key);
@@ -66,7 +20,7 @@ class BatchDeviceSettingForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocListener<ConfigDeviceBloc, ConfigDeviceState>(
       listener: (context, state) {},
       child: Scaffold(
         appBar: AppBar(
@@ -82,241 +36,6 @@ class BatchDeviceSettingForm extends StatelessWidget {
   }
 }
 
-// class DeviceSettingTabView extends StatefulWidget {
-//   DeviceSettingTabView({Key? key, required this.currentTabViewIndex})
-//       : super(key: key);
-
-//   int currentTabViewIndex;
-
-//   @override
-//   State<DeviceSettingTabView> createState() => _DeviceSettingTabViewState();
-// }
-
-// class _DeviceSettingTabViewState extends State<DeviceSettingTabView>
-//     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-//   late TabController _tabController;
-
-//   Widget _buildItem({
-//     required int pageId,
-//     required ControllerProperty controllerProperty,
-//   }) {
-//     if (controllerProperty.runtimeType == TextFieldProperty) {
-//       TextFieldProperty textFieldProperty =
-//           controllerProperty as TextFieldProperty;
-
-//       return _DeviceTextField(
-//         pageId: pageId,
-//         textFieldProperty: textFieldProperty,
-//         textEditingController: TextEditingController()
-//           ..text = textFieldProperty.initValue,
-//       );
-//     } else if (controllerProperty.runtimeType == DropDownMenuProperty) {
-//       return _DeviceDropDownMenu(
-//         pageId: pageId,
-//         dropDownMenuProperty: controllerProperty as DropDownMenuProperty,
-//       );
-//     } else if (controllerProperty.runtimeType == SliderProperty) {
-//       return _DeviceSlider(
-//         pageId: pageId,
-//         sliderProperty: controllerProperty as SliderProperty,
-//       );
-//     } else if (controllerProperty.runtimeType == RadioButtonProperty) {
-//       return _DeviceRadioButton(
-//         pageId: pageId,
-//         radioButtonProperty: controllerProperty as RadioButtonProperty,
-//       );
-//     } else if (controllerProperty.runtimeType == CheckBoxProperty) {
-//       return _DeviceCheckBox(
-//         pageId: pageId,
-//         checkBoxProperty: controllerProperty as CheckBoxProperty,
-//       );
-//     } else if (controllerProperty.runtimeType == TextProperty) {
-//       return _DeviceText(
-//         pageId: pageId,
-//         textProperty: controllerProperty as TextProperty,
-//       );
-//     } else {
-//       return Container(
-//         color: Colors.grey,
-//         child: const Text('----'),
-//       );
-//     }
-//   }
-
-//   Widget _buildRaw({
-//     required int pageId,
-//     required List<ControllerProperty> controllerProperties,
-//   }) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         for (ControllerProperty controllerProperty in controllerProperties) ...[
-//           _buildItem(
-//             pageId: pageId,
-//             controllerProperty: controllerProperty,
-//           ),
-//         ]
-//       ],
-//     );
-//   }
-
-//   Widget _buildBody({
-//     required int pageId,
-//     required List<List<ControllerProperty>> controllerPropertiesCollection,
-//   }) {
-//     return Container(
-//       width: double.maxFinite,
-//       height: double.maxFinite,
-//       color: Colors.white,
-//       child: Padding(
-//         padding: const EdgeInsets.all(10.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           children: [
-//             Expanded(
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   children: [
-//                     for (List<ControllerProperty> controllerProperties
-//                         in controllerPropertiesCollection) ...[
-//                       _buildRaw(
-//                         pageId: pageId,
-//                         controllerProperties: controllerProperties,
-//                       ),
-//                     ],
-//                     const SizedBox(
-//                       height: 120,
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     super.build(context);
-//     return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
-//       buildWhen: (previous, current) =>
-//           previous.isInitialController == true &&
-//           current.isInitialController == true,
-//       builder: (context, state) {
-//         if (state.status.isRequestSuccess) {
-//           _tabController = TabController(
-//             vsync: this,
-//             length: state.deviceBlocks.length,
-//           );
-//           print('isRequestSuccess');
-//           return Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Container(
-//                 width: double.maxFinite,
-//                 color: Colors.blue,
-//                 child: Center(
-//                   child: TabBar(
-//                       controller: _tabController,
-//                       unselectedLabelColor: Colors.white,
-//                       labelColor: Colors.blue,
-//                       isScrollable: true,
-//                       indicatorSize: TabBarIndicatorSize.tab,
-//                       indicator: const BoxDecoration(
-//                         borderRadius: BorderRadius.only(
-//                             topLeft: Radius.circular(10),
-//                             topRight: Radius.circular(10)),
-//                         color: Colors.white,
-//                       ),
-//                       labelPadding:
-//                           const EdgeInsets.symmetric(horizontal: 24.0),
-//                       tabs: [
-//                         for (DeviceBlock deviceBlock in state.deviceBlocks)
-//                           Tab(
-//                             child: SizedBox(
-//                               width: 130,
-//                               child: Center(
-//                                 child: Text(
-//                                   getMessageLocalization(
-//                                     msg: deviceBlock.name,
-//                                     context: context,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                       ],
-//                       onTap: (value) {
-//                         print('_tabController.index ${_tabController.index}');
-//                         widget.currentTabViewIndex = _tabController.index;
-//                       }),
-//                 ),
-//               ),
-//               Expanded(
-//                 child: TabBarView(
-//                   controller: _tabController,
-//                   physics: const NeverScrollableScrollPhysics(),
-//                   children: [
-//                     for (DeviceBlock deviceBlock in state.deviceBlocks) ...[
-//                       _buildBody(
-//                         pageId: deviceBlock.id,
-//                         controllerPropertiesCollection: state
-//                             .controllerPropertiesCollectionMap[deviceBlock.id]!,
-//                       ),
-//                     ],
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           );
-//         } else if (state.status.isRequestFailure) {
-//           return Container(
-//             width: double.maxFinite,
-//             height: double.maxFinite,
-//             color: Colors.white,
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 const Icon(
-//                   Icons.warning_rounded,
-//                   size: 200,
-//                   color: Color(0xffffc107),
-//                 ),
-//                 Text(
-//                   getMessageLocalization(
-//                     msg: state.requestErrorMsg,
-//                     context: context,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 40.0),
-//               ],
-//             ),
-//           );
-//         } else {
-//           return const Scaffold(
-//             body: Center(
-//               child: CircularProgressIndicator(),
-//             ),
-//           );
-//         }
-//       },
-//     );
-//   }
-
-//   @override
-//   // TODO: implement wantKeepAlive
-//   bool get wantKeepAlive => true;
-
-//   @override
-//   void dispose() {
-//     print('dispose');
-//     super.dispose();
-//   }
-// }
-
 class _DeviceSettingTabView extends StatelessWidget {
   const _DeviceSettingTabView({Key? key, required this.devices})
       : super(key: key);
@@ -325,7 +44,7 @@ class _DeviceSettingTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.isInitialController == true &&
           current.isInitialController == true,
@@ -550,8 +269,7 @@ class __DeviceSettingSubPageState extends State<_DeviceSettingSubPage>
     super.build(context);
     return Scaffold(
       body: _buildBody(),
-      floatingActionButton:
-          BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+      floatingActionButton: BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
         builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -598,7 +316,7 @@ class __DeviceSettingSubPageState extends State<_DeviceSettingSubPage>
                         backgroundColor: const Color(0x742195F3),
                         onPressed: () {
                           context
-                              .read<BatchDeviceSettingBloc>()
+                              .read<ConfigDeviceBloc>()
                               .add(ControllerValueCleared(widget.pageId));
                         },
                         child: const Icon(CustomIcons.cancel),
@@ -631,7 +349,7 @@ class _DeviceText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
         buildWhen: (previous, current) =>
             previous.controllerPropertiesCollectionMap[pageId] !=
             current.controllerPropertiesCollectionMap[pageId],
@@ -674,7 +392,7 @@ class _DeviceTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build _DeviceTextField');
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
         buildWhen: (previous, current) =>
             previous.controllerValuesMap[pageId]![textFieldProperty.oid] !=
             current.controllerValuesMap[pageId]![textFieldProperty.oid],
@@ -695,9 +413,7 @@ class _DeviceTextField extends StatelessWidget {
                 enabled: !textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
-                  context
-                      .read<BatchDeviceSettingBloc>()
-                      .add(ControllerValueChanged(
+                  context.read<ConfigDeviceBloc>().add(ControllerValueChanged(
                         pageId,
                         textFieldProperty.oid,
                         text,
@@ -741,7 +457,7 @@ class _DeviceCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.controllerValuesMap[pageId]![checkBoxProperty.oid] !=
           current.controllerValuesMap[pageId]![checkBoxProperty.oid],
@@ -758,7 +474,7 @@ class _DeviceCheckBox extends StatelessWidget {
             onChanged: !checkBoxProperty.readOnly
                 ? (value) {
                     if (value != null) {
-                      context.read<BatchDeviceSettingBloc>().add(
+                      context.read<ConfigDeviceBloc>().add(
                           ControllerValueChanged(
                               pageId, checkBoxProperty.oid, value ? '1' : '0'));
                     }
@@ -783,7 +499,7 @@ class _DeviceRadioButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.controllerValuesMap[pageId]![radioButtonProperty.oid] !=
           current.controllerValuesMap[pageId]![radioButtonProperty.oid],
@@ -807,7 +523,7 @@ class _DeviceRadioButton extends StatelessWidget {
                                 .oid], //determine which is selected
                         onChanged: !radioButtonProperty.readOnly
                             ? (String? value) {
-                                context.read<BatchDeviceSettingBloc>().add(
+                                context.read<ConfigDeviceBloc>().add(
                                     ControllerValueChanged(pageId,
                                         radioButtonProperty.oid, value!));
                               }
@@ -852,7 +568,7 @@ class _DeviceSlider extends StatelessWidget {
 
     bool isInteger(num value) => value is int || value == value.roundToDouble();
 
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.controllerValuesMap[pageId]![sliderProperty.oid] !=
           current.controllerValuesMap[pageId]![sliderProperty.oid],
@@ -887,7 +603,7 @@ class _DeviceSlider extends StatelessWidget {
                                 ? value.toInt().toString()
                                 : truncateDecimal(value).toString();
 
-                            context.read<BatchDeviceSettingBloc>().add(
+                            context.read<ConfigDeviceBloc>().add(
                                 ControllerValueChanged(
                                     pageId, sliderProperty.oid, strValue));
                           }
@@ -931,7 +647,7 @@ class _DeviceDropDownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BatchDeviceSettingBloc, BatchDeviceSettingState>(
+    return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.controllerValuesMap[pageId]![dropDownMenuProperty.oid] !=
           current.controllerValuesMap[pageId]![dropDownMenuProperty.oid],
@@ -976,7 +692,7 @@ class _DeviceDropDownMenu extends StatelessWidget {
                   ],
                   onChanged: dropDownMenuProperty.readOnly
                       ? (String? value) {
-                          context.read<BatchDeviceSettingBloc>().add(
+                          context.read<ConfigDeviceBloc>().add(
                               ControllerValueChanged(
                                   pageId, dropDownMenuProperty.oid, value!));
                         }

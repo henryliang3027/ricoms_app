@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ricoms_app/advanced/bloc/select_device/select_device_bloc.dart';
-import 'package:ricoms_app/advanced/view/batch_setting_view/batch_device_setting_page.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting/select_device/select_device_bloc.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/config_device_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
-class DeviceSelectionForm extends StatelessWidget {
-  const DeviceSelectionForm({
+class SelectDeviceForm extends StatelessWidget {
+  const SelectDeviceForm({
     Key? key,
     required this.moduleId,
   }) : super(key: key);
@@ -359,7 +359,7 @@ class _DeviceSelectionEditFloatingActionButton extends StatelessWidget {
                     onPressed: () async {
                       Navigator.push(
                           context,
-                          BatchDeviceSettingPage.route(
+                          ConfigDevicePage.route(
                             moduleId: moduleId,
                             devices: [
                               for (MapEntry entry

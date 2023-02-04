@@ -5,17 +5,16 @@ import 'package:ricoms_app/repository/module.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
-part 'batch_setting_module_event.dart';
-part 'batch_setting_module_state.dart';
+part 'select_module_event.dart';
+part 'select_module_state.dart';
 
-class BatchSettingModuleBloc
-    extends Bloc<BatchSettingModuleEvent, BatchSettingModuleState> {
-  BatchSettingModuleBloc({
+class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
+  SelectModuleBloc({
     required User user,
     required BatchSettingRepository batchSettingRepository,
   })  : _user = user,
         _batchSettingRepository = batchSettingRepository,
-        super(const BatchSettingModuleState()) {
+        super(const SelectModuleState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
     on<KeywordChanged>(_onKeywordChanged);
     on<ModuleDataSearched>(_onModuleDataSearched);
@@ -29,7 +28,7 @@ class BatchSettingModuleBloc
 
   void _onModulleDataRequested(
     ModuleDataRequested event,
-    Emitter<BatchSettingModuleState> emit,
+    Emitter<SelectModuleState> emit,
   ) async {
     emit(state.copyWith(
       status: FormStatus.requestInProgress,
@@ -56,7 +55,7 @@ class BatchSettingModuleBloc
 
   void _onKeywordChanged(
     KeywordChanged event,
-    Emitter<BatchSettingModuleState> emit,
+    Emitter<SelectModuleState> emit,
   ) {
     emit(state.copyWith(
       keyword: event.keyword,
@@ -65,7 +64,7 @@ class BatchSettingModuleBloc
 
   void _onModuleDataSearched(
     ModuleDataSearched event,
-    Emitter<BatchSettingModuleState> emit,
+    Emitter<SelectModuleState> emit,
   ) {
     if (state.keyword.isNotEmpty) {
       List<Module> modules = [];

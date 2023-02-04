@@ -1,7 +1,7 @@
-part of 'batch_device_setting_bloc.dart';
+part of 'config_device_bloc.dart';
 
-class BatchDeviceSettingState extends Equatable {
-  const BatchDeviceSettingState({
+class ConfigDeviceState extends Equatable {
+  const ConfigDeviceState({
     this.status = FormStatus.none,
     this.deviceBlocks = const [],
     this.controllerPropertiesCollectionMap = const {},
@@ -22,7 +22,7 @@ class BatchDeviceSettingState extends Equatable {
   final bool isInitialController;
   final String requestErrorMsg;
 
-  BatchDeviceSettingState copyWith({
+  ConfigDeviceState copyWith({
     FormStatus? status,
     List<DeviceBlock>? deviceBlocks,
     Map<int, List<List<ControllerProperty>>>? controllerPropertiesCollectionMap,
@@ -32,7 +32,7 @@ class BatchDeviceSettingState extends Equatable {
     bool? isInitialController,
     String? requestErrorMsg,
   }) {
-    return BatchDeviceSettingState(
+    return ConfigDeviceState(
       status: status ?? this.status,
       deviceBlocks: deviceBlocks ?? this.deviceBlocks,
       controllerPropertiesCollectionMap: controllerPropertiesCollectionMap ??
