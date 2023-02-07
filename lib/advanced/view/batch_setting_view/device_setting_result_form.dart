@@ -1,58 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting/device_setting_result/device_setting_result_bloc.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceSettingResultForm extends StatelessWidget {
   const DeviceSettingResultForm({
     Key? key,
-    required this.devices,
-    required this.devicesParamMap,
   }) : super(key: key);
-
-  final List<BatchSettingDevice> devices;
-  final Map<String, String> devicesParamMap;
 
   @override
   Widget build(BuildContext context) {
-    List<DeviceParamItem> _getDeviceParamItems() {
-      List<DeviceParamItem> deviceParamItems = [];
-      for (BatchSettingDevice device in devices) {
-        for (MapEntry entry in devicesParamMap.entries) {
-          deviceParamItems.add(DeviceParamItem(
-            id: device.id,
-            ip: device.ip,
-            deviceName: device.deviceName,
-            group: device.group,
-            moduleName: device.moduleName,
-            shelf: device.shelf,
-            slot: device.slot,
-            oid: entry.key,
-            param: entry.value,
-          ));
-        }
-      }
-
-      return deviceParamItems;
-    }
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          AppLocalizations.of(context)!.selectDevice,
+          AppLocalizations.of(context)!.batchSettingResult,
         ),
         elevation: 0.0,
       ),
       body: Column(
-        children: [
+        children: const [
           Expanded(
-            child: _DeviceListView(
-              deviceParamItem: _getDeviceParamItems(),
-            ),
+            child: _DeviceListView(),
           ),
         ],
       ),
@@ -63,40 +33,58 @@ class DeviceSettingResultForm extends StatelessWidget {
 class _DeviceListView extends StatelessWidget {
   const _DeviceListView({
     Key? key,
-    required this.deviceParamItem,
   }) : super(key: key);
 
-  final List<DeviceParamItem> deviceParamItem;
-
   SliverChildBuilderDelegate _deviceSliverChildBuilderDelegate({
-    required List<DeviceParamItem> data,
+    required List<List<DeviceParamItem>> deviceParamItemsCollection,
+    required List<List<ProcessingStatus>> deviceProcessingStatusCollection,
   }) {
+    List<DeviceParamItem> flattenDeviceParamItems = [];
+    List<ProcessingStatus> flattenDeviceProcessingStatusList = [];
+    for (List<DeviceParamItem> deviceParamItems in deviceParamItemsCollection) {
+      flattenDeviceParamItems.addAll(deviceParamItems);
+    }
+    for (List<ProcessingStatus> deviceProcessingStatusList
+        in deviceProcessingStatusCollection) {
+      flattenDeviceProcessingStatusList.addAll(deviceProcessingStatusList);
+    }
+
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
-        DeviceParamItem device = data[index];
+        DeviceParamItem device = flattenDeviceParamItems[index];
+        ProcessingStatus processingStatus =
+            flattenDeviceProcessingStatusList[index];
         return _ParameterItem(
           index: index,
           device: device,
+          processingStatus: processingStatus,
         );
       },
-      childCount: data.length,
+      childCount: flattenDeviceParamItems.length,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey.shade300,
-      child: Scrollbar(
-        thickness: 8.0,
-        child: CustomScrollView(
-          cacheExtent: deviceParamItem.length * 100,
-          slivers: [
-            SliverList(
+    return BlocBuilder<DeviceSettingResultBloc, DeviceSettingResultState>(
+      buildWhen: (previous, current) =>
+          previous.deviceProcessingStatusCollection !=
+          current.deviceProcessingStatusCollection,
+      builder: (context, state) => Container(
+        color: Colors.grey.shade300,
+        child: Scrollbar(
+          thickness: 8.0,
+          child: CustomScrollView(
+            slivers: [
+              SliverList(
                 delegate: _deviceSliverChildBuilderDelegate(
-              data: deviceParamItem,
-            )),
-          ],
+                  deviceParamItemsCollection: state.deviceParamItemsCollection,
+                  deviceProcessingStatusCollection:
+                      state.deviceProcessingStatusCollection,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -108,10 +96,12 @@ class _ParameterItem extends StatelessWidget {
     Key? key,
     required this.index,
     required this.device,
+    required this.processingStatus,
   }) : super(key: key);
 
   final int index;
   final DeviceParamItem device;
+  final ProcessingStatus processingStatus;
 
   String _getDisplayName(DeviceParamItem device) {
     if (device.deviceName.isNotEmpty) {
@@ -128,163 +118,122 @@ class _ParameterItem extends StatelessWidget {
     }
   }
 
-  Widget _getStatusWidget(List result) {
-    if (result[0]) {
-      return const Icon(
-        Icons.check,
-        color: Colors.green,
-      );
-    } else {
-      return const Icon(
-        Icons.cancel_outlined,
-        color: Colors.red,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: RepositoryProvider.of<BatchSettingRepository>(context)
-          .setDeviceParameter(
-              user: context.read<AuthenticationBloc>().state.user,
-              nodeId: device.id,
-              oidValuePairMap: {device.oid: device.param}),
-      builder: (context, snapshot) {
-        return Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: Material(
-            color: index.isEven ? Colors.grey.shade100 : Colors.white,
-            child: InkWell(
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(1.0),
+      child: Material(
+        color: index.isEven ? Colors.grey.shade100 : Colors.white,
+        child: InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 6.0),
+                        child: Text(
+                          device.ip,
+                          //maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: CommonStyle.sizeL,
+                            // fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
+                        child: Text(
+                          device.group,
+                          //maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: CommonStyle.sizeM,
+                            color: Colors.grey.shade700,
+                            // fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Row(
                         children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 6.0),
-                            child: Text(
-                              device.ip,
-                              //maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: CommonStyle.sizeL,
-                                // fontWeight: FontWeight.w500,
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 0.0, 6.0, 0.0),
+                              child: Text(
+                                _getDisplayName(device),
+                                //maxLines: 2,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                  fontSize: CommonStyle.sizeM,
+                                  color: Colors.grey.shade700,
+                                  // fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                            child: Text(
-                              device.group,
-                              //maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: CommonStyle.sizeM,
-                                color: Colors.grey.shade700,
-                                // fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      10.0, 0.0, 6.0, 0.0),
-                                  child: Text(
-                                    _getDisplayName(device),
-                                    //maxLines: 2,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontSize: CommonStyle.sizeM,
-                                      color: Colors.grey.shade700,
-                                      // fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      10.0, 0.0, 6.0, 0.0),
-                                  child: Text(
-                                    '${device.id}  ${device.oid}  ${device.param}',
-                                    //maxLines: 2,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontSize: CommonStyle.sizeM,
-                                      color: Colors.grey.shade700,
-                                      // fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
                         ],
                       ),
-                    ),
-                    if (snapshot.hasData) ...[
-                      _getStatusWidget(snapshot.data as List),
-                    ] else ...[
-                      CircularProgressIndicator(),
-                    ]
-                    // Checkbox(
-                    //   visualDensity: const VisualDensity(vertical: -4.0),
-                    //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    //   value: selectedDevices[device],
-                    //   onChanged: (value) => context
-                    //       .read<SelectDeviceBloc>()
-                    //       .add(DeviceItemToggled(
-                    //         device,
-                    //         value ?? false,
-                    //       )),
-                    // ),
-                  ],
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 0.0, 6.0, 0.0),
+                              child: Text(
+                                '${device.id}  ${device.oid}  ${device.param}',
+                                //maxLines: 2,
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                  fontSize: CommonStyle.sizeM,
+                                  color: Colors.grey.shade700,
+                                  // fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
+                if (processingStatus == ProcessingStatus.success) ...[
+                  const Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  ),
+                ] else if (processingStatus == ProcessingStatus.failure) ...[
+                  const Icon(
+                    Icons.cancel_outlined,
+                    color: Colors.red,
+                  ),
+                ] else ...[
+                  const CircularProgressIndicator(),
+                ]
+                // Checkbox(
+                //   visualDensity: const VisualDensity(vertical: -4.0),
+                //   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                //   value: selectedDevices[device],
+                //   onChanged: (value) => context
+                //       .read<SelectDeviceBloc>()
+                //       .add(DeviceItemToggled(
+                //         device,
+                //         value ?? false,
+                //       )),
+                // ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
-}
-
-class DeviceParamItem {
-  const DeviceParamItem({
-    required this.id,
-    required this.ip,
-    required this.deviceName,
-    required this.group,
-    required this.moduleName,
-    required this.shelf,
-    required this.slot,
-    required this.oid,
-    required this.param,
-  });
-
-  final int id;
-  final String ip;
-  final String deviceName;
-  final String group;
-  final String moduleName;
-  final int shelf;
-  final int slot;
-  final String oid;
-  final String param;
 }

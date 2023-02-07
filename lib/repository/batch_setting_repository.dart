@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:ricoms_app/advanced/bloc/batch_setting/device_setting_result/device_setting_result_bloc.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/module.dart';
@@ -155,10 +156,19 @@ class BatchSettingRepository {
     }
   }
 
+  Future<List<dynamic>> testDeviceParameters({
+    required User user,
+    required DeviceParamItem deviceParamItem,
+    required int sec,
+  }) async {
+    print('sec: $sec');
+    await Future.delayed(Duration(seconds: sec));
+    return [true, ''];
+  }
+
   Future<List<dynamic>> setDeviceParameter({
     required User user,
-    required int nodeId,
-    required Map<String, String> oidValuePairMap,
+    required DeviceParamItem deviceParamItem,
   }) async {
     // await Future.delayed(const Duration(seconds: 1));
     // return [true];
@@ -170,15 +180,12 @@ class BatchSettingRepository {
     String batchDeviceSettingApiPath = '/advanced/modulebatch';
 
     try {
-      List<Map<String, String>> paramMapList = [];
-
-      for (MapEntry entry in oidValuePairMap.entries) {
-        paramMapList.add({'oid_id': entry.key, 'value': entry.value});
-      }
-
+      List<Map<String, String>> paramMapList = [
+        {'oid_id': deviceParamItem.oid, 'value': deviceParamItem.param}
+      ];
       var requestData = {
         'uid': user.id,
-        'node_id': nodeId,
+        'node_id': deviceParamItem.id,
         'data': paramMapList
       };
 

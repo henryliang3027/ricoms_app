@@ -295,7 +295,7 @@ class __DeviceSettingSubPageState extends State<_DeviceSettingSubPage>
                             context,
                             DeviceSettingResultPage.route(
                               devices: widget.devices,
-                              devicesParamMap: deviceParamMap,
+                              deviceParamsMap: deviceParamMap,
                             ));
                       },
                       child: const Icon(

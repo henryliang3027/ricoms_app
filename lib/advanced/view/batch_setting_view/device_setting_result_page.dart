@@ -5,25 +5,23 @@ import 'package:ricoms_app/advanced/view/batch_setting_view/device_setting_resul
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/batch_setting_repository.dart';
-import 'package:ricoms_app/utils/common_style.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceSettingResultPage extends StatelessWidget {
   const DeviceSettingResultPage({
     Key? key,
     required this.devices,
-    required this.devicesParamMap,
+    required this.deviceParamsMap,
   }) : super(key: key);
 
   static Route route({
     required List<BatchSettingDevice> devices,
-    required Map<String, String> devicesParamMap,
+    required Map<String, String> deviceParamsMap,
   }) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) =>
           DeviceSettingResultPage(
         devices: devices,
-        devicesParamMap: devicesParamMap,
+        deviceParamsMap: deviceParamsMap,
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
@@ -42,20 +40,19 @@ class DeviceSettingResultPage extends StatelessWidget {
   }
 
   final List<BatchSettingDevice> devices;
-  final Map<String, String> devicesParamMap;
+  final Map<String, String> deviceParamsMap;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DeviceSettingResultBloc(
         user: context.read<AuthenticationBloc>().state.user,
+        devices: devices,
+        deviceParamsMap: deviceParamsMap,
         batchSettingRepository:
             RepositoryProvider.of<BatchSettingRepository>(context),
       ),
-      child: DeviceSettingResultForm(
-        devices: devices,
-        devicesParamMap: devicesParamMap,
-      ),
+      child: const DeviceSettingResultForm(),
     );
   }
 }
