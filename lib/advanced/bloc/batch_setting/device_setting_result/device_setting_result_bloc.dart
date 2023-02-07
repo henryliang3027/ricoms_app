@@ -94,8 +94,16 @@ class DeviceSettingResultBloc
     required int indexOfParam,
     required DeviceParamItem deviceParamItem,
   }) async {
-    // List<int> secs = [1, 1, 1, 1, 1, 1];
+    // mock delay time (sec)
+    // List<int> secs = [1, 3, 2, 1, 2, 3];
     // print(indexOfDevice * 3 + indexOfParam);
+    // List<dynamic> resultOfSetDeviceParam =
+    //     await _batchSettingRepository.testDeviceParameter(
+    //   user: _user,
+    //   deviceParamItem: deviceParamItem,
+    //   sec: secs[indexOfDevice * 3 + indexOfParam],
+    // );
+
     List<dynamic> resultOfSetDeviceParam =
         await _batchSettingRepository.setDeviceParameter(
       user: _user,

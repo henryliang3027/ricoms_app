@@ -156,7 +156,7 @@ class BatchSettingRepository {
     }
   }
 
-  Future<List<dynamic>> testDeviceParameters({
+  Future<List<dynamic>> testDeviceParameter({
     required User user,
     required DeviceParamItem deviceParamItem,
     required int sec,
