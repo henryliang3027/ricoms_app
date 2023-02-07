@@ -7,6 +7,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 part 'device_setting_result_event.dart';
 part 'device_setting_result_state.dart';
 
+//test
+
 class DeviceSettingResultBloc
     extends Bloc<DeviceSettingResultEvent, DeviceSettingResultState> {
   DeviceSettingResultBloc({
