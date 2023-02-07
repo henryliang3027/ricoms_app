@@ -63,8 +63,16 @@ class DeviceSettingResultBloc
       deviceProcessingStatusCollection: deviceProcessingStatusCollection,
     ));
 
+    // for (int i = 0; i < deviceParamItemsCollection.length; i++) {
+    //   add(SetDeviceParamRequested(i));
+    // }
+
     for (int i = 0; i < deviceParamItemsCollection.length; i++) {
-      add(SetDeviceParamRequested(i));
+      setDeviceParams(
+        indexOfDevice: i,
+        deviceParamItems: deviceParamItemsCollection[i],
+        emit: emit,
+      );
     }
   }
 
@@ -86,6 +94,49 @@ class DeviceSettingResultBloc
       emit(state.copyWith(
         deviceProcessingStatusCollection: deviceProcessingStatusCollection,
       ));
+    }
+  }
+
+  Future<void> setDeviceParams({
+    required int indexOfDevice,
+    required List<DeviceParamItem> deviceParamItems,
+    required Emitter<DeviceSettingResultState> emit,
+  }) async {
+    for (int i = 0; i < deviceParamItems.length; i++) {
+      List<dynamic> resultOfSetDeviceParam =
+          await _batchSettingRepository.setDeviceParameter(
+        user: _user,
+        deviceParamItem: deviceParamItems[i],
+        // sec: secs[indexOfDevice * 3 + indexOfParam],
+      );
+
+      // copy DeviceProcessingStatusCollection
+      List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
+      for (List<ProcessingStatus> deviceProcessingStatusList
+          in state.deviceProcessingStatusCollection) {
+        List<ProcessingStatus> newDeviceProcessingStatusList = [];
+        for (ProcessingStatus deviceProcessingStatus
+            in deviceProcessingStatusList) {
+          newDeviceProcessingStatusList.add(deviceProcessingStatus);
+        }
+        newDeviceProcessingStatusCollection.add(newDeviceProcessingStatusList);
+      }
+
+      if (resultOfSetDeviceParam[0]) {
+        newDeviceProcessingStatusCollection[indexOfDevice][i] =
+            ProcessingStatus.success;
+
+        emit(state.copyWith(
+          deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
+        ));
+      } else {
+        newDeviceProcessingStatusCollection[indexOfDevice][i] =
+            ProcessingStatus.failure;
+
+        emit(state.copyWith(
+          deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
+        ));
+      }
     }
   }
 
