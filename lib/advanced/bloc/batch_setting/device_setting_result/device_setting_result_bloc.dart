@@ -7,8 +7,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 part 'device_setting_result_event.dart';
 part 'device_setting_result_state.dart';
 
-//test
-
 class DeviceSettingResultBloc
     extends Bloc<DeviceSettingResultEvent, DeviceSettingResultState> {
   DeviceSettingResultBloc({
@@ -65,16 +63,8 @@ class DeviceSettingResultBloc
       deviceProcessingStatusCollection: deviceProcessingStatusCollection,
     ));
 
-    // for (int i = 0; i < deviceParamItemsCollection.length; i++) {
-    //   add(SetDeviceParamRequested(i));
-    // }
-
     for (int i = 0; i < deviceParamItemsCollection.length; i++) {
-      setDeviceParams(
-        indexOfDevice: i,
-        deviceParamItems: deviceParamItemsCollection[i],
-        emit: emit,
-      );
+      add(SetDeviceParamRequested(i));
     }
   }
 
@@ -99,64 +89,13 @@ class DeviceSettingResultBloc
     }
   }
 
-  Future<void> setDeviceParams({
-    required int indexOfDevice,
-    required List<DeviceParamItem> deviceParamItems,
-    required Emitter<DeviceSettingResultState> emit,
-  }) async {
-    for (int i = 0; i < deviceParamItems.length; i++) {
-      List<dynamic> resultOfSetDeviceParam =
-          await _batchSettingRepository.setDeviceParameter(
-        user: _user,
-        deviceParamItem: deviceParamItems[i],
-        // sec: secs[indexOfDevice * 3 + indexOfParam],
-      );
-
-      // copy DeviceProcessingStatusCollection
-      List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
-      for (List<ProcessingStatus> deviceProcessingStatusList
-          in state.deviceProcessingStatusCollection) {
-        List<ProcessingStatus> newDeviceProcessingStatusList = [];
-        for (ProcessingStatus deviceProcessingStatus
-            in deviceProcessingStatusList) {
-          newDeviceProcessingStatusList.add(deviceProcessingStatus);
-        }
-        newDeviceProcessingStatusCollection.add(newDeviceProcessingStatusList);
-      }
-
-      if (resultOfSetDeviceParam[0]) {
-        newDeviceProcessingStatusCollection[indexOfDevice][i] =
-            ProcessingStatus.success;
-
-        emit(state.copyWith(
-          deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
-        ));
-      } else {
-        newDeviceProcessingStatusCollection[indexOfDevice][i] =
-            ProcessingStatus.failure;
-
-        emit(state.copyWith(
-          deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
-        ));
-      }
-    }
-  }
-
   Future<List<List<ProcessingStatus>>> setDeviceParam({
     required int indexOfDevice,
     required int indexOfParam,
     required DeviceParamItem deviceParamItem,
   }) async {
-    // mock delay time (sec)
-    // List<int> secs = [1, 3, 2, 1, 2, 3];
+    // List<int> secs = [1, 1, 1, 1, 1, 1];
     // print(indexOfDevice * 3 + indexOfParam);
-    // List<dynamic> resultOfSetDeviceParam =
-    //     await _batchSettingRepository.testDeviceParameter(
-    //   user: _user,
-    //   deviceParamItem: deviceParamItem,
-    //   sec: secs[indexOfDevice * 3 + indexOfParam],
-    // );
-
     List<dynamic> resultOfSetDeviceParam =
         await _batchSettingRepository.setDeviceParameter(
       user: _user,
