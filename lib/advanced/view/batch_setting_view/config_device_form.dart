@@ -656,7 +656,7 @@ class _DeviceDropDownMenu extends StatelessWidget {
           flex: dropDownMenuProperty.boxLength,
           child: DecoratedBox(
             decoration: BoxDecoration(
-                color: dropDownMenuProperty.readOnly
+                color: !dropDownMenuProperty.readOnly
                     ? Colors.white
                     : Colors.grey.shade300),
             child: InputDecorator(
@@ -670,8 +670,13 @@ class _DeviceDropDownMenu extends StatelessWidget {
                   isDense: true,
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
-                  value: state
-                      .controllerValuesMap[pageId]![dropDownMenuProperty.oid],
+                  hint: const Text(''),
+                  value: state.controllerValuesMap[pageId]![
+                              dropDownMenuProperty.oid] ==
+                          ''
+                      ? null
+                      : state.controllerValuesMap[pageId]![
+                          dropDownMenuProperty.oid],
                   items: [
                     for (MapEntry<String, String> entry
                         in dropDownMenuProperty.items.entries)
@@ -690,7 +695,7 @@ class _DeviceDropDownMenu extends StatelessWidget {
                         ),
                       )
                   ],
-                  onChanged: dropDownMenuProperty.readOnly
+                  onChanged: !dropDownMenuProperty.readOnly
                       ? (String? value) {
                           context.read<ConfigDeviceBloc>().add(
                               ControllerValueChanged(
