@@ -44,10 +44,12 @@ class DeviceSettingResultBloc
     List<List<DeviceParamItem>> deviceParamItemsCollection = [];
     List<List<ProcessingStatus>> deviceProcessingStatusCollection = [];
     List<List<bool>> isSelectedDevicesCollection = [];
+    List<List<ResultDetail>> resultDetailsCollection = [];
     for (BatchSettingDevice device in _devices) {
       List<DeviceParamItem> deviceParamItems = [];
       List<ProcessingStatus> deviceProcessingStatusList = [];
       List<bool> isSelectedDevices = [];
+      List<ResultDetail> resultDetails = [];
       for (MapEntry entry in _deviceParamsMap.entries) {
         deviceParamItems.add(DeviceParamItem(
           id: device.id,
@@ -62,17 +64,23 @@ class DeviceSettingResultBloc
         ));
 
         deviceProcessingStatusList.add(ProcessingStatus.processing);
-
         isSelectedDevices.add(false);
+        resultDetails.add(const ResultDetail(
+          processingStatus: ProcessingStatus.processing,
+          description: '',
+          endTime: '',
+        ));
       }
       deviceParamItemsCollection.add(deviceParamItems);
       deviceProcessingStatusCollection.add(deviceProcessingStatusList);
       isSelectedDevicesCollection.add(isSelectedDevices);
+      resultDetailsCollection.add(resultDetails);
     }
     emit(state.copyWith(
       deviceParamItemsCollection: deviceParamItemsCollection,
       deviceProcessingStatusCollection: deviceProcessingStatusCollection,
       isSelectedDevicesCollection: isSelectedDevicesCollection,
+      resultDetailsCollection: resultDetailsCollection,
     ));
 
     for (int i = 0; i < deviceParamItemsCollection.length; i++) {
@@ -89,14 +97,22 @@ class DeviceSettingResultBloc
         state.deviceParamItemsCollection[indexOfDevice];
 
     for (int i = 0; i < deviceParamItems.length; i++) {
-      List<List<ProcessingStatus>> deviceProcessingStatusCollection =
-          await setDeviceParam(
-              indexOfDevice: indexOfDevice,
-              indexOfParam: i,
-              deviceParamItem: deviceParamItems[i]);
+      List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
+      ResultDetail resultDetail = await setDeviceParam(
+          indexOfDevice: indexOfDevice,
+          indexOfParam: i,
+          deviceParamItem: deviceParamItems[i],
+          newDeviceProcessingStatusCollection:
+              newDeviceProcessingStatusCollection);
+
+      List<List<ResultDetail>> resultDetailsCollection =
+          state.resultDetailsCollection;
+
+      resultDetailsCollection[indexOfDevice][i] = resultDetail;
 
       emit(state.copyWith(
-        deviceProcessingStatusCollection: deviceProcessingStatusCollection,
+        deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
+        resultDetailsCollection: resultDetailsCollection,
       ));
     }
   }
@@ -147,23 +163,32 @@ class DeviceSettingResultBloc
 
     for (int i = 0; i < deviceParamItems.length; i++) {
       if (state.isSelectedDevicesCollection[indexOfDevice][i] == true) {
-        List<List<ProcessingStatus>> deviceProcessingStatusCollection =
-            await setDeviceParam(
-                indexOfDevice: indexOfDevice,
-                indexOfParam: i,
-                deviceParamItem: deviceParamItems[i]);
+        List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
+        ResultDetail resultDetail = await setDeviceParam(
+            indexOfDevice: indexOfDevice,
+            indexOfParam: i,
+            deviceParamItem: deviceParamItems[i],
+            newDeviceProcessingStatusCollection:
+                newDeviceProcessingStatusCollection);
+
+        List<List<ResultDetail>> resultDetailsCollection =
+            state.resultDetailsCollection;
+
+        resultDetailsCollection[indexOfDevice][i] = resultDetail;
 
         emit(state.copyWith(
-          deviceProcessingStatusCollection: deviceProcessingStatusCollection,
+          deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
+          resultDetailsCollection: resultDetailsCollection,
         ));
       }
     }
   }
 
-  Future<List<List<ProcessingStatus>>> setDeviceParam({
+  Future<ResultDetail> setDeviceParam({
     required int indexOfDevice,
     required int indexOfParam,
     required DeviceParamItem deviceParamItem,
+    required List<List<ProcessingStatus>> newDeviceProcessingStatusCollection,
   }) async {
     // List<int> secs = [1, 1, 1, 1, 1, 1];
     // print(indexOfDevice * 3 + indexOfParam);
@@ -175,7 +200,6 @@ class DeviceSettingResultBloc
     );
 
     // deep copy DeviceProcessingStatusCollection
-    List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
     for (List<ProcessingStatus> deviceProcessingStatusList
         in state.deviceProcessingStatusCollection) {
       List<ProcessingStatus> newDeviceProcessingStatusList = [];
@@ -189,14 +213,17 @@ class DeviceSettingResultBloc
     if (resultOfSetDeviceParam[0]) {
       newDeviceProcessingStatusCollection[indexOfDevice][indexOfParam] =
           ProcessingStatus.success;
-
-      return newDeviceProcessingStatusCollection;
     } else {
       newDeviceProcessingStatusCollection[indexOfDevice][indexOfParam] =
           ProcessingStatus.failure;
-
-      return newDeviceProcessingStatusCollection;
     }
+
+    return ResultDetail(
+      processingStatus: newDeviceProcessingStatusCollection[indexOfDevice]
+          [indexOfParam],
+      description: resultOfSetDeviceParam[1],
+      endTime: resultOfSetDeviceParam[2],
+    );
   }
 
   void _onDeviceParamItemSelected(
@@ -296,4 +323,16 @@ class DeviceParamItem {
   final int slot;
   final String oid;
   final String param;
+}
+
+class ResultDetail {
+  const ResultDetail({
+    required this.processingStatus,
+    required this.description,
+    required this.endTime,
+  });
+
+  final ProcessingStatus processingStatus;
+  final String description;
+  final String endTime;
 }

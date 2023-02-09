@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/device_setting_result/device_setting_result_bloc.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
@@ -196,11 +197,13 @@ class BatchSettingRepository {
 
       var data = jsonDecode(response.data.toString());
       String modifyResult = data['data'][0]['modify_result'];
+      String endTime =
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()).toString();
 
       if (data['code'] == '200') {
-        return [true, modifyResult];
+        return [true, modifyResult, endTime];
       } else {
-        return [false, data['msg'], modifyResult];
+        return [false, modifyResult, endTime];
       }
     } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];

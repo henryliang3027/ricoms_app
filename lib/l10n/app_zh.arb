@@ -195,6 +195,11 @@
     "selectDevice": "選擇裝置",
     "deviceSetting": "裝置設定",
     "batchSettingResult": "設定結果",
+    "paramSettingStatus": "狀態",
+    "paramSettingEndTime": "完成時間",
+    "paramSettingSuccessful": "成功",
+    "paramSettingFailed": "失敗",
+    "paramSettingProcessing": "設定中",
     "deviceWorkingCycle": "裝置輪詢週期",
 
     "dialogMessage_LoginFailed": "登入失敗，請重新確認你的帳號或密碼。",

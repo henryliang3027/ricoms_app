@@ -914,6 +914,36 @@
       "description": "setting result"
     },
 
+    "paramSettingStatus": "Status",
+    "@all": {
+      "description": "param setting status"
+    },
+
+    "paramSettingEndTime": "Finished Time",
+    "@all": {
+      "description": "param setting end time"
+    },
+
+    "paramSettingSuccessful": "Success",
+    "@all": {
+      "description": "param setting successful"
+    },
+
+    "paramSettingFailed": "Failure",
+    "@all": {
+      "description": "param setting failed"
+    },
+
+    "paramSettingProcessing": "Processing",
+    "@all": {
+      "description": "param setting processing"
+    },
+
+    "batchSettingResult": "Setting Result",
+    "@all": {
+      "description": "setting result"
+    },
+
     "deviceWorkingCycle": "Device's Working Cycle",
     "@all": {
       "description": "device's working cycle"

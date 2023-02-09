@@ -110,10 +110,12 @@ class _DeviceListView extends StatelessWidget {
     required List<List<DeviceParamItem>> deviceParamItemsCollection,
     required List<List<ProcessingStatus>> deviceProcessingStatusCollection,
     required List<List<bool>> isSelectedDevicesCollection,
+    required List<List<ResultDetail>> resultDetailsCollection,
   }) {
     List<DeviceParamItem> flattenDeviceParamItems = [];
     List<ProcessingStatus> flattenDeviceProcessingStatusList = [];
     List<bool> flattenIsSelectedDevices = [];
+    List<ResultDetail> flattenResultDetails = [];
     for (List<DeviceParamItem> deviceParamItems in deviceParamItemsCollection) {
       flattenDeviceParamItems.addAll(deviceParamItems);
     }
@@ -125,17 +127,23 @@ class _DeviceListView extends StatelessWidget {
       flattenIsSelectedDevices.addAll(isSelectedDevices);
     }
 
+    for (List<ResultDetail> resultDetails in resultDetailsCollection) {
+      flattenResultDetails.addAll(resultDetails);
+    }
+
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         DeviceParamItem device = flattenDeviceParamItems[index];
         ProcessingStatus processingStatus =
             flattenDeviceProcessingStatusList[index];
         bool isSelected = flattenIsSelectedDevices[index];
+        ResultDetail resultDetail = flattenResultDetails[index];
         return _ParameterItem(
           index: index,
           device: device,
           processingStatus: processingStatus,
           isSelected: isSelected,
+          resultDetail: resultDetail,
         );
       },
       childCount: flattenDeviceParamItems.length,
@@ -163,6 +171,7 @@ class _DeviceListView extends StatelessWidget {
                       state.deviceProcessingStatusCollection,
                   isSelectedDevicesCollection:
                       state.isSelectedDevicesCollection,
+                  resultDetailsCollection: state.resultDetailsCollection,
                 ),
               ),
             ],
@@ -180,12 +189,14 @@ class _ParameterItem extends StatelessWidget {
     required this.device,
     required this.processingStatus,
     required this.isSelected,
+    required this.resultDetail,
   }) : super(key: key);
 
   final int index;
   final DeviceParamItem device;
   final ProcessingStatus processingStatus;
   final bool isSelected;
+  final ResultDetail resultDetail;
 
   String _getDisplayName(DeviceParamItem device) {
     if (device.deviceName.isNotEmpty) {
@@ -215,6 +226,7 @@ class _ParameterItem extends StatelessWidget {
               builder: (_) => _DeviceSettingResultBottomMenu(
                 parentContext: context,
                 deviceParamItem: device,
+                resultDetail: resultDetail,
               ),
             );
           },
@@ -274,26 +286,6 @@ class _ParameterItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10.0, 0.0, 6.0, 0.0),
-                              child: Text(
-                                '${device.id}  ${device.oid}  ${device.param}',
-                                //maxLines: 2,
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                  fontSize: CommonStyle.sizeM,
-                                  color: Colors.grey.shade700,
-                                  // fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
                     ],
                   ),
                 ),
@@ -349,7 +341,6 @@ class _RetryFloatingActionButton extends StatelessWidget {
             (isSelectedDevices) =>
                 isSelectedDevices.any((isSelected) => isSelected == true));
 
-        print('isContainSelectedItem: $isContainSelectedItem');
         return isContainSelectedItem
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -394,10 +385,12 @@ class _DeviceSettingResultBottomMenu extends StatelessWidget {
     Key? key,
     required this.parentContext,
     required this.deviceParamItem,
+    required this.resultDetail,
   }) : super(key: key);
 
   final BuildContext parentContext;
   final DeviceParamItem deviceParamItem;
+  final ResultDetail resultDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -426,7 +419,11 @@ class _DeviceSettingResultBottomMenu extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
             Navigator.push(
-                context, DeviceSettingResultDetailPage.route(deviceParamItem));
+                context,
+                DeviceSettingResultDetailPage.route(
+                  deviceParamItem,
+                  resultDetail,
+                ));
           },
         ),
       ],
