@@ -67,7 +67,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
-    if (event.parent.id == 2 || event.parent.id == 5) {
+    if (event.parent.type == 2 || event.parent.type == 5) {
       List<Node> directory = [];
       directory.addAll(state.directory);
 

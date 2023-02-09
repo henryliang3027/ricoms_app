@@ -24,12 +24,18 @@ class MasterSlaveServerInfo {
 
       if (data['code'] == '200') {
         int model = data['data'][0]['model'];
-        MasterSlaveServerInfo.masterServerIP = data['data'][0]['server_master'];
-        MasterSlaveServerInfo.slaveServerIP = data['data'][0]['server_slave'];
-        MasterSlaveServerInfo.onlineServerIP = data['data'][0]['server_online'];
+
         if (model == 1) {
+          MasterSlaveServerInfo.masterServerIP =
+              data['data'][0]['server_master'];
+          MasterSlaveServerInfo.slaveServerIP = data['data'][0]['server_slave'];
+          MasterSlaveServerInfo.onlineServerIP =
+              data['data'][0]['server_online'];
           return MasterSlaveServerInfo.onlineServerIP;
         } else {
+          MasterSlaveServerInfo.masterServerIP = loginIP;
+          MasterSlaveServerInfo.slaveServerIP = loginIP;
+          MasterSlaveServerInfo.onlineServerIP = loginIP;
           return loginIP;
         }
       } else {

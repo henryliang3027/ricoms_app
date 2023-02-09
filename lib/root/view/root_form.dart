@@ -496,7 +496,7 @@ class _NodeContent extends StatelessWidget {
               onTap: () {
                 // Root: 0,
                 // Group: 1,
-                // Device: 2,
+                // Device: 2, (edfa)
                 // A8K: 3,
                 // Shelf: 4,
                 // Slot: 5,
