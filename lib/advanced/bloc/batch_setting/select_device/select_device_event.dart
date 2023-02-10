@@ -11,8 +11,8 @@ class DeviceDataRequested extends SelectDeviceEvent {
   List<Object?> get props => [];
 }
 
-class KeywordChanged extends SelectDeviceEvent {
-  const KeywordChanged(this.keyword);
+class KeywordSearched extends SelectDeviceEvent {
+  const KeywordSearched(this.keyword);
 
   final String keyword;
 
@@ -20,8 +20,8 @@ class KeywordChanged extends SelectDeviceEvent {
   List<Object?> get props => [keyword];
 }
 
-class DeviceDataSearched extends SelectDeviceEvent {
-  const DeviceDataSearched();
+class KeywordCleared extends SelectDeviceEvent {
+  const KeywordCleared();
 
   @override
   List<Object?> get props => [];

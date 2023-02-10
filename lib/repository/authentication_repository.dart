@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
@@ -421,8 +422,10 @@ class AuthenticationRepository {
       String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
           loginIP: user.ip, dio: dio);
 
-      print('checkUserPermission login ip: ${user.ip}');
-      print('checkUserPermission online ip: ${onlineIP}');
+      if (kDebugMode) {
+        print('checkUserPermission login ip: ${user.ip}');
+        print('checkUserPermission online ip: ${onlineIP}');
+      }
 
       dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
@@ -441,26 +444,21 @@ class AuthenticationRepository {
           String permission = data['data'][0]['permission'];
 
           if (user.permission == permission) {
-            print('msg: ${user.permission}, ${permission}');
             return [true, false];
           } else {
-            print('msg: ${user.permission}, ${permission}');
             return [true, true];
           }
         } else {
           // Failed to get user permission
-          // if the request hangs for too long, a code 301 will be returned
 
+          // if the request hangs for too long, a code 301 will be returned
           if (data['code'] == 301) {
-            print('msg: ${data['code']}, false, false');
             return [false, false];
           } else {
-            print('msg: ${data['code']}, true, true');
             return [true, true];
           }
         }
       } on DioError catch (_) {
-        print('msg: DioError');
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {

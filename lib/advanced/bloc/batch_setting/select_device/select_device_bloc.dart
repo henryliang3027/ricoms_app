@@ -18,8 +18,8 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
         _batchSettingRepository = batchSettingRepository,
         super(const SelectDeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
-    on<KeywordChanged>(_onKeywordChanged);
-    on<DeviceDataSearched>(_onDeviceDataSearched);
+    on<KeywordCleared>(_onKeywordCleared);
+    on<KeywordSearched>(_onKeywordSearched);
     on<DeviceItemToggled>(_onDeviceItemToggled);
     on<AllDeviceItemsSelected>(_onAllDeviceItemsSelected);
     on<AllDeviceItemsDeselected>(_onAllDeviceItemsDeselected);
@@ -67,20 +67,11 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     }
   }
 
-  void _onKeywordChanged(
-    KeywordChanged event,
+  void _onKeywordSearched(
+    KeywordSearched event,
     Emitter<SelectDeviceState> emit,
   ) {
-    emit(state.copyWith(
-      keyword: event.keyword,
-    ));
-  }
-
-  void _onDeviceDataSearched(
-    DeviceDataSearched event,
-    Emitter<SelectDeviceState> emit,
-  ) {
-    if (state.keyword.isNotEmpty) {
+    if (event.keyword.isNotEmpty) {
       List<BatchSettingDevice> devices = [];
 
       devices = _allDevices.where((device) {
@@ -99,13 +90,25 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
       }).toList();
 
       emit(state.copyWith(
+        keyword: event.keyword,
         devices: devices,
       ));
     } else {
       emit(state.copyWith(
+        keyword: event.keyword,
         devices: _allDevices,
       ));
     }
+  }
+
+  void _onKeywordCleared(
+    KeywordCleared event,
+    Emitter<SelectDeviceState> emit,
+  ) {
+    emit(state.copyWith(
+      keyword: '',
+      devices: _allDevices,
+    ));
   }
 
   void _onDeviceItemToggled(

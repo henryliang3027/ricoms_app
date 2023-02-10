@@ -11,8 +11,8 @@ class ModuleDataRequested extends SelectModuleEvent {
   List<Object?> get props => [];
 }
 
-class KeywordChanged extends SelectModuleEvent {
-  const KeywordChanged(this.keyword);
+class KeywordSearched extends SelectModuleEvent {
+  const KeywordSearched(this.keyword);
 
   final String keyword;
 
@@ -20,8 +20,8 @@ class KeywordChanged extends SelectModuleEvent {
   List<Object?> get props => [keyword];
 }
 
-class ModuleDataSearched extends SelectModuleEvent {
-  const ModuleDataSearched();
+class KeywordCleared extends SelectModuleEvent {
+  const KeywordCleared();
 
   @override
   List<Object?> get props => [];

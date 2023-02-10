@@ -16,8 +16,8 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
         _batchSettingRepository = batchSettingRepository,
         super(const SelectModuleState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
-    on<KeywordChanged>(_onKeywordChanged);
-    on<ModuleDataSearched>(_onModuleDataSearched);
+    on<KeywordSearched>(_onKeywordSearched);
+    on<KeywordCleared>(_onKeywordCleared);
 
     add(const ModuleDataRequested());
   }
@@ -53,20 +53,11 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
     }
   }
 
-  void _onKeywordChanged(
-    KeywordChanged event,
+  void _onKeywordSearched(
+    KeywordSearched event,
     Emitter<SelectModuleState> emit,
   ) {
-    emit(state.copyWith(
-      keyword: event.keyword,
-    ));
-  }
-
-  void _onModuleDataSearched(
-    ModuleDataSearched event,
-    Emitter<SelectModuleState> emit,
-  ) {
-    if (state.keyword.isNotEmpty) {
+    if (event.keyword.isNotEmpty) {
       List<Module> modules = [];
 
       modules = _allModules
@@ -75,12 +66,24 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
           .toList();
 
       emit(state.copyWith(
+        keyword: event.keyword,
         modules: modules,
       ));
     } else {
       emit(state.copyWith(
+        keyword: event.keyword,
         modules: _allModules,
       ));
     }
+  }
+
+  void _onKeywordCleared(
+    KeywordCleared event,
+    Emitter<SelectModuleState> emit,
+  ) {
+    emit(state.copyWith(
+      keyword: '',
+      modules: _allModules,
+    ));
   }
 }

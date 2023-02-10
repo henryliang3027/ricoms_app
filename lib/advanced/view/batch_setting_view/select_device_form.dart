@@ -122,16 +122,13 @@ class _KeywordInput extends StatelessWidget {
               ),
               onChanged: (String? keyword) {
                 if (keyword != null) {
-                  context.read<SelectDeviceBloc>().add(KeywordChanged(keyword));
+                  context
+                      .read<SelectDeviceBloc>()
+                      .add(KeywordSearched(keyword));
                 }
               },
-              onFieldSubmitted: (String? keyword) {
-                context
-                    .read<SelectDeviceBloc>()
-                    .add(const DeviceDataSearched());
-              },
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(5),
+                contentPadding: const EdgeInsets.all(6),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(width: 1.0),
                 ),
@@ -151,28 +148,35 @@ class _KeywordInput extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
-                suffixIcon: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  color: Colors.grey,
-                  child: IconButton(
-                    color: Colors.white,
-                    splashColor: Colors.blue.shade100,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.search_outlined,
-                    ),
-                    onPressed: () {
-                      context
-                          .read<SelectDeviceBloc>()
-                          .add(const DeviceDataSearched());
-                    },
-                  ),
-                ),
+                suffixIconConstraints: state.keyword.isNotEmpty
+                    ? const BoxConstraints(
+                        maxHeight: 34,
+                        maxWidth: 34,
+                        minHeight: 34,
+                        minWidth: 34)
+                    : null,
+                suffixIcon: state.keyword.isNotEmpty
+                    ? Material(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(4.0),
+                          bottomRight: Radius.circular(4.0),
+                        ),
+                        color: Colors.grey,
+                        child: IconButton(
+                          color: Colors.white,
+                          splashColor: Colors.blue.shade100,
+                          icon: const Icon(
+                            CustomIcons.cancel,
+                          ),
+                          onPressed: () {
+                            _controller.clear();
+                            context
+                                .read<SelectDeviceBloc>()
+                                .add(const KeywordCleared());
+                          },
+                        ),
+                      )
+                    : null,
               ),
             ),
           );
