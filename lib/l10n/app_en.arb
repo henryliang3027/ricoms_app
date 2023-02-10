@@ -1045,6 +1045,11 @@
       "description": "Do you want to reset these setting to default ?"
     },
 
+    "dialogMessage_AskBeforeLogout": "Do you want to logout ?",
+    "@all": {
+      "description": "Do you want to logout ?"
+    },
+
     "dialogTitle_resetToDefaultSetting": "Reset",
     "@all": {
       "description": "reset"

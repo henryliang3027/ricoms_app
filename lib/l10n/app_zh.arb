@@ -221,6 +221,8 @@
     "dialogMessage_lostConnectionToServerContent": "請檢查您的網路連線後再重新登入",
     "dialogMessage_resetToRICOMSDefault": "確認回復 RICOMS 預設設定 ?",
     "dialogMessage_resetToDefaultSetting": "確認執行回復 RICOMS 出廠設定值 ?",
+    "dialogMessage_AskBeforeLogout": "您確定要登出嗎?",
+    "dialogTitle_Logout": "Logout",
     "dialogTitle_resetToDefaultSetting": "回復預設設定",
     "dialogTitle_lostConnectionToServer": "失去與伺服器的連線",
     "dialogTitle_NoMoreData": "搜尋成功！",
