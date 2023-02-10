@@ -146,7 +146,8 @@ class DeviceSettingResultBloc
     }
 
     emit(state.copyWith(
-        deviceProcessingStatusCollection: newDeviceProcessingStatusCollection));
+      deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
+    ));
 
     for (int i = 0; i < state.deviceParamItemsCollection.length; i++) {
       add(RetrySetDeviceParamsRequested(i));
@@ -217,6 +218,8 @@ class DeviceSettingResultBloc
       newDeviceProcessingStatusCollection[indexOfDevice][indexOfParam] =
           ProcessingStatus.failure;
     }
+
+    print('${indexOfDevice}, ${indexOfParam} done');
 
     return ResultDetail(
       processingStatus: newDeviceProcessingStatusCollection[indexOfDevice]

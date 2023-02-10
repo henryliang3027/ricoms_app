@@ -81,7 +81,7 @@ class _PopupMenu extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const Icon(
-                    Icons.delete_outline,
+                    Icons.select_all_outlined,
                     size: 20.0,
                     color: Colors.black,
                   ),
@@ -341,7 +341,12 @@ class _RetryFloatingActionButton extends StatelessWidget {
             (isSelectedDevices) =>
                 isSelectedDevices.any((isSelected) => isSelected == true));
 
-        return isContainSelectedItem
+        bool isProcessing = state.deviceProcessingStatusCollection.any(
+            (deviceProcessingStatusList) => deviceProcessingStatusList.any(
+                (deviceProcessingStatus) =>
+                    deviceProcessingStatus == ProcessingStatus.processing));
+
+        return !isProcessing && isContainSelectedItem
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

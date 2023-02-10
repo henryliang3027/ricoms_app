@@ -206,7 +206,7 @@ class BatchSettingRepository {
         return [false, modifyResult, endTime];
       }
     } on DioError catch (_) {
-      return [false, CustomErrMsg.connectionFailed];
+      return [false, CustomErrMsg.connectionFailed, 'request timeout'];
     }
   }
 }

@@ -409,6 +409,11 @@ class AuthenticationRepository {
     }
   }
 
+  // system admin : 1
+  // administrator : 2
+  // operator : 3
+  // user : 4
+  // disabled : 5
   Future<List<dynamic>> checkUserPermission() async {
     User? user = userApi.getActivateUser();
     if (user != null) {
@@ -436,15 +441,26 @@ class AuthenticationRepository {
           String permission = data['data'][0]['permission'];
 
           if (user.permission == permission) {
+            print('msg: ${user.permission}, ${permission}');
             return [true, false];
           } else {
+            print('msg: ${user.permission}, ${permission}');
             return [true, true];
           }
         } else {
           // Failed to get user permission
-          return [true, true];
+          // if the request hangs for too long, a code 301 will be returned
+
+          if (data['code'] == 301) {
+            print('msg: ${data['code']}, false, false');
+            return [false, false];
+          } else {
+            print('msg: ${data['code']}, true, true');
+            return [true, true];
+          }
         }
       } on DioError catch (_) {
+        print('msg: DioError');
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {

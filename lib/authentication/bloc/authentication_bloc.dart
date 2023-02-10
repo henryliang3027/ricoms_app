@@ -77,6 +77,7 @@ class AuthenticationBloc
               if (result[0]) {
                 if (result[1]) {
                   if (state.status == AuthenticationStatus.authenticated) {
+                    print('AuthenticationStatus.unauthenticated');
                     add(const AuthenticationStatusChanged(AuthenticationReport(
                       status: AuthenticationStatus.unauthenticated,
                     )));
