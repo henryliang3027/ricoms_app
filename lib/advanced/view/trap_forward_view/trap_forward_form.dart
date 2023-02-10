@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
-import 'package:ricoms_app/advanced/view/trap_forward_edit_page.dart';
+import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_edit_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -24,8 +24,8 @@ class TrapForwardForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_deletedSuccessfully,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(
@@ -61,8 +61,8 @@ class TrapForwardForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -215,8 +215,8 @@ class _AccountFloatingActionButton extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {
@@ -501,8 +501,8 @@ class _ForwardOutlineEditBottomMenu extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {

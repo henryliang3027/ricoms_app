@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/change_password/bloc/change_password_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
@@ -20,8 +20,8 @@ class ChangePasswordForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.update,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(
@@ -54,8 +54,8 @@ class ChangePasswordForm extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(AppLocalizations.of(context)!.dialogTitle_error,
-                style: TextStyle(
-                  color: CustomStyle.severityColor[3],
+                style: const TextStyle(
+                  color: CustomStyle.customRed,
                 )),
             content: SingleChildScrollView(
               child: ListBody(

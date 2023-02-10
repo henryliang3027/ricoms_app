@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class DashboardRepository {
   DashboardRepository();
@@ -12,7 +13,9 @@ class DashboardRepository {
   Future<List<dynamic>> getDeviceStatusStatistics({
     required User user,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String deviceStatusStatisticApiPath = '/statistics/device';
@@ -62,7 +65,9 @@ class DashboardRepository {
     required User user,
     required int type,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String deviceSeverityStatisticApiPath =

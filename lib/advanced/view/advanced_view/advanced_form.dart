@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/advanced/view/trap_forward_page.dart';
+import 'package:ricoms_app/advanced/view/batch_setting_view/select_module_page.dart';
+import 'package:ricoms_app/advanced/view/clear_log_record_setting_view/clear_log_record_setting_page.dart';
+import 'package:ricoms_app/advanced/view/default_setting_view/default_setting_page.dart';
+import 'package:ricoms_app/advanced/view/device_working_cycle_view/device_working_cycle_page.dart';
+import 'package:ricoms_app/advanced/view/server_ip_setting_view/server_ip_setting_page.dart';
+import 'package:ricoms_app/advanced/view/trap_alarm_color_view/trap_alarm_color_page.dart';
+import 'package:ricoms_app/advanced/view/trap_alarm_sound_view/trap_alarm_sound_page.dart';
+import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -70,7 +77,7 @@ class _AdvancedOptions extends StatelessWidget {
     List<String> _trapListTileTitles = [
       AppLocalizations.of(context)!.trapForward,
       AppLocalizations.of(context)!.colorOfTrapAlarm,
-      AppLocalizations.of(context)!.alarmSoundOfTrap,
+      AppLocalizations.of(context)!.trapAlarmSound,
     ];
 
     List<String> _systemListTileTitles = [
@@ -85,38 +92,37 @@ class _AdvancedOptions extends StatelessWidget {
     ];
 
     List<int> _trapFunctionPermissions = [
-      22,
-      39,
-      40,
+      22, // TrapForward
+      39, // TrapAlarmColorPage
+      40, // TrapAlarmSoundPage
     ];
 
     List<int> _systemFunctionPermissions = [
-      27,
-      34,
-      38,
+      27, // ServerIPSetting
+      34, // ClearLogRecordsSetting
+      38, // ResetToDefaultSettings
     ];
 
     List<int> _deviceFunctionPermissions = [
-      30,
-      36,
+      30, // BatchSettingPage
+      36, // DeviceWorkingCyclePage
     ];
 
     List<bool> _trapFunctionAccessibility = [
       true,
-      false,
-      false,
+      true,
+      true,
     ];
 
     List<bool> _systemFunctionAccessibility = [
-      false,
-      false,
-      false,
+      true,
+      true,
+      true,
     ];
 
     List<bool> _deviceFunctionAccessibility = [
-      false,
-      false,
-      false,
+      true,
+      true,
     ];
 
     Widget _buildCatecory({required IconData icon, required String title}) {
@@ -167,8 +173,8 @@ class _AdvancedOptions extends StatelessWidget {
                 ? () {
                     List<Route> trapFunctionRoutes = [
                       TrapForwardPage.route(),
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
+                      TrapAlarmColorPage.route(),
+                      TrapAlarmSoundPage.route(),
                     ];
 
                     Navigator.push(context, trapFunctionRoutes[i]);
@@ -216,9 +222,9 @@ class _AdvancedOptions extends StatelessWidget {
             onTap: _systemFunctionAccessibility[i]
                 ? () {
                     List<Route> systemFunctionRoutes = [
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
+                      ServerIPSettingPage.route(),
+                      LogRecordSettingPage.route(),
+                      DefaultSettingPage.route(),
                     ];
 
                     Navigator.push(context, systemFunctionRoutes[i]);
@@ -235,7 +241,7 @@ class _AdvancedOptions extends StatelessWidget {
         systemListTiles.insert(
           0,
           _buildCatecory(
-            icon: CustomIcons.trap_alarm,
+            icon: CustomIcons.system,
             title: AppLocalizations.of(context)!.advancedSystem,
           ),
         );
@@ -266,9 +272,8 @@ class _AdvancedOptions extends StatelessWidget {
             onTap: _deviceFunctionAccessibility[i]
                 ? () {
                     List<Route> deviceFunctionRoutes = [
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
-                      TrapForwardPage.route(),
+                      SelectModulePage.route(),
+                      DeviceWorkingCyclePage.route(),
                     ];
 
                     Navigator.push(context, deviceFunctionRoutes[i]);
@@ -285,7 +290,7 @@ class _AdvancedOptions extends StatelessWidget {
         deviceListTiles.insert(
           0,
           _buildCatecory(
-            icon: CustomIcons.trap_alarm,
+            icon: CustomIcons.device_simple,
             title: AppLocalizations.of(context)!.advancedDevice,
           ),
         );

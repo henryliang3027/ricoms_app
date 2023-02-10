@@ -69,6 +69,71 @@
       "description": "Drawer divider title"
     },
 
+    "about": "About",
+    "@setting": {
+      "description": "about"
+    },
+
+    "contactUs": "Contact Us",
+    "@setting": {
+      "description": "contact us"
+    },
+
+    "aboutArticleParagraph1": "Twoway Communications, Inc., founded in October 1992, is Taiwan's largest broadband amplifier and optical workstation equipment corporation, as well as Asia's first HFC ( Hybrid Fiber-Coaxial ) transmission equipment R&D manufacturer that has passed the certification of major North American MSO ( Multiple-System Operators ).",
+    "@setting": {
+      "description": "about article paragraph 1"
+    },
+
+    "aboutArticleParagraph2": "In 1999, Twoway Group established the American subsidiary \"ACI Communications, Inc.\" and merged the \"Augat\" product line which from the United States, applying the \"ACI\" brand to sell globally. Twoway Group concentrates on R&D and production of high-quality wide-area broadband optical fiber outdoor network equipment, high-performance broadband amplifier products, optical nodes, and head-end optoelectronics equipment. Twoway Group offers a comprehensive selection of high-quality products to deliver the finest services to the worldwide cable television and telecoms sectors.",
+    "@setting": {
+      "description": "about article paragraph 2"
+    },
+
+    "aboutArticleParagraph3": "With its advantages in network technology and equipment, and apply years of experience to \"IoT\" artificial Intelligence of Things related solutions, Twoway Group also provides digital convergence and smart value-added services for major telecommunications carriers in response to the wave of digital transformation. Twoway Group promotes the smart cloud platform in various fields, grasp network system integration application services business opportunities, and also expands the business of urban security network system, develops smart monitoring solutions, integrates cable and optical fiber transmission technology, expands smart home, medical care services and new business opportunities in disaster prevention management.",
+    "@setting": {
+      "description": "about article paragraph 3"
+    },
+
+    "aboutArticleParagraph4": "Twoway Group's highest principle and objective is \"global cross-border logistics, local and timely service,\" and it seeks to construct the finest customized services. Twoway Group presently has branches in the United States, Indonesia, Vietnam, Thailand, and Philippine. Establish the representative office in Japan, South Korea, Chile, and other locations. At the same time, Twoway group works closely with regional distribution partners in several countries throughout the world and improve the quality of services to meet the diverse demands of clients.",
+    "@setting": {
+      "description": "about article paragraph 4"
+    },
+
+    "aboutArticleParagraph5": "The Taiwan Global Headquarters of Twoway Group has received [ ISO 9001 Quality Management System ] and [ ISO 14001 Environmental Management System ] certification.",
+    "@setting": {
+      "description": "about article paragraph 5"
+    },
+
+    "aboutArticleParagraphTitle": "DIGITAL TEAM",
+    "@setting": {
+      "description": "about article paragraph title"
+    },
+
+    "aboutArticleParagraph6": "Our development team includes web project managers, web designers, Front-end / Back-end programmers and system engineers. ACI believes that the correctly designed network management system ( RICOMS ) will help clients in executing accurate, timely, and quick-response monitoring jobs, as well as reaping other benefits. And we will keep improving our ability to gain experience, learn and grow, develop creativity, keep up with the times and integrate with new technologies, absorb the customer feedback, develop more professional equipment monitoring products and global services, and realize the concept of remote monitoring services.",
+    "@setting": {
+      "description": "about article paragraph title"
+    },
+
+    "projectManager": "Project Manager",
+    "@setting": {
+      "description": "project manager"
+    },
+
+    "websiteDesigner": "Website Designer",
+    "@setting": {
+      "description": "website designer"
+    },
+
+    "frontendBackendEngineer": "Front-end / Back-end Engineer",
+    "@setting": {
+      "description": "front-end / back-end Engineer"
+    },
+
+    "systemEngineer": "System Engineer",
+    "@setting": {
+      "description": "system engineer"
+    },
+
 
     "all": "All",
     "@all": {
@@ -155,6 +220,11 @@
       "description": "add to bookmarks"
     },
 
+    "datasheet": "Datasheet",
+    "@all": {
+      "description": "open datasheet"
+    },
+
     "addGroup": "Add Group",
     "@all": {
       "description": "add group"
@@ -223,6 +293,11 @@
     "cancel": "Cancel",
     "@all": {
       "description": "cancel"
+    },
+
+    "yes": "Yes",
+    "@all": {
+      "description": "yes"
     },
 
     "exit": "Exit",
@@ -684,9 +759,49 @@
       "description": "color of trap alarm"
     },
 
-    "alarmSoundOfTrap": "Alarm Sound Of Trap",
+    "trapAlarmBackgroundColor": "Background Color",
+    "@all": {
+      "description": "trap alarm background color"
+    },
+
+    "trapAlarmTextColor": "Text Color",
+    "@all": {
+      "description": "trap alarm text color"
+    },
+
+    "trapAlarmColorPreview": "Perview",
+    "@all": {
+      "description": "trap alarm color preview"
+    },
+
+    "trapAlarmSound": "Alarm Sound Of Trap",
     "@all": {
       "description": "alarm sound of trap"
+    },
+
+    "trapAlarmSoundEnable": "Enable",
+    "@all": {
+      "description": "alarm sound enable"
+    },
+
+    "criticalTrapAlarmSound": "Alarm sound of critical trap",
+    "@all": {
+      "description": "alarm sound of critical trap"
+    },
+
+    "warningTrapAlarmSound": "Alarm sound of warning trap",
+    "@all": {
+      "description": "alarm sound of warning trap"
+    },
+
+    "normalTrapAlarmSound": "Alarm sound of normal trap",
+    "@all": {
+      "description": "alarm sound of normal trap"
+    },
+
+    "noticeTrapAlarmSound": "Alarm sound of notice trap",
+    "@all": {
+      "description": "alarm sound of notice trap"
     },
 
     "serverIPSetting": "Server IP Setting",
@@ -694,9 +809,69 @@
       "description": "server IP setting"
     },
 
+    "masterServerIP": "Master server IP",
+    "@all": {
+      "description": "master server IP"
+    },
+
+    "slaveServerIP": "Slave server IP",
+    "@all": {
+      "description": "slave server IP"
+    },
+
+    "synchronizationInterval": "Waiting time of synchronization (s)",
+    "@all": {
+      "description": "waiting time of synchronization (s)"
+    },
+
+    "onlineServerIP": "Current operating IP",
+    "@all": {
+      "description": "current operating IP"
+    },
+
+    "serverIPSettingHint": "The synchronous setting function of the master-slave server needs to use MYSQL related parameter settings to operate normally.",
+    "@all": {
+      "description": "server IP setting hint"
+    },
+
     "clearLogRecordsSetting": "Clear Log Records Setting",
     "@all": {
       "description": "clear log records s etting"
+    },
+
+    "trapHistory": "History",
+    "@all": {
+      "description": "trap history"
+    },
+
+    "apiLog": "API log",
+    "@all": {
+      "description": "api log"
+    },
+
+    "userSystemLog": "System log from user",
+    "@all": {
+      "description": "system log from user"
+    },
+
+    "deviceSystemLog": "System log from device",
+    "@all": {
+      "description": "system log from device"
+    },
+
+    "archivedHistoricalRecordQuanitiy": "The number of archived historical records",
+    "@all": {
+      "description": "the number of archived historical records"
+    },
+
+    "preservedQuantity": "The preserved amount",
+    "@all": {
+      "description": "the preserved amount"
+    },
+
+    "preservedDays": "The preserved days",
+    "@all": {
+      "description": "the preserved days"
     },
 
     "resetToDefaultSettings": "Reset To Default Settings",
@@ -704,16 +879,75 @@
       "description": "reset to default settings"
     },
 
+    "clearingFeature": "The feature of clearing",
+    "@all": {
+      "description": "the feature of clearing"
+    },
+
+    "defaultValue": "Default: ",
+    "@all": {
+      "description": "default value"
+    },
+
+    "currentValue": "Current: ",
+    "@all": {
+      "description": "current value"
+    },
+
     "batchSetting": "Batch Setting",
     "@all": {
       "description": "batch setting"
+    },
+
+    "selectDevice": "Select Device",
+    "@all": {
+      "description": "select device"
+    },
+
+    "deviceSetting": "Device Setting",
+    "@all": {
+      "description": "device setting"
+    },
+
+    "batchSettingResult": "Setting Result",
+    "@all": {
+      "description": "setting result"
+    },
+
+    "paramSettingStatus": "Status",
+    "@all": {
+      "description": "param setting status"
+    },
+
+    "paramSettingEndTime": "Finished Time",
+    "@all": {
+      "description": "param setting end time"
+    },
+
+    "paramSettingSuccessful": "Success",
+    "@all": {
+      "description": "param setting successful"
+    },
+
+    "paramSettingFailed": "Failure",
+    "@all": {
+      "description": "param setting failed"
+    },
+
+    "paramSettingProcessing": "Processing",
+    "@all": {
+      "description": "param setting processing"
+    },
+
+    "batchSettingResult": "Setting Result",
+    "@all": {
+      "description": "setting result"
     },
 
     "deviceWorkingCycle": "Device's Working Cycle",
     "@all": {
       "description": "device's working cycle"
     },
-
 
     "dialogMessage_LoginFailed": "Login failed. Please reconfirm your account password.",
     "@all": {
@@ -801,6 +1035,21 @@
       "description": "lost connection to server content"
     },
 
+    "dialogMessage_resetToRICOMSDefault": "Do you want to reset to RICOMS default ?",
+    "@all": {
+      "description": "Do you want to reset to RICOMS default ?"
+    },
+
+    "dialogMessage_resetToDefaultSetting": "Do you want to reset these setting to default ?",
+    "@all": {
+      "description": "Do you want to reset these setting to default ?"
+    },
+
+    "dialogTitle_resetToDefaultSetting": "Reset",
+    "@all": {
+      "description": "reset"
+    },
+
     "dialogTitle_lostConnectionToServer": "Lost Connection To Server.",
     "@all": {
       "description": "lost connection to server."
@@ -884,6 +1133,11 @@
     "dialogTitle_AskBeforeExitApp": "Are you sure you want to exit App ?",
     "@all": {
       "description": "Are you sure you want to exit app ?"
+    },
+
+    "dialogTitle_resetToRICOMSDefault": "Reset to RICOMS default",
+    "@all": {
+      "description": "reset to RICOMS default"
     }
 
 }

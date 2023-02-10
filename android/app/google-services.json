@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "765866363329",
+    "project_id": "fcmtest-7e77a",
+    "storage_bucket": "fcmtest-7e77a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:765866363329:android:8257f18b51460dd44f0740",
+        "android_client_info": {
+          "package_name": "com.aci.ricomsApp1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "765866363329-83fk5sp2mi57ttitq093o92a80h6a1t7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFRYwvKaIyT3Wwph4SE2Px_8goqcOljxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "765866363329-83fk5sp2mi57ttitq093o92a80h6a1t7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

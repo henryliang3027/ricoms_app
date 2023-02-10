@@ -8,7 +8,7 @@ import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/system_log_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/system_log/bloc/system_log/system_log_bloc.dart';
 import 'package:ricoms_app/system_log/view/filter_page.dart';
 import 'package:ricoms_app/system_log/view/system_log_detail_page.dart';
@@ -38,8 +38,8 @@ class SystemLogForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -75,8 +75,8 @@ class SystemLogForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_NoMoreData,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -124,8 +124,8 @@ class SystemLogForm extends StatelessWidget {
                   onPressed: () async {
                     OpenFilex.open(
                       state.logExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
                   },
                 ),

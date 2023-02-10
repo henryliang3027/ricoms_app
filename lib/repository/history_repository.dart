@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
+import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/display_style.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class HistoryRepository {
   HistoryRepository();
@@ -30,7 +29,9 @@ class HistoryRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String historyApiPath =
@@ -120,7 +121,9 @@ class HistoryRepository {
     String queryData = '',
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String historyApiPath =
@@ -198,7 +201,9 @@ class HistoryRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
@@ -232,7 +237,9 @@ class HistoryRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -262,8 +269,9 @@ class HistoryRepository {
     required User user,
     required List<Record> records,
   }) async {
-    List<List<String>> rows = [];
     List<String> header = [];
+    Excel excel = Excel.createExcel();
+    Sheet sheet = excel['Sheet1'];
 
     header
       ..add('Severity')
@@ -276,9 +284,11 @@ class HistoryRepository {
       ..add('Time Received')
       ..add('Clear Time')
       ..add('Alarm Duration');
-    rows.add(header);
 
-    for (Record record in records) {
+    sheet.insertRowIterables(header, 0);
+
+    for (int i = 0; i < records.length; i++) {
+      Record record = records[i];
       List<String> row = [];
       String severity = CustomStyle.severityName[record.severity] ?? '';
       String ip = record.ip;
@@ -302,20 +312,21 @@ class HistoryRepository {
         ..add(clearTime)
         ..add(alarmDuration);
 
-      rows.add(row);
+      sheet.insertRowIterables(row, i + 1);
     }
 
-    String csv = const ListToCsvConverter().convert(rows);
+    var fileBytes = excel.save();
+
     String timeStamp =
         DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
-    String filename = 'history_data_$timeStamp.csv';
+    String filename = 'history_data_$timeStamp.xlsx';
 
     if (Platform.isIOS) {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsBytes(fileBytes!);
       return [
         true,
         'Export history data success',
@@ -326,7 +337,7 @@ class HistoryRepository {
       String appDocPath = appDocDir.path;
       String fullWrittenPath = '$appDocPath/$filename';
       File f = File(fullWrittenPath);
-      await f.writeAsString(csv);
+      await f.writeAsBytes(fileBytes!);
 
       return [
         true,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/root/bloc/edit_device/edit_device_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
@@ -53,15 +53,21 @@ class DeviceEditForm extends StatelessWidget {
                     ? Text(
                         AppLocalizations.of(context)!
                             .dialogTitle_connectToTheDeviceSuccess,
-                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                        style: const TextStyle(
+                          color: CustomStyle.customGreen,
+                        ),
                       )
                     : Text(
                         AppLocalizations.of(context)!.dialogTitle_editSuccess,
-                        style: TextStyle(color: CustomStyle.severityColor[1]),
+                        style: const TextStyle(
+                          color: CustomStyle.customGreen,
+                        ),
                       )
                 : Text(
                     AppLocalizations.of(context)!.dialogTitle_createSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -97,7 +103,9 @@ class DeviceEditForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(color: CustomStyle.severityColor[3]),
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
             ),
             content: SingleChildScrollView(
               child: ListBody(

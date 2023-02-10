@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommonWidget {
@@ -25,9 +25,7 @@ class CommonWidget {
             TextButton(
               child: Text(
                 AppLocalizations.of(context)!.exit,
-                style: TextStyle(
-                  color: CustomStyle.severityColor[3],
-                ),
+                style: const TextStyle(color: CustomStyle.customRed),
               ),
               onPressed: () {
                 Navigator.of(context).pop(true); // pop dialog

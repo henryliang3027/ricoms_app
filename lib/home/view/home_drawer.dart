@@ -139,6 +139,30 @@ class HomeDrawer extends StatelessWidget {
       return extraListTile;
     }
 
+    Widget _buildAboutListTile(int currentPageIndex) {
+      return ListTile(
+        dense: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Icon(
+            Icons.info_outline,
+            color: currentPageIndex == 8 ? Colors.blue : Colors.grey,
+          ),
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.about,
+          style: TextStyle(
+            fontSize: CommonStyle.sizeL,
+            color: currentPageIndex == 8 ? Colors.blue : Colors.black,
+          ),
+        ),
+        onTap: () {
+          pageController.jumpToPage(8);
+          Navigator.pop(context); //close drawer
+        },
+      );
+    }
+
     return SafeArea(
       child: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -187,6 +211,7 @@ class HomeDrawer extends StatelessWidget {
             ),
             ..._buildMainListView(currentPageIndex),
             ..._buildExtraListView(currentPageIndex),
+            _buildAboutListTile(currentPageIndex),
             const Divider(
               height: 0.0,
             ),

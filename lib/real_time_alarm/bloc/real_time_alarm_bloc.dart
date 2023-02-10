@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -15,6 +17,7 @@ part 'real_time_alarm_event.dart';
 part 'real_time_alarm_state.dart';
 
 const throttleDuration = Duration(milliseconds: 1000);
+const throttleDurationOfAlarmSoundPlayed = Duration(milliseconds: 3000);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) {
@@ -35,6 +38,10 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     on<NormalAlarmRequested>(_onNormalAlarmRequested);
     on<NoticeAlarmRequested>(_onNoticeAlarmRequested);
     on<AlarmPeriodicUpdated>(_onAlarmPeriodicUpdated);
+    on<AlarmSoundPlayed>(
+      _onAlarmSoundPlayed,
+      transformer: throttleDroppable(throttleDurationOfAlarmSoundPlayed),
+    );
     on<CheckDeviceStatus>(
       _onCheckDeviceStatus,
       transformer: throttleDroppable(throttleDuration),
@@ -45,10 +52,16 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     add(const WarningAlarmRequested(RequestMode.initial));
     add(const NormalAlarmRequested(RequestMode.initial));
     add(const NoticeAlarmRequested(RequestMode.initial));
+
+    _assetsAudioPlayer.open(
+      Audio("assets/audios/trap_sound.mp3"),
+      autoStart: false,
+    );
   }
 
   final User _user;
   final RealTimeAlarmRepository _realTimeAlarmRepository;
+  final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
 
   StreamSubscription<int>? _dataStreamSubscription;
 
@@ -56,6 +69,17 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
   Future<void> close() {
     _dataStreamSubscription?.cancel();
     return super.close();
+  }
+
+  void _onAlarmSoundPlayed(
+    AlarmSoundPlayed event,
+    Emitter<RealTimeAlarmState> emit,
+  ) {
+    if (AlarmSoundConfig.activateAlarm) {
+      if (AlarmSoundConfig.enableTrapAlarmSound[event.latestAlarm.severity]) {
+        _assetsAudioPlayer.play();
+      }
+    }
   }
 
   Future<void> _onAlarmPeriodicUpdated(
@@ -104,10 +128,18 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     );
 
     if (result[0]) {
+      List<Alarm> allAlarms = result[1];
+
+      if (state.allAlarms.isNotEmpty) {
+        if (state.allAlarms.first != allAlarms.first) {
+          add(AlarmSoundPlayed(allAlarms.first));
+        }
+      }
+
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         allAlarmsStatus: FormStatus.requestSuccess,
-        allAlarms: result[1],
+        allAlarms: allAlarms,
       ));
     } else {
       emit(state.copyWith(
@@ -135,10 +167,18 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     );
 
     if (result[0]) {
+      List<Alarm> criticalAlarms = result[1];
+
+      if (state.criticalAlarms.isNotEmpty) {
+        if (state.criticalAlarms.first != criticalAlarms.first) {
+          add(AlarmSoundPlayed(criticalAlarms.first));
+        }
+      }
+
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         criticalAlarmsStatus: FormStatus.requestSuccess,
-        criticalAlarms: result[1],
+        criticalAlarms: criticalAlarms,
       ));
     } else {
       emit(state.copyWith(
@@ -164,10 +204,18 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
         user: _user, alarmType: AlarmType.warning);
 
     if (result[0]) {
+      List<Alarm> warningAlarms = result[1];
+
+      if (state.warningAlarms.isNotEmpty) {
+        if (state.warningAlarms.first != warningAlarms.first) {
+          add(AlarmSoundPlayed(warningAlarms.first));
+        }
+      }
+
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         warningAlarmsStatus: FormStatus.requestSuccess,
-        warningAlarms: result[1],
+        warningAlarms: warningAlarms,
       ));
     } else {
       emit(state.copyWith(
@@ -195,10 +243,18 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     );
 
     if (result[0]) {
+      List<Alarm> normalAlarms = result[1];
+
+      if (state.normalAlarms.isNotEmpty) {
+        if (state.normalAlarms.first != normalAlarms.first) {
+          add(AlarmSoundPlayed(normalAlarms.first));
+        }
+      }
+
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         normalAlarmsStatus: FormStatus.requestSuccess,
-        normalAlarms: result[1],
+        normalAlarms: normalAlarms,
       ));
     } else {
       emit(state.copyWith(
@@ -226,10 +282,18 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     );
 
     if (result[0]) {
+      List<Alarm> noticeAlarms = result[1];
+
+      if (state.noticeAlarms.isNotEmpty) {
+        if (state.noticeAlarms.first != noticeAlarms.first) {
+          add(AlarmSoundPlayed(noticeAlarms.first));
+        }
+      }
+
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         noticeAlarmsStatus: FormStatus.requestSuccess,
-        noticeAlarms: result[1],
+        noticeAlarms: noticeAlarms,
       ));
     } else {
       emit(state.copyWith(

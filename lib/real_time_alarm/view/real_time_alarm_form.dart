@@ -8,7 +8,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,9 +23,14 @@ class RealTimeAlarmForm extends StatelessWidget {
 
   final PageController pageController;
   final List initialPath;
+  // final AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   Widget build(BuildContext context) {
+    // assetsAudioPlayer.open(
+    //   Audio("assets/audios/trap_sound.mp3"),
+    // );
+
     Future<void> _showFailureDialog(String msg) async {
       return showDialog<void>(
         context: context,
@@ -34,8 +39,8 @@ class RealTimeAlarmForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -78,6 +83,14 @@ class RealTimeAlarmForm extends StatelessWidget {
           length: 5,
           child: Scaffold(
             appBar: AppBar(
+              // actions: [
+              //   ElevatedButton(
+              //       onPressed: () async {
+              //         assetsAudioPlayer.play();
+              //         await Future.delayed(Duration(milliseconds: 100));
+              //       },
+              //       child: Icon(Icons.play_arrow))
+              // ],
               centerTitle: true,
               title: Text(
                 AppLocalizations.of(context)!.realTimeAlarm,

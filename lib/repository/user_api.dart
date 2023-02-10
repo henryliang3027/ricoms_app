@@ -25,18 +25,20 @@ class UserApi {
       return false;
     } else {
       User newUser = User(
-          id: user.id,
-          ip: user.ip,
-          name: user.name,
-          password: user.password,
-          permission: user.permission,
-          email: user.email,
-          mobile: user.mobile,
-          tel: user.tel,
-          ext: user.ext,
-          bookmarks: user.bookmarks,
-          account: user.account,
-          isActivate: false);
+        id: user.id,
+        ip: user.ip,
+        name: user.name,
+        password: user.password,
+        permission: user.permission,
+        email: user.email,
+        mobile: user.mobile,
+        tel: user.tel,
+        ext: user.ext,
+        bookmarks: user.bookmarks,
+        account: user.account,
+        isActivate: false,
+        severityColors: user.severityColors,
+      );
       await _userBox.put(userId, newUser);
 
       return true;
@@ -61,34 +63,38 @@ class UserApi {
     if (user == null) {
       // add user
       User newUser = User(
-          id: userId,
-          ip: ip,
-          name: name,
-          account: account,
-          password: password,
-          permission: permission,
-          email: email,
-          mobile: mobile,
-          tel: tel,
-          ext: ext,
-          bookmarks: const [],
-          isActivate: true);
+        id: userId,
+        ip: ip,
+        name: name,
+        account: account,
+        password: password,
+        permission: permission,
+        email: email,
+        mobile: mobile,
+        tel: tel,
+        ext: ext,
+        bookmarks: const [],
+        isActivate: true,
+      );
       await _userBox.put(userId, newUser);
     } else {
       //update user's data
       User updatedUser = User(
-          id: user.id,
-          ip: ip,
-          name: name,
-          account: account,
-          password: password,
-          permission: permission,
-          email: email,
-          mobile: mobile,
-          tel: tel,
-          ext: ext,
-          bookmarks: user.bookmarks, //get user's latest bookbarks
-          isActivate: true);
+        id: user.id,
+        ip: ip,
+        name: name,
+        account: account,
+        password: password,
+        permission: permission,
+        email: email,
+        mobile: mobile,
+        tel: tel,
+        ext: ext,
+        bookmarks: user.bookmarks, //get user's latest bookbarks
+        isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
+      );
       await _userBox.put(userId, updatedUser);
     }
   }
@@ -127,6 +133,8 @@ class UserApi {
         ext: user.ext,
         bookmarks: newBookmarks,
         isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
@@ -158,6 +166,8 @@ class UserApi {
         ext: user.ext,
         bookmarks: newBookmarks,
         isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
@@ -191,12 +201,102 @@ class UserApi {
         ext: user.ext,
         bookmarks: newBookmarks,
         isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
       );
       await _userBox.put(userId, updatedUser);
 
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<dynamic> setTrapAlarmColorByUserId(
+    String userId,
+    List<int> severityColors,
+  ) async {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      User updatedUser = User(
+        id: user.id,
+        ip: user.ip,
+        name: user.name,
+        account: user.account,
+        password: user.password,
+        permission: user.permission,
+        email: user.email,
+        mobile: user.mobile,
+        tel: user.tel,
+        ext: user.ext,
+        bookmarks: user.bookmarks,
+        isActivate: true,
+        severityColors: severityColors,
+        alarmSoundEnableValues: user.alarmSoundEnableValues,
+      );
+
+      await _userBox.put(userId, updatedUser);
+
+      return [true];
+    } else {
+      return [false, 'User does not exist.'];
+    }
+  }
+
+  List<dynamic> getTrapAlarmColorByUserId(
+    String userId,
+  ) {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      return [true, user.severityColors];
+    } else {
+      return [false, 'User does not exist.'];
+    }
+  }
+
+  Future<dynamic> setAlarmSoundEnableValuesByUserId(
+    String userId,
+    List<bool> alarmSoundEnableValues,
+  ) async {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      User updatedUser = User(
+        id: user.id,
+        ip: user.ip,
+        name: user.name,
+        account: user.account,
+        password: user.password,
+        permission: user.permission,
+        email: user.email,
+        mobile: user.mobile,
+        tel: user.tel,
+        ext: user.ext,
+        bookmarks: user.bookmarks,
+        isActivate: true,
+        severityColors: user.severityColors,
+        alarmSoundEnableValues: alarmSoundEnableValues,
+      );
+
+      await _userBox.put(userId, updatedUser);
+
+      return [true];
+    } else {
+      return [false, 'User does not exist.'];
+    }
+  }
+
+  List<dynamic> getAlarmSoundEnableValuesByUserId(
+    String userId,
+  ) {
+    User? user = _userBox.get(userId); //get user if it already exists
+
+    if (user != null) {
+      return [true, user.alarmSoundEnableValues];
+    } else {
+      return [false, 'User does not exist.'];
     }
   }
 }

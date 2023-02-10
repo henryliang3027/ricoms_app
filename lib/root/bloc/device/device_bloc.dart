@@ -121,6 +121,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
+        controllerPropertiesCollection: [],
+        controllerValues: {},
+        controllerInitialValues: {},
         editable: _deviceBlock.editable,
       ));
     }

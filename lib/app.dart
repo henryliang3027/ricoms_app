@@ -5,14 +5,21 @@ import 'package:ricoms_app/home/view/home_page.dart';
 import 'package:ricoms_app/login/view/login_page.dart';
 import 'package:ricoms_app/repository/account_repository.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/dashboard_repository.dart';
+import 'package:ricoms_app/repository/default_setting_repository.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/log_record_setting_repository.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
 import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';
 
 class App extends StatelessWidget {
@@ -28,6 +35,13 @@ class App extends StatelessWidget {
     required this.systemLogRepository,
     required this.accountRepository,
     required this.trapForwardRepository,
+    required this.trapAlarmColorRepository,
+    required this.trapAlarmSoundRepository,
+    required this.serverIPSettingRepository,
+    required this.logRecordSettingRepository,
+    required this.defaultSettingRepository,
+    required this.batchSettingRepository,
+    required this.deviceWorkingCycleRepository,
   }) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
@@ -40,6 +54,13 @@ class App extends StatelessWidget {
   final SystemLogRepository systemLogRepository;
   final AccountRepository accountRepository;
   final TrapForwardRepository trapForwardRepository;
+  final TrapAlarmColorRepository trapAlarmColorRepository;
+  final TrapAlarmSoundRepository trapAlarmSoundRepository;
+  final ServerIPSettingRepository serverIPSettingRepository;
+  final LogRecordSettingRepository logRecordSettingRepository;
+  final DefaultSettingRepository defaultSettingRepository;
+  final BatchSettingRepository batchSettingRepository;
+  final DeviceWorkingCycleRepository deviceWorkingCycleRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +96,33 @@ class App extends StatelessWidget {
         RepositoryProvider<TrapForwardRepository>(
           create: (context) => trapForwardRepository,
         ),
+        RepositoryProvider<TrapAlarmColorRepository>(
+          create: (context) => trapAlarmColorRepository,
+        ),
+        RepositoryProvider<TrapAlarmSoundRepository>(
+          create: (context) => trapAlarmSoundRepository,
+        ),
+        RepositoryProvider<ServerIPSettingRepository>(
+          create: (context) => serverIPSettingRepository,
+        ),
+        RepositoryProvider<LogRecordSettingRepository>(
+          create: (context) => logRecordSettingRepository,
+        ),
+        RepositoryProvider<DefaultSettingRepository>(
+          create: (context) => defaultSettingRepository,
+        ),
+        RepositoryProvider<BatchSettingRepository>(
+          create: (context) => batchSettingRepository,
+        ),
+        RepositoryProvider<DeviceWorkingCycleRepository>(
+          create: (context) => deviceWorkingCycleRepository,
+        ),
       ],
       child: BlocProvider(
         create: (_) => AuthenticationBloc(
           authenticationRepository: authenticationRepository,
+          trapAlarmColorRepository: trapAlarmColorRepository,
+          trapAlarmSoundRepository: trapAlarmSoundRepository,
         ),
         child: const AppView(),
       ),

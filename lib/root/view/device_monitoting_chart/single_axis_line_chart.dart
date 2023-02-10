@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class SingleAxisLineChart extends StatefulWidget {
@@ -81,9 +81,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? -double.maxFinite;
     double minorH = widget.minorH ?? -double.maxFinite;
     double minorL = widget.minorL ?? -double.maxFinite;
-    double maximumChartValue = widget.chartDateValuePairs
-        .reduce((current, next) => current.value > next.value ? current : next)
-        .value;
+    double maximumChartValue = widget.chartDateValuePairs.isNotEmpty
+        ? widget.chartDateValuePairs
+            .reduce(
+                (current, next) => current.value > next.value ? current : next)
+            .value
+        : 0.0;
     double maximum = 0.0;
 
     maximum = [majorH, majorL, minorH, minorL, maximumChartValue]
@@ -97,9 +100,12 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? double.maxFinite;
     double minorH = widget.minorH ?? double.maxFinite;
     double minorL = widget.minorL ?? double.maxFinite;
-    double minimumChartValue = widget.chartDateValuePairs
-        .reduce((current, next) => current.value < next.value ? current : next)
-        .value;
+    double minimumChartValue = widget.chartDateValuePairs.isNotEmpty
+        ? widget.chartDateValuePairs
+            .reduce(
+                (current, next) => current.value < next.value ? current : next)
+            .value
+        : 0.0;
     double minimum = 0.0;
 
     minimum = [majorH, majorL, minorH, minorL, minimumChartValue]

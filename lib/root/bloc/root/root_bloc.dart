@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:stream_transform/stream_transform.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 part 'root_event.dart';
 part 'root_state.dart';
@@ -20,13 +19,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         _rootRepository = rootRepository,
         _initialPath = initialPath,
         super(const RootState()) {
-    on<ChildDataRequested>(_onChildDataRequested);
+    on<ChildDataRequested>(
+      _onChildDataRequested,
+      transformer: sequential(),
+    );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
-    on<DeviceDataRequested>(_onDeviceDataRequested);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
+    on<DataSheetOpened>(_onDataSheetOpened);
 
     add(const ChildDataRequested(
         Node(
@@ -35,6 +37,18 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           name: 'Root',
         ),
         RequestMode.initial));
+
+    final dataStream =
+        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+
+    _dataStreamSubscription = dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      if (state.directory.isNotEmpty) {
+        add(ChildDataRequested(state.directory.last, RequestMode.update));
+      }
+    });
   }
 
   final User _user;
@@ -53,99 +67,127 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
-    if (event.requestMode == RequestMode.initial) {
-      _dataStreamSubscription?.cancel();
+    if (event.parent.type == 2 || event.parent.type == 5) {
+      List<Node> directory = [];
+      directory.addAll(state.directory);
+
+      //_deviceRepository.deviceNodeId = event.node.id.toString();
+
+      !directory.contains(event.parent) ? directory.add(event.parent) : null;
+      int currentIndex = directory
+          .indexOf(event.parent); // -1 represent to element does not exist
+      currentIndex != -1
+          ? directory.removeRange(
+              currentIndex + 1 < directory.length
+                  ? currentIndex + 1
+                  : directory.length,
+              directory.length)
+          : null;
+
+      bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
+
       emit(state.copyWith(
-        formStatus: FormStatus.requestInProgress,
+        formStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
+        dataSheetOpenStatus: FormStatus.none,
+        nodesExportStatus: FormStatus.none,
+        directory: directory,
+        isAddedToBookmarks: isAddedToBookmarks,
       ));
-    }
+    } else {
+      if (event.requestMode == RequestMode.initial) {
+        _dataStreamSubscription?.pause();
+        emit(state.copyWith(
+          formStatus: FormStatus.requestInProgress,
+          submissionStatus: SubmissionStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          nodesExportStatus: FormStatus.none,
+        ));
+      }
 
-    dynamic data = await _rootRepository.getChilds(
-      user: _user,
-      parentId: event.parent.id,
-    );
+      dynamic data = await _rootRepository.getChilds(
+        user: _user,
+        parentId: event.parent.id,
+      );
 
-    List<Node> directory = [];
-    directory.addAll(state.directory);
+      List<Node> directory = [];
+      directory.addAll(state.directory);
 
-    !directory.contains(event.parent) ? directory.add(event.parent) : null;
-    int currentIndex = directory
-        .indexOf(event.parent); // -1 represent to element does not exist
-    currentIndex != -1
-        ? directory.removeRange(
-            currentIndex + 1 < directory.length
-                ? currentIndex + 1
-                : directory.length,
-            directory.length)
-        : null;
+      !directory.contains(event.parent) ? directory.add(event.parent) : null;
+      int currentIndex = directory
+          .indexOf(event.parent); // -1 represent to element does not exist
+      currentIndex != -1
+          ? directory.removeRange(
+              currentIndex + 1 < directory.length
+                  ? currentIndex + 1
+                  : directory.length,
+              directory.length)
+          : null;
 
-    if (_initialPath!.isNotEmpty) {
-      List<dynamic> result = await _buildDirectorybyPath(
-          directory: directory, path: _initialPath!);
+      if (_initialPath!.isNotEmpty) {
+        List<dynamic> result = await _buildDirectorybyPath(
+            directory: directory, path: _initialPath!);
 
-      bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
+        bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
 
-      if (result[0]) {
-        if (result[1] == '') {
-          // device setting page
+        if (result[0]) {
+          if (result[1] == '') {
+            // device setting page
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
+              isAddedToBookmarks: isAddedToBookmarks,
+              directory: directory,
+            ));
+          } else {
+            // node
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
+              isAddedToBookmarks: false,
+              directory: directory,
+              data: result[1],
+            ));
+          }
+        } else {
+          // already handle in realtimealarm bloc
+        }
+
+        // clear path to avoid go to previous device setting page when user switch back from another page.
+        _initialPath!.clear();
+      } else {
+        if (data is List) {
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
-            isAddedToBookmarks: isAddedToBookmarks,
+            dataSheetOpenStatus: FormStatus.none,
+            data: data,
             directory: directory,
           ));
         } else {
-          // node
           emit(state.copyWith(
-            formStatus: FormStatus.requestSuccess,
+            formStatus: FormStatus.requestFailure,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
-            isAddedToBookmarks: false,
-            directory: directory,
-            data: result[1],
+            dataSheetOpenStatus: FormStatus.none,
+            errmsg: data,
           ));
         }
-      } else {
-        // already handle in realtimealarm bloc
       }
 
-      // clear path to avoid go to previous device setting page when user switch back from another page.
-      _initialPath!.clear();
-    } else {
-      if (data is List) {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          data: data,
-          directory: directory,
-        ));
-      } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          errmsg: data,
-        ));
+      if (event.requestMode == RequestMode.initial) {
+        if (_dataStreamSubscription != null) {
+          if (_dataStreamSubscription!.isPaused) {
+            _dataStreamSubscription?.resume();
+          }
+        }
       }
     }
-
-    if (event.requestMode == RequestMode.initial) {
-      final dataStream =
-          Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
-
-      _dataStreamSubscription = dataStream.listen((count) {
-        if (kDebugMode) {
-          print('Root update trigger times: $count');
-        }
-        if (state.directory.isNotEmpty) {
-          add(ChildDataRequested(state.directory.last, RequestMode.update));
-        }
-      });
-    }
-    //_dataStreamSubscription?.resume();
   }
 
   Future<void> _onNodeDeleted(
@@ -155,6 +197,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     emit(state.copyWith(
       nodesExportStatus: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<dynamic> msg =
@@ -179,6 +222,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.none,
       nodesExportStatus: FormStatus.requestInProgress,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<dynamic> result = await _rootRepository.exportNodes(user: _user);
@@ -198,43 +242,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  void _onDeviceDataRequested(
-    DeviceDataRequested event,
-    Emitter<RootState> emit,
-  ) {
-    //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    //_dataStreamSubscription?.pause();
-    emit(state.copyWith(
-      formStatus: FormStatus.requestInProgress,
-      submissionStatus: SubmissionStatus.none,
-      nodesExportStatus: FormStatus.none,
-    ));
-
-    List<Node> directory = [];
-    directory.addAll(state.directory);
-
-    //_deviceRepository.deviceNodeId = event.node.id.toString();
-
-    !directory.contains(event.node) ? directory.add(event.node) : null;
-    int currentIndex =
-        directory.indexOf(event.node); // -1 represent to element does not exist
-    currentIndex != -1
-        ? directory.removeRange(
-            currentIndex + 1 < directory.length
-                ? currentIndex + 1
-                : directory.length,
-            directory.length)
-        : null;
-
-    bool isAddedToBookmarks = _checkDeviceInBookmarks(event.node.id);
-
-    emit(state.copyWith(
-      formStatus: FormStatus.requestSuccess,
-      directory: directory,
-      isAddedToBookmarks: isAddedToBookmarks,
-    ));
-  }
-
   // When current form has device setting page
   Future<void> _onDeviceTypeNodeUpdated(
     DeviceTypeNodeUpdated event,
@@ -249,6 +256,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         //if current formStatus isRequestFailure, refresh device page content
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           directory: state.directory,
         ));
       } else {
@@ -280,6 +290,9 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
             emit(state.copyWith(
               formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              nodesExportStatus: FormStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
               directory: directory,
             ));
           }
@@ -311,6 +324,36 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
+  Future<void> _onDataSheetOpened(
+    DataSheetOpened event,
+    Emitter<RootState> emit,
+  ) async {
+    List<dynamic> result = await _rootRepository.getDataSheetURL(
+      user: _user,
+      nodeId: event.node.id,
+    );
+
+    if (result[0]) {
+      emit(state.copyWith(
+        dataSheetOpenStatus: FormStatus.requestSuccess,
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
+        dataSheetOpenPath: result[1],
+      ));
+      // print(result[1]);
+      // final document = await PdfDocument.openData(InternetFile.get(result[1]));
+      // final page = document.getPage(1);
+
+    } else {
+      emit(state.copyWith(
+        dataSheetOpenStatus: FormStatus.requestFailure,
+        submissionStatus: SubmissionStatus.none,
+        nodesExportStatus: FormStatus.none,
+        dataSheetOpenMsg: result[1],
+      ));
+    }
+  }
+
   Future<void> _onBookmarksChanged(
     BookmarksChanged event,
     Emitter<RootState> emit,
@@ -326,6 +369,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: false,
           bookmarksMsg: 'Removed from bookmarks',
         ));
@@ -333,6 +377,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           bookmarksMsg:
               'Unable to delete from bookmarks, please check your account and login again.',
         ));
@@ -346,6 +391,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: true,
           bookmarksMsg: 'Added to bookmarks',
         ));
@@ -353,6 +399,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
           bookmarksMsg:
               'Unable to add to bookmarks, please check your account and login again.',
         ));
@@ -365,11 +412,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     Emitter<RootState> emit,
   ) async {
     //avoid user click node and dataStream trigger at the same time, stop before Request for child
-    // _dataStreamSubscription?.pause();
+    _dataStreamSubscription?.pause();
     emit(state.copyWith(
       nodesExportStatus: FormStatus.none,
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
+      dataSheetOpenStatus: FormStatus.none,
     ));
 
     List<Node> directory = [];
@@ -405,6 +453,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       }
     } else {
       // already handle in realtimealarm bloc
+    }
+
+    if (_dataStreamSubscription != null) {
+      if (_dataStreamSubscription!.isPaused) {
+        _dataStreamSubscription?.resume();
+      }
     }
   }
 

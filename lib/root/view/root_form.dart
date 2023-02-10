@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_file/internet_file.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:pdfx/pdfx.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
@@ -9,7 +10,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_tabbar.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
@@ -54,8 +55,8 @@ class RootForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.delete,
-              style: TextStyle(
-                color: CustomStyle.severityColor[1],
+              style: const TextStyle(
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(
@@ -86,8 +87,8 @@ class RootForm extends StatelessWidget {
           return AlertDialog(
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_error,
-              style: TextStyle(
-                color: CustomStyle.severityColor[3],
+              style: const TextStyle(
+                color: CustomStyle.customRed,
               ),
             ),
             content: SingleChildScrollView(
@@ -120,6 +121,20 @@ class RootForm extends StatelessWidget {
         } else if (state.submissionStatus.isSubmissionFailure) {
           Navigator.of(context).pop();
           _showFailureDialog(state.deleteResultMsg);
+        } else if (state.dataSheetOpenStatus.isRequestSuccess) {
+          final pdfControllerPinch = PdfControllerPinch(
+            document:
+                PdfDocument.openData(InternetFile.get(state.dataSheetOpenPath)),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CustomPDFViewer(pdfControllerPinch: pdfControllerPinch)),
+          );
+        } else if (state.dataSheetOpenStatus.isRequestFailure) {
+          Navigator.of(context).pop();
+          _showFailureDialog(state.dataSheetOpenMsg);
         } else if (state.nodesExportStatus.isRequestSuccess) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -136,8 +151,8 @@ class RootForm extends StatelessWidget {
                   onPressed: () async {
                     OpenResult result = await OpenFilex.open(
                       state.nodesExportFilePath,
-                      type: 'text/comma-separated-values',
-                      uti: 'public.comma-separated-values-text',
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
                     );
                     print(result.message);
                   },
@@ -199,6 +214,29 @@ class RootForm extends StatelessWidget {
   }
 }
 
+class CustomPDFViewer extends StatelessWidget {
+  const CustomPDFViewer({
+    Key? key,
+    required this.pdfControllerPinch,
+  }) : super(key: key);
+
+  final PdfControllerPinch pdfControllerPinch;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            AppLocalizations.of(context)!.datasheet,
+          ),
+        ),
+        body: PdfViewPinch(
+          controller: pdfControllerPinch,
+        ));
+  }
+}
+
 class _DynamicTitle extends StatelessWidget {
   const _DynamicTitle({Key? key}) : super(key: key);
 
@@ -225,6 +263,7 @@ enum Menu {
   search,
   export,
   favorite,
+  datasheet,
 }
 
 class _PopupMenu extends StatelessWidget {
@@ -233,6 +272,122 @@ class _PopupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      List<PopupMenuEntry<Menu>> _buildPopupMenu() {
+        if (state.directory.last.type == 5 || state.directory.last.type == 2) {
+          return [
+            PopupMenuItem<Menu>(
+              value: Menu.search,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.search,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.favorite,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  state.isAddedToBookmarks
+                      ? const Icon(
+                          Icons.star_outlined,
+                          size: 20.0,
+                          color: Colors.amber,
+                        )
+                      : const Icon(
+                          Icons.star_border_outlined,
+                          size: 20.0,
+                          color: Colors.black,
+                        ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.favorite,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.datasheet,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.assignment_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.datasheet,
+                  ),
+                ],
+              ),
+            ),
+          ];
+        } else {
+          return [
+            PopupMenuItem<Menu>(
+              value: Menu.search,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.search,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.search,
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.export,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    CustomIcons.export,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.export,
+                  ),
+                ],
+              ),
+            )
+          ];
+        }
+      }
+
       if (state.formStatus.isRequestSuccess) {
         return PopupMenuButton<Menu>(
           tooltip: '',
@@ -260,79 +415,16 @@ class _PopupMenu extends StatelessWidget {
                     .read<RootBloc>()
                     .add(BookmarksChanged(state.directory.last));
                 break;
+              case Menu.datasheet:
+                context
+                    .read<RootBloc>()
+                    .add(DataSheetOpened(state.directory.last));
+                break;
               default:
                 break;
             }
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
-              ),
-            ),
-            state.directory.last.type == 5 || state.directory.last.type == 2
-                ? PopupMenuItem<Menu>(
-                    value: Menu.favorite,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        state.isAddedToBookmarks
-                            ? const Icon(
-                                Icons.star_outlined,
-                                size: 20.0,
-                                color: Colors.amber,
-                              )
-                            : const Icon(
-                                Icons.star_border_outlined,
-                                size: 20.0,
-                                color: Colors.black,
-                              ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.favorite,
-                        ),
-                      ],
-                    ),
-                  )
-                : PopupMenuItem<Menu>(
-                    value: Menu.export,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          CustomIcons.export,
-                          size: 20.0,
-                          color: Colors.black,
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.export,
-                        ),
-                      ],
-                    ),
-                  )
-          ],
+          itemBuilder: (BuildContext context) => _buildPopupMenu(),
         );
       } else {
         return Container();
@@ -385,62 +477,7 @@ class _DynamicFloatingActionButton extends StatelessWidget {
 class _NodeContent extends StatelessWidget {
   const _NodeContent({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
-      if (state.formStatus.isRequestSuccess) {
-        if (state.directory.last.type == 2 || state.directory.last.type == 5) {
-          descriptionChangeNotifier() =>
-              context.read<RootBloc>().add(const DeviceTypeNodeUpdated());
-
-          return Expanded(
-            child: DeviceSettingTabBar(
-              descriptionChangedNotifier: descriptionChangeNotifier,
-              node: state.directory.last,
-            ),
-          );
-        } else {
-          return const _NodeSliverList();
-        }
-      } else if (state.formStatus.isRequestFailure) {
-        return Expanded(
-          child: Container(
-            width: double.maxFinite,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.warning_rounded,
-                  size: 200,
-                  color: Color(0xffffc107),
-                ),
-                Text(
-                  getMessageLocalization(
-                    msg: state.errmsg,
-                    context: context,
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return const Expanded(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-    });
-  }
-}
-
-class _NodeSliverList extends StatelessWidget {
-  const _NodeSliverList({Key? key}) : super(key: key);
-
-  _rootSliverChildBuilderDelegate(
+  SliverChildBuilderDelegate _rootSliverChildBuilderDelegate(
     Node parentNode,
     List data,
     bool enabledEdit,
@@ -448,23 +485,24 @@ class _NodeSliverList extends StatelessWidget {
   ) {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
-        if (kDebugMode) {
-          print('build _rootSliverChildBuilderDelegate : $index');
-        }
+        // if (kDebugMode) {
+        //   print('build _rootSliverChildBuilderDelegate : $index');
+        // }
         Node node = data[index];
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
             child: InkWell(
               onTap: () {
-                if (node.type == 2 || node.type == 5) {
-                  // 2 : EDFA, 5 : A8K slot
-                  context.read<RootBloc>().add(DeviceDataRequested(node));
-                } else {
-                  context
-                      .read<RootBloc>()
-                      .add(ChildDataRequested(node, RequestMode.initial));
-                }
+                // Root: 0,
+                // Group: 1,
+                // Device: 2, (edfa)
+                // A8K: 3,
+                // Shelf: 4,
+                // Slot: 5,
+                context
+                    .read<RootBloc>()
+                    .add(ChildDataRequested(node, RequestMode.initial));
               },
               onLongPress: () {
                 if (node.type == 1 || node.type == 2 || node.type == 3) {
@@ -536,10 +574,21 @@ class _NodeSliverList extends StatelessWidget {
   Widget build(BuildContext context) {
     Map _userFunctionMap =
         context.read<AuthenticationBloc>().state.userFunctionMap;
-    return BlocBuilder<RootBloc, RootState>(
-      buildWhen: (previous, current) => previous.data != current.data,
-      builder: (context, state) {
-        if (state.formStatus.isRequestSuccess) {
+
+    return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
+      if (state.formStatus.isRequestSuccess) {
+        if (state.directory.last.type == 2 || state.directory.last.type == 5) {
+          // 2: edfa, 5: a8k slot
+          descriptionChangeNotifier() =>
+              context.read<RootBloc>().add(const DeviceTypeNodeUpdated());
+
+          return Expanded(
+            child: DeviceSettingTabBar(
+              descriptionChangedNotifier: descriptionChangeNotifier,
+              node: state.directory.last,
+            ),
+          );
+        } else {
           if (state.directory.last.type == 1) {
             //group
             if (state.data.isEmpty) {
@@ -655,29 +704,283 @@ class _NodeSliverList extends StatelessWidget {
               ),
             );
           }
-        } else if (state.formStatus.isRequestFailure) {
-          return Expanded(
-            child: Center(
-              child: Text(
-                getMessageLocalization(
-                  msg: state.errmsg,
-                  context: context,
-                ),
-              ),
-            ),
-          );
-        } else {
-          // wait for data
-          return const Expanded(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
         }
-      },
-    );
+      } else if (state.formStatus.isRequestFailure) {
+        return Expanded(
+          child: Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return const Expanded(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+    });
   }
 }
+
+// class _NodeSliverList extends StatelessWidget {
+//   const _NodeSliverList({Key? key}) : super(key: key);
+
+//   _rootSliverChildBuilderDelegate(
+//     Node parentNode,
+//     List data,
+//     bool enabledEdit,
+//     bool enabledDelete,
+//   ) {
+//     return SliverChildBuilderDelegate(
+//       (BuildContext context, int index) {
+//         if (kDebugMode) {
+//           print('build _rootSliverChildBuilderDelegate : $index');
+//         }
+//         Node node = data[index];
+//         return Padding(
+//           padding: const EdgeInsets.all(1.0),
+//           child: Material(
+//             child: InkWell(
+//               onTap: () {
+//                 if (node.type == 2 || node.type == 5) {
+//                   // 2 : EDFA, 5 : A8K slot
+//                   context.read<RootBloc>().add(DeviceDataRequested(node));
+//                 } else {
+//                   context
+//                       .read<RootBloc>()
+//                       .add(ChildDataRequested(node, RequestMode.initial));
+//                 }
+//               },
+//               onLongPress: () {
+//                 if (node.type == 1 || node.type == 2 || node.type == 3) {
+//                   if (enabledEdit || enabledDelete) {
+//                     // because RootBloc cannot be found inside ModalBottomSheet
+//                     // provide the context that contain RootBloc for it
+//                     showModalBottomSheet(
+//                       context: context,
+//                       builder: (_) => _NodeEditBottomMenu(
+//                         parentContext:
+//                             context, //pass this context contain RootBloc so that BottomMenu can use it
+//                         parentNode: parentNode,
+//                         currentNode: node,
+//                         enabledEdit: enabledEdit,
+//                         enabledDelete: enabledDelete,
+//                       ),
+//                     );
+//                   }
+//                 }
+//               },
+//               child: Padding(
+//                 padding: const EdgeInsets.all(10.0),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.start,
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Container(
+//                           width: CommonStyle.severityRectangleWidth,
+//                           height: CommonStyle.severityRectangleHeight,
+//                           color: CustomStyle.severityColor[node.status],
+//                         ),
+//                       ],
+//                     ),
+//                     CustomStyle.typeIcon[node.type] != null
+//                         ? Padding(
+//                             padding: const EdgeInsets.only(left: 8.0),
+//                             child: CustomStyle.typeIcon[node.type],
+//                           )
+//                         : const Padding(
+//                             padding: EdgeInsets.zero,
+//                           ),
+//                     Expanded(
+//                       child: Row(children: [
+//                         Expanded(
+//                           child: Padding(
+//                             padding: const EdgeInsets.only(left: 8.0),
+//                             child: DisplayStyle.getNodeDisplayName(
+//                                 node, context,
+//                                 isLastItemOfDirectory: false),
+//                           ),
+//                         ),
+//                       ]),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         );
+//       },
+//       childCount: data.length,
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     Map _userFunctionMap =
+//         context.read<AuthenticationBloc>().state.userFunctionMap;
+//     return BlocBuilder<RootBloc, RootState>(
+//       buildWhen: (previous, current) => previous.data != current.data,
+//       builder: (context, state) {
+//         if (state.formStatus.isRequestSuccess) {
+//           if (state.directory.last.type == 1) {
+//             //group
+//             if (state.data.isEmpty) {
+//               return Expanded(
+//                 child: Center(
+//                   child: Text(
+//                     AppLocalizations.of(context)!.noData,
+//                   ),
+//                 ),
+//               );
+//             }
+
+//             return Expanded(
+//                 child: Scrollbar(
+//               thickness: 8.0,
+//               child: CustomScrollView(
+//                 slivers: [
+//                   SliverList(
+//                       delegate: _rootSliverChildBuilderDelegate(
+//                     state.directory.last,
+//                     state.data,
+//                     _userFunctionMap[9],
+//                     _userFunctionMap[10],
+//                   ))
+//                 ],
+//               ),
+//             ));
+//           } else if (state.directory.last.type == 3) {
+//             //a8k
+//             if (state.directory.last.status == 0) {
+//               return Expanded(
+//                 child: Container(
+//                   width: double.maxFinite,
+//                   height: double.maxFinite,
+//                   color: Colors.white,
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: [
+//                       const Icon(
+//                         Icons.warning_rounded,
+//                         size: 200,
+//                         color: Color(0xffffc107),
+//                       ),
+//                       Text(
+//                         AppLocalizations.of(context)!
+//                             .dialogMessage_DeviceDoesNotRespond,
+//                       ),
+//                       const SizedBox(height: 40.0),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             }
+
+//             return Expanded(
+//                 child: Scrollbar(
+//               thickness: 8.0,
+//               child: CustomScrollView(
+//                 slivers: [
+//                   SliverList(
+//                       delegate: _rootSliverChildBuilderDelegate(
+//                     state.directory.last,
+//                     state.data,
+//                     _userFunctionMap[9],
+//                     _userFunctionMap[10],
+//                   ))
+//                 ],
+//               ),
+//             ));
+//           } else if (state.directory.last.type == 4) {
+//             // a8k shelf
+//             if (state.directory.last.status == 0) {
+//               return Expanded(
+//                 child: Container(
+//                   width: double.maxFinite,
+//                   height: double.maxFinite,
+//                   color: Colors.white,
+//                   child: Column(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: const [
+//                       Icon(
+//                         Icons.warning_rounded,
+//                         size: 200,
+//                         color: Color(0xffffc107),
+//                       ),
+//                       Text('The device does not respond.'),
+//                       SizedBox(height: 40.0),
+//                     ],
+//                   ),
+//                 ),
+//               );
+//             }
+
+//             return Expanded(
+//                 child: Scrollbar(
+//               thickness: 8.0,
+//               child: CustomScrollView(
+//                 slivers: [
+//                   SliverList(
+//                       delegate: _rootSliverChildBuilderDelegate(
+//                     state.directory.last,
+//                     state.data,
+//                     _userFunctionMap[9],
+//                     _userFunctionMap[10],
+//                   ))
+//                 ],
+//               ),
+//             ));
+//           } else {
+//             return const Expanded(
+//               child: Center(
+//                 child: Text('Undefined device type.'),
+//               ),
+//             );
+//           }
+//         } else if (state.formStatus.isRequestFailure) {
+//           return Expanded(
+//             child: Center(
+//               child: Text(
+//                 getMessageLocalization(
+//                   msg: state.errmsg,
+//                   context: context,
+//                 ),
+//               ),
+//             ),
+//           );
+//         } else {
+//           // wait for data
+//           return const Expanded(
+//             child: Center(
+//               child: CircularProgressIndicator(),
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
 
 class _NodeDirectory extends StatelessWidget {
   const _NodeDirectory({Key? key}) : super(key: key);
@@ -878,8 +1181,8 @@ class _NodeEditBottomMenu extends StatelessWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.confirmDeleted,
-                  style: TextStyle(
-                    color: CustomStyle.severityColor[3],
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
                   ),
                 ),
                 onPressed: () {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/root/bloc/edit_group/edit_group_bloc.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -44,11 +44,15 @@ class GroupEditForm extends StatelessWidget {
             title: isEditing
                 ? Text(
                     AppLocalizations.of(context)!.dialogTitle_editSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   )
                 : Text(
                     AppLocalizations.of(context)!.dialogTitle_createSuccess,
-                    style: TextStyle(color: CustomStyle.severityColor[1]),
+                    style: const TextStyle(
+                      color: CustomStyle.customGreen,
+                    ),
                   ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -83,9 +87,11 @@ class GroupEditForm extends StatelessWidget {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               CustomErrTitle.commonErrTitle,
-              style: TextStyle(color: CustomStyle.severityColor[3]),
+              style: TextStyle(
+                color: CustomStyle.customRed,
+              ),
             ),
             content: SingleChildScrollView(
               child: ListBody(

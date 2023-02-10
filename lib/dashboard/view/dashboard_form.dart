@@ -7,6 +7,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -397,7 +398,7 @@ class _DeviceStatisticsCard extends StatelessWidget {
                 title: AppLocalizations.of(context)!.deviceStatus,
               ),
             ),
-            const _DeviceStatisticsGridView(),
+            _DeviceStatisticsGridView(),
           ],
         ),
       ),
@@ -406,24 +407,24 @@ class _DeviceStatisticsCard extends StatelessWidget {
 }
 
 class _DeviceStatisticsGridView extends StatelessWidget {
-  const _DeviceStatisticsGridView({Key? key}) : super(key: key);
+  _DeviceStatisticsGridView({Key? key}) : super(key: key);
 
-  final _gridColors = const [
+  final _gridColors = [
     Colors.white, // all
-    Color(0xffdc3545), // critical
-    Color(0xffffc107), // warning
-    Color(0xff28a745), // normal
-    Color(0xFF6C757D), // offline
-    Color(0xFF6C757D), //unknown
+    CustomStyle.severityColor[3]!, // critical
+    CustomStyle.severityColor[2]!, // warning
+    CustomStyle.severityColor[1]!, // normal
+    CustomStyle.severityColor[0]!, // offline
+    Colors.black, // unknown
   ];
 
-  final _fontColors = const [
+  final _fontColors = [
     Colors.black, // all
-    Colors.white, // critical
-    Colors.black, // warning
-    Colors.white, // normal
-    Colors.white, // offline
-    Colors.white, //unknown
+    CustomStyle.severityFontColor[3]!, // critical
+    CustomStyle.severityFontColor[2]!, // warning
+    CustomStyle.severityFontColor[1]!, // normal
+    CustomStyle.severityFontColor[0]!, // offline
+    Colors.white, // unknown
   ];
 
   @override
@@ -557,7 +558,7 @@ Widget _buildLegend(BuildContext context) {
     //crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       Indicator(
-        color: const Color(0xffdc3545),
+        color: CustomStyle.severityColor[3]!,
         text: AppLocalizations.of(context)!.critical,
         isSquare: false,
         size: CommonStyle.sizeS,
@@ -566,7 +567,7 @@ Widget _buildLegend(BuildContext context) {
         width: 8,
       ),
       Indicator(
-        color: const Color(0xffffc107),
+        color: CustomStyle.severityColor[2]!,
         text: AppLocalizations.of(context)!.warning,
         isSquare: false,
         size: CommonStyle.sizeS,
@@ -575,7 +576,7 @@ Widget _buildLegend(BuildContext context) {
         width: 8,
       ),
       Indicator(
-        color: const Color(0xff28a745),
+        color: CustomStyle.severityColor[1]!,
         text: AppLocalizations.of(context)!.normal,
         isSquare: false,
         size: CommonStyle.sizeS,
@@ -596,36 +597,39 @@ List<PieChartSectionData> showingSections(List alarmStatistics) {
     switch (i) {
       case 0:
         return PieChartSectionData(
-          color: const Color(0xffdc3545),
+          color: CustomStyle.severityColor[3]!,
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[3]!,
+          ),
         );
       case 1:
         return PieChartSectionData(
-          color: const Color(0xffffc107),
+          color: CustomStyle.severityColor[2]!,
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[2]!,
+          ),
         );
       case 2:
         return PieChartSectionData(
-          color: const Color(0xff28a745),
+          color: CustomStyle.severityColor[1]!,
           value: percentage,
           title: '${percentage.toStringAsFixed(1)} %',
           radius: radius,
-          titleStyle: const TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Color(0xffffffff)),
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: CustomStyle.severityFontColor[1]!,
+          ),
         );
       default:
         return PieChartSectionData(

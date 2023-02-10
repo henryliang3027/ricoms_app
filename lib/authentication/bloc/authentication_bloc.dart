@@ -3,7 +3,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
+import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
+import 'package:ricoms_app/utils/alarm_sound_config.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -11,7 +15,11 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
+    required TrapAlarmColorRepository trapAlarmColorRepository,
+    required TrapAlarmSoundRepository trapAlarmSoundRepository,
   })  : _authenticationRepository = authenticationRepository,
+        _trapAlarmColorRepository = trapAlarmColorRepository,
+        _trapAlarmSoundRepository = trapAlarmSoundRepository,
         super(const AuthenticationState.unknown()) {
     on<AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
@@ -21,6 +29,8 @@ class AuthenticationBloc
   }
 
   final AuthenticationRepository _authenticationRepository;
+  final TrapAlarmColorRepository _trapAlarmColorRepository;
+  final TrapAlarmSoundRepository _trapAlarmSoundRepository;
   late StreamSubscription<AuthenticationReport>
       _authenticationStatusSubscription;
 
@@ -67,6 +77,7 @@ class AuthenticationBloc
               if (result[0]) {
                 if (result[1]) {
                   if (state.status == AuthenticationStatus.authenticated) {
+                    print('AuthenticationStatus.unauthenticated');
                     add(const AuthenticationStatusChanged(AuthenticationReport(
                       status: AuthenticationStatus.unauthenticated,
                     )));
@@ -74,6 +85,22 @@ class AuthenticationBloc
                 }
               }
             });
+          }
+
+          List<dynamic> resultOfGetColor = await _trapAlarmColorRepository
+              .getTrapAlarmColor(user: event.report.user);
+
+          if (resultOfGetColor[0]) {
+            CustomStyle.setSeverityColors(resultOfGetColor[1]);
+          }
+
+          List<dynamic> resultOfGetAlarmSoundEnableValues =
+              await _trapAlarmSoundRepository.getAlarmSoundEnableValues(
+                  user: event.report.user);
+
+          if (resultOfGetAlarmSoundEnableValues[0]) {
+            AlarmSoundConfig.setAlarmSoundEnableValues(
+                resultOfGetAlarmSoundEnableValues[1]);
           }
 
           return emit(AuthenticationState.authenticated(

@@ -44,15 +44,6 @@ class NodesExported extends RootEvent {
   List<Object?> get props => [];
 }
 
-class DeviceDataRequested extends RootEvent {
-  const DeviceDataRequested(this.node);
-
-  final Node node;
-
-  @override
-  List<Object?> get props => [node];
-}
-
 class DeviceNavigateRequested extends RootEvent {
   const DeviceNavigateRequested(this.path);
 
@@ -64,6 +55,15 @@ class DeviceNavigateRequested extends RootEvent {
 
 class BookmarksChanged extends RootEvent {
   const BookmarksChanged(this.node); //edfa id or a8k slot id
+
+  final Node node;
+
+  @override
+  List<Object?> get props => [node];
+}
+
+class DataSheetOpened extends RootEvent {
+  const DataSheetOpened(this.node); //edfa id or a8k slot id
 
   final Node node;
 

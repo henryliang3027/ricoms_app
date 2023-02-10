@@ -1,9 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/root/view/custom_style.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 
 class DeviceSettingStyle {
+  Color _getStatusColor({
+    required int status,
+    required Color defaultColor,
+  }) {
+    if (status == 1) {
+      return defaultColor;
+    } else {
+      return CustomStyle.statusColor[status] ?? defaultColor;
+    }
+  }
+
   static void getSettingData({
     required dynamic e,
     required List<ControllerProperty> controllerProperties,
@@ -16,7 +27,7 @@ class DeviceSettingStyle {
     String value = e['value'] ?? '';
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
     int status = e['status'] ?? 0;
-    String rawParameter = e['parameter'] ?? '';
+    String rawParameter = (e['parameter'] ?? '').toString();
     int rawReadOnly = e['readonly'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
 
@@ -137,9 +148,15 @@ class DeviceSettingStyle {
       case 100: //文字標籤 - 白底黑字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.black,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
         );
@@ -150,9 +167,15 @@ class DeviceSettingStyle {
       case 101: //文字標籤 - 灰底白字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.grey,
-          borderColor: Colors.grey,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
+          borderColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
           fontSize: font,
           boxLength: length,
         );
@@ -163,9 +186,15 @@ class DeviceSettingStyle {
       case 102: //文字標籤 - 白底藍字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.blue,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
         );
@@ -176,9 +205,15 @@ class DeviceSettingStyle {
       case 103: //文字標籤 - 藍底白字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.blue,
-          borderColor: Colors.blue,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
+          borderColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
           fontSize: font,
           boxLength: length,
         );
@@ -189,9 +224,15 @@ class DeviceSettingStyle {
       case 104: //文字標籤 - 綠底白字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.green,
-          borderColor: Colors.green,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
+          borderColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
           fontSize: font,
           boxLength: length,
         );
@@ -202,9 +243,15 @@ class DeviceSettingStyle {
       case 105: //文字標籤 - 白底綠字
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.green,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
         );
@@ -215,8 +262,12 @@ class DeviceSettingStyle {
       case 106: //文字標籤 - 白底黑字 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.black,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -228,8 +279,12 @@ class DeviceSettingStyle {
       case 107: //文字標籤 - 白底藍字 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.blue,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -241,8 +296,12 @@ class DeviceSettingStyle {
       case 108: //文字標籤 - 白底綠字 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.green,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -254,9 +313,15 @@ class DeviceSettingStyle {
       case 110: //文字標籤 - 白底黑字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.black,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -268,9 +333,15 @@ class DeviceSettingStyle {
       case 111: //文字標籤 - 灰底白字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.grey,
-          borderColor: Colors.grey,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
+          borderColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -281,9 +352,15 @@ class DeviceSettingStyle {
       case 112: //文字標籤 - 白底藍字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.blue,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -295,9 +372,15 @@ class DeviceSettingStyle {
       case 113: //文字標籤 - 藍底白字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.blue,
-          borderColor: Colors.blue,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
+          borderColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -309,9 +392,15 @@ class DeviceSettingStyle {
       case 114: //文字標籤 - 綠底白字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.green,
-          borderColor: Colors.green,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
+          borderColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -323,9 +412,15 @@ class DeviceSettingStyle {
       case 115: //文字標籤 - 白底綠字, 文字置中
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.green,
-          boxColor: Colors.white,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.center,
@@ -337,8 +432,12 @@ class DeviceSettingStyle {
       case 116: //文字標籤 - 白底黑字, 文字置中 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.black,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -351,8 +450,12 @@ class DeviceSettingStyle {
       case 117: //文字標籤 - 白底藍字, 文字置中 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.blue,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -365,8 +468,12 @@ class DeviceSettingStyle {
       case 118: //文字標籤 - 白底綠字, 文字置中 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.green,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -379,9 +486,15 @@ class DeviceSettingStyle {
       case 120: //文字標籤 - 白底黑字, 文字靠右
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.black,
-          boxColor: CustomStyle.statusColor[status]!,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -393,9 +506,15 @@ class DeviceSettingStyle {
       case 121: //文字標籤 - 灰底白字, 文字靠右
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.grey,
-          borderColor: Colors.grey,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
+          borderColor: status == 1
+              ? Colors.grey
+              : CustomStyle.statusColor[status] ?? Colors.grey,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -407,9 +526,15 @@ class DeviceSettingStyle {
       case 122: //文字標籤 - 白底藍字, 文字靠右
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.blue,
-          boxColor: CustomStyle.statusColor[status]!,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -422,9 +547,15 @@ class DeviceSettingStyle {
 
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.blue,
-          borderColor: Colors.blue,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
+          borderColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusColor[status] ?? Colors.blue,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -436,9 +567,15 @@ class DeviceSettingStyle {
       case 124: //文字標籤 - 綠底白字, 文字靠右
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.white,
-          boxColor: Colors.green,
-          borderColor: Colors.green,
+          textColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusFontColor[status] ?? Colors.white,
+          boxColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
+          borderColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusColor[status] ?? Colors.green,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -450,9 +587,15 @@ class DeviceSettingStyle {
       case 125: //文字標籤 - 白底綠字, 文字靠右
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.green,
-          boxColor: CustomStyle.statusColor[status]!,
-          borderColor: Colors.white,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
+          borderColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           fontSize: font,
           boxLength: length,
           alignment: Alignment.centerRight,
@@ -463,8 +606,12 @@ class DeviceSettingStyle {
       case 126: //文字標籤 - 白底黑字, 文字靠右 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.black,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -477,8 +624,12 @@ class DeviceSettingStyle {
       case 127: //文字標籤 - 白底藍字, 文字靠右 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.blue,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.blue
+              : CustomStyle.statusFontColor[status] ?? Colors.blue,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -491,8 +642,12 @@ class DeviceSettingStyle {
       case 128: //文字標籤 - 白底綠字, 文字靠右 (有邊框)
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: status == 3 ? Colors.white : Colors.green,
-          boxColor: CustomStyle.statusColor[status]!,
+          textColor: status == 1
+              ? Colors.green
+              : CustomStyle.statusFontColor[status] ?? Colors.green,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,
@@ -505,8 +660,12 @@ class DeviceSettingStyle {
       default:
         TextProperty textProperty = TextProperty(
           text: value,
-          textColor: Colors.black,
-          boxColor: Colors.white,
+          textColor: status == 1
+              ? Colors.black
+              : CustomStyle.statusFontColor[status] ?? Colors.black,
+          boxColor: status == 1
+              ? Colors.white
+              : CustomStyle.statusColor[status] ?? Colors.white,
           borderColor: Colors.black,
           fontSize: font,
           boxLength: length,

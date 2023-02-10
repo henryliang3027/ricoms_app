@@ -5,6 +5,7 @@ import 'package:ricoms_app/repository/user_api.dart';
 import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user_function.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 enum AuthenticationStatus { authenticated, unauthenticated }
 
@@ -48,7 +49,10 @@ class AuthenticationRepository {
     required User user,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
@@ -146,7 +150,10 @@ class AuthenticationRepository {
     required String password,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    String onlineIP =
+        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String loginPath = '/account/login';
@@ -182,7 +189,6 @@ class AuthenticationRepository {
         data: {'account': account, 'pwd': password},
       );
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -219,46 +225,24 @@ class AuthenticationRepository {
 
               return [true];
             } else {
-              // _controller.add(const AuthenticationReport(
-              //   status: AuthenticationStatus.unauthenticated,
-              //   msg: 'failed to get activated user from local database.',
-              // ));
-
               return [
                 false,
                 CustomErrMsg.getActivatedUserErrMsg,
               ];
             }
           } else {
-            //maybe receive 'Failed to get user function' from server
-            // _controller.add(AuthenticationReport(
-            //   status: AuthenticationStatus.unauthenticated,
-            //   msg: resultOfUserFunctions[1],
-            // ));
-
             return [
               false,
               resultOfUserFunctions[1],
             ];
           }
         } else {
-          //may receive invalid User message from server
-          // _controller.add(AuthenticationReport(
-          //   status: AuthenticationStatus.unauthenticated,
-          //   msg: resultOfUserInfo[1],
-          // ));
-
           return [
             false,
             resultOfUserInfo[1],
           ];
         }
       } else {
-        // _controller.add(AuthenticationReport(
-        //   status: AuthenticationStatus.unauthenticated,
-        //   msg: data['msg'],
-        // ));
-
         return [
           false,
           data['msg'],
@@ -278,7 +262,10 @@ class AuthenticationRepository {
     // Call the api to let the server record the log out log
 
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -310,7 +297,10 @@ class AuthenticationRepository {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 
@@ -348,7 +338,9 @@ class AuthenticationRepository {
     required String password,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + ip + '/aci/api';
+    String onlineIP =
+        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -383,8 +375,7 @@ class AuthenticationRepository {
       );
       return [true];
     } else {
-      String accountInformationPath =
-          'http://' + ip + '/aci/api/accounts/' + userId;
+      String accountInformationPath = '/accounts/' + userId;
       try {
         Response response = await dio.get(
           accountInformationPath,
@@ -418,16 +409,26 @@ class AuthenticationRepository {
     }
   }
 
+  // system admin : 1
+  // administrator : 2
+  // operator : 3
+  // user : 4
+  // disabled : 5
   Future<List<dynamic>> checkUserPermission() async {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+
+      print('checkUserPermission login ip: ${user.ip}');
+      print('checkUserPermission online ip: ${onlineIP}');
+
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 
-      String accountInformationPath =
-          'http://' + user.ip + '/aci/api/accounts/' + user.id;
+      String accountInformationPath = '/accounts/' + user.id;
 
       try {
         Response response = await dio.get(
@@ -440,15 +441,26 @@ class AuthenticationRepository {
           String permission = data['data'][0]['permission'];
 
           if (user.permission == permission) {
+            print('msg: ${user.permission}, ${permission}');
             return [true, false];
           } else {
+            print('msg: ${user.permission}, ${permission}');
             return [true, true];
           }
         } else {
           // Failed to get user permission
-          return [true, true];
+          // if the request hangs for too long, a code 301 will be returned
+
+          if (data['code'] == 301) {
+            print('msg: ${data['code']}, false, false');
+            return [false, false];
+          } else {
+            print('msg: ${data['code']}, true, true');
+            return [true, true];
+          }
         }
       } on DioError catch (_) {
+        print('msg: DioError');
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {
@@ -462,7 +474,9 @@ class AuthenticationRepository {
     User? user = userApi.getActivateUser();
     if (user != null) {
       Dio dio = Dio();
-      dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+      String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+          loginIP: user.ip, dio: dio);
+      dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
       dio.options.connectTimeout = 10000; //10s
       dio.options.receiveTimeout = 10000;
 

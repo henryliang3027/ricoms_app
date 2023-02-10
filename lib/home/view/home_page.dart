@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms_app/about/about_page.dart';
 import 'package:ricoms_app/account/view/account_page.dart';
-import 'package:ricoms_app/advanced/view/advanced_page.dart';
-import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/advanced/view/advanced_view/advanced_page.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks_page.dart';
 import 'package:ricoms_app/dashboard/view/dashboard_page.dart';
 import 'package:ricoms_app/history/view/history_page.dart';
@@ -28,14 +26,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select(
-      (AuthenticationBloc bloc) => bloc.state.user,
-    );
-
-    if (kDebugMode) {
-      print('UserID: ${user.id}');
-    }
-
     return Scaffold(
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -68,6 +58,9 @@ class _HomePageState extends State<HomePage> {
             pageController: _pageController,
           ),
           AdvancedPage(
+            pageController: _pageController,
+          ),
+          AboutPage(
             pageController: _pageController,
           ),
         ],

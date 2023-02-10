@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:csv/csv.dart';
+import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class RootRepository {
   RootRepository();
@@ -19,7 +18,9 @@ class RootRepository {
     required int parentId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
@@ -43,6 +44,26 @@ class RootRepository {
         for (var element in dataList) {
           if (element['id'] == null) continue;
 
+          /// check if device status is unknown or offline
+          int status = -1;
+          if (element['status'] == 0) {
+            List<dynamic> resultOfGetInfo = await getNodeInfo(
+              user: user,
+              nodeId: element['id'],
+            );
+            if (resultOfGetInfo[0]) {
+              Info info = resultOfGetInfo[1];
+
+              status = info.moduleID == -2 ? -2 : 0;
+            } else {
+              status = element['status'];
+            }
+          } else {
+            status = element['status'];
+          }
+
+          ///
+
           Node node = Node(
             id: element['id'],
             name: element['name'],
@@ -51,7 +72,7 @@ class RootRepository {
             path: element['path'],
             shelf: element['shelf'],
             slot: element['slot'],
-            status: element['status'],
+            status: status,
             sort: element['sort'],
           );
           childs.add(node);
@@ -71,7 +92,9 @@ class RootRepository {
     required int deviceId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -100,7 +123,9 @@ class RootRepository {
   Future<List<dynamic>> getNodeInfo(
       {required User user, required int nodeId}) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + nodeId.toString();
@@ -138,6 +163,27 @@ class RootRepository {
     }
   }
 
+  Future<List<dynamic>> getDataSheetURL({
+    required User user,
+    required int nodeId,
+  }) async {
+    List<dynamic> resultOfGetInfo =
+        await getNodeInfo(user: user, nodeId: nodeId);
+
+    if (resultOfGetInfo[0]) {
+      Info info = resultOfGetInfo[1];
+      String onlineIP = MasterSlaveServerInfo.onlineServerIP;
+      String moduleSeries = info.series.replaceAll(' ', '%20');
+      String moduleName = info.module.replaceAll(' ', '%20');
+      String dataSheetURL =
+          'http://$onlineIP/aci/ricoms/datasheet/$moduleSeries/$moduleName.pdf';
+
+      return [true, dataSheetURL];
+    } else {
+      return [false, resultOfGetInfo[1]];
+    }
+  }
+
   Future<List<dynamic>> createNode({
     required User user,
     required int parentId,
@@ -150,7 +196,9 @@ class RootRepository {
     String? location,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String createNodePath = '/net/node/' + parentId.toString() + '/childs/new';
@@ -217,7 +265,9 @@ class RootRepository {
     String? location,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String updateNodePath = '/net/node/' + currentNode.id.toString();
@@ -273,7 +323,9 @@ class RootRepository {
     required int deviceId,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String devicePath = '/net/node/' + deviceId.toString();
@@ -303,7 +355,9 @@ class RootRepository {
     required String read,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String connectDevicePath = '/net/node/' + currentNodeID.toString() + '/try';
@@ -335,7 +389,9 @@ class RootRepository {
     required Node currentNode,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deleteNodePath = '/net/node/' + currentNode.id.toString();
@@ -367,7 +423,9 @@ class RootRepository {
     required String keyword,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String deleteNodePath = '/device/search/';
@@ -426,7 +484,9 @@ class RootRepository {
 
   Future<List<dynamic>> exportNodes({required User user}) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String nodeExportApiPath = '/net/node';
@@ -443,28 +503,31 @@ class RootRepository {
       rawData = rawData.replaceAll('\"', '');
 
       List<String> rawDataList = rawData.split('\n');
-      List<List<String>> dataList = [];
 
-      for (var element in rawDataList) {
-        if (element.isNotEmpty) {
-          List<String> line = element.split(',');
-          dataList.add(line);
+      Excel excel = Excel.createExcel();
+      Sheet sheet = excel['Sheet1'];
+
+      for (int i = 0; i < rawDataList.length; i++) {
+        if (rawDataList[i].isNotEmpty) {
+          List<String> line = rawDataList[i].split(',');
+
+          sheet.insertRowIterables(line, i);
         }
       }
 
-      String csv = const ListToCsvConverter().convert(dataList);
+      var fileBytes = excel.save();
 
       String timeStamp =
           DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
 
-      String filename = 'root_data_$timeStamp.csv';
+      String filename = 'root_data_$timeStamp.xlsx';
 
       if (Platform.isIOS) {
         Directory appDocDir = await getApplicationDocumentsDirectory();
         String appDocPath = appDocDir.path;
         String fullWrittenPath = '$appDocPath/$filename';
         File f = File(fullWrittenPath);
-        await f.writeAsString(csv);
+        await f.writeAsBytes(fileBytes!);
         return [
           true,
           'Export root data success',
@@ -475,7 +538,7 @@ class RootRepository {
         String appDocPath = appDocDir.path;
         String fullWrittenPath = '$appDocPath/$filename';
         File f = File(fullWrittenPath);
-        await f.writeAsString(csv);
+        await f.writeAsBytes(fileBytes!);
 
         return [
           true,

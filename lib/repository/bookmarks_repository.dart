@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/repository/user_api.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
+import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class BookmarksRepository {
   BookmarksRepository();
@@ -21,7 +22,9 @@ class BookmarksRepository {
     required List<DeviceMeta> deviceMetas,
     int startIndex = 0,
   }) async {
-    _dio.options.baseUrl = 'http://' + user.ip + '/aci/api/';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
 
@@ -127,7 +130,9 @@ class BookmarksRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/device/' + path[0].toString();
@@ -161,7 +166,9 @@ class BookmarksRepository {
     required List<int> path,
   }) async {
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
@@ -225,21 +232,21 @@ class Device {
 }
 
 
-
-            // "name": "A8KQRR-AGC-HG",
-            // "type": 5,
-            // "device_id": 681,
-            // "ip": "192.168.29.202",
-            // "shelf": 1,
-            // "slot": 1,
-            // "read": "public",
-            // "write": "private",
-            // "description": "1234",
-            // "location": "",
-            // "parent_id": 1001,
-            // "path": ",1004,1001,1000,779,",
-            // "device_main_id": 678,
-            // "module_id": 4,
-            // "module": "A8KQRR-AGC-HG",
-            // "series": "A8K3U",
-            // "status": 3
+// e.g.
+// "name": "A8KQRR-AGC-HG",
+// "type": 5,
+// "device_id": 681,
+// "ip": "192.168.29.202",
+// "shelf": 1,
+// "slot": 1,
+// "read": "public",
+// "write": "private",
+// "description": "1234",
+// "location": "",
+// "parent_id": 1001,
+// "path": ",1004,1001,1000,779,",
+// "device_main_id": 678,
+// "module_id": 4,
+// "module": "A8KQRR-AGC-HG",
+// "series": "A8K3U",
+// "status": 3

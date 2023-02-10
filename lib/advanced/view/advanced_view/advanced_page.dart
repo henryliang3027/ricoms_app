@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/advanced/view/advanced_form.dart';
+import 'package:ricoms_app/advanced/view/advanced_view/advanced_form.dart';
 
 class AdvancedPage extends StatelessWidget {
   const AdvancedPage({
