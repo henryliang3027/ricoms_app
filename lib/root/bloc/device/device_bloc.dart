@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/common_request.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 
 part 'device_event.dart';
 part 'device_state.dart';
@@ -49,8 +50,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   final DeviceBlock _deviceBlock;
   final VoidCallback _descriptionChangedNotifier;
 
-  final _dataStream =
-      Stream<int>.periodic(const Duration(seconds: 5), (count) => count);
+  final _dataStream = Stream<int>.periodic(
+      const Duration(seconds: RequestInterval.deviceSetting), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
 
   Future<bool> _getControllerData({

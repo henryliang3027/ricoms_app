@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
@@ -64,7 +65,8 @@ class AuthenticationBloc
         case AuthenticationStatus.authenticated:
           if (event.report.user.id != '0' && event.report.user.id != 'demo') {
             final dataStream = Stream<int>.periodic(
-                const Duration(seconds: 3), (count) => count);
+                const Duration(seconds: RequestInterval.userPermissionCheck),
+                (count) => count);
 
             _permissionStatusSubscription = dataStream.listen((event) async {
               var result =

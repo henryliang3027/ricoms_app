@@ -11,6 +11,7 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'real_time_alarm_event.dart';
@@ -86,8 +87,9 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     AlarmPeriodicUpdated event,
     Emitter<RealTimeAlarmState> emit,
   ) async {
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    final dataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.realTimeAlarm),
+        (count) => count);
 
     _dataStreamSubscription?.cancel();
     _dataStreamSubscription = dataStream.listen((count) {

@@ -7,6 +7,7 @@ import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_request.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 part 'root_event.dart';
 part 'root_state.dart';
 
@@ -38,8 +39,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         ),
         RequestMode.initial));
 
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    final dataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.rootNode), (count) => count);
 
     _dataStreamSubscription = dataStream.listen((count) {
       if (kDebugMode) {

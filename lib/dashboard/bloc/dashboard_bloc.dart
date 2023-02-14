@@ -6,6 +6,7 @@ import 'package:ricoms_app/repository/dashboard_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_request.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -32,8 +33,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     add(const AlarmTwoWeeksStatisticRequested(RequestMode.initial));
     add(const AlarmOneMonthStatisticRequested(RequestMode.initial));
 
-    final _deviceStatisticDataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    final _deviceStatisticDataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.deviceStatistics),
+        (count) => count);
 
     _deviceStatisticDataStreamSubscription =
         _deviceStatisticDataStream.listen((count) {
@@ -59,8 +61,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     AlarmStatisticPeriodicUpdated event,
     Emitter<DashboardState> emit,
   ) async {
-    final alarmStatisticDataStream =
-        Stream<int>.periodic(const Duration(seconds: 6), (count) => count);
+    final alarmStatisticDataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.dashbordAlarmStatistics),
+        (count) => count);
 
     _alarmStatisticDataStreamSubscription?.cancel();
     _alarmStatisticDataStreamSubscription =
