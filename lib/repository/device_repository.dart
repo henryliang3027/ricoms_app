@@ -133,6 +133,34 @@ class DeviceRepository {
     }
   }
 
+  Future<void> refreshDeice({
+    required User user,
+    required int nodeId,
+  }) async {
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 120000; //120s
+    dio.options.receiveTimeout = 120000;
+    String deviceRefreshPath = '/device/' + nodeId.toString() + '/refresh';
+
+    try {
+      Response response = await dio.post(deviceRefreshPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return;
+      } else {
+        return;
+      }
+    } on DioError catch (_) {
+      return;
+    }
+  }
+
   Future<List<dynamic>> setDeviceParams({
     required User user,
     required int nodeId,

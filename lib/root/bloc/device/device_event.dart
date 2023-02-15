@@ -16,8 +16,8 @@ class DeviceDataRequested extends DeviceEvent {
   List<Object> get props => [];
 }
 
-class DeviceDataUpdateRequested extends DeviceEvent {
-  const DeviceDataUpdateRequested();
+class DeviceRefreshRequested extends DeviceEvent {
+  const DeviceRefreshRequested();
 
   @override
   List<Object> get props => [];

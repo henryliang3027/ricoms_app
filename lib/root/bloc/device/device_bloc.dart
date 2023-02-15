@@ -27,7 +27,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         _descriptionChangedNotifier = descriptionChangedNotifier,
         super(const DeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
-    on<DeviceDataUpdateRequested>(_onDeviceDataUpdateRequested);
+    on<DeviceRefreshRequested>(_onDeviceRefreshRequested);
     on<FormStatusChanged>(_onFormStatusChanged);
     on<DeviceParamSaved>(_onDeviceParamSaved);
     on<ControllerValueChanged>(_onControllerValueChanged);
@@ -42,6 +42,11 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
           ? add(const DeviceDataRequested(RequestMode.update))
           : null;
     });
+
+    _refreshDeviceTimer = Timer.periodic(
+        const Duration(seconds: RequestInterval.deviceRefresh), (timer) {
+      add(const DeviceRefreshRequested());
+    });
   }
 
   final User _user;
@@ -53,6 +58,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   final _dataStream = Stream<int>.periodic(
       const Duration(seconds: RequestInterval.deviceSetting), (count) => count);
   StreamSubscription<int>? _dataStreamSubscription;
+  Timer? _refreshDeviceTimer;
 
   Future<bool> _getControllerData({
     required List<List<ControllerProperty>> controllerPropertiesCollection,
@@ -86,6 +92,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
   @override
   Future<void> close() {
     _dataStreamSubscription?.cancel();
+    _refreshDeviceTimer?.cancel();
     return super.close();
   }
 
@@ -130,34 +137,14 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     }
   }
 
-  Future<void> _onDeviceDataUpdateRequested(
-    DeviceDataUpdateRequested event,
+  void _onDeviceRefreshRequested(
+    DeviceRefreshRequested event,
     Emitter<DeviceState> emit,
-  ) async {
-    // emit(state.copyWith(
-    //   formStatus: FormStatus.updating,
-    // ));
-
-    dynamic data = await _deviceRepository.getDevicePage(
+  ) {
+    _deviceRepository.refreshDeice(
       user: _user,
       nodeId: _nodeId,
-      pageId: _deviceBlock.id,
     );
-    // bool isEditable = _deviceRepository.isEditable(_pageName);
-
-    if (data is List) {
-      emit(state.copyWith(
-        formStatus: FormStatus.updating,
-        submissionStatus: SubmissionStatus.none,
-        editable: _deviceBlock.editable,
-      ));
-    } else {
-      emit(state.copyWith(
-        formStatus: FormStatus.requestFailure,
-        submissionStatus: SubmissionStatus.none,
-        editable: _deviceBlock.editable,
-      ));
-    }
   }
 
   void _onFormStatusChanged(

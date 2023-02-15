@@ -7,4 +7,5 @@ class RequestInterval {
   static const int realTimeAlarm = 3;
   static const int deviceSetting = 6;
   static const int userPermissionCheck = 3;
+  static const int deviceRefresh = 3;
 }
