@@ -75,14 +75,14 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
       List<BatchSettingDevice> devices = [];
 
       devices = _allDevices.where((device) {
-        if (device.ip.toLowerCase().contains(state.keyword.toLowerCase()) ||
-            device.group.toLowerCase().contains(state.keyword.toLowerCase()) ||
+        if (device.ip.toLowerCase().contains(event.keyword.toLowerCase()) ||
+            device.group.toLowerCase().contains(event.keyword.toLowerCase()) ||
             device.deviceName
                 .toLowerCase()
-                .contains(state.keyword.toLowerCase()) ||
+                .contains(event.keyword.toLowerCase()) ||
             device.moduleName
                 .toLowerCase()
-                .contains(state.keyword.toLowerCase())) {
+                .contains(event.keyword.toLowerCase())) {
           return true;
         } else {
           return false;

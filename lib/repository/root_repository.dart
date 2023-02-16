@@ -45,22 +45,22 @@ class RootRepository {
           if (element['id'] == null) continue;
 
           /// check if device status is unknown or offline
-          int status = -1;
-          if (element['status'] == 0) {
-            List<dynamic> resultOfGetInfo = await getNodeInfo(
-              user: user,
-              nodeId: element['id'],
-            );
-            if (resultOfGetInfo[0]) {
-              Info info = resultOfGetInfo[1];
+          // int status = -1;
+          // if (element['status'] == 0) {
+          //   List<dynamic> resultOfGetInfo = await getNodeInfo(
+          //     user: user,
+          //     nodeId: element['id'],
+          //   );
+          //   if (resultOfGetInfo[0]) {
+          //     Info info = resultOfGetInfo[1];
 
-              status = info.moduleID == -2 ? -2 : 0;
-            } else {
-              status = element['status'];
-            }
-          } else {
-            status = element['status'];
-          }
+          //     status = info.moduleID == -2 ? -2 : 0;
+          //   } else {
+          //     status = element['status'];
+          //   }
+          // } else {
+          //   status = element['status'];
+          // }
 
           ///
 
@@ -72,7 +72,7 @@ class RootRepository {
             path: element['path'],
             shelf: element['shelf'],
             slot: element['slot'],
-            status: status,
+            status: element['status'],
             sort: element['sort'],
           );
           childs.add(node);

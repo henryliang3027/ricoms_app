@@ -535,7 +535,7 @@ class _NodeContent extends StatelessWidget {
                         Container(
                           width: CommonStyle.severityRectangleWidth,
                           height: CommonStyle.severityRectangleHeight,
-                          color: CustomStyle.severityColor[node.status],
+                          color: CustomStyle.nodeStatusColor[node.status],
                         ),
                       ],
                     ),

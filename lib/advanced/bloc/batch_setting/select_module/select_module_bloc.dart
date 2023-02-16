@@ -62,7 +62,7 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
 
       modules = _allModules
           .where((module) =>
-              module.name.toLowerCase().contains(state.keyword.toLowerCase()))
+              module.name.toLowerCase().contains(event.keyword.toLowerCase()))
           .toList();
 
       emit(state.copyWith(
