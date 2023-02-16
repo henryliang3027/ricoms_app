@@ -6,6 +6,7 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class ServerIPSettingForm extends StatelessWidget {
   const ServerIPSettingForm({Key? key}) : super(key: key);
@@ -58,7 +59,12 @@ class ServerIPSettingForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

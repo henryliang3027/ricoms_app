@@ -162,12 +162,25 @@ class __AlarmOneDayStatisticsPieChartState
             alarmStatistics: alarmOneDayStatistics,
           );
         } else if (state.alarmOneDayStatisticsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -212,12 +225,25 @@ class __AlarmThreeDaysStatisticsPieChartState
             alarmStatistics: alarmThreeDaysStatistics,
           );
         } else if (state.alarmThreeDaysStatisticsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -262,12 +288,25 @@ class __AlarmOneWeekStatisticsPieChartState
             alarmStatistics: alarmOneWeekStatistics,
           );
         } else if (state.alarmOneWeekStatisticsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -312,12 +351,25 @@ class __AlarmTwoWeeksStatisticsPieChartState
             alarmStatistics: alarmTwoWeeksStatistics,
           );
         } else if (state.alarmTwoWeeksStatisticsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -362,12 +414,25 @@ class __AlarmOneMonthStatisticsPieChartState
             alarmStatistics: alarmOneMonthStatistics,
           );
         } else if (state.alarmOneMonthStatisticsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

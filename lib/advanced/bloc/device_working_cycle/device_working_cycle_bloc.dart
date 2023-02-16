@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 part 'device_working_cycle_event.dart';
 part 'device_working_cycle_state.dart';
@@ -59,7 +60,6 @@ class DeviceWorkingCycleBloc
     Emitter<DeviceWorkingCycleState> emit,
   ) async {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
     ));
 
@@ -75,6 +75,7 @@ class DeviceWorkingCycleBloc
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionFailure,
         isEditing: true,
+        submissionErrorMsg: CustomErrMsg.connectionFailed,
       ));
     }
   }
@@ -84,7 +85,6 @@ class DeviceWorkingCycleBloc
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       deviceWorkingCycleIndex: event.index,
     ));
@@ -95,7 +95,6 @@ class DeviceWorkingCycleBloc
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       isEditing: true,
     ));
@@ -106,7 +105,6 @@ class DeviceWorkingCycleBloc
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       isEditing: false,
     ));

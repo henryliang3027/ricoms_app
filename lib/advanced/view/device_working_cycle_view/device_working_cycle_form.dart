@@ -9,12 +9,31 @@ import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
+import 'package:ricoms_app/utils/message_localization.dart';
 
 class DeviceWorkingCycleForm extends StatelessWidget {
   const DeviceWorkingCycleForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _showInProgressDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_saving,
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: const <Widget>[
+              CircularProgressIndicator(),
+            ],
+          );
+        },
+      );
+    }
+
     Future<void> _showSuccessDialog() async {
       return showDialog<void>(
         context: context,
@@ -40,10 +59,53 @@ class DeviceWorkingCycleForm extends StatelessWidget {
       );
     }
 
+    Future<void> _showFailureDialog(String msg) async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.dialogTitle_error,
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<DeviceWorkingCycleBloc, DeviceWorkingCycleState>(
       listener: (context, state) {
         if (state.submissionStatus.isSubmissionSuccess) {
+          Navigator.of(context).pop(); // pop dialog
           _showSuccessDialog();
+        } else if (state.submissionStatus.isSubmissionFailure) {
+          Navigator.of(context).pop(); // pop dialog
+          _showFailureDialog(state.submissionErrorMsg);
+        } else if (state.submissionStatus.isSubmissionInProgress) {
+          _showInProgressDialog();
         }
       },
       child: Scaffold(
@@ -53,19 +115,61 @@ class DeviceWorkingCycleForm extends StatelessWidget {
           ),
           elevation: 0.0,
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 14.0),
-            ),
-            _DeviceWorkingCycleTitle(),
-            _DeviceWorkingCycleDropDownMenu(),
-          ],
-        ),
+        body: const _DeviceWorkingCycleContent(),
         floatingActionButton:
             const _DeviceWorkingCycleEditFloatingActionButton(),
       ),
+    );
+  }
+}
+
+class _DeviceWorkingCycleContent extends StatelessWidget {
+  const _DeviceWorkingCycleContent({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DeviceWorkingCycleBloc, DeviceWorkingCycleState>(
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        if (state.status.isRequestSuccess) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: const [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 14.0),
+              ),
+              _DeviceWorkingCycleTitle(),
+              _DeviceWorkingCycleDropDownMenu(),
+            ],
+          );
+        } else if (state.status.isRequestFailure) {
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }
@@ -174,53 +278,57 @@ class _DeviceWorkingCycleEditFloatingActionButton extends StatelessWidget {
 
     return BlocBuilder<DeviceWorkingCycleBloc, DeviceWorkingCycleState>(
       builder: (context, state) {
-        return _userFunctionMap[37]
-            ? state.isEditing
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FloatingActionButton(
-                        heroTag: null,
-                        elevation: 0.0,
-                        backgroundColor: const Color(0x742195F3),
-                        onPressed: () {
-                          context
-                              .read<DeviceWorkingCycleBloc>()
-                              .add(const DeviceWorkingCycleSaved());
-                        },
-                        child: const Icon(CustomIcons.check),
-                        //const Text('Save'),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(6.0),
-                      ),
-                      FloatingActionButton(
+        if (state.status.isRequestSuccess) {
+          return _userFunctionMap[37]
+              ? state.isEditing
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FloatingActionButton(
                           heroTag: null,
                           elevation: 0.0,
                           backgroundColor: const Color(0x742195F3),
                           onPressed: () {
                             context
                                 .read<DeviceWorkingCycleBloc>()
-                                .add(const EditModeDisabled());
-
-                            context
-                                .read<DeviceWorkingCycleBloc>()
-                                .add(const DeviceWorkingCycleRequested());
+                                .add(const DeviceWorkingCycleSaved());
                           },
-                          child: const Icon(CustomIcons.cancel)),
-                    ],
-                  )
-                : FloatingActionButton(
-                    elevation: 0.0,
-                    backgroundColor: const Color(0x742195F3),
-                    onPressed: () {
-                      context
-                          .read<DeviceWorkingCycleBloc>()
-                          .add(const EditModeEnabled());
-                    },
-                    child: const Icon(Icons.edit),
-                  )
-            : Container();
+                          child: const Icon(CustomIcons.check),
+                          //const Text('Save'),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(6.0),
+                        ),
+                        FloatingActionButton(
+                            heroTag: null,
+                            elevation: 0.0,
+                            backgroundColor: const Color(0x742195F3),
+                            onPressed: () {
+                              context
+                                  .read<DeviceWorkingCycleBloc>()
+                                  .add(const EditModeDisabled());
+
+                              context
+                                  .read<DeviceWorkingCycleBloc>()
+                                  .add(const DeviceWorkingCycleRequested());
+                            },
+                            child: const Icon(CustomIcons.cancel)),
+                      ],
+                    )
+                  : FloatingActionButton(
+                      elevation: 0.0,
+                      backgroundColor: const Color(0x742195F3),
+                      onPressed: () {
+                        context
+                            .read<DeviceWorkingCycleBloc>()
+                            .add(const EditModeEnabled());
+                      },
+                      child: const Icon(Icons.edit),
+                    )
+              : Container();
+        } else {
+          return Container();
+        }
       },
     );
   }

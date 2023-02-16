@@ -8,6 +8,7 @@ class DeviceWorkingCycleState extends Equatable {
     this.deviceWorkingCycleList = const [],
     this.deviceWorkingCycleIndex = '',
     this.requestErrorMsg = '',
+    this.submissionErrorMsg = '',
   });
 
   final FormStatus status;
@@ -16,6 +17,7 @@ class DeviceWorkingCycleState extends Equatable {
   final List<DeviceWorkingCycle> deviceWorkingCycleList;
   final String deviceWorkingCycleIndex;
   final String requestErrorMsg;
+  final String submissionErrorMsg;
 
   DeviceWorkingCycleState copyWith({
     FormStatus? status,
@@ -24,6 +26,7 @@ class DeviceWorkingCycleState extends Equatable {
     List<DeviceWorkingCycle>? deviceWorkingCycleList,
     String? deviceWorkingCycleIndex,
     String? requestErrorMsg,
+    String? submissionErrorMsg,
   }) {
     return DeviceWorkingCycleState(
       status: status ?? this.status,
@@ -34,6 +37,7 @@ class DeviceWorkingCycleState extends Equatable {
       deviceWorkingCycleIndex:
           deviceWorkingCycleIndex ?? this.deviceWorkingCycleIndex,
       requestErrorMsg: requestErrorMsg ?? this.requestErrorMsg,
+      submissionErrorMsg: submissionErrorMsg ?? this.submissionErrorMsg,
     );
   }
 
@@ -45,5 +49,6 @@ class DeviceWorkingCycleState extends Equatable {
         deviceWorkingCycleList,
         deviceWorkingCycleIndex,
         requestErrorMsg,
+        submissionErrorMsg,
       ];
 }

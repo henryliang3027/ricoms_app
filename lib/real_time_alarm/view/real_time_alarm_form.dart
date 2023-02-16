@@ -8,6 +8,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
@@ -354,6 +355,10 @@ class _AllAlarmsSliverList extends StatefulWidget {
 class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
   @override
   void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const AllAlarmRequested(RequestMode.initial));
+
     //Use StatefulWidget and subscribe stream in order to update periodic
     context
         .read<RealTimeAlarmBloc>()
@@ -393,12 +398,25 @@ class __AllAlarmsSliverListState extends State<_AllAlarmsSliverList> {
                 : _showEmptyContent(context),
           );
         } else if (state.allAlarmsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.allAlarms[0],
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.allAlarms[0],
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -429,6 +447,10 @@ class _CriticalAlarmsSliverList extends StatefulWidget {
 class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
   @override
   void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const CriticalAlarmRequested(RequestMode.initial));
+
     context
         .read<RealTimeAlarmBloc>()
         .add(const AlarmPeriodicUpdated(AlarmType.critical));
@@ -467,12 +489,25 @@ class __CriticalAlarmsSliverListState extends State<_CriticalAlarmsSliverList> {
                 : _showEmptyContent(context),
           );
         } else if (state.criticalAlarmsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.criticalAlarms[0],
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.criticalAlarms[0],
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -503,6 +538,10 @@ class _WarningAlarmsSliverList extends StatefulWidget {
 class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
   @override
   void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const WarningAlarmRequested(RequestMode.initial));
+
     context
         .read<RealTimeAlarmBloc>()
         .add(const AlarmPeriodicUpdated(AlarmType.warning));
@@ -541,12 +580,25 @@ class __WarningAlarmsSliverListState extends State<_WarningAlarmsSliverList> {
                 : _showEmptyContent(context),
           );
         } else if (state.warningAlarmsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.warningAlarms[0],
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.warningAlarms[0],
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -577,6 +629,10 @@ class _NormalAlarmsSliverList extends StatefulWidget {
 class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
   @override
   void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const NormalAlarmRequested(RequestMode.initial));
+
     context
         .read<RealTimeAlarmBloc>()
         .add(const AlarmPeriodicUpdated(AlarmType.normal));
@@ -615,12 +671,25 @@ class __NormalAlarmsSliverListState extends State<_NormalAlarmsSliverList> {
                 : _showEmptyContent(context),
           );
         } else if (state.normalAlarmsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.normalAlarms[0],
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.normalAlarms[0],
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {
@@ -651,6 +720,10 @@ class _NoticeAlarmsSliverList extends StatefulWidget {
 class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
   @override
   void initState() {
+    context
+        .read<RealTimeAlarmBloc>()
+        .add(const NoticeAlarmRequested(RequestMode.initial));
+
     context
         .read<RealTimeAlarmBloc>()
         .add(const AlarmPeriodicUpdated(AlarmType.notice));
@@ -689,12 +762,25 @@ class __NoticeAlarmsSliverListState extends State<_NoticeAlarmsSliverList> {
                 : _showEmptyContent(context),
           );
         } else if (state.noticeAlarmsStatus.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.noticeAlarms[0],
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.noticeAlarms[0],
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

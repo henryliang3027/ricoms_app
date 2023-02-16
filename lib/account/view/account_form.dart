@@ -423,9 +423,24 @@ class _AccountSliverList extends StatelessWidget {
           );
         } else if (state.formStatus.isRequestFailure) {
           return Container(
-            color: Colors.grey.shade300,
-            child: Center(
-              child: Text(state.requestErrorMsg),
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

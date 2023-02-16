@@ -48,11 +48,11 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
       transformer: throttleDroppable(throttleDuration),
     );
 
-    add(const AllAlarmRequested(RequestMode.initial));
-    add(const CriticalAlarmRequested(RequestMode.initial));
-    add(const WarningAlarmRequested(RequestMode.initial));
-    add(const NormalAlarmRequested(RequestMode.initial));
-    add(const NoticeAlarmRequested(RequestMode.initial));
+    // add(const AllAlarmRequested(RequestMode.initial));
+    // add(const CriticalAlarmRequested(RequestMode.initial));
+    // add(const WarningAlarmRequested(RequestMode.initial));
+    // add(const NormalAlarmRequested(RequestMode.initial));
+    // add(const NoticeAlarmRequested(RequestMode.initial));
 
     _assetsAudioPlayer.open(
       Audio("assets/audios/trap_sound.mp3"),
