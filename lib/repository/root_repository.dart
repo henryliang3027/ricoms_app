@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -646,7 +647,7 @@ class SearchData {
   final int status;
 }
 
-class Node {
+class Node extends Equatable {
   const Node({
     required this.id,
     this.name = '',
@@ -670,6 +671,20 @@ class Node {
   final int status;
   final String sort;
   final Info? info;
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        type,
+        teg,
+        path,
+        shelf,
+        slot,
+        status,
+        sort,
+        info,
+      ];
 }
 
 class Info {

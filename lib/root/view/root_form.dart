@@ -579,6 +579,32 @@ class _NodeContent extends StatelessWidget {
       if (state.formStatus.isRequestSuccess) {
         if (state.directory.last.type == 2 || state.directory.last.type == 5) {
           // 2: edfa, 5: a8k slot
+
+          if (state.directory.last.status == 0) {
+            return Expanded(
+              child: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.warning_rounded,
+                      size: 200,
+                      color: Color(0xffffc107),
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!
+                          .dialogMessage_DeviceDoesNotRespond,
+                    ),
+                    const SizedBox(height: 40.0),
+                  ],
+                ),
+              ),
+            );
+          }
+
           descriptionChangeNotifier() =>
               context.read<RootBloc>().add(const DeviceTypeNodeUpdated());
 
