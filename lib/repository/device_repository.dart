@@ -321,8 +321,9 @@ class DeviceRepository {
             }
           }
         }
-        deviceHistoryDataList
-            .sort((b, a) => a.timeReceived.compareTo(b.timeReceived));
+
+        // sort by trapId, a larger id represents a newer time
+        deviceHistoryDataList.sort((a, b) => b.trapId.compareTo(a.trapId));
 
         return [true, deviceHistoryDataList];
       } else {
