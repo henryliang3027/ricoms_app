@@ -323,7 +323,7 @@ class _ParameterItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 6.0),
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 0.0),
                         child: Text(
                           device.ip,
                           //maxLines: 2,
@@ -334,25 +334,12 @@ class _ParameterItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                        child: Text(
-                          device.group,
-                          //maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: CommonStyle.sizeM,
-                            color: Colors.grey.shade700,
-                            // fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
                       Row(
                         children: [
                           Flexible(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(
-                                  10.0, 0.0, 6.0, 0.0),
+                                  10.0, 6.0, 6.0, 0.0),
                               child: Text(
                                 _getDisplayName(device),
                                 //maxLines: 2,
@@ -367,6 +354,25 @@ class _ParameterItem extends StatelessWidget {
                           ),
                         ],
                       ),
+                      processingStatus != ProcessingStatus.processing
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 6.0, 6.0, 0.0),
+                              child: Text(
+                                resultDetail.description,
+                                //maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: CommonStyle.sizeM,
+                                  color: Colors.grey.shade700,
+                                  // fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: 0.0,
+                              width: 0.0,
+                            ),
                     ],
                   ),
                 ),
