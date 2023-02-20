@@ -133,7 +133,11 @@ class DeviceSettingStyle {
         break;
 
       case 99: //勾選方塊
-        bool initValue = value == '0' || value == "" ? false : true;
+        bool? initValue = value == ""
+            ? null
+            : value == '0'
+                ? false
+                : true;
         CheckBoxProperty checkBoxProperty = CheckBoxProperty(
           oid: id,
           initValue: initValue,
@@ -789,7 +793,7 @@ class CheckBoxProperty extends ControllerProperty {
   });
 
   final String oid;
-  final bool initValue;
+  final bool? initValue;
   final bool readOnly;
   final int boxLength;
 }

@@ -31,12 +31,17 @@ class RetryFailedSettingRequested extends DeviceSettingResultEvent {
 }
 
 class RetrySetDeviceParamsRequested extends DeviceSettingResultEvent {
-  const RetrySetDeviceParamsRequested(this.indexOfDevice);
+  const RetrySetDeviceParamsRequested(
+      this.indexOfDevice, this.isSelectedDevices);
 
   final int indexOfDevice;
+  final List<bool> isSelectedDevices;
 
   @override
-  List<Object> get props => [indexOfDevice];
+  List<Object> get props => [
+        indexOfDevice,
+        isSelectedDevices,
+      ];
 }
 
 class DeviceParamItemSelected extends DeviceSettingResultEvent {
@@ -61,6 +66,22 @@ class AllDeviceParamItemsDeselected extends DeviceSettingResultEvent {
 
 class AllDeviceParamItemsSelected extends DeviceSettingResultEvent {
   const AllDeviceParamItemsSelected();
+
+  @override
+  List<Object> get props => [];
+}
+
+class KeywordSearched extends DeviceSettingResultEvent {
+  const KeywordSearched(this.keyword);
+
+  final String keyword;
+
+  @override
+  List<Object> get props => [keyword];
+}
+
+class KeywordCleared extends DeviceSettingResultEvent {
+  const KeywordCleared();
 
   @override
   List<Object> get props => [];

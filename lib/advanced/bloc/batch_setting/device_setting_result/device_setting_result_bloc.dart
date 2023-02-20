@@ -36,6 +36,7 @@ class DeviceSettingResultBloc
   final List<BatchSettingDevice> _devices;
   final Map<String, String> _deviceParamsMap;
   final BatchSettingRepository _batchSettingRepository;
+  final _maximumNumberOfRetries = 3;
 
   void _onInitialDeviceParamRequested(
     InitialDeviceParamRequested event,
@@ -145,12 +146,24 @@ class DeviceSettingResultBloc
       }
     }
 
+    List<List<bool>> tempSelectedDevicesCollection = [];
+    for (List selectedDevices in state.isSelectedDevicesCollection) {
+      List<bool> tempSelectedDevices = [];
+      for (bool isSelected in selectedDevices) {
+        tempSelectedDevices.add(isSelected);
+      }
+      tempSelectedDevicesCollection.add(tempSelectedDevices);
+    }
+
     emit(state.copyWith(
+      isSelectedDevicesCollection: deselectAllFailureItems(),
       deviceProcessingStatusCollection: newDeviceProcessingStatusCollection,
     ));
 
     for (int i = 0; i < state.deviceParamItemsCollection.length; i++) {
-      add(RetrySetDeviceParamsRequested(i));
+      if (tempSelectedDevicesCollection[i].contains(true)) {
+        add(RetrySetDeviceParamsRequested(i, tempSelectedDevicesCollection[i]));
+      }
     }
   }
 
@@ -163,7 +176,7 @@ class DeviceSettingResultBloc
         state.deviceParamItemsCollection[indexOfDevice];
 
     for (int i = 0; i < deviceParamItems.length; i++) {
-      if (state.isSelectedDevicesCollection[indexOfDevice][i] == true) {
+      if (event.isSelectedDevices[i] == true) {
         List<List<ProcessingStatus>> newDeviceProcessingStatusCollection = [];
         ResultDetail resultDetail = await setDeviceParam(
             indexOfDevice: indexOfDevice,
@@ -193,12 +206,20 @@ class DeviceSettingResultBloc
   }) async {
     // List<int> secs = [1, 1, 1, 1, 1, 1];
     // print(indexOfDevice * 3 + indexOfParam);
-    List<dynamic> resultOfSetDeviceParam =
-        await _batchSettingRepository.setDeviceParameter(
-      user: _user,
-      deviceParamItem: deviceParamItem,
-      // sec: secs[indexOfDevice * 3 + indexOfParam],
-    );
+    List<dynamic> resultOfSetDeviceParam = [];
+
+    for (int i = 0; i < _maximumNumberOfRetries; i++) {
+      resultOfSetDeviceParam = await _batchSettingRepository.setDeviceParameter(
+        user: _user,
+        deviceParamItem: deviceParamItem,
+        // sec: secs[indexOfDevice * 3 + indexOfParam],
+      );
+
+      // break if successful, otherwise retry
+      if (resultOfSetDeviceParam[0]) {
+        break;
+      }
+    }
 
     // deep copy DeviceProcessingStatusCollection
     for (List<ProcessingStatus> deviceProcessingStatusList
@@ -260,6 +281,48 @@ class DeviceSettingResultBloc
     AllDeviceParamItemsSelected event,
     Emitter<DeviceSettingResultState> emit,
   ) {
+    List<List<bool>> newIsSelectedDevicesCollection = selectAllFailureItems();
+
+    emit(state.copyWith(
+      isSelectedDevicesCollection: newIsSelectedDevicesCollection,
+    ));
+  }
+
+  void _onAllDeviceParamItemsDeselected(
+    AllDeviceParamItemsDeselected event,
+    Emitter<DeviceSettingResultState> emit,
+  ) {
+    List<List<bool>> newIsSelectedDevicesCollection = deselectAllFailureItems();
+
+    emit(state.copyWith(
+      isSelectedDevicesCollection: newIsSelectedDevicesCollection,
+    ));
+  }
+
+  List<List<bool>> deselectAllFailureItems() {
+    List<List<bool>> newIsSelectedDevicesCollection = [];
+
+    for (List<bool> isSelectedDevices in state.isSelectedDevicesCollection) {
+      List<bool> newIsSelectedDevices = [];
+      for (bool isSelected in isSelectedDevices) {
+        newIsSelectedDevices.add(isSelected);
+      }
+      newIsSelectedDevicesCollection.add(newIsSelectedDevices);
+    }
+
+    for (int i = 0; i < state.isSelectedDevicesCollection.length; i++) {
+      for (int j = 0; j < state.isSelectedDevicesCollection[i].length; j++) {
+        if (state.deviceProcessingStatusCollection[i][j] ==
+            ProcessingStatus.failure) {
+          newIsSelectedDevicesCollection[i][j] = false;
+        }
+      }
+    }
+
+    return newIsSelectedDevicesCollection;
+  }
+
+  List<List<bool>> selectAllFailureItems() {
     List<List<bool>> newIsSelectedDevicesCollection = [];
 
     for (List<bool> isSelectedDevices in state.isSelectedDevicesCollection) {
@@ -279,28 +342,7 @@ class DeviceSettingResultBloc
       }
     }
 
-    emit(state.copyWith(
-      isSelectedDevicesCollection: newIsSelectedDevicesCollection,
-    ));
-  }
-
-  void _onAllDeviceParamItemsDeselected(
-    AllDeviceParamItemsDeselected event,
-    Emitter<DeviceSettingResultState> emit,
-  ) {
-    List<List<bool>> newIsSelectedDevicesCollection = [];
-
-    for (List<bool> isSelectedDevices in state.isSelectedDevicesCollection) {
-      List<bool> newIsSelectedDevices = [];
-      for (bool isSelected in isSelectedDevices) {
-        newIsSelectedDevices.add(false);
-      }
-      newIsSelectedDevicesCollection.add(newIsSelectedDevices);
-    }
-
-    emit(state.copyWith(
-      isSelectedDevicesCollection: newIsSelectedDevicesCollection,
-    ));
+    return newIsSelectedDevicesCollection;
   }
 }
 

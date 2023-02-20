@@ -171,11 +171,12 @@ class BatchSettingRepository {
     required User user,
     required DeviceParamItem deviceParamItem,
   }) async {
-    // await Future.delayed(const Duration(seconds: 1));
-    // return [true];
-
     Dio dio = Dio();
-    dio.options.baseUrl = 'http://' + user.ip + '/aci/api';
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    // print('onlone ip: ${onlineIP}');
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String batchDeviceSettingApiPath = '/advanced/modulebatch';
@@ -196,7 +197,7 @@ class BatchSettingRepository {
       );
 
       var data = jsonDecode(response.data.toString());
-      String modifyResult = data['data'][0]['modify_result'];
+      String modifyResult = data['data'][0]['modify_result'] ?? "";
       String endTime =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()).toString();
 

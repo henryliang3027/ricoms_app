@@ -457,6 +457,22 @@ class _DeviceCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool? _stringToBool(String value) {
+      if (value.isEmpty) {
+        return false;
+      } else {
+        return value == '1' ? true : false;
+      }
+    }
+
+    String _boolToString(bool? value) {
+      if (value == null) {
+        return '';
+      } else {
+        return value ? '1' : '0';
+      }
+    }
+
     return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
       buildWhen: (previous, current) =>
           previous.controllerValuesMap[pageId]![checkBoxProperty.oid] !=
@@ -467,17 +483,15 @@ class _DeviceCheckBox extends StatelessWidget {
           child: Checkbox(
             visualDensity: const VisualDensity(vertical: -4.0),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            value:
-                state.controllerValuesMap[pageId]![checkBoxProperty.oid] == '1'
-                    ? true
-                    : false,
+            value: _stringToBool(
+                state.controllerValuesMap[pageId]![checkBoxProperty.oid]!),
             onChanged: !checkBoxProperty.readOnly
                 ? (value) {
-                    if (value != null) {
-                      context.read<ConfigDeviceBloc>().add(
-                          ControllerValueChanged(
-                              pageId, checkBoxProperty.oid, value ? '1' : '0'));
-                    }
+                    context.read<ConfigDeviceBloc>().add(ControllerValueChanged(
+                          pageId,
+                          checkBoxProperty.oid,
+                          _boolToString(value),
+                        ));
                   }
                 : null,
           ),
