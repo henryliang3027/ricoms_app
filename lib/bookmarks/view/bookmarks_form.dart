@@ -198,7 +198,7 @@ class _DeviceSliverList extends StatelessWidget {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         if (index >= data.length) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -247,7 +247,7 @@ class _DeviceSliverList extends StatelessWidget {
                           Container(
                             width: CommonStyle.severityRectangleWidth,
                             height: 60.0,
-                            color: CustomStyle.severityColor[device.status],
+                            color: CustomStyle.nodeStatusColor[device.status],
                           ),
                         ],
                       ),
