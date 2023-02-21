@@ -81,11 +81,16 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? -double.maxFinite;
     double minorH = widget.minorH ?? -double.maxFinite;
     double minorL = widget.minorL ?? -double.maxFinite;
-    double maximumChartValue = widget.chartDateValuePairs.isNotEmpty
-        ? widget.chartDateValuePairs
-            .reduce(
-                (current, next) => current.value > next.value ? current : next)
-            .value
+
+    List<ChartDateValuePair> nonNullCharDateValurPairs = [];
+    nonNullCharDateValurPairs.addAll(widget.chartDateValuePairs);
+    nonNullCharDateValurPairs.removeWhere((element) => element.value == null);
+
+    double maximumChartValue = nonNullCharDateValurPairs.isNotEmpty
+        ? nonNullCharDateValurPairs
+            .reduce((current, next) =>
+                current.value! > next.value! ? current : next)
+            .value!
         : 0.0;
     double maximum = 0.0;
 
@@ -100,11 +105,16 @@ class _SingleAxisLineChartState extends State<SingleAxisLineChart> {
     double majorL = widget.majorL ?? double.maxFinite;
     double minorH = widget.minorH ?? double.maxFinite;
     double minorL = widget.minorL ?? double.maxFinite;
-    double minimumChartValue = widget.chartDateValuePairs.isNotEmpty
-        ? widget.chartDateValuePairs
-            .reduce(
-                (current, next) => current.value < next.value ? current : next)
-            .value
+
+    List<ChartDateValuePair> nonNullCharDateValurPairs = [];
+    nonNullCharDateValurPairs.addAll(widget.chartDateValuePairs);
+    nonNullCharDateValurPairs.removeWhere((element) => element.value == null);
+
+    double minimumChartValue = nonNullCharDateValurPairs.isNotEmpty
+        ? nonNullCharDateValurPairs
+            .reduce((current, next) =>
+                current.value! < next.value! ? current : next)
+            .value!
         : 0.0;
     double minimum = 0.0;
 

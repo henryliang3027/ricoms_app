@@ -467,11 +467,18 @@ class DeviceRepository {
           String? rawDate = element['time'];
           String? rawValue = element['value'];
 
-          if (rawDate != null &&
-              rawValue != null &&
-              rawDate != 'null' &&
-              rawValue != 'null') {
-            double value = double.parse(rawValue);
+          if (rawDate != null && rawValue != null
+              // &&
+              // rawDate != 'null' &&
+              // rawValue != 'null'
+              ) {
+            double? value;
+            if (rawValue == 'null') {
+              value = null;
+            } else {
+              value = double.parse(rawValue);
+            }
+
             String date = rawDate;
             chartDateValuePairs.add(ChartDateValuePair(
               dateTime: DateTime.parse(date),
@@ -697,5 +704,5 @@ class ChartDateValuePair {
   });
 
   final DateTime dateTime;
-  final double value;
+  final double? value;
 }

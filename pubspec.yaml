@@ -44,7 +44,7 @@ dependencies:
   permission_handler: ^10.0.0 # for asking storage read/write permission
   device_info: ^2.0.3 # for checking android sdk version
   intl: ^0.17.0 # format datetime
-  syncfusion_flutter_charts: ^20.3.56
+  syncfusion_flutter_charts: ^20.4.50
   firebase_core: ^2.4.1
   firebase_messaging: ^14.2.1
 
