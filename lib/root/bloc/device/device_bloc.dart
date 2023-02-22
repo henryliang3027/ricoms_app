@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:ricoms_app/utils/request_interval.dart';
@@ -62,8 +63,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
   Future<bool> _getControllerData({
     required List<List<ControllerProperty>> controllerPropertiesCollection,
-    required Map<String, String> controllerValues,
-    required Map<String, String> controllerInitialValues,
+    required Map<String, dynamic> controllerValues,
+    required Map<String, dynamic> controllerInitialValues,
   }) async {
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
@@ -107,8 +108,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     }
 
     List<List<ControllerProperty>> controllerPropertiesCollection = [];
-    Map<String, String> controllerValues = {};
-    Map<String, String> controllerInitialValues = {};
+    Map<String, dynamic> controllerValues = {};
+    Map<String, dynamic> controllerInitialValues = {};
 
     bool resultOfGetControllerData = await _getControllerData(
       controllerPropertiesCollection: controllerPropertiesCollection,
@@ -175,10 +176,28 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
     ControllerValueChanged event,
     Emitter<DeviceState> emit,
   ) {
-    Map<String, String> controllerValues = {};
+    Map<String, dynamic> controllerValues = {};
     controllerValues.addAll(state.controllerValues);
 
-    controllerValues[event.oid] = event.value;
+    if (controllerValues[event.oid].runtimeType == Input6) {
+      controllerValues[event.oid] = Input6.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == Input7) {
+      controllerValues[event.oid] = Input7.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == Input8) {
+      controllerValues[event.oid] = Input8.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == Input31) {
+      controllerValues[event.oid] = Input31.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == Input63) {
+      controllerValues[event.oid] = Input63.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == InputInfinity) {
+      controllerValues[event.oid] = InputInfinity.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == IPv4) {
+      controllerValues[event.oid] = IPv4.dirty(event.value);
+    } else if (controllerValues[event.oid].runtimeType == IPv6) {
+      controllerValues[event.oid] = IPv6.dirty(event.value);
+    } else {
+      controllerValues[event.oid] = event.value;
+    }
 
     emit(state.copyWith(
       controllerValues: controllerValues,
@@ -209,7 +228,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         if (entry.value != state.controllerInitialValues[entry.key]) {
           params.add({
             "oid_id": entry.key,
-            "value": entry.value,
+            "value": entry.value.toString(),
           });
         }
       }
@@ -223,8 +242,8 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     if (result[0] == true) {
       List<List<ControllerProperty>> controllerPropertiesCollection = [];
-      Map<String, String> controllerValues = {};
-      Map<String, String> controllerInitialValues = {};
+      Map<String, dynamic> controllerValues = {};
+      Map<String, dynamic> controllerInitialValues = {};
 
       bool resultOfGetControllerData = await _getControllerData(
         controllerPropertiesCollection: controllerPropertiesCollection,

@@ -5,6 +5,8 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
@@ -252,14 +254,13 @@ class _DeviceContent extends StatelessWidget {
     Widget? _buildFloatingActionButton({
       required bool editable,
       required bool isEditing,
-      required Map<String, String> controllerValues,
+      required Map<String, dynamic> controllerValues,
     }) {
       return _userFunctionMap[13]
           ? editable
               ? CreateEditingTool(
                   isEditing: isEditing,
                   pageName: deviceBlock.name,
-                  controllerValues: controllerValues,
                 )
               : null
           : null;
@@ -315,16 +316,14 @@ class _DeviceContent extends StatelessWidget {
 }
 
 class CreateEditingTool extends StatelessWidget {
-  const CreateEditingTool(
-      {Key? key,
-      required this.isEditing,
-      required this.pageName,
-      required this.controllerValues})
-      : super(key: key);
+  const CreateEditingTool({
+    Key? key,
+    required this.isEditing,
+    required this.pageName,
+  }) : super(key: key);
 
   final bool isEditing;
   final String pageName;
-  final Map<String, String> controllerValues;
 
   @override
   Widget build(BuildContext context) {
@@ -430,6 +429,9 @@ class _DeviceTextField extends StatelessWidget {
             previous.controllerValues[textFieldProperty.oid] !=
                 current.controllerValues[textFieldProperty.oid],
         builder: (context, state) {
+          // print(state.controllerValues[textFieldProperty.oid]!.runtimeType);
+          // print((state.controllerValues[textFieldProperty.oid]! as CustomInput)
+          //     .invalid);
           return Expanded(
             flex: textFieldProperty.boxLength,
             child: Padding(
@@ -439,6 +441,7 @@ class _DeviceTextField extends StatelessWidget {
                 controller: textEditingController,
                 textAlign: textFieldProperty.textAlign,
                 maxLines: textFieldProperty.maxLine,
+                maxLength: textFieldProperty.maxLength,
                 enabled: isEditing && !textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
@@ -452,6 +455,19 @@ class _DeviceTextField extends StatelessWidget {
                       ? Colors.white
                       : Colors.grey.shade300,
                   isCollapsed: true,
+                  counterText: '',
+                  errorMaxLines: 2,
+                  errorStyle: const TextStyle(
+                    fontSize: CommonStyle.sizeS,
+                  ),
+                  errorText: state.controllerValues[textFieldProperty.oid]!
+                          is CustomInput
+                      ? (state.controllerValues[textFieldProperty.oid]!
+                                  as CustomInput)
+                              .invalid
+                          ? AppLocalizations.of(context)!.ipErrorText
+                          : null
+                      : null,
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 1.0),
                     borderRadius: BorderRadius.zero,
@@ -462,6 +478,14 @@ class _DeviceTextField extends StatelessWidget {
                   ),
                   disabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  focusedErrorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
                     borderRadius: BorderRadius.zero,
                   ),
                 ),
@@ -544,8 +568,9 @@ class _DeviceRadioButton extends StatelessWidget {
                         visualDensity: const VisualDensity(vertical: -4.0),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         value: entry.key, //selected value
-                        groupValue: state.controllerValues[radioButtonProperty
-                            .oid], //determine which is selected
+                        groupValue: state
+                            .controllerValues[radioButtonProperty.oid]
+                            .toString(), //determine which is selected
                         onChanged: isEditing && !radioButtonProperty.readOnly
                             ? (String? value) {
                                 context.read<DeviceBloc>().add(
@@ -695,7 +720,8 @@ class _DeviceDropDownMenu extends StatelessWidget {
                   isDense: true,
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
-                  value: state.controllerValues[dropDownMenuProperty.oid],
+                  value: state.controllerValues[dropDownMenuProperty.oid]
+                      .toString(),
                   items: [
                     for (MapEntry<String, String> entry
                         in dropDownMenuProperty.items.entries)

@@ -7,8 +7,8 @@ class DeviceState extends Equatable {
     this.saveResultMsg = '',
     this.editable = false,
     this.isEditing = false,
-    this.controllerInitialValues = const <String, String>{},
-    this.controllerValues = const <String, String>{},
+    this.controllerInitialValues = const <String, dynamic>{},
+    this.controllerValues = const <String, dynamic>{},
     this.controllerPropertiesCollection = const [],
   });
 
@@ -17,8 +17,8 @@ class DeviceState extends Equatable {
   final String saveResultMsg;
   final bool editable;
   final bool isEditing;
-  final Map<String, String> controllerInitialValues;
-  final Map<String, String> controllerValues;
+  final Map<String, dynamic> controllerInitialValues;
+  final Map<String, dynamic> controllerValues;
   final List<List<ControllerProperty>> controllerPropertiesCollection;
 
   DeviceState copyWith({
@@ -27,8 +27,8 @@ class DeviceState extends Equatable {
     String? saveResultMsg,
     bool? editable,
     bool? isEditing,
-    Map<String, String>? controllerInitialValues,
-    Map<String, String>? controllerValues,
+    Map<String, dynamic>? controllerInitialValues,
+    Map<String, dynamic>? controllerValues,
     List<List<ControllerProperty>>? controllerPropertiesCollection,
   }) {
     return DeviceState(

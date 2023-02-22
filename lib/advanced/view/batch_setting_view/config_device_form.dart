@@ -7,7 +7,9 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/batch_setting_device.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/root/view/device_setting_style.dart';
+import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class ConfigDeviceForm extends StatelessWidget {
@@ -280,16 +282,17 @@ class __DeviceSettingSubPageState extends State<_DeviceSettingSubPage>
                       elevation: 0.0,
                       backgroundColor: const Color(0x742195F3),
                       onPressed: () async {
-                        List<Map<String, String>> values =
+                        List<Map<String, dynamic>> values =
                             state.controllerValuesMap.values.toList();
 
                         Map<String, String> deviceParamMap = {};
-                        for (Map<String, String> map in values) {
-                          deviceParamMap.addAll(map);
+                        for (Map<String, dynamic> map in values) {
+                          for (MapEntry entry in map.entries) {
+                            deviceParamMap[entry.key] = entry.value.toString();
+                          }
                         }
 
                         deviceParamMap.removeWhere((key, value) => value == '');
-                        ;
 
                         Navigator.push(
                             context,
@@ -391,14 +394,14 @@ class _DeviceTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('build _DeviceTextField');
     return BlocBuilder<ConfigDeviceBloc, ConfigDeviceState>(
         buildWhen: (previous, current) =>
             previous.controllerValuesMap[pageId]![textFieldProperty.oid] !=
             current.controllerValuesMap[pageId]![textFieldProperty.oid],
         builder: (context, state) {
-          if (state
-              .controllerValuesMap[pageId]![textFieldProperty.oid]!.isEmpty) {
+          if (state.controllerValuesMap[pageId]![textFieldProperty.oid]!
+              .toString()
+              .isEmpty) {
             textEditingController.clear();
           }
           return Expanded(
@@ -410,6 +413,7 @@ class _DeviceTextField extends StatelessWidget {
                 controller: textEditingController,
                 textAlign: textFieldProperty.textAlign,
                 maxLines: textFieldProperty.maxLine,
+                maxLength: textFieldProperty.maxLength,
                 enabled: !textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
@@ -425,6 +429,20 @@ class _DeviceTextField extends StatelessWidget {
                       ? Colors.white
                       : Colors.grey.shade300,
                   isCollapsed: true,
+                  counterText: '',
+                  errorMaxLines: 2,
+                  errorStyle: const TextStyle(
+                    fontSize: CommonStyle.sizeS,
+                  ),
+                  errorText:
+                      state.controllerValuesMap[pageId]![textFieldProperty.oid]!
+                              is CustomInput
+                          ? (state.controllerValuesMap[pageId]![
+                                      textFieldProperty.oid]! as CustomInput)
+                                  .invalid
+                              ? AppLocalizations.of(context)!.ipErrorText
+                              : null
+                          : null,
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue, width: 1.0),
                     borderRadius: BorderRadius.zero,
@@ -435,6 +453,14 @@ class _DeviceTextField extends StatelessWidget {
                   ),
                   disabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  focusedErrorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red, width: 1.0),
                     borderRadius: BorderRadius.zero,
                   ),
                 ),
@@ -533,8 +559,8 @@ class _DeviceRadioButton extends StatelessWidget {
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         value: entry.key, //selected value
                         groupValue: state.controllerValuesMap[pageId]![
-                            radioButtonProperty
-                                .oid], //determine which is selected
+                                radioButtonProperty.oid]
+                            .toString(), //determine which is selected
                         onChanged: !radioButtonProperty.readOnly
                             ? (String? value) {
                                 context.read<ConfigDeviceBloc>().add(
@@ -690,7 +716,8 @@ class _DeviceDropDownMenu extends StatelessWidget {
                           ''
                       ? null
                       : state.controllerValuesMap[pageId]![
-                          dropDownMenuProperty.oid],
+                              dropDownMenuProperty.oid]
+                          .toString(),
                   items: [
                     for (MapEntry<String, String> entry
                         in dropDownMenuProperty.items.entries)
