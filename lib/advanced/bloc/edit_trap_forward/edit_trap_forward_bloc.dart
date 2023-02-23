@@ -6,7 +6,7 @@ import 'package:ricoms_app/repository/forward_outline.dart';
 import 'package:ricoms_app/repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/models/device_ip.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/root/models/name.dart';
 
 part 'edit_trap_forward_event.dart';
@@ -56,14 +56,14 @@ class EditTrapForwardBloc
 
       if (_isEditing) {
         final Name name = Name.dirty(forwardDetail.name);
-        final DeviceIP ip = DeviceIP.dirty(forwardDetail.ip);
+        final IPv4 ip = IPv4.dirty(forwardDetail.ip);
 
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           isInitController: true,
           enable: forwardDetail.enable == 0 ? false : true,
           name: Name.dirty(forwardDetail.name),
-          ip: DeviceIP.dirty(forwardDetail.ip),
+          ip: IPv4.dirty(forwardDetail.ip),
           parameters: forwardDetail.parameters,
           status: Formz.validate([
             name,
@@ -116,7 +116,7 @@ class EditTrapForwardBloc
     IPChanged event,
     Emitter<EditTrapForwardState> emit,
   ) {
-    final ip = DeviceIP.dirty(event.ip);
+    final ip = IPv4.dirty(event.ip);
 
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.none,

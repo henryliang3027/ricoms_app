@@ -4,7 +4,7 @@ import 'package:ricoms_app/repository/server_ip_setting.dart';
 import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/models/device_ip.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 
 part 'server_ip_setting_event.dart';
 part 'server_ip_setting_state.dart';
@@ -47,10 +47,10 @@ class ServerIPSettingBloc
     if (result[0]) {
       ServerIPSetting serverIPSetting = result[1];
 
-      DeviceIP masterServerIP = DeviceIP.dirty(serverIPSetting.masterServerIP);
-      DeviceIP slaveServerIP = DeviceIP.dirty(serverIPSetting.slaveServerIP);
+      IPv4 masterServerIP = IPv4.dirty(serverIPSetting.masterServerIP);
+      IPv4 slaveServerIP = IPv4.dirty(serverIPSetting.slaveServerIP);
       String synchronizationInterval = serverIPSetting.synchronizationInterval;
-      DeviceIP onlineServerIP = DeviceIP.dirty(serverIPSetting.onlineServerIP);
+      IPv4 onlineServerIP = IPv4.dirty(serverIPSetting.onlineServerIP);
 
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
@@ -71,7 +71,7 @@ class ServerIPSettingBloc
     MasterServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP masterServerIP = DeviceIP.dirty(event.masterServerIP);
+    IPv4 masterServerIP = IPv4.dirty(event.masterServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,
@@ -84,7 +84,7 @@ class ServerIPSettingBloc
     SlaveServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP slaveServerIP = DeviceIP.dirty(event.slaveServerIP);
+    IPv4 slaveServerIP = IPv4.dirty(event.slaveServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,
@@ -107,7 +107,7 @@ class ServerIPSettingBloc
     OnlineServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP onlineServerIP = DeviceIP.dirty(event.onlineServerIP);
+    IPv4 onlineServerIP = IPv4.dirty(event.onlineServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,

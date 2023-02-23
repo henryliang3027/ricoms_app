@@ -959,7 +959,7 @@
       "description": "Please allow permission before you export your data."
     },
 
-    "dialogMessage_AskBeforeDelete": "Are you sure you want to delete ",
+    "dialogMessage_AskBeforeDelete": "Do you want to delete ",
     "@all": {
       "description": "ask before delete"
     },
@@ -1135,9 +1135,9 @@
       "description": "edit device or group success"
     },
 
-    "dialogTitle_AskBeforeExitApp": "Are you sure you want to exit App ?",
+    "dialogTitle_AskBeforeExitApp": "Do you want to exit App ?",
     "@all": {
-      "description": "Are you sure you want to exit app ?"
+      "description": "Do you want to exit app ?"
     },
 
     "dialogTitle_resetToRICOMSDefault": "Reset to RICOMS default",
