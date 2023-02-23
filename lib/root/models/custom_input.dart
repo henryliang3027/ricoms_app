@@ -3,12 +3,12 @@ import 'package:formz/formz.dart';
 enum ValidationError { formatError }
 
 abstract class CustomInput extends FormzInput<String, ValidationError> {
-  const CustomInput.pure(String value) : super.pure(value);
+  const CustomInput.pure() : super.pure('');
   const CustomInput.dirty([String value = '']) : super.dirty(value);
 }
 
 class IPv4 extends CustomInput {
-  const IPv4.pure(String value) : super.pure(value);
+  const IPv4.pure() : super.pure();
   const IPv4.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -34,7 +34,7 @@ class IPv4 extends CustomInput {
 }
 
 class IPv6 extends CustomInput {
-  const IPv6.pure(String value) : super.pure(value);
+  const IPv6.pure() : super.pure();
   const IPv6.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -53,7 +53,7 @@ class IPv6 extends CustomInput {
 }
 
 class Input6 extends CustomInput {
-  const Input6.pure(String value) : super.pure(value);
+  const Input6.pure() : super.pure();
   const Input6.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -72,7 +72,7 @@ class Input6 extends CustomInput {
 }
 
 class Input7 extends CustomInput {
-  const Input7.pure(String value) : super.pure(value);
+  const Input7.pure() : super.pure();
   const Input7.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -91,7 +91,7 @@ class Input7 extends CustomInput {
 }
 
 class Input8 extends CustomInput {
-  const Input8.pure(String value) : super.pure(value);
+  const Input8.pure() : super.pure();
   const Input8.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -110,7 +110,7 @@ class Input8 extends CustomInput {
 }
 
 class Input31 extends CustomInput {
-  const Input31.pure(String value) : super.pure(value);
+  const Input31.pure() : super.pure();
   const Input31.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -129,7 +129,7 @@ class Input31 extends CustomInput {
 }
 
 class Input63 extends CustomInput {
-  const Input63.pure(String value) : super.pure(value);
+  const Input63.pure() : super.pure();
   const Input63.dirty([String value = '']) : super.dirty(value);
 
   @override
@@ -148,7 +148,7 @@ class Input63 extends CustomInput {
 }
 
 class InputInfinity extends CustomInput {
-  const InputInfinity.pure(String value) : super.pure(value);
+  const InputInfinity.pure() : super.pure();
   const InputInfinity.dirty([String value = '']) : super.dirty(value);
 
   @override

@@ -304,7 +304,7 @@ class _NameInput extends StatelessWidget {
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.name.invalid
-                    ? 'The name must be between 1-64 characters long.'
+                    ? AppLocalizations.of(context)!.nameErrorText
                     : null,
               ),
             ),

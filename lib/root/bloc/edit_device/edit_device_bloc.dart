@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
-import 'package:ricoms_app/root/models/device_ip.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/root/models/name.dart';
 
 part 'edit_device_event.dart';
@@ -70,7 +70,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         );
 
         final name = Name.dirty(newCurrentNode.name);
-        final deviceIP = DeviceIP.dirty(newCurrentNode.info!.ip);
+        final deviceIP = IPv4.dirty(newCurrentNode.info!.ip);
 
         emit(
           state.copyWith(
@@ -114,7 +114,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     DeviceIPChanged event,
     Emitter<EditDeviceState> emit,
   ) {
-    final deviceIP = DeviceIP.dirty(event.deviceIP);
+    final deviceIP = IPv4.dirty(event.deviceIP);
     emit(
       state.copyWith(
         isInitController: false,

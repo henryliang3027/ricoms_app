@@ -9,7 +9,7 @@ class EditDeviceState extends Equatable {
     this.isTestConnection = false,
     this.parentName = '',
     this.name = const Name.pure(),
-    this.deviceIP = const DeviceIP.pure(),
+    this.deviceIP = const IPv4.pure(),
     this.read = 'public',
     this.write = 'private',
     this.description = '',
@@ -24,7 +24,7 @@ class EditDeviceState extends Equatable {
   final bool isTestConnection;
   final String parentName;
   final Name name;
-  final DeviceIP deviceIP;
+  final IPv4 deviceIP;
   final String read;
   final String write;
   final String description;
@@ -39,7 +39,7 @@ class EditDeviceState extends Equatable {
     bool? isTestConnection,
     String? parentName,
     Name? name,
-    DeviceIP? deviceIP,
+    IPv4? deviceIP,
     String? read,
     String? write,
     String? description,
