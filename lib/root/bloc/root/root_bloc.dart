@@ -70,9 +70,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   ) async {
     if (event.parent.type == 2 || event.parent.type == 5) {
       List<Node> directory = [];
-      directory.addAll(state.directory);
 
-      //_deviceRepository.deviceNodeId = event.node.id.toString();
+      directory.addAll(state.directory);
 
       !directory.contains(event.parent) ? directory.add(event.parent) : null;
       int currentIndex = directory
@@ -87,14 +86,33 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
       bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
 
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        submissionStatus: SubmissionStatus.none,
-        dataSheetOpenStatus: FormStatus.none,
-        nodesExportStatus: FormStatus.none,
-        directory: directory,
-        isAddedToBookmarks: isAddedToBookmarks,
-      ));
+      List<dynamic> result = await _rootRepository.getChilds(
+        user: _user,
+        parentId: event.parent.id,
+      );
+
+      // if node has been delete, getChilds will return msg: "no node", otherwise return data:[]
+      if (result[0]) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          nodesExportStatus: FormStatus.none,
+          directory: directory,
+          isAddedToBookmarks: isAddedToBookmarks,
+          isLeafNodeDeleted: false,
+        ));
+      } else {
+        directory.removeLast();
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          nodesExportStatus: FormStatus.none,
+          directory: directory,
+          isLeafNodeDeleted: true,
+        ));
+      }
     } else {
       if (event.requestMode == RequestMode.initial) {
         _dataStreamSubscription?.pause();
@@ -103,10 +121,11 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           nodesExportStatus: FormStatus.none,
+          isLeafNodeDeleted: false,
         ));
       }
 
-      dynamic data = await _rootRepository.getChilds(
+      dynamic result = await _rootRepository.getChilds(
         user: _user,
         parentId: event.parent.id,
       );
@@ -126,13 +145,13 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           : null;
 
       if (_initialPath!.isNotEmpty) {
-        List<dynamic> result = await _buildDirectorybyPath(
+        List<dynamic> resultOfBuildDirectory = await _buildDirectorybyPath(
             directory: directory, path: _initialPath!);
 
         bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
 
-        if (result[0]) {
-          if (result[1] == '') {
+        if (resultOfBuildDirectory[0]) {
+          if (resultOfBuildDirectory[1] == '') {
             // device setting page
             emit(state.copyWith(
               formStatus: FormStatus.requestSuccess,
@@ -140,6 +159,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: isAddedToBookmarks,
+              isLeafNodeDeleted: false,
               directory: directory,
             ));
           } else {
@@ -150,6 +170,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: false,
+              isLeafNodeDeleted: false,
               directory: directory,
               data: result[1],
             ));
@@ -161,13 +182,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         // clear path to avoid go to previous device setting page when user switch back from another page.
         _initialPath!.clear();
       } else {
-        if (data is List) {
+        if (result[0]) {
           emit(state.copyWith(
             formStatus: FormStatus.requestSuccess,
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
             dataSheetOpenStatus: FormStatus.none,
-            data: data,
+            isLeafNodeDeleted: false,
+            data: result[1],
             directory: directory,
           ));
         } else {
@@ -176,7 +198,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
             dataSheetOpenStatus: FormStatus.none,
-            errmsg: data,
+            isLeafNodeDeleted: false,
+            errmsg: result[1],
           ));
         }
       }
@@ -199,6 +222,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       nodesExportStatus: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
       dataSheetOpenStatus: FormStatus.none,
+      isLeafNodeDeleted: false,
     ));
 
     List<dynamic> msg =
@@ -224,6 +248,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       submissionStatus: SubmissionStatus.none,
       nodesExportStatus: FormStatus.requestInProgress,
       dataSheetOpenStatus: FormStatus.none,
+      isLeafNodeDeleted: false,
     ));
 
     List<dynamic> result = await _rootRepository.exportNodes(user: _user);
@@ -261,6 +286,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           directory: state.directory,
+          isLeafNodeDeleted: false,
         ));
       } else {
         // if device is still online, check if device name has been changed
@@ -295,6 +321,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               directory: directory,
+              isLeafNodeDeleted: false,
             ));
           }
         } else {}
@@ -305,6 +332,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
+            isLeafNodeDeleted: false,
             errmsg:
                 'No module in the slot ${state.directory.last.slot.toString()}, please try another.',
           ));
@@ -312,6 +340,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
+            isLeafNodeDeleted: false,
             errmsg: 'The device does not respond!',
           ));
         }
@@ -319,6 +348,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
           directory: state.directory,
+          isLeafNodeDeleted: false,
           errmsg: resultOfDeviceConnectionStatus[1],
         ));
       }
@@ -339,6 +369,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         dataSheetOpenStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
+        isLeafNodeDeleted: false,
         dataSheetOpenPath: result[1],
       ));
       // print(result[1]);
@@ -350,6 +381,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         dataSheetOpenStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
+        isLeafNodeDeleted: false,
         dataSheetOpenMsg: result[1],
       ));
     }
@@ -372,6 +404,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: false,
+          isLeafNodeDeleted: false,
           bookmarksMsg: 'Removed from bookmarks',
         ));
       } else {
@@ -379,6 +412,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
+          isLeafNodeDeleted: false,
           bookmarksMsg:
               'Unable to delete from bookmarks, please check your account and login again.',
         ));
@@ -394,6 +428,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: true,
+          isLeafNodeDeleted: false,
           bookmarksMsg: 'Added to bookmarks',
         ));
       } else {
@@ -401,6 +436,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
+          isLeafNodeDeleted: false,
           bookmarksMsg:
               'Unable to add to bookmarks, please check your account and login again.',
         ));
@@ -419,6 +455,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
       dataSheetOpenStatus: FormStatus.none,
+      isLeafNodeDeleted: false,
     ));
 
     List<Node> directory = [];
@@ -481,14 +518,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     required List<Node> directory,
     required List path,
   }) async {
-    dynamic childs;
+    List<dynamic> resultOfGetChilds;
 
     for (int i = path.length - 1; i >= 0; i--) {
-      childs = await _rootRepository.getChilds(
+      resultOfGetChilds = await _rootRepository.getChilds(
         user: _user,
         parentId: directory.last.id,
       );
-      if (childs is List) {
+      if (resultOfGetChilds[0]) {
+        List childs = resultOfGetChilds[1];
         for (int j = 0; j < childs.length; j++) {
           Node node = childs[j];
 
@@ -508,11 +546,11 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         return [true, '']; // device setting page
       } else {
         //get child of current node
-        childs = await _rootRepository.getChilds(
+        resultOfGetChilds = await _rootRepository.getChilds(
           user: _user,
           parentId: directory.last.id,
         );
-        return [true, childs]; //
+        return [true, resultOfGetChilds[1]]; //
       }
     } else {
       return [false, 'No node'];

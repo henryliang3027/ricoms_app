@@ -68,17 +68,26 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
     if (result[0]) {
       List<Device> devices = result[1];
-      if (devices.length < _deviceMetas.length) {
-        hasReachedMax = false;
+      if (devices.isNotEmpty) {
+        if (devices.length < _deviceMetas.length) {
+          hasReachedMax = false;
+        } else {
+          hasReachedMax = true;
+        }
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          devices: devices,
+          hasReachedMax: hasReachedMax,
+        ));
       } else {
-        hasReachedMax = true;
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          requestErrorMsg: 'There are no records to show',
+          hasReachedMax: true,
+        ));
       }
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        devices: result[1],
-        hasReachedMax: hasReachedMax,
-      ));
     } else {
+      // connection failed
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         requestErrorMsg: result[1],
@@ -119,6 +128,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         devices: originalDevices,
       ));
     } else {
+      // connection failed
       emit(state.copyWith(
         loadMoreDeviceStatus: FormStatus.requestFailure,
         hasReachedMax: true,

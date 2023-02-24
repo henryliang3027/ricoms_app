@@ -1050,6 +1050,11 @@
       "description": "Do you want to logout ?"
     },
 
+    "dialogMessage_leafNodehasBeenDeleted": "The device has been deleted.",
+    "@all": {
+      "description": "The device has been deleted."
+    },
+
     "dialogTitle_resetToDefaultSetting": "Reset",
     "@all": {
       "description": "reset"

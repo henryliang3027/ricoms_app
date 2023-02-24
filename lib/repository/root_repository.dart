@@ -14,7 +14,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class RootRepository {
   RootRepository();
 
-  Future<dynamic> getChilds({
+  Future<List<dynamic>> getChilds({
     required User user,
     required int parentId,
   }) async {
@@ -27,7 +27,7 @@ class RootRepository {
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
 
     if (user.id == 'demo') {
-      return 'No node';
+      return [false, 'No node'];
     }
 
     try {
@@ -78,12 +78,12 @@ class RootRepository {
           );
           childs.add(node);
         }
-        return childs;
+        return [true, childs];
       } else {
-        return 'No node';
+        return [false, 'No node'];
       }
     } on DioError catch (_) {
-      return CustomErrMsg.connectionFailed;
+      return [false, CustomErrMsg.connectionFailed];
     }
   }
 

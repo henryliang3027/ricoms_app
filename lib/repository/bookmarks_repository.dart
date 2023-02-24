@@ -35,72 +35,68 @@ class BookmarksRepository {
 
     // List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
 
-    if (deviceMetas.isNotEmpty) {
-      for (int i = startIndex; i < endIndex; i++) {
-        DeviceMeta deviceMeta = deviceMetas[i];
-        String deviceStatusApiPath = '/device/${deviceMeta.id.toString()}';
+    for (int i = startIndex; i < endIndex; i++) {
+      DeviceMeta deviceMeta = deviceMetas[i];
+      String deviceStatusApiPath = '/device/${deviceMeta.id.toString()}';
 
-        try {
-          Response response = await _dio.get(
-            deviceStatusApiPath,
-          );
+      try {
+        Response response = await _dio.get(
+          deviceStatusApiPath,
+        );
 
-          var data = jsonDecode(response.data.toString());
+        var data = jsonDecode(response.data.toString());
 
-          if (data['code'] == '200' || data['code'] == '404') {
-            var element = data['data'][0];
+        if (data['code'] == '200' || data['code'] == '404') {
+          var element = data['data'][0];
 
-            String rawPath = element['path'] ?? '';
-            List<String> nodeIdList =
-                rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
-            List<int> path = [];
-            for (var nodeId in nodeIdList) {
-              path.add(int.parse(nodeId));
-            }
+          String rawPath = element['path'] ?? '';
+          List<String> nodeIdList =
+              rawPath.split(',').where((raw) => raw.isNotEmpty).toList();
+          List<int> path = [];
+          for (var nodeId in nodeIdList) {
+            path.add(int.parse(nodeId));
+          }
 
-            if (element['device_id'] != null) {
-              Device device = Device(
-                id: deviceMeta.id,
-                name: element['name'],
-                type: element['type'],
-                ip: element['ip'],
-                shelf: element['shelf'],
-                slot: element['slot'],
-                read: element['read'],
-                write: element['write'],
-                description: element['description'],
-                location: element['location'],
-                path: path,
-                moduleId: element['module_id'],
-                module: element['module'],
-                series: element['series'],
-                status: element['status'],
-              );
-
-              devices.add(device);
-            }
-          } else {
+          if (element['device_id'] != null) {
             Device device = Device(
               id: deviceMeta.id,
-              name: deviceMeta.name,
-              type: deviceMeta.type,
-              ip: deviceMeta.ip,
-              shelf: deviceMeta.shelf,
-              slot: deviceMeta.slot,
-              path: deviceMeta.path,
-              status: 0,
+              name: element['name'],
+              type: element['type'],
+              ip: element['ip'],
+              shelf: element['shelf'],
+              slot: element['slot'],
+              read: element['read'],
+              write: element['write'],
+              description: element['description'],
+              location: element['location'],
+              path: path,
+              moduleId: element['module_id'],
+              module: element['module'],
+              series: element['series'],
+              status: element['status'],
             );
 
             devices.add(device);
           }
-        } on DioError catch (_) {
-          return [false, CustomErrMsg.connectionFailed];
+        } else {
+          Device device = Device(
+            id: deviceMeta.id,
+            name: deviceMeta.name,
+            type: deviceMeta.type,
+            ip: deviceMeta.ip,
+            shelf: deviceMeta.shelf,
+            slot: deviceMeta.slot,
+            path: deviceMeta.path,
+            status: -99, // device has been deleted
+          );
+
+          devices.add(device);
         }
+      } on DioError catch (_) {
+        return [false, CustomErrMsg.connectionFailed];
       }
-      return [true, devices];
-    } else {
-      return [false, 'There are no records to show'];
     }
+    return [true, devices];
   }
 
   Future<List<dynamic>> deleteDevices({

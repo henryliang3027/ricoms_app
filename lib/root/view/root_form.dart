@@ -111,6 +111,41 @@ class RootForm extends StatelessWidget {
       );
     }
 
+    Future<void> _showLeafNodehasBeenDeletedDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.notice,
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    AppLocalizations.of(context)!
+                        .dialogMessage_leafNodehasBeenDeleted,
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<RootBloc, RootState>(
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
@@ -159,6 +194,8 @@ class RootForm extends StatelessWidget {
                 ),
               ),
             );
+        } else if (state.isLeafNodeDeleted) {
+          _showLeafNodehasBeenDeletedDialog();
         }
       },
       child: WillPopScope(

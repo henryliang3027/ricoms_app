@@ -11,6 +11,7 @@ class RootState extends Equatable {
     this.data = const [],
     this.directory = const [],
     this.isAddedToBookmarks = false,
+    this.isLeafNodeDeleted = false,
     this.deleteResultMsg = '',
     this.errmsg = '',
     this.bookmarksMsg = '',
@@ -27,6 +28,7 @@ class RootState extends Equatable {
   final List data;
   final List<Node> directory;
   final bool isAddedToBookmarks;
+  final bool isLeafNodeDeleted;
   final String deleteResultMsg;
   final String errmsg;
   final String bookmarksMsg;
@@ -44,6 +46,7 @@ class RootState extends Equatable {
     List<Node>? directory,
     bool? isUpdateData,
     bool? isAddedToBookmarks,
+    bool? isLeafNodeDeleted,
     String? deleteResultMsg,
     String? errmsg,
     String? bookmarksMsg,
@@ -60,6 +63,7 @@ class RootState extends Equatable {
       data: data ?? this.data,
       directory: directory ?? this.directory,
       isAddedToBookmarks: isAddedToBookmarks ?? this.isAddedToBookmarks,
+      isLeafNodeDeleted: isLeafNodeDeleted ?? this.isLeafNodeDeleted,
       deleteResultMsg: deleteResultMsg ?? this.deleteResultMsg,
       errmsg: errmsg ?? this.errmsg,
       bookmarksMsg: bookmarksMsg ?? this.bookmarksMsg,
@@ -79,6 +83,7 @@ class RootState extends Equatable {
         data,
         directory,
         isAddedToBookmarks,
+        isLeafNodeDeleted,
         deleteResultMsg,
         errmsg,
         bookmarksMsg,
