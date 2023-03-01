@@ -102,7 +102,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           isAddedToBookmarks: isAddedToBookmarks,
           isLeafNodeDeleted: false,
         ));
-      } else {
+      } else if (!result[0] && result[1] == 'No node') {
         directory.removeLast();
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
@@ -111,6 +111,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           directory: directory,
           isLeafNodeDeleted: true,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          isLeafNodeDeleted: false,
+          errmsg: result[1],
         ));
       }
     } else {
