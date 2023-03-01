@@ -29,14 +29,13 @@ class BookmarksRepository {
     _dio.options.receiveTimeout = 10000;
 
     List<Device> devices = [];
-    int endIndex = startIndex + 10 < deviceMetas.length
-        ? startIndex + 10
-        : deviceMetas.length;
+    int count = 0;
+    int maxCount = 10;
+    int currentIndex = startIndex;
 
-    // List<DeviceMeta> bookmarks = userApi.getBookmarksByUserId(user.id);
-
-    for (int i = startIndex; i < endIndex; i++) {
-      DeviceMeta deviceMeta = deviceMetas[i];
+    while (currentIndex < deviceMetas.length && count < maxCount) {
+      // print('count: $count, currentIndex: $currentIndex');
+      DeviceMeta deviceMeta = deviceMetas[currentIndex];
       String deviceStatusApiPath = '/device/${deviceMeta.id.toString()}';
 
       try {
@@ -47,6 +46,7 @@ class BookmarksRepository {
         var data = jsonDecode(response.data.toString());
 
         if (data['code'] == '200' || data['code'] == '404') {
+          // 404 : Doesn't Find Device. status: 0 -> unknown
           var element = data['data'][0];
 
           String rawPath = element['path'] ?? '';
@@ -77,6 +77,7 @@ class BookmarksRepository {
             );
 
             devices.add(device);
+            count = count + 1;
           }
         } else {
           Device device = Device(
@@ -92,6 +93,7 @@ class BookmarksRepository {
 
           devices.add(device);
         }
+        currentIndex = currentIndex + 1;
       } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
       }
@@ -141,13 +143,20 @@ class BookmarksRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        List<int> nodes = path.skip(1).toList();
-        List<dynamic> verifiedResilt =
-            await _checkPath(user: user, path: nodes);
-        if (verifiedResilt[0]) {
-          return [true, ''];
+        if (data['data'][0]['status'] == 0 || data['data'][0]['status'] == 4) {
+          // 0: unknown
+          // 4: offline
+          // 4011 HenryE data['code'] = 200 but 2866 ED5229GP-64@29.209 data['code'] = 404, both device status = 0
+          return [false, 'The device does not respond!'];
         } else {
-          return verifiedResilt;
+          List<int> nodes = path.skip(1).toList();
+          List<dynamic> verifiedResilt =
+              await _checkPath(user: user, path: nodes);
+          if (verifiedResilt[0]) {
+            return [true, ''];
+          } else {
+            return verifiedResilt;
+          }
         }
       } else {
         return [false, 'The device does not respond!'];

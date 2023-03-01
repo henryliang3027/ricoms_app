@@ -215,7 +215,7 @@ class _DeviceSliverList extends StatelessWidget {
                             .read<BookmarksBloc>()
                             .add(BookmarksItemToggled(device));
                       } else {
-                        print('${device.id} : ${device.path}');
+                        // print('${device.id} : ${device.path}');
                         context.read<BookmarksBloc>().add(DeviceStatusChecked(
                               initialPath,
                               device.path,
