@@ -32,6 +32,7 @@ class BookmarksRepository {
     int count = 0;
     int maxCount = 10;
     int currentIndex = startIndex;
+    int deletedCount = 0;
 
     while (currentIndex < deviceMetas.length && count < maxCount) {
       // print('count: $count, currentIndex: $currentIndex');
@@ -90,6 +91,7 @@ class BookmarksRepository {
             path: deviceMeta.path,
             status: -99, // device has been deleted
           );
+          deletedCount = deletedCount + 1;
 
           devices.add(device);
         }
@@ -98,7 +100,11 @@ class BookmarksRepository {
         return [false, CustomErrMsg.connectionFailed];
       }
     }
-    return [true, devices];
+    if (devices.length == deletedCount) {
+      return [false, 'There are no records to show'];
+    } else {
+      return [true, devices];
+    }
   }
 
   Future<List<dynamic>> deleteDevices({
