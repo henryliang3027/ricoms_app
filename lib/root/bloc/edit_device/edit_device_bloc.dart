@@ -264,7 +264,6 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     if (state.status.isValidated) {
       emit(state.copyWith(
         status: FormzStatus.submissionInProgress,
-        isTestConnection: true,
       ));
 
       // new password is the same as confirm password
@@ -277,14 +276,14 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
       if (msg[0]) {
         emit(state.copyWith(
           isInitController: false,
-          isTestConnection: false,
+          isTestConnection: true,
           msg: msg[1],
           status: FormzStatus.submissionSuccess,
         ));
       } else {
         emit(state.copyWith(
           isInitController: false,
-          isTestConnection: false,
+          isTestConnection: true,
           msg: msg[1],
           status: FormzStatus.submissionFailure,
         ));
