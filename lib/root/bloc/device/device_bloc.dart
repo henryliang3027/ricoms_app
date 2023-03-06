@@ -213,7 +213,7 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
 
     List result = [];
     if (_deviceBlock.name == 'Description') {
-      String name = state.controllerValues['9998']!;
+      String name = (state.controllerValues['9998']! as CustomInput).toString();
       String description = state.controllerValues['9999']!;
       result = await _deviceRepository.setDeviceDescription(
         user: _user,

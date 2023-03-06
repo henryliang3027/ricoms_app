@@ -111,7 +111,7 @@ class RootForm extends StatelessWidget {
       );
     }
 
-    Future<void> _showLeafNodehasBeenDeletedDialog() async {
+    Future<void> _showDeviceHasBeenDeletedDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -194,8 +194,8 @@ class RootForm extends StatelessWidget {
                 ),
               ),
             );
-        } else if (state.isLeafNodeDeleted) {
-          _showLeafNodehasBeenDeletedDialog();
+        } else if (state.isDeviceHasBeenDeleted) {
+          _showDeviceHasBeenDeletedDialog();
         }
       },
       child: WillPopScope(

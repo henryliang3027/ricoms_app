@@ -26,6 +26,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     );
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
+    on<DeviceDeletionCheckRequested>(_onDeviceDeletionCheckRequested);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
     on<DeviceNavigateRequested>(_onDeviceNavigateRequested);
     on<BookmarksChanged>(_onBookmarksChanged);
@@ -57,10 +58,12 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   final List? _initialPath;
 
   StreamSubscription<int>? _dataStreamSubscription;
+  Timer? _checkForDeletionTimer;
 
   @override
   Future<void> close() {
     _dataStreamSubscription?.cancel();
+    _checkForDeletionTimer?.cancel();
     return super.close();
   }
 
@@ -91,8 +94,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         parentId: event.parent.id,
       );
 
-      // if node has been delete, getChilds will return msg: "no node", otherwise return data:[]
       if (result[0]) {
+        // add periodic timer to check for device deletiob
+        _checkForDeletionTimer = Timer.periodic(
+            const Duration(seconds: RequestInterval.checkForDeviceDeletion),
+            (timer) {
+          add(const DeviceDeletionCheckRequested());
+        });
+
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
           submissionStatus: SubmissionStatus.none,
@@ -100,7 +109,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           directory: directory,
           isAddedToBookmarks: isAddedToBookmarks,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
         ));
       } else {
         emit(state.copyWith(
@@ -108,11 +117,13 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           errmsg: result[1],
         ));
       }
     } else {
+      _checkForDeletionTimer?.cancel();
+
       if (event.requestMode == RequestMode.initial) {
         _dataStreamSubscription?.pause();
         emit(state.copyWith(
@@ -120,7 +131,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           nodesExportStatus: FormStatus.none,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
         ));
       }
 
@@ -158,7 +169,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: isAddedToBookmarks,
-              isLeafNodeDeleted: false,
+              isDeviceHasBeenDeleted: false,
               directory: directory,
             ));
           } else {
@@ -169,7 +180,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               isAddedToBookmarks: false,
-              isLeafNodeDeleted: false,
+              isDeviceHasBeenDeleted: false,
               directory: directory,
               data: result[1],
             ));
@@ -187,7 +198,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
             dataSheetOpenStatus: FormStatus.none,
-            isLeafNodeDeleted: false,
+            isDeviceHasBeenDeleted: false,
             data: result[1],
             directory: directory,
           ));
@@ -197,7 +208,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             submissionStatus: SubmissionStatus.none,
             nodesExportStatus: FormStatus.none,
             dataSheetOpenStatus: FormStatus.none,
-            isLeafNodeDeleted: false,
+            isDeviceHasBeenDeleted: false,
             errmsg: result[1],
           ));
         }
@@ -213,6 +224,30 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
+  Future<void> _onDeviceDeletionCheckRequested(
+    DeviceDeletionCheckRequested event,
+    Emitter<RootState> emit,
+  ) async {
+    // List<dynamic> result = await _rootRepository.checkDeviceForDeletion(
+    //   user: _user,
+    //   nodeId: state.directory.last.id,
+    // );
+    // print('check for deletion: ${result[0]}');
+    // if (result[0]) {
+    //   List<Node> directory = [];
+    //   directory.addAll(state.directory);
+    //   directory.removeLast;
+    //   emit(state.copyWith(
+    //     formStatus: FormStatus.requestSuccess,
+    //     submissionStatus: SubmissionStatus.none,
+    //     dataSheetOpenStatus: FormStatus.none,
+    //     nodesExportStatus: FormStatus.none,
+    //     directory: directory,
+    //     isDeviceHasBeenDeleted: true,
+    //   ));
+    // }
+  }
+
   Future<void> _onNodeDeleted(
     NodeDeleted event,
     Emitter<RootState> emit,
@@ -221,7 +256,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       nodesExportStatus: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
       dataSheetOpenStatus: FormStatus.none,
-      isLeafNodeDeleted: false,
+      isDeviceHasBeenDeleted: false,
     ));
 
     List<dynamic> msg =
@@ -247,7 +282,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       submissionStatus: SubmissionStatus.none,
       nodesExportStatus: FormStatus.requestInProgress,
       dataSheetOpenStatus: FormStatus.none,
-      isLeafNodeDeleted: false,
+      isDeviceHasBeenDeleted: false,
     ));
 
     List<dynamic> result = await _rootRepository.exportNodes(user: _user);
@@ -285,7 +320,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           directory: state.directory,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
         ));
       } else {
         // if device is still online, check if device name has been changed
@@ -320,7 +355,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               nodesExportStatus: FormStatus.none,
               dataSheetOpenStatus: FormStatus.none,
               directory: directory,
-              isLeafNodeDeleted: false,
+              isDeviceHasBeenDeleted: false,
             ));
           }
         } else {}
@@ -331,7 +366,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
-            isLeafNodeDeleted: false,
+            isDeviceHasBeenDeleted: false,
             errmsg:
                 'No module in the slot ${state.directory.last.slot.toString()}, please try another.',
           ));
@@ -339,7 +374,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
-            isLeafNodeDeleted: false,
+            isDeviceHasBeenDeleted: false,
             errmsg: 'The device does not respond!',
           ));
         }
@@ -347,7 +382,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
           directory: state.directory,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           errmsg: resultOfDeviceConnectionStatus[1],
         ));
       }
@@ -368,7 +403,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         dataSheetOpenStatus: FormStatus.requestSuccess,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
-        isLeafNodeDeleted: false,
+        isDeviceHasBeenDeleted: false,
         dataSheetOpenPath: result[1],
       ));
       // print(result[1]);
@@ -380,7 +415,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         dataSheetOpenStatus: FormStatus.requestFailure,
         submissionStatus: SubmissionStatus.none,
         nodesExportStatus: FormStatus.none,
-        isLeafNodeDeleted: false,
+        isDeviceHasBeenDeleted: false,
         dataSheetOpenMsg: result[1],
       ));
     }
@@ -403,7 +438,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: false,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           bookmarksMsg: 'Removed from bookmarks',
         ));
       } else {
@@ -411,7 +446,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           bookmarksMsg:
               'Unable to delete from bookmarks, please check your account and login again.',
         ));
@@ -427,7 +462,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           isAddedToBookmarks: true,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           bookmarksMsg: 'Added to bookmarks',
         ));
       } else {
@@ -435,7 +470,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           nodesExportStatus: FormStatus.none,
           dataSheetOpenStatus: FormStatus.none,
-          isLeafNodeDeleted: false,
+          isDeviceHasBeenDeleted: false,
           bookmarksMsg:
               'Unable to add to bookmarks, please check your account and login again.',
         ));
@@ -454,7 +489,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       formStatus: FormStatus.requestInProgress,
       submissionStatus: SubmissionStatus.none,
       dataSheetOpenStatus: FormStatus.none,
-      isLeafNodeDeleted: false,
+      isDeviceHasBeenDeleted: false,
     ));
 
     List<Node> directory = [];

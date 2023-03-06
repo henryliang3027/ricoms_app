@@ -121,6 +121,34 @@ class RootRepository {
     }
   }
 
+  Future<List<dynamic>> checkDeviceForDeletion(
+      {required User user, required int nodeId}) async {
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String childsPath = '/net/node/' + nodeId.toString();
+
+    try {
+      Response response = await dio.get(childsPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        // device exists
+        return [false, ''];
+      } else {
+        // device has been deleted
+        return [true, ''];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
   Future<List<dynamic>> getNodeInfo(
       {required User user, required int nodeId}) async {
     Dio dio = Dio();

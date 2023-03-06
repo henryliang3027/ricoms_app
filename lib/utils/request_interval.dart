@@ -8,4 +8,5 @@ class RequestInterval {
   static const int deviceSetting = 6;
   static const int userPermissionCheck = 3;
   static const int deviceRefresh = 3;
+  static const int checkForDeviceDeletion = 3;
 }

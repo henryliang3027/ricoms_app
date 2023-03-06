@@ -21,6 +21,13 @@ class ChildDataUpdated extends RootEvent {
   List<Object?> get props => [];
 }
 
+class DeviceDeletionCheckRequested extends RootEvent {
+  const DeviceDeletionCheckRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class DeviceTypeNodeUpdated extends RootEvent {
   const DeviceTypeNodeUpdated();
 
