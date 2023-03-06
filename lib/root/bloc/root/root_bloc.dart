@@ -102,16 +102,6 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           isAddedToBookmarks: isAddedToBookmarks,
           isLeafNodeDeleted: false,
         ));
-      } else if (!result[0] && result[1] == 'No node') {
-        directory.removeLast();
-        emit(state.copyWith(
-          formStatus: FormStatus.requestSuccess,
-          submissionStatus: SubmissionStatus.none,
-          dataSheetOpenStatus: FormStatus.none,
-          nodesExportStatus: FormStatus.none,
-          directory: directory,
-          isLeafNodeDeleted: true,
-        ));
       } else {
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,

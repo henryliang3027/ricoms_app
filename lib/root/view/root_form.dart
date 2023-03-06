@@ -308,119 +308,127 @@ class _PopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PopupMenuItem<Menu> _getSearchMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.search,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.search,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.search,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getfavoriteMenuItem(
+      bool isAddedToBookmarks,
+    ) {
+      return PopupMenuItem<Menu>(
+        value: Menu.favorite,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            isAddedToBookmarks
+                ? const Icon(
+                    Icons.star_outlined,
+                    size: 20.0,
+                    color: Colors.amber,
+                  )
+                : const Icon(
+                    Icons.star_border_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.favorite,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getDatasheetMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.datasheet,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.assignment_outlined,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.datasheet,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getExportMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.export,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              CustomIcons.export,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.export,
+            ),
+          ],
+        ),
+      );
+    }
+
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       List<PopupMenuEntry<Menu>> _buildPopupMenu() {
         if (state.directory.last.type == 5 || state.directory.last.type == 2) {
-          return [
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
+          if (state.directory.last.status != 0) {
+            // unknown
+            return [
+              _getSearchMenuItem(),
+              _getfavoriteMenuItem(
+                state.isAddedToBookmarks,
               ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.favorite,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  state.isAddedToBookmarks
-                      ? const Icon(
-                          Icons.star_outlined,
-                          size: 20.0,
-                          color: Colors.amber,
-                        )
-                      : const Icon(
-                          Icons.star_border_outlined,
-                          size: 20.0,
-                          color: Colors.black,
-                        ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.favorite,
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.datasheet,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.assignment_outlined,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.datasheet,
-                  ),
-                ],
-              ),
-            ),
-          ];
+              _getDatasheetMenuItem(),
+            ];
+          } else {
+            return [
+              _getSearchMenuItem(),
+            ];
+          }
         } else {
           return [
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.export,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    CustomIcons.export,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.export,
-                  ),
-                ],
-              ),
-            )
+            _getSearchMenuItem(),
+            _getExportMenuItem(),
           ];
         }
       }
