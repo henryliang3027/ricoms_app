@@ -40,14 +40,14 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         ),
         RequestMode.initial));
 
-    final dataStream = Stream<int>.periodic(
+    final _dataStream = Stream<int>.periodic(
         const Duration(seconds: RequestInterval.rootNode), (count) => count);
 
-    _dataStreamSubscription = dataStream.listen((count) {
+    _dataStreamSubscription = _dataStream.listen((count) {
       if (kDebugMode) {
         print('Root update trigger times: $count');
       }
-      if (state.directory.isNotEmpty) {
+      if (state.directory.isNotEmpty && count > 0) {
         add(ChildDataRequested(state.directory.last, RequestMode.update));
       }
     });
@@ -58,12 +58,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
   final List? _initialPath;
 
   StreamSubscription<int>? _dataStreamSubscription;
-  Timer? _checkForDeletionTimer;
 
   @override
   Future<void> close() {
     _dataStreamSubscription?.cancel();
-    _checkForDeletionTimer?.cancel();
     return super.close();
   }
 
@@ -89,19 +87,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
       bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
 
-      List<dynamic> result = await _rootRepository.getChilds(
+      List<dynamic> resultOfGetNodeInfo = await _rootRepository.getNodeInfo(
         user: _user,
-        parentId: event.parent.id,
+        nodeId: event.parent.id,
       );
 
-      if (result[0]) {
-        // add periodic timer to check for device deletiob
-        _checkForDeletionTimer = Timer.periodic(
-            const Duration(seconds: RequestInterval.checkForDeviceDeletion),
-            (timer) {
-          add(const DeviceDeletionCheckRequested());
-        });
+      if (kDebugMode) {
+        print('check for Deletion');
+      }
 
+      if (resultOfGetNodeInfo[0]) {
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
           submissionStatus: SubmissionStatus.none,
@@ -109,21 +104,35 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           nodesExportStatus: FormStatus.none,
           directory: directory,
           isAddedToBookmarks: isAddedToBookmarks,
-          isDeviceHasBeenDeleted: false,
         ));
       } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          dataSheetOpenStatus: FormStatus.none,
-          isDeviceHasBeenDeleted: false,
-          errmsg: result[1],
-        ));
+        if (resultOfGetNodeInfo[1] == 'No node') {
+          if (state.isDeviceHasBeenDeleted == false) {
+            // Popup notice dialog if the dialog does not show on the screen
+            List<Node> directory = [];
+            directory.addAll(state.directory);
+            directory.removeLast();
+            emit(state.copyWith(
+              formStatus: FormStatus.requestSuccess,
+              submissionStatus: SubmissionStatus.none,
+              dataSheetOpenStatus: FormStatus.none,
+              nodesExportStatus: FormStatus.none,
+              directory: directory,
+              isDeviceHasBeenDeleted: true,
+            ));
+          }
+        } else {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestFailure,
+            submissionStatus: SubmissionStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
+            nodesExportStatus: FormStatus.none,
+            isDeviceHasBeenDeleted: false,
+            errmsg: resultOfGetNodeInfo[1],
+          ));
+        }
       }
     } else {
-      _checkForDeletionTimer?.cancel();
-
       if (event.requestMode == RequestMode.initial) {
         _dataStreamSubscription?.pause();
         emit(state.copyWith(
@@ -228,24 +237,27 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     DeviceDeletionCheckRequested event,
     Emitter<RootState> emit,
   ) async {
-    // List<dynamic> result = await _rootRepository.checkDeviceForDeletion(
-    //   user: _user,
-    //   nodeId: state.directory.last.id,
-    // );
-    // print('check for deletion: ${result[0]}');
-    // if (result[0]) {
-    //   List<Node> directory = [];
-    //   directory.addAll(state.directory);
-    //   directory.removeLast;
-    //   emit(state.copyWith(
-    //     formStatus: FormStatus.requestSuccess,
-    //     submissionStatus: SubmissionStatus.none,
-    //     dataSheetOpenStatus: FormStatus.none,
-    //     nodesExportStatus: FormStatus.none,
-    //     directory: directory,
-    //     isDeviceHasBeenDeleted: true,
-    //   ));
-    // }
+    List<dynamic> result = await _rootRepository.checkDeviceForDeletion(
+      user: _user,
+      nodeId: state.directory.last.id,
+    );
+    print('check for deletion: ${result[0]}');
+    if (result[0]) {
+      if (state.isDeviceHasBeenDeleted == false) {
+        // Popup notice dialog if the dialog does not show on the screen
+        List<Node> directory = [];
+        directory.addAll(state.directory);
+        directory.removeLast;
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          nodesExportStatus: FormStatus.none,
+          directory: directory,
+          isDeviceHasBeenDeleted: true,
+        ));
+      }
+    }
   }
 
   Future<void> _onNodeDeleted(

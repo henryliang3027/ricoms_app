@@ -137,12 +137,12 @@ class RootRepository {
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
-      if (data['code'] == '200') {
+      if (data['code'] == '410') {
+        // return 410: no nodes from api. consider as the device has been deleted
+        return [true, ''];
+      } else {
         // device exists
         return [false, ''];
-      } else {
-        // device has been deleted
-        return [true, ''];
       }
     } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
@@ -184,8 +184,11 @@ class RootRepository {
         );
 
         return [true, info];
+      } else if (data['code'] == '410') {
+        // return 410: no nodes from api. consider as the device has been deleted
+        return [false, 'No node'];
       } else {
-        return [false, 'Error errno: ${data['code']}'];
+        return [false, 'Error code: ${data['code']}, Msg: ${data['msg']}'];
       }
     } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
