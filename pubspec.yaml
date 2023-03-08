@@ -45,6 +45,7 @@ dependencies:
   device_info: ^2.0.3 # for checking android sdk version
   intl: ^0.17.0 # format datetime
   syncfusion_flutter_charts: ^20.4.50
+  url_launcher: ^6.1.10
   firebase_core: ^2.4.1
   firebase_messaging: ^14.2.1
 

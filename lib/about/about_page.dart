@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({
@@ -20,14 +22,14 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   late final ScrollController _scrollController;
-  late final double kExpandedHeight;
-  late final String customerServiceEmailAddress;
+  late final double _kExpandedHeight;
+  late final String _customerServiceEmailAddress;
 
   @override
   void initState() {
-    kExpandedHeight = 160.0;
+    _kExpandedHeight = 160.0;
     _scrollController = ScrollController()..addListener(() => setState(() {}));
-    customerServiceEmailAddress = 'RDC-DEMO@twoway.com.tw';
+    _customerServiceEmailAddress = 'RDC-DEMO@twoway.com.tw';
     super.initState();
   }
 
@@ -38,19 +40,19 @@ class _AboutPageState extends State<AboutPage> {
       const kMultiplier = 5;
 
       if (_scrollController.hasClients) {
-        if (_scrollController.offset < (kExpandedHeight / 2)) {
+        if (_scrollController.offset < (_kExpandedHeight / 2)) {
           // In case 50%-100% of the expanded height is viewed
           return kBasePadding;
         }
 
-        if (_scrollController.offset > (kExpandedHeight - kToolbarHeight)) {
+        if (_scrollController.offset > (_kExpandedHeight - kToolbarHeight)) {
           // In case 0% of the expanded height is viewed
-          return (kExpandedHeight / 2 - kToolbarHeight) * kMultiplier +
+          return (_kExpandedHeight / 2 - kToolbarHeight) * kMultiplier +
               kBasePadding;
         }
 
         // In case 0%-50% of the expanded height is viewed
-        return (_scrollController.offset - (kExpandedHeight / 2)) *
+        return (_scrollController.offset - (_kExpandedHeight / 2)) *
                 kMultiplier +
             kBasePadding;
       }
@@ -62,18 +64,18 @@ class _AboutPageState extends State<AboutPage> {
       const defaultSize = 30.0;
 
       if (_scrollController.hasClients) {
-        if (_scrollController.offset < (kExpandedHeight / 2)) {
+        if (_scrollController.offset < (_kExpandedHeight / 2)) {
           // In case 50%-100% of the expanded height is viewed
           return 30;
         }
 
-        if (_scrollController.offset > (kExpandedHeight - kToolbarHeight)) {
+        if (_scrollController.offset > (_kExpandedHeight - kToolbarHeight)) {
           // In case 0% of the expanded height is viewed
           return 22;
         }
 
         // In case 0%-50% of the expanded height is viewed
-        return 30 - (_scrollController.offset - (kExpandedHeight / 2)) * 0.3;
+        return 30 - (_scrollController.offset - (_kExpandedHeight / 2)) * 0.3;
       }
 
       return defaultSize;
@@ -81,7 +83,7 @@ class _AboutPageState extends State<AboutPage> {
 
     bool _isCenterTitle() {
       if (_scrollController.hasClients) {
-        if (_scrollController.offset > (kExpandedHeight - kToolbarHeight)) {
+        if (_scrollController.offset > (_kExpandedHeight - kToolbarHeight)) {
           // In case 0% of the expanded height is viewed
           return true;
         }
@@ -116,7 +118,7 @@ class _AboutPageState extends State<AboutPage> {
         slivers: <Widget>[
           SliverAppBar(
             pinned: true,
-            expandedHeight: kExpandedHeight,
+            expandedHeight: _kExpandedHeight,
             flexibleSpace: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.symmetric(
                   vertical: 10.0,
@@ -135,15 +137,40 @@ class _AboutPageState extends State<AboutPage> {
                       color: Colors.black,
                     ),
                     Positioned(
-                        top: 70.0,
-                        right: 10.0,
+                      top: 70.0,
+                      right: 10.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0.0,
+                          backgroundColor: Colors.transparent,
+                          padding: const EdgeInsets.all(0.0),
+                          visualDensity: const VisualDensity(
+                            horizontal: -4.0,
+                            vertical: -4.0,
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         child: Text(
                           AppLocalizations.of(context)!.contactUs,
                           style: const TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.underline,
                           ),
-                        ))
+                        ),
+                        onPressed: () async {
+                          final Uri emailLaunchUri = Uri(
+                            scheme: 'mailto',
+                            path: _customerServiceEmailAddress,
+                          );
+
+                          try {
+                            await launchUrl(emailLaunchUri);
+                          } on Exception catch (_) {
+                            // ignore
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 )),
           ),
