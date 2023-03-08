@@ -37,24 +37,22 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     double _horizontalTitlePadding() {
       const kBasePadding = 40.0;
-      const kMultiplier = 5;
+      const kMultiplier = 4.5;
 
       if (_scrollController.hasClients) {
         if (_scrollController.offset < (_kExpandedHeight / 2)) {
           // In case 50%-100% of the expanded height is viewed
           return kBasePadding;
-        }
-
-        if (_scrollController.offset > (_kExpandedHeight - kToolbarHeight)) {
+        } else if (_scrollController.offset >
+            (_kExpandedHeight - kToolbarHeight)) {
           // In case 0% of the expanded height is viewed
-          return (_kExpandedHeight / 2 - kToolbarHeight) * kMultiplier +
+          return 0.0;
+        } else {
+          // In case 0%-50% of the expanded height is viewed
+          return (_scrollController.offset - (_kExpandedHeight / 2)) *
+                  kMultiplier +
               kBasePadding;
         }
-
-        // In case 0%-50% of the expanded height is viewed
-        return (_scrollController.offset - (_kExpandedHeight / 2)) *
-                kMultiplier +
-            kBasePadding;
       }
 
       return kBasePadding;
@@ -120,9 +118,11 @@ class _AboutPageState extends State<AboutPage> {
             pinned: true,
             expandedHeight: _kExpandedHeight,
             flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: _horizontalTitlePadding(),
+                titlePadding: EdgeInsets.fromLTRB(
+                  _horizontalTitlePadding(),
+                  10.0,
+                  0.0,
+                  10.0,
                 ),
                 centerTitle: _isCenterTitle(),
                 title: Text(
@@ -130,6 +130,7 @@ class _AboutPageState extends State<AboutPage> {
                   style: TextStyle(
                     fontSize: _getTitleFontSize(),
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 background: Stack(
                   children: [

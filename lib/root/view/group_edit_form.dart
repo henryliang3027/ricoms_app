@@ -281,9 +281,7 @@ class _DescriptionInput extends StatelessWidget {
             //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: TextFormField(
               key: const Key('groupEditForm_descriptionInput_textField'),
-              // initialValue: state.isEditing && state.currentNode!.info != null
-              //     ? state.currentNode!.info!.description
-              //     : state.description,
+              maxLength: 1024,
               controller: descriptionController,
               textInputAction: TextInputAction.done,
               style: const TextStyle(
@@ -303,6 +301,7 @@ class _DescriptionInput extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                counterText: '',
               ),
             ),
           ),
