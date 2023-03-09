@@ -249,7 +249,7 @@ class _PopupMenu extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Icon(
-                  CustomIcons.filter,
+                  CustomIcons.filters,
                   size: 20.0,
                   color: Colors.black,
                 ),
@@ -459,7 +459,7 @@ class _LogSliverList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Icon(
-                  CustomIcons.device_simple,
+                  CustomIcons.deviceSimple,
                   color: Colors.blue,
                   size: 30.0,
                 ),

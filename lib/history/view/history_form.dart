@@ -249,7 +249,7 @@ class _PopupMenu extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Icon(
-                  CustomIcons.filter,
+                  CustomIcons.filters,
                   size: 20.0,
                   color: Colors.black,
                 ),

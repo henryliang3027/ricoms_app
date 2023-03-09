@@ -191,7 +191,7 @@ class _AdvancedOptions extends StatelessWidget {
         trapListTiles.insert(
           0,
           _buildCatecory(
-            icon: CustomIcons.trap_alarm,
+            icon: CustomIcons.trapAlarm,
             title: AppLocalizations.of(context)!.advancedTrap,
           ),
         );
@@ -290,7 +290,7 @@ class _AdvancedOptions extends StatelessWidget {
         deviceListTiles.insert(
           0,
           _buildCatecory(
-            icon: CustomIcons.device_simple,
+            icon: CustomIcons.deviceSimple,
             title: AppLocalizations.of(context)!.advancedDevice,
           ),
         );

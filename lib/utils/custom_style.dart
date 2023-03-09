@@ -58,11 +58,11 @@ class CustomStyle {
       color: Color(0xff172a88),
     ), //Group
     2: Icon(
-      CustomIcons.device_simple,
+      CustomIcons.deviceSimple,
       color: Color(0xff172a88),
     ), //Device
     3: Icon(
-      CustomIcons.device_simple,
+      CustomIcons.deviceSimple,
       color: Color(0xff172a88),
     ), //A8K
     4: null, //shelf

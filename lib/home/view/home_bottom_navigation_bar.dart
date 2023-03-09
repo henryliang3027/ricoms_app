@@ -25,7 +25,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
       showUnselectedLabels: false,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(CustomIcons.realtime_alarm),
+          icon: Icon(CustomIcons.realTimeAlarm),
           label: 'Real-Time Alarm',
           tooltip: '',
         ),

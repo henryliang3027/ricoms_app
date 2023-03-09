@@ -50,7 +50,7 @@ class HomeDrawer extends StatelessWidget {
     ];
 
     List<IconData> _listTileIcons = [
-      CustomIcons.realtime_alarm,
+      CustomIcons.realTimeAlarm,
       CustomIcons.network,
       CustomIcons.dashboard,
       CustomIcons.history,
@@ -285,7 +285,7 @@ class HomeDrawer extends StatelessWidget {
               dense: true,
               leading: const Padding(
                 padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.change_password),
+                child: Icon(CustomIcons.changePassword),
               ),
               title: Text(
                 AppLocalizations.of(context)!.changePassword,
