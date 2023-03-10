@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/utils/common_style.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
@@ -343,6 +341,87 @@ class _AboutPageState extends State<AboutPage> {
                           ),
                         ),
                       ]),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 40.0,
+                ),
+                Container(
+                  width: double.maxFinite,
+                  height: 300.0,
+                  decoration: const BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.topRight,
+                      radius: 1.0,
+                      colors: [
+                        Colors.grey,
+                        Colors.black,
+                      ],
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            height: 26,
+                            child: Image(
+                              image: AssetImage('assets/twoway.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20.0,
+                          ),
+                          SizedBox(
+                            height: 26,
+                            child: Image(
+                              image: AssetImage('assets/ACI.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20.0,
+                          ),
+                          SizedBox(
+                            height: 20,
+                            child: Image(
+                              image: AssetImage('assets/RICOMS2.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                        child: Image(
+                          image: AssetImage('assets/address.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      const SizedBox(
+                        height: 9,
+                        child: Image(
+                          image: AssetImage('assets/2022.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
                     ],
                   ),
                 ),
