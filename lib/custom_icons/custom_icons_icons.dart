@@ -57,12 +57,6 @@ class CustomIcons {
       IconData(0xe811, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData user =
       IconData(0xe812, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData twoway =
-      IconData(0xe813, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData aci =
-      IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData ricoms =
-      IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData export =
       IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
