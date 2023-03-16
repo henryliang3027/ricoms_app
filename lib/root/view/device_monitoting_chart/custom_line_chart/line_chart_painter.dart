@@ -42,7 +42,7 @@ class LineChartPainter extends CustomPainter {
   final List<Marker> markers;
 
   final TextPainter _axisLabelPainter = TextPainter(
-    textAlign: TextAlign.center,
+    textAlign: TextAlign.left,
     textDirection: ui.TextDirection.ltr,
   );
 
@@ -156,11 +156,14 @@ class LineChartPainter extends CustomPainter {
           Offset(scaleX, 0), Offset(scaleX, size.height), _gridPaint);
 
       // Draw X-Axis scale points
-      String label = DateFormat('MM/dd')
-          .format(longestLineSeries.dataList[(i * xInterval).floor()].dateTime);
+      DateTime dateTime =
+          longestLineSeries.dataList[(i * xInterval).round()].dateTime;
+      String date = DateFormat('MM/dd').format(dateTime);
+
+      String time = DateFormat('HH:mm:ss').format(dateTime);
 
       _axisLabelPainter.text = TextSpan(
-        text: label,
+        text: '$date\n$time',
         style: const TextStyle(
           fontSize: 12,
           color: Colors.black,
@@ -197,7 +200,9 @@ class LineChartPainter extends CustomPainter {
       );
       _axisLabelPainter.layout();
       _axisLabelPainter.paint(
-          canvas, Offset(10, scaleY - _axisLabelPainter.height / 2));
+          canvas,
+          Offset(leftOffset - _axisLabelPainter.width - 2,
+              scaleY - _axisLabelPainter.height / 2));
     }
   }
 
@@ -399,7 +404,7 @@ class LineChartPainter extends CustomPainter {
     // current (left,top) => (0,0)
     canvas.save();
     canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
-        Offset(size.width + leftOffset - rightOffset + 1, size.height + 20)));
+        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
     _drawMarker(
       canvas: canvas,
       size: size,
@@ -410,7 +415,7 @@ class LineChartPainter extends CustomPainter {
     // current (left,top) => (0,0)
     canvas.save();
     canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
-        Offset(size.width + leftOffset - rightOffset + 1, size.height + 20)));
+        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
 
     canvas.translate(leftOffset + offset, 0);
 

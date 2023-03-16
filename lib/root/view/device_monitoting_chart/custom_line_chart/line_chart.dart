@@ -74,11 +74,11 @@ class LineChartState extends State<LineChart> {
         markerValues.add(marker.value);
       }
 
-      tempMinValue = [_minValue, ...markerValues]
+      tempMinValue = [tempMinValue, ...markerValues]
           .map((value) => value)
           .reduce((value, element) => value < element ? value : element);
 
-      tempMaxValue = [_maxValue, ...markerValues]
+      tempMaxValue = [tempMaxValue, ...markerValues]
           .map((value) => value)
           .reduce((value, element) => value > element ? value : element);
     }
@@ -113,7 +113,8 @@ class LineChartState extends State<LineChart> {
     double maximumYAxisValue = 0.0;
 
     // in case of negative value
-    int factor = tempMaxValue.toString().replaceFirst('-', '').length;
+    // -2 is to remove decimal point and any following digit
+    int factor = tempMaxValue.toString().replaceFirst('-', '').length - 2;
 
     if ((tempMaxValue - tempMinValue).abs() >= 1000) {
       maximumYAxisValue = tempMaxValue + 100 * (factor + 10);
@@ -133,7 +134,8 @@ class LineChartState extends State<LineChart> {
     double minimumYAxisValue = 0.0;
 
     // in case of negative values
-    int factor = tempMinValue.toString().replaceFirst('-', '').length;
+    // -2 is to remove decimal point and any following digit
+    int factor = tempMinValue.toString().replaceFirst('-', '').length - 2;
 
     if ((tempMaxValue - tempMinValue).abs() >= 1000) {
       minimumYAxisValue = tempMinValue - 100 * (factor + 10);
@@ -171,7 +173,7 @@ class LineChartState extends State<LineChart> {
         {double extraX = 0.0}) {
       var widgetWidth = context.size!.width;
 
-      newScale = newScale.clamp(1.0, 30.0);
+      newScale = newScale.clamp(1.0, 100.0);
 
       // 根据缩放焦点计算出left
       double left = calculateOffsetX(newScale, focusX);
@@ -219,6 +221,10 @@ class LineChartState extends State<LineChart> {
           _showTooltip = true;
           _longPressX = details.localPosition.dx - _leftOffset;
         });
+      },
+      onVerticalDragStart: (_) {
+        // Disable the scrolling of the ListView
+        PrimaryScrollController.of(context)?.position.hold(() {});
       },
       child: CustomPaint(
         size: Size(

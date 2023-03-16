@@ -70,7 +70,7 @@ class CustomMultipleLineChart extends StatelessWidget {
           lineSeriesCollection: lineSeriesCollection,
         ),
         const SizedBox(
-          height: 20.0,
+          height: 40.0,
         ),
         Legend(
           lineSeriesCollection: lineSeriesCollection,

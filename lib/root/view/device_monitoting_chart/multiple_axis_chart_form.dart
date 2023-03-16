@@ -6,7 +6,6 @@ import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/custom_multiple_line_chart.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
-import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_line_chart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
@@ -63,6 +62,9 @@ class MultipleAxisChartForm extends StatelessWidget {
             chartDateValuePairListMap: chartDateValuePairs,
             selectedCheckBoxValuesMap: selectedCheckBoxValues,
           ),
+          const SizedBox(
+            height: 20.0,
+          )
           // SizedBox(
           //   height: 400,
           //   child: MultipleAxisLineChart(
