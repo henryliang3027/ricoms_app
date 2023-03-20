@@ -381,6 +381,11 @@
       "description": "multiple y-axis chart"
     },
 
+    "lineChart": "Line Chart",
+    "@all": {
+      "description": "line chart"
+    },
+
     "alarmRatio": "Alarm Ratio",
     "@all": {
       "description": "dashboard alarm ratio"

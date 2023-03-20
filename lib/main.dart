@@ -34,10 +34,10 @@ import 'package:ricoms_app/repository/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // final dir = Directory('/data/user/0/com.example.ricoms_app/app_flutter/.db');
   // dir.deleteSync(recursive: true);

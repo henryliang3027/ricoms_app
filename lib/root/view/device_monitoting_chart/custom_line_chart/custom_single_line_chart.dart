@@ -53,7 +53,7 @@ class CustomSingleLineChart extends StatelessWidget {
     return lineSeries;
   }
 
-  List<Marker> getMarkers() {
+  List<Marker> _getMarkers() {
     List<Marker> markers = [];
     if (majorH != null) {
       markers.add(Marker(
@@ -93,7 +93,7 @@ class CustomSingleLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<LineSeries> lineSeriesCollection = [getLineSeries()];
-    List<Marker> markers = getMarkers();
+    List<Marker> markers = _getMarkers();
 
     return Column(
       children: [

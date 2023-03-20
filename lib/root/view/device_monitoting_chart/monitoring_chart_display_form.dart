@@ -64,16 +64,6 @@ class MonitoringChartDisplayForm extends StatelessWidget {
               chartDateValuePairs: Map<String, List<ChartDateValuePair>>.from(
                   chartDateValuePairsBlock),
             );
-            // MultipleAxisChartPage(
-            //   nodeName: nodeName,
-            //   chartDateValuePairs: Map<String, List<ChartDateValuePair>>.from(
-            //       chartDateValuePairsBlock),
-            //   nodeId: nodeId,
-            //   startDate: startDate,
-            //   endDate: endDate,
-            //   selectedCheckBoxValues:
-            //       Map<String, CheckBoxValue>.from(checkBoxValues),
-            // );
           });
     } else {
       return ListView.builder(

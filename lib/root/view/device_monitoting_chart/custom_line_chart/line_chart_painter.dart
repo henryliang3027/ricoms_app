@@ -142,7 +142,7 @@ class LineChartPainter extends CustomPainter {
     required double xStep,
   }) {
     int xScalePoints = size.width * scale ~/ 80;
-    double xInterval = longestLineSeries.dataList.length / xScalePoints;
+    double xInterval = (longestLineSeries.dataList.length - 1) / xScalePoints;
     for (int i = 0; i < xScalePoints; i++) {
       double scaleX = (longestLineSeries
               .dataList[(i * xInterval).round()].dateTime
@@ -380,54 +380,11 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    double yStep = size.height / yRange;
-    _drawYAxisLabelAndHorizontalGridLine(
-      canvas: canvas,
-      size: size,
-      yStep: yStep,
-    );
-
-    // Draw X-axis line
-    _drawXAxis(
-      canvas: canvas,
-      size: size,
-    );
-
-    // Draw Y-axis line
-    _drawYAxis(
-      canvas: canvas,
-      size: size,
-    );
-
-    // current (left,top) => (0,0)
-    canvas.save();
-    canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
-        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
-    _drawMarker(
-      canvas: canvas,
-      size: size,
-      yStep: yStep,
-    );
-    canvas.restore();
-
-    // current (left,top) => (0,0)
-    canvas.save();
-    canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
-        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
-
-    canvas.translate(leftOffset + offset, 0);
-
-    double xStep = (size.width * scale - rightOffset) / xRange;
-
-    _drawXAxisLabelAndVerticalGridLine(
-      canvas: canvas,
-      size: size,
-      xStep: xStep,
-    );
-
-    // Draw line series
+  void _drawLineSeries({
+    required Canvas canvas,
+    required double xStep,
+    required double yStep,
+  }) {
     for (LineSeries lineSeries in lineSeriesCollection) {
       List<ChartDateValuePair> data = lineSeries.dataList;
       List<int> startIndex = lineSeries.startIndexes;
@@ -463,17 +420,67 @@ class LineChartPainter extends CustomPainter {
       }
 
       canvas.drawPath(linePath, linePaint);
-
-      if (showTooltip) {
-        _drawTrackBall(
-          canvas: canvas,
-          size: size,
-          xStep: xStep,
-        );
-      }
     }
+  }
 
-    canvas.restore();
+  @override
+  void paint(Canvas canvas, Size size) {
+    double yStep = size.height / yRange;
+    _drawYAxisLabelAndHorizontalGridLine(
+      canvas: canvas,
+      size: size,
+      yStep: yStep,
+    );
+
+    // Draw X-axis line
+    _drawXAxis(
+      canvas: canvas,
+      size: size,
+    );
+
+    // Draw Y-axis line
+    _drawYAxis(
+      canvas: canvas,
+      size: size,
+    );
+
+    // current (left,top) => (0,0)
+
+    canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
+        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
+    _drawMarker(
+      canvas: canvas,
+      size: size,
+      yStep: yStep,
+    );
+
+    canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
+        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
+
+    canvas.translate(leftOffset + offset, 0);
+
+    double xStep = (size.width * scale - rightOffset) / xRange;
+
+    _drawXAxisLabelAndVerticalGridLine(
+      canvas: canvas,
+      size: size,
+      xStep: xStep,
+    );
+
+    // Draw line series
+    _drawLineSeries(
+      canvas: canvas,
+      xStep: xStep,
+      yStep: yStep,
+    );
+
+    if (showTooltip) {
+      _drawTrackBall(
+        canvas: canvas,
+        size: size,
+        xStep: xStep,
+      );
+    }
   }
 
   @override
