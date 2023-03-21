@@ -77,6 +77,7 @@ class _FullScreenSingleLineChartFormState
           title: Text(
             AppLocalizations.of(context)!.lineChart,
           ),
+          centerTitle: true,
         ),
         body: SafeArea(
           child: Column(

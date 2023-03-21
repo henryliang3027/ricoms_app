@@ -64,6 +64,7 @@ class _FullScreenMultipleLineChartFormState
           title: Text(
             AppLocalizations.of(context)!.lineChart,
           ),
+          centerTitle: true,
         ),
         body: SafeArea(
           child: Column(
@@ -72,6 +73,7 @@ class _FullScreenMultipleLineChartFormState
               CustomMultipleLineChart(
                 chartDateValuePairListMap: widget.chartDateValuePairs,
                 selectedCheckBoxValuesMap: widget.checkBoxValues,
+                showMultipleYAxis: true,
               ),
             ],
           ),

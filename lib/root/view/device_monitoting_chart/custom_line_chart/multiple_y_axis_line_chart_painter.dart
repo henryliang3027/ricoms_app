@@ -5,8 +5,8 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_series.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/marker.dart';
 
-class LineChartPainter extends CustomPainter {
-  LineChartPainter({
+class MultipleYAxisLineChartPainter extends CustomPainter {
+  MultipleYAxisLineChartPainter({
     required this.lineSeriesCollection,
     required this.longestLineSeries,
     required this.showTooltip,
@@ -15,35 +15,30 @@ class LineChartPainter extends CustomPainter {
     required this.rightOffset,
     required this.offset,
     required this.scale,
-    required this.minValue,
-    required this.maxValue,
     required this.minDate,
     required this.maxDate,
     required this.xRange,
-    required this.yRange,
+    required this.minValues,
+    required this.maxValues,
     required this.yRanges,
     required this.markers,
-    required this.showMultipleYAxis,
   });
 
   final List<LineSeries> lineSeriesCollection;
   final LineSeries longestLineSeries;
   final bool showTooltip;
-
   final double longPressX;
   double leftOffset;
   final double rightOffset;
   final double offset;
   final double scale;
-  final double minValue;
-  final double maxValue;
   final DateTime minDate;
   final DateTime maxDate;
   final double xRange;
-  final double yRange;
+  final List<double> minValues;
+  final List<double> maxValues;
   final List<double> yRanges;
   final List<Marker> markers;
-  final bool showMultipleYAxis;
 
   final TextPainter _axisLabelPainter = TextPainter(
     textAlign: TextAlign.left,
@@ -51,11 +46,6 @@ class LineChartPainter extends CustomPainter {
   );
 
   final TextPainter _tipTextPainter = TextPainter(
-    textAlign: TextAlign.center,
-    textDirection: ui.TextDirection.ltr,
-  );
-
-  final TextPainter _markerTextPainter = TextPainter(
     textAlign: TextAlign.center,
     textDirection: ui.TextDirection.ltr,
   );
@@ -130,15 +120,6 @@ class LineChartPainter extends CustomPainter {
         Offset(size.width + leftOffset - rightOffset, size.height), _axisPaint);
   }
 
-  // Draw Y-Axis
-  void _drawYAxis({
-    required Canvas canvas,
-    required Size size,
-  }) {
-    canvas.drawLine(
-        Offset(leftOffset, 0), Offset(leftOffset, size.height), _axisPaint);
-  }
-
   // Draw vertical grid line and X-Axis scale points
   void _drawXAxisLabelAndVerticalGridLine({
     required Canvas canvas,
@@ -182,42 +163,10 @@ class LineChartPainter extends CustomPainter {
   void _drawYAxisLabelAndHorizontalGridLine({
     required Canvas canvas,
     required Size size,
-    required double yStep,
-  }) {
-    int yScalePoints = 5;
-    double yInterval = yRange / yScalePoints;
-    for (int i = 0; i < yScalePoints; i++) {
-      double scaleY = size.height - i * yInterval * yStep;
-
-      // Draw horizontal grid line
-      canvas.drawLine(Offset(leftOffset, scaleY),
-          Offset(size.width - rightOffset + leftOffset, scaleY), _gridPaint);
-
-      // Draw Y-axis scale points
-      String label = (i * yInterval + minValue).toStringAsFixed(1);
-      _axisLabelPainter.text = TextSpan(
-        text: label,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.black,
-        ),
-      );
-      _axisLabelPainter.layout();
-      _axisLabelPainter.paint(
-          canvas,
-          Offset(leftOffset - _axisLabelPainter.width - 2,
-              scaleY - _axisLabelPainter.height / 2));
-    }
-  }
-
-  // Draw horizontal grid line and Y-axis scale points
-  void _drawYAxisLabelAndHorizontalGridLineForMultipleYAxis({
-    required Canvas canvas,
-    required Size size,
   }) {
     for (int i = 0; i < lineSeriesCollection.length; i++) {
       LineSeries lineSeries = lineSeriesCollection[i];
-      leftOffset = leftOffset + 20 * i;
+      leftOffset = leftOffset + 40 * i;
 
       // Draw Y-Axis
       canvas.drawLine(
@@ -226,8 +175,8 @@ class LineChartPainter extends CustomPainter {
       int yScalePoints = 5;
       double yInterval = yRanges[i] / yScalePoints;
       double yStep = size.height / yRanges[i];
-      for (int i = 0; i < yScalePoints; i++) {
-        double scaleY = size.height - i * yInterval * yStep;
+      for (int j = 0; j < yScalePoints; j++) {
+        double scaleY = size.height - j * yInterval * yStep;
 
         // Draw horizontal grid line
         if (i == lineSeriesCollection.length - 1) {
@@ -238,13 +187,12 @@ class LineChartPainter extends CustomPainter {
         }
 
         // Draw Y-axis scale points
-        String label =
-            (i * yInterval + lineSeries.minYAxisValue!).toStringAsFixed(1);
+        String label = (j * yInterval + minValues[i]).toStringAsFixed(1);
         _axisLabelPainter.text = TextSpan(
           text: label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
-            color: Colors.black,
+            color: lineSeries.color,
           ),
         );
         _axisLabelPainter.layout();
@@ -362,87 +310,19 @@ class LineChartPainter extends CustomPainter {
     }
   }
 
-  void _drawMarker({
-    required Canvas canvas,
-    required Size size,
-    required double yStep,
-  }) {
-    for (Marker marker in markers) {
-      Paint markerPaint = Paint()
-        ..color = marker.color
-        ..strokeWidth = 1.0
-        ..strokeCap = StrokeCap.round
-        ..style = PaintingStyle.stroke;
-
-      _markerTextPainter.text = TextSpan(
-        text: '${marker.prefix} : ${marker.value}',
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-      );
-      _markerTextPainter.layout();
-
-      double scaleY = (maxValue - marker.value) * yStep;
-      canvas.drawLine(
-          Offset(leftOffset, scaleY),
-          Offset(size.width * scale + leftOffset - rightOffset, scaleY),
-          markerPaint);
-
-      if (marker.prefix.contains('MajorHI') ||
-          marker.prefix.contains('MinorLO')) {
-        Rect rect1 = Rect.fromLTWH(
-          size.width + leftOffset - rightOffset - _markerTextPainter.width,
-          scaleY - _markerTextPainter.height,
-          _markerTextPainter.width,
-          _markerTextPainter.height,
-        );
-        Paint rectPaint = Paint()..color = marker.color;
-        RRect rRect = RRect.fromRectAndRadius(rect1, const Radius.circular(0));
-        canvas.drawRRect(rRect, rectPaint);
-
-        _markerTextPainter.paint(
-            canvas,
-            Offset(
-                size.width +
-                    leftOffset -
-                    rightOffset -
-                    _markerTextPainter.width,
-                scaleY - _markerTextPainter.height));
-      } else {
-        Rect rect1 = Rect.fromLTWH(
-          size.width + leftOffset - rightOffset - _markerTextPainter.width,
-          scaleY,
-          _markerTextPainter.width,
-          _markerTextPainter.height,
-        );
-        Paint rectPaint = Paint()..color = marker.color;
-        RRect rRect = RRect.fromRectAndRadius(rect1, const Radius.circular(0));
-        canvas.drawRRect(rRect, rectPaint);
-
-        _markerTextPainter.paint(
-            canvas,
-            Offset(
-                size.width +
-                    leftOffset -
-                    rightOffset -
-                    _markerTextPainter.width,
-                scaleY));
-      }
-    }
-  }
-
   void _drawLineSeries({
     required Canvas canvas,
+    required Size size,
     required double xStep,
-    required double yStep,
   }) {
-    for (LineSeries lineSeries in lineSeriesCollection) {
-      List<ChartDateValuePair> data = lineSeries.dataList;
-      List<int> startIndex = lineSeries.startIndexes;
+    for (int i = 0; i < lineSeriesCollection.length; i++) {
+      List<ChartDateValuePair> data = lineSeriesCollection[i].dataList;
+      List<int> startIndex = lineSeriesCollection[i].startIndexes;
+      double yStep = size.height / yRanges[i];
       Path linePath = Path();
 
       Paint linePaint = Paint()
-        ..color = lineSeries.color
+        ..color = lineSeriesCollection[i].color
         ..strokeWidth = 2.0
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
@@ -450,19 +330,20 @@ class LineChartPainter extends CustomPainter {
       // find the first non null value
       int firstIndex = data.indexWhere((element) => element.value != null);
 
-      for (int i = firstIndex; i < data.length - 1; i++) {
+      for (int j = firstIndex; j < data.length - 1; j++) {
         double currentScaleX =
-            (data[i].dateTime.difference(minDate).inSeconds * xStep);
-        double? currentScaleY =
-            data[i].value == null ? null : (maxValue - data[i].value!) * yStep;
+            (data[j].dateTime.difference(minDate).inSeconds * xStep);
+        double? currentScaleY = data[j].value == null
+            ? null
+            : (maxValues[i] - data[j].value!) * yStep;
 
         if (currentScaleY != null) {
-          if (i == firstIndex) {
+          if (j == firstIndex) {
             linePath.moveTo(currentScaleX, currentScaleY);
           }
 
           // if previous index of value is null, Do not draw line near the point
-          if (startIndex.contains(i)) {
+          if (startIndex.contains(j)) {
             linePath.moveTo(currentScaleX, currentScaleY);
           } else {
             linePath.lineTo(currentScaleX, currentScaleY);
@@ -476,15 +357,7 @@ class LineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double yStep = size.height / yRange;
     _drawYAxisLabelAndHorizontalGridLine(
-      canvas: canvas,
-      size: size,
-      yStep: yStep,
-    );
-
-    // Draw Y-axis line
-    _drawYAxis(
       canvas: canvas,
       size: size,
     );
@@ -493,14 +366,6 @@ class LineChartPainter extends CustomPainter {
     _drawXAxis(
       canvas: canvas,
       size: size,
-    );
-
-    canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
-        Offset(size.width + leftOffset - rightOffset + 1, size.height + 40)));
-    _drawMarker(
-      canvas: canvas,
-      size: size,
-      yStep: yStep,
     );
 
     canvas.clipRect(Rect.fromPoints(Offset(leftOffset, 0),
@@ -518,8 +383,8 @@ class LineChartPainter extends CustomPainter {
 
     _drawLineSeries(
       canvas: canvas,
+      size: size,
       xStep: xStep,
-      yStep: yStep,
     );
 
     if (showTooltip) {
@@ -532,7 +397,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LineChartPainter oldDelegate) {
+  bool shouldRepaint(MultipleYAxisLineChartPainter oldDelegate) {
     return oldDelegate.showTooltip != showTooltip ||
         oldDelegate.longPressX != longPressX ||
         oldDelegate.scale != scale ||

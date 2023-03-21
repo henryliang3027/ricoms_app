@@ -8,6 +8,8 @@ class LineSeries {
     required this.dataMap,
     required this.startIndexes,
     required this.color,
+    this.maxYAxisValue,
+    this.minYAxisValue,
   });
 
   final String name;
@@ -15,4 +17,6 @@ class LineSeries {
   final Map<DateTime, double?> dataMap;
   final List<int> startIndexes;
   final Color color;
+  final double? maxYAxisValue;
+  final double? minYAxisValue;
 }

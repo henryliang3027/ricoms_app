@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_chart_painter.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_series.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/marker.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/multiple_y_axis_line_chart_painter.dart';
 
 class LineChart extends StatefulWidget {
   final List<LineSeries> lineSeriesCollection;
   final List<Marker> makrers;
+  final bool showMultipleYAxis;
 
-  const LineChart(
-      {Key? key, required this.lineSeriesCollection, this.makrers = const []})
-      : super(key: key);
+  const LineChart({
+    Key? key,
+    required this.lineSeriesCollection,
+    this.makrers = const [],
+    this.showMultipleYAxis = false,
+  }) : super(key: key);
 
   @override
   LineChartState createState() => LineChartState();
@@ -33,80 +38,15 @@ class LineChartState extends State<LineChart> {
   double _xRange = 0.0;
   double _yRange = 0.0;
 
+  // multiple Y-axis
+  final List<double> _yRanges = [];
+  final List<double> _minValues = [];
+  final List<double> _maxValues = [];
+
   double _focalPointX = 0.0;
   double _lastUpdateFocalPointX = 0.0;
   double _deltaFocalPointX = 0.0;
   late final LineSeries _longestLineSeries;
-
-  @override
-  void initState() {
-    super.initState();
-    List<LineSeries> lineSeriesCollection = widget.lineSeriesCollection;
-
-    List<double?> allValues = lineSeriesCollection
-        .expand((lineSeries) => lineSeries.dataMap.values)
-        .toList();
-
-    allValues.removeWhere((element) => element == null);
-
-    List<double?> allNonNullValues = [];
-    allNonNullValues.addAll(allValues);
-
-    List<DateTime> allDateTimes = lineSeriesCollection
-        .expand((lineSeries) => lineSeries.dataMap.keys)
-        .toList();
-
-    double tempMinValue = 0.0;
-    double tempMaxValue = 0.0;
-
-    tempMinValue = allNonNullValues
-        .map((value) => value)
-        .reduce((value, element) => value! < element! ? value : element)!;
-
-    tempMaxValue = allNonNullValues
-        .map((value) => value)
-        .reduce((value, element) => value! > element! ? value : element)!;
-
-    if (widget.makrers.isNotEmpty) {
-      List<double> markerValues = [];
-
-      for (Marker marker in widget.makrers) {
-        markerValues.add(marker.value);
-      }
-
-      tempMinValue = [tempMinValue, ...markerValues]
-          .map((value) => value)
-          .reduce((value, element) => value < element ? value : element);
-
-      tempMaxValue = [tempMaxValue, ...markerValues]
-          .map((value) => value)
-          .reduce((value, element) => value > element ? value : element);
-    }
-
-    _minValue = getMinimumYAxisValue(
-      tempMaxValue: tempMaxValue,
-      tempMinValue: tempMinValue,
-    );
-    _maxValue = getMaximumYAxisValue(
-      tempMaxValue: tempMaxValue,
-      tempMinValue: tempMinValue,
-    );
-
-    _minDate = allDateTimes
-        .map((dateTime) => dateTime)
-        .reduce((value, element) => value.isBefore(element) ? value : element);
-    _maxDate = allDateTimes
-        .map((dateTime) => dateTime)
-        .reduce((value, element) => value.isAfter(element) ? value : element);
-
-    _xRange = _maxDate.difference(_minDate).inSeconds.toDouble();
-    _yRange = _maxValue - _minValue;
-
-    _longestLineSeries = lineSeriesCollection
-        .map((lineSeries) => lineSeries)
-        .reduce((value, element) =>
-            value.dataMap.length > element.dataMap.length ? value : element);
-  }
 
   double getMaximumYAxisValue(
       {required double tempMaxValue, required double tempMinValue}) {
@@ -148,6 +88,146 @@ class LineChartState extends State<LineChart> {
     }
 
     return minimumYAxisValue;
+  }
+
+  void setMinValueAndMaxValue() {
+    List<LineSeries> lineSeriesCollection = widget.lineSeriesCollection;
+
+    List<double?> allValues = lineSeriesCollection
+        .expand((lineSeries) => lineSeries.dataMap.values)
+        .toList();
+
+    allValues.removeWhere((element) => element == null);
+
+    List<double?> allNonNullValues = [];
+    allNonNullValues.addAll(allValues);
+
+    double tempMinValue = 0.0;
+    double tempMaxValue = 0.0;
+
+    tempMinValue = allNonNullValues
+        .map((value) => value)
+        .reduce((value, element) => value! < element! ? value : element)!;
+
+    tempMaxValue = allNonNullValues
+        .map((value) => value)
+        .reduce((value, element) => value! > element! ? value : element)!;
+
+    if (widget.makrers.isNotEmpty) {
+      List<double> markerValues = [];
+
+      for (Marker marker in widget.makrers) {
+        markerValues.add(marker.value);
+      }
+
+      tempMinValue = [tempMinValue, ...markerValues]
+          .map((value) => value)
+          .reduce((value, element) => value < element ? value : element);
+
+      tempMaxValue = [tempMaxValue, ...markerValues]
+          .map((value) => value)
+          .reduce((value, element) => value > element ? value : element);
+    }
+
+    _minValue = getMinimumYAxisValue(
+      tempMaxValue: tempMaxValue,
+      tempMinValue: tempMinValue,
+    );
+    _maxValue = getMaximumYAxisValue(
+      tempMaxValue: tempMaxValue,
+      tempMinValue: tempMinValue,
+    );
+  }
+
+  void setMinValueAndMaxValueForMultipleYAxis() {
+    List<LineSeries> lineSeriesCollection = widget.lineSeriesCollection;
+    for (LineSeries lineSeries in lineSeriesCollection) {
+      List<double?> allValues = lineSeries.dataMap.values.toList();
+
+      allValues.removeWhere((element) => element == null);
+
+      double tempMinValue = 0.0;
+      double tempMaxValue = 0.0;
+
+      tempMinValue = allValues
+          .map((value) => value)
+          .reduce((value, element) => value! < element! ? value : element)!;
+
+      tempMaxValue = allValues
+          .map((value) => value)
+          .reduce((value, element) => value! > element! ? value : element)!;
+
+      if (lineSeries.minYAxisValue != null) {
+        tempMinValue = tempMinValue < lineSeries.minYAxisValue!
+            ? tempMinValue
+            : lineSeries.minYAxisValue!;
+      }
+
+      if (lineSeries.maxYAxisValue != null) {
+        tempMaxValue = tempMaxValue > lineSeries.maxYAxisValue!
+            ? tempMaxValue
+            : lineSeries.maxYAxisValue!;
+      }
+
+      double minValue = getMinimumYAxisValue(
+        tempMaxValue: tempMaxValue,
+        tempMinValue: tempMinValue,
+      );
+      double maxValue = getMaximumYAxisValue(
+        tempMaxValue: tempMaxValue,
+        tempMinValue: tempMinValue,
+      );
+
+      _minValues.add(minValue);
+      _maxValues.add(maxValue);
+    }
+  }
+
+  void setMinDateAndMaxDate() {
+    List<LineSeries> lineSeriesCollection = widget.lineSeriesCollection;
+    List<DateTime> allDateTimes = lineSeriesCollection
+        .expand((lineSeries) => lineSeries.dataMap.keys)
+        .toList();
+    _minDate = allDateTimes
+        .map((dateTime) => dateTime)
+        .reduce((value, element) => value.isBefore(element) ? value : element);
+    _maxDate = allDateTimes
+        .map((dateTime) => dateTime)
+        .reduce((value, element) => value.isAfter(element) ? value : element);
+  }
+
+  void setXRangeAndYRange() {
+    _xRange = _maxDate.difference(_minDate).inSeconds.toDouble();
+    _yRange = _maxValue - _minValue;
+  }
+
+  void setXRangeAndYRangeForMultipleYAxis() {
+    _xRange = _maxDate.difference(_minDate).inSeconds.toDouble();
+
+    for (int i = 0; i < widget.lineSeriesCollection.length; i++) {
+      double yRanges = _maxValues[i] - _minValues[i];
+      _yRanges.add(yRanges);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    List<LineSeries> lineSeriesCollection = widget.lineSeriesCollection;
+    _longestLineSeries = lineSeriesCollection
+        .map((lineSeries) => lineSeries)
+        .reduce((value, element) =>
+            value.dataMap.length > element.dataMap.length ? value : element);
+
+    if (widget.showMultipleYAxis) {
+      setMinValueAndMaxValueForMultipleYAxis();
+      setMinDateAndMaxDate();
+      setXRangeAndYRangeForMultipleYAxis();
+    } else {
+      setMinValueAndMaxValue();
+      setMinDateAndMaxDate();
+      setXRangeAndYRange();
+    }
   }
 
   @override
@@ -208,7 +288,7 @@ class LineChartState extends State<LineChart> {
       onScaleEnd: (details) {},
       onLongPressMoveUpdate: (details) {
         setState(() {
-          _longPressX = details.localPosition.dx - _leftOffset;
+          _longPressX = details.localPosition.dx;
         });
       },
       onLongPressEnd: (details) {
@@ -219,35 +299,62 @@ class LineChartState extends State<LineChart> {
       onLongPressStart: (details) {
         setState(() {
           _showTooltip = true;
-          _longPressX = details.localPosition.dx - _leftOffset;
+          _longPressX = details.localPosition.dx;
         });
       },
       onVerticalDragStart: (_) {
-        // Disable the scrolling of the ListView
-        PrimaryScrollController.of(context)?.position.hold(() {});
+        // Disable the scrolling if parent widget has ListView
+
+        bool? hasClient = PrimaryScrollController.of(context)?.hasClients;
+
+        if (hasClient != null) {
+          if (hasClient) {
+            PrimaryScrollController.of(context)!.position.hold(() {});
+          }
+        }
       },
       child: CustomPaint(
         size: Size(
           widgetWidth,
           widgetHeight,
         ),
-        painter: LineChartPainter(
-          lineSeriesCollection: widget.lineSeriesCollection,
-          longestLineSeries: _longestLineSeries,
-          showTooltip: _showTooltip,
-          longPressX: _longPressX,
-          leftOffset: _leftOffset,
-          rightOffset: _rightOffset,
-          offset: _offset,
-          scale: _scale,
-          minValue: _minValue,
-          maxValue: _maxValue,
-          minDate: _minDate,
-          maxDate: _maxDate,
-          xRange: _xRange,
-          yRange: _yRange,
-          markers: widget.makrers,
-        ),
+        painter: widget.showMultipleYAxis
+            ? MultipleYAxisLineChartPainter(
+                lineSeriesCollection: widget.lineSeriesCollection,
+                longestLineSeries: _longestLineSeries,
+                showTooltip: _showTooltip,
+                longPressX: _longPressX,
+                leftOffset: _leftOffset,
+                rightOffset: 120,
+                offset: _offset,
+                scale: _scale,
+                minDate: _minDate,
+                maxDate: _maxDate,
+                xRange: _xRange,
+                minValues: _minValues,
+                maxValues: _maxValues,
+                yRanges: _yRanges,
+                markers: widget.makrers,
+              )
+            : LineChartPainter(
+                lineSeriesCollection: widget.lineSeriesCollection,
+                longestLineSeries: _longestLineSeries,
+                showTooltip: _showTooltip,
+                longPressX: _longPressX,
+                leftOffset: _leftOffset,
+                rightOffset: _rightOffset,
+                offset: _offset,
+                scale: _scale,
+                minValue: _minValue,
+                maxValue: _maxValue,
+                minDate: _minDate,
+                maxDate: _maxDate,
+                xRange: _xRange,
+                yRange: _yRange,
+                yRanges: _yRanges,
+                markers: widget.makrers,
+                showMultipleYAxis: widget.showMultipleYAxis,
+              ),
       ),
     );
   }

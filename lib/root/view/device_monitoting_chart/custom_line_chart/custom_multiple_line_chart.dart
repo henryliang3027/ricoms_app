@@ -13,11 +13,13 @@ class CustomMultipleLineChart extends StatelessWidget {
       Colors.red,
       Colors.orange,
     ],
+    this.showMultipleYAxis = false,
   }) : super(key: key);
 
   final Map<String, List<ChartDateValuePair>> chartDateValuePairListMap;
   final Map<String, CheckBoxValue> selectedCheckBoxValuesMap;
   final List<Color> colors;
+  final showMultipleYAxis;
 
   List<LineSeries> getLineSeriesCollection() {
     List<LineSeries> lineSeriesCollection = [];
@@ -52,6 +54,8 @@ class CustomMultipleLineChart extends StatelessWidget {
         dataMap: dataMap,
         startIndexes: startIndexes,
         color: colors[i],
+        maxYAxisValue: checkBoxValues[i].majorH ?? checkBoxValues[i].minorH,
+        minYAxisValue: checkBoxValues[i].majorL ?? checkBoxValues[i].minorL,
       );
 
       lineSeriesCollection.add(lineSeries);
@@ -68,6 +72,7 @@ class CustomMultipleLineChart extends StatelessWidget {
       children: [
         LineChart(
           lineSeriesCollection: lineSeriesCollection,
+          showMultipleYAxis: showMultipleYAxis,
         ),
         const SizedBox(
           height: 40.0,
