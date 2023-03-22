@@ -14,6 +14,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class RootRepository {
   RootRepository();
 
+  /// call api 取得子節點
   Future<List<dynamic>> getChilds({
     required User user,
     required int parentId,
@@ -35,7 +36,6 @@ class RootRepository {
         childsPath,
       );
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -44,27 +44,6 @@ class RootRepository {
 
         for (var element in dataList) {
           if (element['id'] == null) continue;
-
-          /// check if device status is unknown or offline
-          // int status = -1;
-          // if (element['status'] == 0) {
-          //   List<dynamic> resultOfGetInfo = await getNodeInfo(
-          //     user: user,
-          //     nodeId: element['id'],
-          //   );
-          //   if (resultOfGetInfo[0]) {
-          //     Info info = resultOfGetInfo[1];
-
-          //     status = info.moduleID == -2 ? -2 : 0;
-          //   } else {
-          //     status = element['status'];
-          //   }
-          // } else {
-          //   status = element['status'];
-          // }
-
-          ///
-
           Node node = Node(
             id: element['id'],
             name: element['name'],
@@ -87,7 +66,7 @@ class RootRepository {
     }
   }
 
-  // check device online or offline
+  /// call api 取得 device online or offline
   Future<List<dynamic>> checkDeviceConnectionStatus({
     required User user,
     required int deviceId,
@@ -116,6 +95,7 @@ class RootRepository {
     }
   }
 
+  /// call api 取得 device 是否被刪除, code : 410 則視為 device 已被刪除
   Future<List<dynamic>> checkDeviceForDeletion(
       {required User user, required int nodeId}) async {
     Dio dio = Dio();
@@ -144,6 +124,7 @@ class RootRepository {
     }
   }
 
+  /// call api 取得節點資訊, 不論是edfa or a8k slot or 其他節點, 都可以透過這個api獲取資訊
   Future<List<dynamic>> getNodeInfo(
       {required User user, required int nodeId}) async {
     Dio dio = Dio();
@@ -190,6 +171,9 @@ class RootRepository {
     }
   }
 
+  /// call api 取得edfa or a8k slot 的 data sheet 路徑,
+  /// moduleName 對應 json 'module' 欄位,
+  /// moduleSeries 對應 json 'series' 欄位
   Future<List<dynamic>> getDataSheetURL({
     required User user,
     required int nodeId,
@@ -211,6 +195,7 @@ class RootRepository {
     }
   }
 
+  /// call api 新增節點
   Future<List<dynamic>> createNode({
     required User user,
     required int parentId,
@@ -281,6 +266,7 @@ class RootRepository {
     }
   }
 
+  /// call api 更新節點
   Future<List<dynamic>> updateNode({
     required User user,
     required Node currentNode,
@@ -345,6 +331,7 @@ class RootRepository {
     }
   }
 
+  /// call api 取 device 名稱
   Future<List<dynamic>> getDeviceName({
     required User user,
     required int deviceId,
@@ -375,6 +362,7 @@ class RootRepository {
     }
   }
 
+  /// call api 取得 device 的連線狀態
   Future<List<dynamic>> connectDevice({
     required User user,
     required int currentNodeID,
@@ -401,6 +389,8 @@ class RootRepository {
       //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
+      // code : 200 未知裝置
+      // code : 204 已知的裝置
       if (data['code'] == '200' || data['code'] == '204') {
         return [true, ''];
       } else {
@@ -411,6 +401,7 @@ class RootRepository {
     }
   }
 
+  /// call api 刪除節點
   Future<List<dynamic>> deleteNode({
     required User user,
     required Node currentNode,
@@ -444,6 +435,7 @@ class RootRepository {
     }
   }
 
+  /// call api 搜尋節點
   Future<List<dynamic>> searchNodes({
     required User user,
     required int type,
@@ -509,6 +501,7 @@ class RootRepository {
     }
   }
 
+  /// call api 匯出所有節點
   Future<List<dynamic>> exportNodes({required User user}) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -583,6 +576,7 @@ class RootRepository {
     }
   }
 
+  /// 取得使用者在手機中儲存的書籤
   List<DeviceMeta> getBookmarks({required User user}) {
     UserApi userApi = UserApi();
 
@@ -591,6 +585,7 @@ class RootRepository {
     return bookmarks;
   }
 
+  /// 新增 device 進使用者的書籤
   Future<bool> addBookmarks({
     required User user,
     required Node node,
@@ -631,6 +626,7 @@ class RootRepository {
     return resdult;
   }
 
+  /// 將 device 從使用者的書籤中刪除
   Future<bool> deleteBookmarks({
     required User user,
     required int nodeId,
@@ -643,6 +639,7 @@ class RootRepository {
   }
 }
 
+/// 用來存節點搜尋時, 節點的資料,
 class SearchData {
   const SearchData({
     required this.id,
@@ -673,6 +670,8 @@ class SearchData {
   final int status;
 }
 
+/// 用來存各種 type 的 node,
+/// Root: 0, Group: 1, Device: 2, (edfa), A8K: 3, Shelf: 4, Slot: 5,
 class Node extends Equatable {
   const Node({
     required this.id,
@@ -713,6 +712,7 @@ class Node extends Equatable {
       ];
 }
 
+/// 如果node是device, 則會有 info
 class Info {
   const Info({
     this.deviceID = -1,

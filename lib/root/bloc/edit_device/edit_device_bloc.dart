@@ -266,7 +266,6 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
         status: FormzStatus.submissionInProgress,
       ));
 
-      // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.connectDevice(
           user: _user,
           currentNodeID: state.currentNode!.id,
