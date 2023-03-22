@@ -5,8 +5,8 @@ import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_series.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/marker.dart';
 
-class LineChartPainter extends CustomPainter {
-  LineChartPainter({
+class SingleYAxisLineChartPainter extends CustomPainter {
+  SingleYAxisLineChartPainter({
     required this.lineSeriesCollection,
     required this.longestLineSeries,
     required this.showTooltip,
@@ -532,7 +532,7 @@ class LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LineChartPainter oldDelegate) {
+  bool shouldRepaint(SingleYAxisLineChartPainter oldDelegate) {
     return oldDelegate.showTooltip != showTooltip ||
         oldDelegate.longPressX != longPressX ||
         oldDelegate.scale != scale ||

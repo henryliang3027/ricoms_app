@@ -29,7 +29,7 @@ class MultipleYAxisLineChartPainter extends CustomPainter {
   final bool showTooltip;
   final double longPressX;
   double leftOffset;
-  final double rightOffset;
+  double rightOffset;
   final double offset;
   final double scale;
   final DateTime minDate;

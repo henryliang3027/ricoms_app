@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_chart_painter.dart';
+import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/single_y_axis_line_chart_painter.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_series.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/marker.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/multiple_y_axis_line_chart_painter.dart';
@@ -325,7 +325,9 @@ class LineChartState extends State<LineChart> {
                 showTooltip: _showTooltip,
                 longPressX: _longPressX,
                 leftOffset: _leftOffset,
-                rightOffset: 120,
+                rightOffset: _rightOffset +
+                    (widget.lineSeriesCollection.length - 1) *
+                        40, //根據y-axis軸的數量調整右邊的邊界
                 offset: _offset,
                 scale: _scale,
                 minDate: _minDate,
@@ -336,7 +338,7 @@ class LineChartState extends State<LineChart> {
                 yRanges: _yRanges,
                 markers: widget.makrers,
               )
-            : LineChartPainter(
+            : SingleYAxisLineChartPainter(
                 lineSeriesCollection: widget.lineSeriesCollection,
                 longestLineSeries: _longestLineSeries,
                 showTooltip: _showTooltip,
