@@ -211,7 +211,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
               isAddedToBookmarks: false,
               isDeviceHasBeenDeleted: false,
               directory: directory,
-              data: result[1],
+              childData: result[1],
             ));
           }
         } else {
@@ -229,7 +229,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             nodesExportStatus: FormStatus.none,
             dataSheetOpenStatus: FormStatus.none,
             isDeviceHasBeenDeleted: false,
-            data: result[1],
+            childData: result[1],
             directory: directory,
           ));
         } else {
@@ -521,7 +521,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           formStatus: FormStatus.requestSuccess,
           isAddedToBookmarks: isAddedToBookmarks,
           directory: directory,
-          data: result[1],
+          childData: result[1],
         ));
       } else {
         // 導航到某個 device

@@ -524,7 +524,7 @@ class _NodeContent extends StatelessWidget {
 
   SliverChildBuilderDelegate _rootSliverChildBuilderDelegate(
     Node parentNode,
-    List data,
+    List childData,
     bool enabledEdit,
     bool enabledDelete,
   ) {
@@ -533,7 +533,7 @@ class _NodeContent extends StatelessWidget {
         // if (kDebugMode) {
         //   print('build _rootSliverChildBuilderDelegate : $index');
         // }
-        Node node = data[index];
+        Node node = childData[index];
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
@@ -611,7 +611,7 @@ class _NodeContent extends StatelessWidget {
           ),
         );
       },
-      childCount: data.length,
+      childCount: childData.length,
     );
   }
 
@@ -662,7 +662,7 @@ class _NodeContent extends StatelessWidget {
         } else {
           if (state.directory.last.type == 1) {
             //group
-            if (state.data.isEmpty) {
+            if (state.childData.isEmpty) {
               return Expanded(
                 child: Center(
                   child: Text(
@@ -680,7 +680,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))
@@ -722,7 +722,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))
@@ -761,7 +761,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))

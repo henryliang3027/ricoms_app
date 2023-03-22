@@ -8,7 +8,7 @@ class RootState extends Equatable {
     this.nodesExportFilePath = '',
     this.dataSheetOpenStatus = FormStatus.none,
     this.dataSheetOpenPath = '',
-    this.data = const [],
+    this.childData = const [],
     this.directory = const [],
     this.isAddedToBookmarks = false,
     this.isDeviceHasBeenDeleted = false,
@@ -25,7 +25,7 @@ class RootState extends Equatable {
   final String nodesExportFilePath;
   final FormStatus dataSheetOpenStatus;
   final String dataSheetOpenPath;
-  final List data;
+  final List childData;
   final List<Node> directory;
   final bool isAddedToBookmarks;
   final bool isDeviceHasBeenDeleted;
@@ -42,7 +42,7 @@ class RootState extends Equatable {
     String? nodesExportFilePath,
     FormStatus? dataSheetOpenStatus,
     String? dataSheetOpenPath,
-    List? data,
+    List? childData,
     List<Node>? directory,
     bool? isUpdateData,
     bool? isAddedToBookmarks,
@@ -60,7 +60,7 @@ class RootState extends Equatable {
       nodesExportFilePath: nodesExportFilePath ?? this.nodesExportFilePath,
       dataSheetOpenStatus: dataSheetOpenStatus ?? this.dataSheetOpenStatus,
       dataSheetOpenPath: dataSheetOpenPath ?? this.dataSheetOpenPath,
-      data: data ?? this.data,
+      childData: childData ?? this.childData,
       directory: directory ?? this.directory,
       isAddedToBookmarks: isAddedToBookmarks ?? this.isAddedToBookmarks,
       isDeviceHasBeenDeleted:
@@ -81,7 +81,7 @@ class RootState extends Equatable {
         nodesExportFilePath,
         dataSheetOpenStatus,
         dataSheetOpenPath,
-        data,
+        childData,
         directory,
         isAddedToBookmarks,
         isDeviceHasBeenDeleted,
