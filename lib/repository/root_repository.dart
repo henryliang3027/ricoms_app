@@ -87,7 +87,7 @@ class RootRepository {
     }
   }
 
-  // check  device online or offline
+  // check device online or offline
   Future<List<dynamic>> checkDeviceConnectionStatus({
     required User user,
     required int deviceId,
@@ -99,16 +99,11 @@ class RootRepository {
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
-    // if (_pageId[pageName] == null) {
-    //   return 'Page id does not exist! please look up block and give a page id';
-    // }
-
     String deviceBlockPath = '/device/' + deviceId.toString() + '/block';
 
     try {
       Response response = await dio.get(deviceBlockPath);
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
