@@ -670,8 +670,8 @@ class SearchData {
   final int status;
 }
 
-/// 用來存各種 type 的 node,
-/// Root: 0, Group: 1, Device: 2, (edfa), A8K: 3, Shelf: 4, Slot: 5,
+/// 用來存各種 type 的節點,
+/// type 有 Root: 0, Group: 1, Device: 2, (edfa), A8K: 3, Shelf: 4, Slot: 5,
 class Node extends Equatable {
   const Node({
     required this.id,
