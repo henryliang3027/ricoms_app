@@ -210,155 +210,118 @@ class SingleYAxisLineChartPainter extends CustomPainter {
     }
   }
 
-  // Draw horizontal grid line and Y-axis scale points
-  void _drawYAxisLabelAndHorizontalGridLineForMultipleYAxis({
-    required Canvas canvas,
-    required Size size,
-  }) {
-    for (int i = 0; i < lineSeriesCollection.length; i++) {
-      LineSeries lineSeries = lineSeriesCollection[i];
-      leftOffset = leftOffset + 20 * i;
-
-      // Draw Y-Axis
-      canvas.drawLine(
-          Offset(leftOffset, 0), Offset(leftOffset, size.height), _axisPaint);
-
-      int yScalePoints = 5;
-      double yInterval = yRanges[i] / yScalePoints;
-      double yStep = size.height / yRanges[i];
-      for (int i = 0; i < yScalePoints; i++) {
-        double scaleY = size.height - i * yInterval * yStep;
-
-        // Draw horizontal grid line
-        if (i == lineSeriesCollection.length - 1) {
-          canvas.drawLine(
-              Offset(leftOffset, scaleY),
-              Offset(size.width - rightOffset + leftOffset, scaleY),
-              _gridPaint);
-        }
-
-        // Draw Y-axis scale points
-        String label =
-            (i * yInterval + lineSeries.minYAxisValue!).toStringAsFixed(1);
-        _axisLabelPainter.text = TextSpan(
-          text: label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black,
-          ),
-        );
-        _axisLabelPainter.layout();
-        _axisLabelPainter.paint(
-            canvas,
-            Offset(leftOffset - _axisLabelPainter.width - 2,
-                scaleY - _axisLabelPainter.height / 2));
-      }
-    }
-  }
-
   // Draw vertical track line and tip
   void _drawTrackBall({
     required Canvas canvas,
     required Size size,
     required double xStep,
   }) {
-    double adjustedLongPressX = longPressX - leftOffset;
-    longPressX.clamp(0.0, size.width - rightOffset);
-    DateTime closestDateTime = _findClosestPoint(
-      x: adjustedLongPressX,
-      offsetX: offset,
-      xStep: xStep,
-    );
+    int nonNullValueIndex = longestLineSeries.dataList
+        .indexWhere((element) => element.value != null);
+    // 如果 line series value 全部都是 null,就不用畫 track ball
+    // 如果 至少有 value 不是 null, 就要畫
+    if (nonNullValueIndex != -1) {
+      double adjustedLongPressX = longPressX - leftOffset;
+      longPressX.clamp(0.0, size.width - rightOffset);
+      DateTime closestDateTime = _findClosestPoint(
+        x: adjustedLongPressX,
+        offsetX: offset,
+        xStep: xStep,
+      );
 
-    // Draw vertical line at the closest point
-    canvas.drawLine(
-      Offset((closestDateTime.difference(minDate).inSeconds.toDouble() * xStep),
-          0),
-      Offset((closestDateTime.difference(minDate).inSeconds.toDouble() * xStep),
-          size.height),
-      _verticalLinePaint,
-    );
+      // Draw vertical line at the closest point
+      canvas.drawLine(
+        Offset(
+            (closestDateTime.difference(minDate).inSeconds.toDouble() * xStep),
+            0),
+        Offset(
+            (closestDateTime.difference(minDate).inSeconds.toDouble() * xStep),
+            size.height),
+        _verticalLinePaint,
+      );
 
-    String formatDateTime = _formatDate(closestDateTime);
-    List<Map<String, double?>> valueMapList =
-        _getValueByDateTime(closestDateTime);
+      String formatDateTime = _formatDate(closestDateTime);
+      List<Map<String, double?>> valueMapList =
+          _getValueByDateTime(closestDateTime);
 
-    List<String> tips = [formatDateTime];
+      List<String> tips = [formatDateTime];
 
-    for (Map<String, double?> valueMap in valueMapList) {
-      MapEntry nameValueEntry = valueMap.entries.toList()[0];
-      if (nameValueEntry.value != null) {
-        tips.add('${nameValueEntry.key} : ${nameValueEntry.value}');
+      for (Map<String, double?> valueMap in valueMapList) {
+        MapEntry nameValueEntry = valueMap.entries.toList()[0];
+        if (nameValueEntry.value != null) {
+          tips.add('${nameValueEntry.key} : ${nameValueEntry.value}');
+        }
       }
-    }
 
-    String longestTip = tips.reduce(
-        (value, element) => value.length > element.length ? value : element);
-
-    _tipTextPainter.text = TextSpan(
-      text: longestTip,
-      style: const TextStyle(
-        color: Colors.black,
-      ),
-    );
-
-    _tipTextPainter.layout();
-
-    double rectWidth = _tipTextPainter.width;
-
-    double textX =
-        (closestDateTime.difference(minDate).inSeconds.toDouble() * xStep) + 10;
-    double textY = size.height / 2 - (14.0 * (tips.length + 1) + 4) / 2;
-
-    double outOfBoundWidth =
-        (textX - 4) + (rectWidth + 16) - (size.width - rightOffset) + offset;
-    double adjustedTextX = outOfBoundWidth > 0 ? outOfBoundWidth : 0;
-    Rect rect1 = Rect.fromLTWH(
-      textX - 4 - adjustedTextX,
-      textY,
-      rectWidth + 16,
-      12.0 * (tips.length + 1) +
-          4, // +1 for the date time string at the first row
-    );
-    Paint rectPaint = Paint()..color = Colors.white;
-    RRect rRect = RRect.fromRectAndRadius(rect1, const Radius.circular(4));
-    canvas.drawRRect(rRect, rectPaint);
-
-    _tipTextPainter.text = TextSpan(
-      text: tips[0],
-      style: const TextStyle(
-        color: Colors.black,
-      ),
-    );
-    _tipTextPainter.layout();
-
-    _tipTextPainter.paint(canvas, Offset(textX - adjustedTextX, textY));
-
-    canvas.drawLine(
-        Offset(textX - adjustedTextX, textY + 18),
-        Offset(textX - adjustedTextX - 8 + rectWidth + 16, textY + 18),
-        _dividerPaint);
-
-    textY = textY + 2;
-
-    for (int i = 1; i < tips.length; i++) {
-      Paint circlePaint = Paint()..color = lineSeriesCollection[i - 1].color;
-      Offset center = Offset(textX + 4 - adjustedTextX, textY + 13 * (i + 1));
-      double radius = 4;
-      canvas.drawCircle(center, radius, circlePaint);
+      String longestTip = tips.reduce(
+          (value, element) => value.length > element.length ? value : element);
 
       _tipTextPainter.text = TextSpan(
-        text: tips[i],
+        text: longestTip,
+        style: const TextStyle(
+          color: Colors.black,
+        ),
+      );
+
+      _tipTextPainter.layout();
+
+      double rectWidth = _tipTextPainter.width;
+
+      double textX =
+          (closestDateTime.difference(minDate).inSeconds.toDouble() * xStep) +
+              10;
+      double textY = size.height / 2 - (14.0 * (tips.length + 1) + 4) / 2;
+
+      double outOfBoundWidth =
+          (textX - 4) + (rectWidth + 16) - (size.width - rightOffset) + offset;
+      double adjustedTextX = outOfBoundWidth > 0 ? outOfBoundWidth : 0;
+      Rect rect1 = Rect.fromLTWH(
+        textX - 4 - adjustedTextX,
+        textY,
+        rectWidth + 16,
+        12.0 * (tips.length + 1) +
+            4, // +1 for the date time string at the first row
+      );
+      Paint rectPaint = Paint()..color = Colors.white;
+      RRect rRect = RRect.fromRectAndRadius(rect1, const Radius.circular(4));
+      canvas.drawRRect(rRect, rectPaint);
+
+      _tipTextPainter.text = TextSpan(
+        text: tips[0],
         style: const TextStyle(
           color: Colors.black,
         ),
       );
       _tipTextPainter.layout();
 
-      _tipTextPainter.paint(
-          canvas,
-          Offset(textX - adjustedTextX + 10,
-              (textY + 13 * (i + 1)) - _tipTextPainter.height / 2));
+      _tipTextPainter.paint(canvas, Offset(textX - adjustedTextX, textY));
+
+      canvas.drawLine(
+          Offset(textX - adjustedTextX, textY + 18),
+          Offset(textX - adjustedTextX - 8 + rectWidth + 16, textY + 18),
+          _dividerPaint);
+
+      textY = textY + 2;
+
+      for (int i = 1; i < tips.length; i++) {
+        Paint circlePaint = Paint()..color = lineSeriesCollection[i - 1].color;
+        Offset center = Offset(textX + 4 - adjustedTextX, textY + 13 * (i + 1));
+        double radius = 4;
+        canvas.drawCircle(center, radius, circlePaint);
+
+        _tipTextPainter.text = TextSpan(
+          text: tips[i],
+          style: const TextStyle(
+            color: Colors.black,
+          ),
+        );
+        _tipTextPainter.layout();
+
+        _tipTextPainter.paint(
+            canvas,
+            Offset(textX - adjustedTextX + 10,
+                (textY + 13 * (i + 1)) - _tipTextPainter.height / 2));
+      }
     }
   }
 
@@ -438,6 +401,7 @@ class SingleYAxisLineChartPainter extends CustomPainter {
   }) {
     for (LineSeries lineSeries in lineSeriesCollection) {
       List<ChartDateValuePair> data = lineSeries.dataList;
+
       List<int> startIndex = lineSeries.startIndexes;
       Path linePath = Path();
 
@@ -447,30 +411,33 @@ class SingleYAxisLineChartPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
 
-      // find the first non null value
+      // 找到第一個 value 不是 null 的 index
       int firstIndex = data.indexWhere((element) => element.value != null);
+      if (firstIndex != -1) {
+        // line series value 不是全部都是 null, 至少有一個 value 不是null
+        for (int i = firstIndex; i < data.length - 1; i++) {
+          double currentScaleX =
+              (data[i].dateTime.difference(minDate).inSeconds * xStep);
+          double? currentScaleY = data[i].value == null
+              ? null
+              : (maxValue - data[i].value!) * yStep;
 
-      for (int i = firstIndex; i < data.length - 1; i++) {
-        double currentScaleX =
-            (data[i].dateTime.difference(minDate).inSeconds * xStep);
-        double? currentScaleY =
-            data[i].value == null ? null : (maxValue - data[i].value!) * yStep;
+          if (currentScaleY != null) {
+            if (i == firstIndex) {
+              linePath.moveTo(currentScaleX, currentScaleY);
+            }
 
-        if (currentScaleY != null) {
-          if (i == firstIndex) {
-            linePath.moveTo(currentScaleX, currentScaleY);
-          }
-
-          // if previous index of value is null, Do not draw line near the point
-          if (startIndex.contains(i)) {
-            linePath.moveTo(currentScaleX, currentScaleY);
-          } else {
-            linePath.lineTo(currentScaleX, currentScaleY);
+            // if previous index of value is null, Do not draw line near the point
+            if (startIndex.contains(i)) {
+              linePath.moveTo(currentScaleX, currentScaleY);
+            } else {
+              linePath.lineTo(currentScaleX, currentScaleY);
+            }
           }
         }
-      }
 
-      canvas.drawPath(linePath, linePaint);
+        canvas.drawPath(linePath, linePaint);
+      }
     }
   }
 

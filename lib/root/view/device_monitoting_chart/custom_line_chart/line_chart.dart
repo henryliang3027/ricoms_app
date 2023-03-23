@@ -105,13 +105,15 @@ class LineChartState extends State<LineChart> {
     double tempMinValue = 0.0;
     double tempMaxValue = 0.0;
 
-    tempMinValue = allNonNullValues
-        .map((value) => value)
-        .reduce((value, element) => value! < element! ? value : element)!;
+    if (allNonNullValues.isNotEmpty) {
+      tempMinValue = allNonNullValues
+          .map((value) => value)
+          .reduce((value, element) => value! < element! ? value : element)!;
 
-    tempMaxValue = allNonNullValues
-        .map((value) => value)
-        .reduce((value, element) => value! > element! ? value : element)!;
+      tempMaxValue = allNonNullValues
+          .map((value) => value)
+          .reduce((value, element) => value! > element! ? value : element)!;
+    }
 
     if (widget.makrers.isNotEmpty) {
       List<double> markerValues = [];
