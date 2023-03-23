@@ -10,13 +10,14 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 
 enum AuthenticationStatus { authenticated, unauthenticated }
 
+/// 儲存登入的結果資料
 class AuthenticationReport {
   const AuthenticationReport({
     required this.status,
-    this.user = const User.empty(),
-    this.userFunction = const {},
-    this.msgTitle = '',
-    this.msg = '',
+    this.user = const User.empty(), // 使用者帳號資料
+    this.userFunction = const {}, // 使用者帳號可以使用的 RICOMS 功能列表
+    this.msgTitle = '', // 錯誤訊息標題
+    this.msg = '', // 錯誤訊息內容
   });
 
   final AuthenticationStatus status;
@@ -29,9 +30,12 @@ class AuthenticationReport {
 class AuthenticationRepository {
   AuthenticationRepository();
 
-  final UserApi userApi = UserApi(); // public field
+  final UserApi userApi = UserApi();
   final _controller = StreamController<AuthenticationReport>();
 
+  // stream 可以產生(yield) AuthenticationReport instance 給 AuthenticationBloc 裡的 StreamSubscription,
+  // yield* 產生一連串的 AuthenticationReport instance
+  // yield or yield* 可以理解成 return, 只是 function 的執行不會馬上結束
   Stream<AuthenticationReport> get report async* {
     User? user = userApi.getActivateUser();
 
@@ -43,9 +47,12 @@ class AuthenticationRepository {
     } else {
       await autoLogIn(user: user);
     }
+
+    // 將 _controller 裡的 AuthenticationReport instance, 傳給 AuthenticationBloc 裡的 StreamSubscription
     yield* _controller.stream;
   }
 
+  // 如果已經登入過, 會自動登入
   Future<void> autoLogIn({
     required User user,
   }) async {
@@ -145,6 +152,7 @@ class AuthenticationRepository {
     }
   }
 
+  // 初次開啟app, 手動登入, 或自動登入失敗時會改為手動登入
   Future<List<dynamic>> logIn({
     required String ip,
     required String account,
@@ -257,6 +265,7 @@ class AuthenticationRepository {
     }
   }
 
+  // 登出, call api, 將登出的資料記錄在 system log
   Future<void> logOut({
     required User user,
   }) async {
@@ -291,6 +300,7 @@ class AuthenticationRepository {
     ));
   }
 
+  // call api 更改使用者密碼
   Future<String> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -332,6 +342,7 @@ class AuthenticationRepository {
     }
   }
 
+  // 將使用者的登入資料記錄在手機端
   Future<List<dynamic>> setUserInfo({
     required String ip,
     required String userId,
@@ -346,7 +357,7 @@ class AuthenticationRepository {
     dio.options.receiveTimeout = 10000;
 
     if (userId == '0') {
-      // system admin
+      // system admin 帳號
       await userApi.addUserByKey(
         userId: userId,
         ip: ip,
@@ -361,7 +372,7 @@ class AuthenticationRepository {
       );
       return [true];
     } else if (userId == 'demo') {
-      // demo
+      // demo 帳號
       await userApi.addUserByKey(
         userId: userId,
         ip: ip,
@@ -376,6 +387,7 @@ class AuthenticationRepository {
       );
       return [true];
     } else {
+      // 其他帳號
       String accountInformationPath = '/accounts/' + userId;
       try {
         Response response = await dio.get(
@@ -415,6 +427,7 @@ class AuthenticationRepository {
   // operator : 3
   // user : 4
   // disabled : 5
+  // 檢查使用者帳號權限是否有被更改
   Future<List<dynamic>> checkUserPermission() async {
     User? user = userApi.getActivateUser();
     if (user != null) {
@@ -466,6 +479,7 @@ class AuthenticationRepository {
     }
   }
 
+  // 取得使用者帳號可以使用的 RICOMS 功能列表
   Future<List<dynamic>> getUserFunctions({
     String? functionId,
   }) async {

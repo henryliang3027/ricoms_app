@@ -28,6 +28,7 @@ class DeviceHistoryBloc extends Bloc<DeviceHistoryEvent, DeviceHistoryState> {
   final DeviceRepository _deviceRepository;
   final int _nodeId;
 
+  /// 處理針對特定 device 歷史紀錄的獲取
   Future<void> _onHistoryRequested(
     DeviceHistoryEvent event,
     Emitter<DeviceHistoryState> emit,
@@ -54,6 +55,7 @@ class DeviceHistoryBloc extends Bloc<DeviceHistoryEvent, DeviceHistoryState> {
     }
   }
 
+  /// 處理更多歷史紀錄的獲取
   Future<void> _onMoreRecordsRequested(
     MoreRecordsRequested event,
     Emitter<DeviceHistoryState> emit,
@@ -86,6 +88,7 @@ class DeviceHistoryBloc extends Bloc<DeviceHistoryEvent, DeviceHistoryState> {
     }
   }
 
+  /// 隱藏載入更多歷史紀錄的 floating action button
   void _onFloatingActionButtonHided(
     FloatingActionButtonHided event,
     Emitter<DeviceHistoryState> emit,
@@ -96,6 +99,7 @@ class DeviceHistoryBloc extends Bloc<DeviceHistoryEvent, DeviceHistoryState> {
     ));
   }
 
+  /// 顯示載入更多歷史紀錄的 floating action button, 當頁面滑到底部時會觸發 button 顯示
   void _onFloatingActionButtonShowed(
     FloatingActionButtonShowed event,
     Emitter<DeviceHistoryState> emit,

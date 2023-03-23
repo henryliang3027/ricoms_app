@@ -22,6 +22,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final User _user;
   final RootRepository _rootRepository;
 
+  // 處理搜尋類型的更改
   void _onSearchTypeChanged(
     SearchTypeChanged event,
     Emitter<SearchState> emit,
@@ -32,6 +33,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ));
   }
 
+  // 處理關鍵字的更改
   void _onKeywordChanged(
     KeywordChanged event,
     Emitter<SearchState> emit,
@@ -42,6 +44,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ));
   }
 
+  // 處理搜尋條件(關鍵字, 類型)的提交, 提交給後端
   Future<void> _onSearchDataSubmitted(
     SearchDataSubmitted event,
     Emitter<SearchState> emit,

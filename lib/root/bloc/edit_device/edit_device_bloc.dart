@@ -45,6 +45,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
   final Node? _currentNode;
   final _type = 2;
 
+  /// 處理 device 的新增或編輯時需要取得的資料
   Future<void> _onDataRequested(
     DataRequested event,
     Emitter<EditDeviceState> emit,
@@ -95,6 +96,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     }
   }
 
+  /// 處理 name 的更改
   void _onNameChanged(
     NameChanged event,
     Emitter<EditDeviceState> emit,
@@ -110,6 +112,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 device ip 的更改
   void _onDeviceIPChanged(
     DeviceIPChanged event,
     Emitter<EditDeviceState> emit,
@@ -125,6 +128,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 read 的更改
   void _onReadChanged(
     ReadChanged event,
     Emitter<EditDeviceState> emit,
@@ -139,6 +143,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 write 的更改
   void _onWriteChanged(
     WriteChanged event,
     Emitter<EditDeviceState> emit,
@@ -153,6 +158,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 description 的更改
   void _onDescriptionChanged(
     DescriptionChanged event,
     Emitter<EditDeviceState> emit,
@@ -167,6 +173,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 location 的更改
   void _onLocationChanged(
     LocationChanged event,
     Emitter<EditDeviceState> emit,
@@ -181,14 +188,13 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     );
   }
 
+  /// 處理 device 的新增並傳給後端
   Future<void> _onNodeCreationSubmitted(
     NodeCreationSubmitted event,
     Emitter<EditDeviceState> emit,
   ) async {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
-
-      // new password is the same as confirm password
 
       List<dynamic> msg = await _rootRepository.createNode(
         user: _user,
@@ -220,6 +226,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     }
   }
 
+  /// 處理 device 的編輯資料更新並傳給後端
   Future<void> _onNodeUpdateSubmitted(
     NodeUpdateSubmitted event,
     Emitter<EditDeviceState> emit,
@@ -227,7 +234,6 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-      // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.updateNode(
         user: _user,
         currentNode: state.currentNode!,
@@ -257,6 +263,7 @@ class EditDeviceBloc extends Bloc<EditDeviceEvent, EditDeviceState> {
     }
   }
 
+  /// 處理 device 連線測試
   Future<void> _onDeviceConnectRequested(
     DeviceConnectRequested event,
     Emitter<EditDeviceState> emit,
