@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/monitoring_chart_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -88,7 +88,7 @@ class _StartDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) => previous.startDate != current.startDate,
       builder: (context, state) {
         return ElevatedButton(
@@ -111,7 +111,7 @@ class _StartDatePicker extends StatelessWidget {
               String formattedDateTime =
                   DateFormat('yyyy-MM-dd').format(datetime).toString();
               context
-                  .read<ChartFilterBloc>()
+                  .read<MonitoringChartBloc>()
                   .add(StartDateChanged(formattedDateTime));
             }
           },
@@ -150,7 +150,7 @@ class _EndDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.endDate != current.endDate ||
           previous.startDate != current.startDate,
@@ -180,7 +180,7 @@ class _EndDatePicker extends StatelessWidget {
               String formattedDateTime =
                   DateFormat('yyyy-MM-dd').format(datetime).toString();
               context
-                  .read<ChartFilterBloc>()
+                  .read<MonitoringChartBloc>()
                   .add(EndDateChanged(formattedDateTime));
             }
           },
@@ -254,7 +254,7 @@ class _ThresholdListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
         builder: (context, state) {
       if (state.status.isRequestSuccess) {
         return Container(
@@ -320,7 +320,7 @@ class _FilterCheckBoxes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         return Checkbox(
           visualDensity: const VisualDensity(vertical: -4.0),
@@ -329,7 +329,7 @@ class _FilterCheckBoxes extends StatelessWidget {
           onChanged: (value) {
             if (value != null) {
               context
-                  .read<ChartFilterBloc>()
+                  .read<MonitoringChartBloc>()
                   .add(CheckBoxValueChanged(oid, value));
             }
           },
@@ -344,7 +344,7 @@ class _SelectAllCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.isSelectAll != current.isSelectAll,
       builder: (context, state) {
@@ -366,7 +366,7 @@ class _SelectAllCheckBox extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(horizontal: 14.0),
             onChanged: (bool? value) {
               context
-                  .read<ChartFilterBloc>()
+                  .read<MonitoringChartBloc>()
                   .add(AllCheckBoxValueChanged(value ?? false));
             },
           ),
@@ -381,7 +381,7 @@ class _MultipleYAxisCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.isShowMultipleYAxis != current.isShowMultipleYAxis ||
           previous.isSelectMultipleYAxis != current.isSelectMultipleYAxis,
@@ -409,7 +409,7 @@ class _MultipleYAxisCheckBox extends StatelessWidget {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 14.0),
                     onChanged: (bool? value) {
-                      context.read<ChartFilterBloc>().add(
+                      context.read<MonitoringChartBloc>().add(
                           MultipleYAxisCheckBoxValueChanged(value ?? false));
                     },
                   ),
@@ -426,7 +426,7 @@ class _SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.selectedCheckBoxValues != current.selectedCheckBoxValues,
       builder: (context, state) {
@@ -460,7 +460,7 @@ class _SaveButton extends StatelessWidget {
                     ? () {
                         //FocusManager.instance.primaryFocus?.unfocus();
                         context
-                            .read<ChartFilterBloc>()
+                            .read<MonitoringChartBloc>()
                             .add(const FilterSelectingModeDisabled());
                       }
                     : null,

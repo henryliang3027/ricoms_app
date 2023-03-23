@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/monitoring_chart_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/multiple_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/single_axis_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
@@ -88,7 +88,7 @@ class MonitoringChartDisplayForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
         buildWhen: (previous, current) =>
             previous.chartDataStatus != current.chartDataStatus,
         builder: (context, state) {

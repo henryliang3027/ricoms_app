@@ -1,7 +1,7 @@
-part of 'chart_filter_bloc.dart';
+part of 'monitoring_chart_bloc.dart';
 
-class ChartFilterState extends Equatable {
-  const ChartFilterState({
+class MonitoringChartState extends Equatable {
+  const MonitoringChartState({
     this.status = FormStatus.none,
     this.chartDataStatus = FormStatus.none,
     this.chartDataExportStatus = FormStatus.none,
@@ -37,7 +37,7 @@ class ChartFilterState extends Equatable {
   final String chartDataExportMsg;
   final String chartDataExportFilePath;
 
-  ChartFilterState copyWith({
+  MonitoringChartState copyWith({
     FormStatus? status,
     FormStatus? chartDataStatus,
     FormStatus? chartDataExportStatus,
@@ -55,7 +55,7 @@ class ChartFilterState extends Equatable {
     String? chartDataExportMsg,
     String? chartDataExportFilePath,
   }) {
-    return ChartFilterState(
+    return MonitoringChartState(
       status: status ?? this.status,
       chartDataStatus: chartDataStatus ?? this.chartDataStatus,
       chartDataExportStatus:

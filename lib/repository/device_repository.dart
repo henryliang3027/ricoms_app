@@ -14,6 +14,7 @@ import 'package:excel/excel.dart';
 class DeviceRepository {
   DeviceRepository();
 
+  /// call api 取得 device 的所有分頁表
   Future<dynamic> createDeviceBlock({
     required User user,
     required int nodeId,
@@ -29,7 +30,6 @@ class DeviceRepository {
     try {
       Response response = await dio.get(deviceStatusPath);
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -38,7 +38,6 @@ class DeviceRepository {
 
         dataList.removeWhere((element) => element['mobile'] == 0);
 
-        // build two maps -> {pagename : id} and {pagename : editable}
         for (var item in dataList) {
           DeviceBlock deviceBlock = DeviceBlock(
             id: item['id'],
@@ -58,6 +57,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 取得 device 的特定分頁的內容, 藉由 page id 來取得分頁內容
   Future<dynamic> getDevicePage({
     required User user,
     required int nodeId,
@@ -70,10 +70,6 @@ class DeviceRepository {
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
 
-    // if (_pageId[pageName] == null) {
-    //   return 'Page id does not exist! please look up block and give a page id';
-    // }
-
     String devicePagePath =
         '/device/' + nodeId.toString() + '/block/' + pageId.toString();
 
@@ -84,16 +80,15 @@ class DeviceRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        //List dataList = data['data'];
-        //print(data['data'][0]);
         List dataList = data['data'];
 
         if (pageId == 200) {
-          // description
-          //make different id value because textfield ids are the same in json
+          // 如果是取得 dedcription 分頁的內容
+          // 分別給 name 欄位 id = 9998, description 欄位 id = 9999, 來分辨兩者, 方便做 name or description 內容更新
+          // 因為 api 回傳的 json 把兩者都定義同一個 id
           int autoId = 9998;
 
-          var deviceInfo = await getDeviceDescription(
+          var deviceInfo = await _getDeviceDescription(
             user: user,
             nodeId: nodeId,
           );
@@ -102,7 +97,6 @@ class DeviceRepository {
             return deviceInfo;
           }
 
-          //make different id value because textfield ids are the same in json
           for (int i = 0; i < dataList.length; i++) {
             for (int j = 0; j < dataList[i].length; j++) {
               if (dataList[i][j]['id'] != -1) {
@@ -133,6 +127,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api refresh device 資料, 才能在 getDevicePage 時取得最新資料
   Future<void> refreshDeice({
     required User user,
     required int nodeId,
@@ -148,7 +143,6 @@ class DeviceRepository {
     try {
       Response response = await dio.post(deviceRefreshPath);
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -161,6 +155,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 設定 device 參數
   Future<List<dynamic>> setDeviceParams({
     required User user,
     required int nodeId,
@@ -197,7 +192,8 @@ class DeviceRepository {
     }
   }
 
-  Future<dynamic> getDeviceDescription({
+  /// call api 取得 device description
+  Future<dynamic> _getDeviceDescription({
     required User user,
     required int nodeId,
   }) async {
@@ -233,6 +229,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 設定 device description
   Future<List<dynamic>> setDeviceDescription({
     required User user,
     required int nodeId,
@@ -270,6 +267,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 取得 device 歷史紀錄
   Future<List<dynamic>> getDeviceHistory({
     required User user,
     required int nodeId,
@@ -287,7 +285,6 @@ class DeviceRepository {
     try {
       Response response = await dio.get(deviceStatusPath);
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -334,6 +331,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 取得更多 device 歷史紀錄, 一次最多1000筆
   Future<List<dynamic>> getMoreDeviceHistory({
     required User user,
     required int nodeId,
@@ -352,7 +350,6 @@ class DeviceRepository {
     try {
       Response response = await dio.get(deviceStatusPath);
 
-      //print(response.data.toString());
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
@@ -398,6 +395,7 @@ class DeviceRepository {
     }
   }
 
+  /// call api 取得 device line chart 用的數據
   Future<List<dynamic>> getDeviceChartData({
     required User user,
     required String startDate,
@@ -452,7 +450,8 @@ class DeviceRepository {
     }
   }
 
-  Future<List<dynamic>> getMultipleDeviceChartData({
+  ///取得選擇的 device 參數(oid), 的line chart 用的數據
+  Future<List<dynamic>> getDeviceChartDataCollection({
     required User user,
     required String startDate,
     required String endDate,
@@ -481,6 +480,7 @@ class DeviceRepository {
     return [true, chartDateValues];
   }
 
+  ///匯出 的line chart 用的數據
   Future<List<dynamic>> exportSingleAxisChartData({
     required String nodeName,
     required String parameterName,
@@ -623,6 +623,7 @@ class DeviceRepository {
   }
 }
 
+/// 儲存單一分頁的屬性, id, 名稱, 可否編輯
 class DeviceBlock {
   const DeviceBlock({
     required this.id,
@@ -635,6 +636,7 @@ class DeviceBlock {
   final bool editable;
 }
 
+/// 儲存單歷史紀錄分頁的單筆歷史紀錄內容
 class DeviceHistoryData {
   const DeviceHistoryData({
     required this.trapId,
@@ -653,6 +655,7 @@ class DeviceHistoryData {
   final String alarmDuration;
 }
 
+/// 儲存監控圖表分頁的 line chart 的基本資料點
 class ChartDateValuePair {
   const ChartDateValuePair({
     required this.dateTime,

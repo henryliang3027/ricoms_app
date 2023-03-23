@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/monitoring_chart_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/custom_multiple_line_chart.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/full_screen_multiple_line_chart_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
@@ -24,7 +24,7 @@ class MultipleAxisChartForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChartFilterBloc, ChartFilterState>(
+    return BlocListener<MonitoringChartBloc, MonitoringChartState>(
       listener: (context, state) {
         if (state.chartDataExportStatus.isRequestSuccess) {
           ScaffoldMessenger.of(context)
@@ -96,7 +96,7 @@ class _FullScreenButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 8.0, 0.0, 0.0),
@@ -151,7 +151,7 @@ class _ExportButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 8.0, 10.0, 0.0),
@@ -161,7 +161,7 @@ class _ExportButton extends StatelessWidget {
               OutlinedButton(
                 onPressed: () {
                   context
-                      .read<ChartFilterBloc>()
+                      .read<MonitoringChartBloc>()
                       .add(MultipleAxisChartDataExported(
                         nodeName,
                         checkBoxValues,

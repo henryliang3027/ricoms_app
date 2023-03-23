@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/monitoring_chart_bloc.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_display_form.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_filter_form.dart';
 
@@ -38,7 +38,7 @@ class _DeviceMonitoringChartContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.filterSelectingMode != current.filterSelectingMode,
       builder: (context, state) {
@@ -58,7 +58,7 @@ class _ChartFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         if (!state.filterSelectingMode) {
           return Column(
@@ -70,7 +70,7 @@ class _ChartFloatingActionButton extends StatelessWidget {
                 backgroundColor: const Color(0x742195F3),
                 onPressed: () async {
                   context
-                      .read<ChartFilterBloc>()
+                      .read<MonitoringChartBloc>()
                       .add(const FilterSelectingModeEnabled());
                 },
                 child: const Icon(

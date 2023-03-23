@@ -8,7 +8,7 @@ import 'package:ricoms_app/root/view/device_monitoting_chart/full_screen_single_
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
-import 'package:ricoms_app/root/bloc/monitoring_chart/chart_filter/chart_filter_bloc.dart';
+import 'package:ricoms_app/root/bloc/monitoring_chart/monitoring_chart_bloc.dart';
 
 class SingleAxisChartForm extends StatelessWidget {
   const SingleAxisChartForm({
@@ -32,7 +32,7 @@ class SingleAxisChartForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChartFilterBloc, ChartFilterState>(
+    return BlocListener<MonitoringChartBloc, MonitoringChartState>(
       listener: (context, state) {
         if (state.chartDataExportStatus.isRequestSuccess) {
           ScaffoldMessenger.of(context)
@@ -121,7 +121,7 @@ class _ChartTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       buildWhen: (previous, current) =>
           previous.checkBoxValues != current.checkBoxValues,
       builder: (context, state) {
@@ -160,7 +160,7 @@ class _FullScreenButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 8.0, 0.0, 0.0),
@@ -219,7 +219,7 @@ class _ExportButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChartFilterBloc, ChartFilterState>(
+    return BlocBuilder<MonitoringChartBloc, MonitoringChartState>(
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 8.0, 10.0, 0.0),
@@ -229,7 +229,7 @@ class _ExportButton extends StatelessWidget {
               OutlinedButton(
                 onPressed: () {
                   context
-                      .read<ChartFilterBloc>()
+                      .read<MonitoringChartBloc>()
                       .add(SingleAxisChartDataExported(
                         nodeName,
                         parameterName,

@@ -6,11 +6,12 @@ import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 
-part 'chart_filter_event.dart';
-part 'chart_filter_state.dart';
+part 'monitoring_chart_event.dart';
+part 'monitoring_chart_state.dart';
 
-class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
-  ChartFilterBloc({
+class MonitoringChartBloc
+    extends Bloc<MonitoringChartEvent, MonitoringChartState> {
+  MonitoringChartBloc({
     required User user,
     required DeviceRepository deviceRepository,
     required int nodeId,
@@ -19,7 +20,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
         _deviceRepository = deviceRepository,
         _nodeId = nodeId,
         _deviceBlock = deviceBlock,
-        super(const ChartFilterState()) {
+        super(const MonitoringChartState()) {
     on<ThresholdDataRequested>(_onThresholdDataRequested);
     on<StartDateChanged>(_onStartDateChanged);
     on<EndDateChanged>(_onEndDateChanged);
@@ -41,7 +42,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   Future<void> _onThresholdDataRequested(
     ThresholdDataRequested event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) async {
     List<List<ItemProperty>> itemPropertiesCollection = [];
     Map<String, CheckBoxValue> checkBoxValues = {};
@@ -86,7 +87,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onStartDateChanged(
     StartDateChanged event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     String formattedStartDate = event.startDate.replaceAll('/', '');
     String formattedEndDate = state.endDate.replaceAll('/', '');
@@ -123,7 +124,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onEndDateChanged(
     EndDateChanged event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     String startDate = state.startDate;
     String endDate = event.endDate;
@@ -140,18 +141,17 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onFilterSelectingModeEnabled(
     FilterSelectingModeEnabled event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     emit(state.copyWith(
       filterSelectingMode: true,
       chartDataExportStatus: FormStatus.none,
-      // selectedCheckBoxValues: {},
     ));
   }
 
   Future<void> _onFilterSelectingModeDisabled(
     FilterSelectingModeDisabled event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) async {
     Map<String, List<ChartDateValuePair>> chartDateValuePairsMap = {};
 
@@ -160,7 +160,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
       chartDataStatus: FormStatus.requestInProgress,
     ));
 
-    List<dynamic> result = await _deviceRepository.getMultipleDeviceChartData(
+    List<dynamic> result = await _deviceRepository.getDeviceChartDataCollection(
         user: _user,
         startDate: state.startDate,
         endDate: state.endDate,
@@ -186,7 +186,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onCheckBoxValueChanged(
     CheckBoxValueChanged event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     Map<String, CheckBoxValue> selectedCheckBoxValues = {};
     Map<String, CheckBoxValue> checkBoxValues = {};
@@ -248,7 +248,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onAllCheckBoxValueChanged(
     AllCheckBoxValueChanged event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     Map<String, CheckBoxValue> selectedCheckBoxValues = {};
     Map<String, CheckBoxValue> checkBoxValues = {};
@@ -295,7 +295,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   void _onMultipleYAxisCheckBoxValueChanged(
     MultipleYAxisCheckBoxValueChanged event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) {
     emit(state.copyWith(
       isSelectMultipleYAxis: event.value,
@@ -304,7 +304,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   Future<void> _onSingleAxisChartDataExported(
     SingleAxisChartDataExported event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) async {
     emit(state.copyWith(
       chartDataExportStatus: FormStatus.requestInProgress,
@@ -335,7 +335,7 @@ class ChartFilterBloc extends Bloc<ChartFilterEvent, ChartFilterState> {
 
   Future<void> _onMultipleAxisChartDataExported(
     MultipleAxisChartDataExported event,
-    Emitter<ChartFilterState> emit,
+    Emitter<MonitoringChartState> emit,
   ) async {
     emit(state.copyWith(
       chartDataExportStatus: FormStatus.requestInProgress,

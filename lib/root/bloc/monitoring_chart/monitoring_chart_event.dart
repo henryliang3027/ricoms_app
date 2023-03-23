@@ -1,17 +1,17 @@
-part of 'chart_filter_bloc.dart';
+part of 'monitoring_chart_bloc.dart';
 
-abstract class ChartFilterEvent extends Equatable {
-  const ChartFilterEvent();
+abstract class MonitoringChartEvent extends Equatable {
+  const MonitoringChartEvent();
 }
 
-class ThresholdDataRequested extends ChartFilterEvent {
+class ThresholdDataRequested extends MonitoringChartEvent {
   const ThresholdDataRequested();
 
   @override
   List<Object?> get props => [];
 }
 
-class StartDateChanged extends ChartFilterEvent {
+class StartDateChanged extends MonitoringChartEvent {
   const StartDateChanged(this.startDate);
 
   final String startDate;
@@ -20,7 +20,7 @@ class StartDateChanged extends ChartFilterEvent {
   List<Object?> get props => [startDate];
 }
 
-class EndDateChanged extends ChartFilterEvent {
+class EndDateChanged extends MonitoringChartEvent {
   const EndDateChanged(this.endDate);
 
   final String endDate;
@@ -29,21 +29,21 @@ class EndDateChanged extends ChartFilterEvent {
   List<Object?> get props => [endDate];
 }
 
-class FilterSelectingModeEnabled extends ChartFilterEvent {
+class FilterSelectingModeEnabled extends MonitoringChartEvent {
   const FilterSelectingModeEnabled();
 
   @override
   List<Object?> get props => [];
 }
 
-class FilterSelectingModeDisabled extends ChartFilterEvent {
+class FilterSelectingModeDisabled extends MonitoringChartEvent {
   const FilterSelectingModeDisabled();
 
   @override
   List<Object?> get props => [];
 }
 
-class CheckBoxValueChanged extends ChartFilterEvent {
+class CheckBoxValueChanged extends MonitoringChartEvent {
   const CheckBoxValueChanged(this.oid, this.value);
 
   final String oid;
@@ -56,7 +56,7 @@ class CheckBoxValueChanged extends ChartFilterEvent {
       ];
 }
 
-class AllCheckBoxValueChanged extends ChartFilterEvent {
+class AllCheckBoxValueChanged extends MonitoringChartEvent {
   const AllCheckBoxValueChanged(this.value);
 
   final bool value;
@@ -65,7 +65,7 @@ class AllCheckBoxValueChanged extends ChartFilterEvent {
   List<Object?> get props => [value];
 }
 
-class MultipleYAxisCheckBoxValueChanged extends ChartFilterEvent {
+class MultipleYAxisCheckBoxValueChanged extends MonitoringChartEvent {
   const MultipleYAxisCheckBoxValueChanged(this.value);
 
   final bool value;
@@ -74,7 +74,7 @@ class MultipleYAxisCheckBoxValueChanged extends ChartFilterEvent {
   List<Object?> get props => [value];
 }
 
-class SingleAxisChartDataExported extends ChartFilterEvent {
+class SingleAxisChartDataExported extends MonitoringChartEvent {
   const SingleAxisChartDataExported(
     this.nodeName,
     this.parameterName,
@@ -93,7 +93,7 @@ class SingleAxisChartDataExported extends ChartFilterEvent {
       ];
 }
 
-class MultipleAxisChartDataExported extends ChartFilterEvent {
+class MultipleAxisChartDataExported extends MonitoringChartEvent {
   const MultipleAxisChartDataExported(
     this.nodeName,
     this.checkBoxValues,
