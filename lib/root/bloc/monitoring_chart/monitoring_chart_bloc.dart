@@ -21,7 +21,7 @@ class MonitoringChartBloc
         _nodeId = nodeId,
         _deviceBlock = deviceBlock,
         super(const MonitoringChartState()) {
-    on<ThresholdDataRequested>(_onThresholdDataRequested);
+    on<ParameterRequested>(_onParameterRequested);
     on<StartDateChanged>(_onStartDateChanged);
     on<EndDateChanged>(_onEndDateChanged);
     on<FilterSelectingModeEnabled>(_onFilterSelectingModeEnabled);
@@ -32,7 +32,7 @@ class MonitoringChartBloc
     on<SingleAxisChartDataExported>(_onSingleAxisChartDataExported);
     on<MultipleAxisChartDataExported>(_onMultipleAxisChartDataExported);
 
-    add(const ThresholdDataRequested());
+    add(const ParameterRequested());
   }
 
   final User _user;
@@ -40,8 +40,9 @@ class MonitoringChartBloc
   final int _nodeId;
   final DeviceBlock _deviceBlock;
 
-  Future<void> _onThresholdDataRequested(
-    ThresholdDataRequested event,
+  /// 處理 device 參數取得
+  Future<void> _onParameterRequested(
+    ParameterRequested event,
     Emitter<MonitoringChartState> emit,
   ) async {
     List<List<ItemProperty>> itemPropertiesCollection = [];
@@ -51,6 +52,7 @@ class MonitoringChartBloc
       status: FormStatus.requestInProgress,
     ));
 
+    // 藉由 api 取得 monitoring chart 分頁的 device 參數
     dynamic data = await _deviceRepository.getDevicePage(
       user: _user,
       nodeId: _nodeId,
@@ -85,6 +87,7 @@ class MonitoringChartBloc
     }
   }
 
+  /// 處理起始日期的改變
   void _onStartDateChanged(
     StartDateChanged event,
     Emitter<MonitoringChartState> emit,
@@ -122,6 +125,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理結束日期的改變
   void _onEndDateChanged(
     EndDateChanged event,
     Emitter<MonitoringChartState> emit,
@@ -139,6 +143,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理使用者在觀看 monitor chart 的頁面 按下編輯的floating action button 會觸發 filter 模式
   void _onFilterSelectingModeEnabled(
     FilterSelectingModeEnabled event,
     Emitter<MonitoringChartState> emit,
@@ -149,6 +154,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理使用者在 fliter 頁面 按下 save button 會 disable filter 模式
   Future<void> _onFilterSelectingModeDisabled(
     FilterSelectingModeDisabled event,
     Emitter<MonitoringChartState> emit,
@@ -170,20 +176,17 @@ class MonitoringChartBloc
     if (result[0]) {
       chartDateValuePairsMap = result[1];
       emit(state.copyWith(
-        // filterSelectingMode: false,
         chartDateValuePairsMap: chartDateValuePairsMap,
-        selectedCheckBoxValues: state.selectedCheckBoxValues,
-        // just make sure we set state.selectedCheckBoxValues in the new state, still work without this argument
         chartDataStatus: FormStatus.requestSuccess,
       ));
     } else {
       emit(state.copyWith(
-        // filterSelectingMode: false,
         chartDataStatus: FormStatus.requestFailure,
       ));
     }
   }
 
+  /// 處理參數 check box 被勾選或取消勾選
   void _onCheckBoxValueChanged(
     CheckBoxValueChanged event,
     Emitter<MonitoringChartState> emit,
@@ -246,6 +249,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理所有參數 check box 被勾選或取消勾選
   void _onAllCheckBoxValueChanged(
     AllCheckBoxValueChanged event,
     Emitter<MonitoringChartState> emit,
@@ -293,6 +297,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理多軸顯示 check box 被勾選或取消勾選
   void _onMultipleYAxisCheckBoxValueChanged(
     MultipleYAxisCheckBoxValueChanged event,
     Emitter<MonitoringChartState> emit,
@@ -302,6 +307,7 @@ class MonitoringChartBloc
     ));
   }
 
+  /// 處理單軸數據匯出
   Future<void> _onSingleAxisChartDataExported(
     SingleAxisChartDataExported event,
     Emitter<MonitoringChartState> emit,
@@ -333,6 +339,7 @@ class MonitoringChartBloc
     }
   }
 
+  /// 處理多軸數據匯出
   Future<void> _onMultipleAxisChartDataExported(
     MultipleAxisChartDataExported event,
     Emitter<MonitoringChartState> emit,

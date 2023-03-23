@@ -68,7 +68,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     return super.close();
   }
 
-  /// 處理節點的 data 獲取的事件
+  /// 處理節點的 data 獲取
   Future<void> _onChildDataRequested(
     ChildDataRequested event,
     Emitter<RootState> emit,
@@ -255,7 +255,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  /// 處理刪除節點的事件
+  /// 處理刪除節點
   Future<void> _onNodeDeleted(
     NodeDeleted event,
     Emitter<RootState> emit,
@@ -282,7 +282,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  /// 處理刪除所有節點匯出的事件
+  /// 處理所有節點匯出
   Future<void> _onNodesExported(
     NodesExported event,
     Emitter<RootState> emit,
@@ -400,7 +400,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  /// 處理開啟 data sheet 的事件
+  /// 處理開啟 data sheet
   Future<void> _onDataSheetOpened(
     DataSheetOpened event,
     Emitter<RootState> emit,
@@ -429,7 +429,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  /// 處理書籤的加入與刪除(如果已經在書籤內)的事件
+  /// 處理書籤的加入與刪除(如果已經在書籤內)
   Future<void> _onBookmarksChanged(
     BookmarksChanged event,
     Emitter<RootState> emit,
@@ -487,7 +487,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     }
   }
 
-  /// 處理搜尋節點時導航到目標節點的事件
+  /// 處理搜尋節點時導航到目標節點
   Future<void> _onDeviceNavigateRequested(
     DeviceNavigateRequested event,
     Emitter<RootState> emit,

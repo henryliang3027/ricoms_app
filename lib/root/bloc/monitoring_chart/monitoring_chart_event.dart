@@ -4,8 +4,8 @@ abstract class MonitoringChartEvent extends Equatable {
   const MonitoringChartEvent();
 }
 
-class ThresholdDataRequested extends MonitoringChartEvent {
-  const ThresholdDataRequested();
+class ParameterRequested extends MonitoringChartEvent {
+  const ParameterRequested();
 
   @override
   List<Object?> get props => [];

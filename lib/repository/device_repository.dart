@@ -127,7 +127,7 @@ class DeviceRepository {
     }
   }
 
-  /// call api refresh device 資料, 才能在 getDevicePage 時取得最新資料
+  /// call api refresh device (機器上的)資料, 才能在 getDevicePage 時取得最新資料
   Future<void> refreshDeice({
     required User user,
     required int nodeId,
