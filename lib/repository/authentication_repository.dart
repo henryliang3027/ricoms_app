@@ -33,9 +33,9 @@ class AuthenticationRepository {
   final UserApi userApi = UserApi();
   final _controller = StreamController<AuthenticationReport>();
 
-  // stream 可以產生(yield) AuthenticationReport instance 給 AuthenticationBloc 裡的 StreamSubscription,
-  // yield* 產生一連串的 AuthenticationReport instance
-  // yield or yield* 可以理解成 return, 只是 function 的執行不會馬上結束
+  /// stream 可以產生(yield) AuthenticationReport instance 給 AuthenticationBloc 裡的 StreamSubscription,
+  /// yield* 產生一連串的 AuthenticationReport instance,
+  /// yield or yield* 可以理解成 return, 只是 function 的執行不會馬上結束
   Stream<AuthenticationReport> get report async* {
     User? user = userApi.getActivateUser();
 
@@ -52,7 +52,7 @@ class AuthenticationRepository {
     yield* _controller.stream;
   }
 
-  // 如果已經登入過, 會自動登入
+  /// 如果已經登入過, 會自動登入
   Future<void> autoLogIn({
     required User user,
   }) async {
@@ -131,7 +131,7 @@ class AuthenticationRepository {
           ));
         }
       } else {
-        // username or password has changed on website
+        // username or password has been changed on another mobile app or web
         bool _ = await userApi.deActivateUser(user.id);
         _controller.add(AuthenticationReport(
           status: AuthenticationStatus.unauthenticated,
@@ -152,7 +152,7 @@ class AuthenticationRepository {
     }
   }
 
-  // 初次開啟app, 手動登入, 或自動登入失敗時會改為手動登入
+  /// 初次開啟app, 手動登入, 或自動登入失敗時會改為手動登入
   Future<List<dynamic>> logIn({
     required String ip,
     required String account,
@@ -168,7 +168,7 @@ class AuthenticationRepository {
     String loginPath = '/account/login';
 
     if (account == 'demo' && password == 'demo') {
-      List resultOfUserInfo = await setUserInfo(
+      await setUserInfo(
         ip: ip,
         userId: 'demo',
         account: account,
@@ -182,9 +182,9 @@ class AuthenticationRepository {
           status: AuthenticationStatus.authenticated,
           user: user,
           userFunction: {
-            23: true,
-            5: true,
-            6: true,
+            23: true, // systemlog
+            5: true, // account
+            6: true, // advanced
           },
         ));
 
@@ -201,8 +201,7 @@ class AuthenticationRepository {
       var data = jsonDecode(response.data.toString());
 
       if (data['code'] == '200') {
-        //print(data);
-        // accunt and password are correct
+        // accunt and password are valid
         String userId = data['data']['uid'].toString();
 
         List resultOfUserInfo = await setUserInfo(
@@ -226,6 +225,7 @@ class AuthenticationRepository {
             User? user = userApi.getActivateUser();
 
             if (user != null) {
+              // 確定有存入手機端資料庫
               _controller.add(AuthenticationReport(
                 status: AuthenticationStatus.authenticated,
                 user: user,
@@ -234,24 +234,28 @@ class AuthenticationRepository {
 
               return [true];
             } else {
+              // 沒有存入手機端資料庫
               return [
                 false,
                 CustomErrMsg.getActivatedUserErrMsg,
               ];
             }
           } else {
+            // failed to get user function
             return [
               false,
               resultOfUserFunctions[1],
             ];
           }
         } else {
+          // 使用者資料存入手機端資料庫失敗
           return [
             false,
             resultOfUserInfo[1],
           ];
         }
       } else {
+        // 登入失敗
         return [
           false,
           data['msg'],
@@ -265,12 +269,11 @@ class AuthenticationRepository {
     }
   }
 
-  // 登出, call api, 將登出的資料記錄在 system log
+  /// 登出, call api 將登出的資料記錄在 system log
   Future<void> logOut({
     required User user,
   }) async {
-    // Call the api to let the server record the log out log
-
+    // Call the api to let the server record the user log out
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: dio);
@@ -300,7 +303,7 @@ class AuthenticationRepository {
     ));
   }
 
-  // call api 更改使用者密碼
+  /// call api 更改使用者密碼
   Future<String> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -342,7 +345,7 @@ class AuthenticationRepository {
     }
   }
 
-  // 將使用者的登入資料記錄在手機端
+  /// 將使用者的登入資料記錄在手機端
   Future<List<dynamic>> setUserInfo({
     required String ip,
     required String userId,
@@ -422,12 +425,12 @@ class AuthenticationRepository {
     }
   }
 
-  // system admin : 1
-  // administrator : 2
-  // operator : 3
-  // user : 4
-  // disabled : 5
-  // 檢查使用者帳號權限是否有被更改
+  /// 檢查使用者帳號權限是否有被更改
+  /// system admin : 1,
+  /// administrator : 2,
+  /// operator : 3,
+  /// user : 4,
+  /// disabled : 5,
   Future<List<dynamic>> checkUserPermission() async {
     User? user = userApi.getActivateUser();
     if (user != null) {
@@ -463,13 +466,8 @@ class AuthenticationRepository {
           }
         } else {
           // Failed to get user permission
-
           // if the request hangs for too long, a code 301 will be returned
-          if (data['code'] == 301) {
-            return [false, false];
-          } else {
-            return [true, true];
-          }
+          return [false, false];
         }
       } on DioError catch (_) {
         return [false, CustomErrMsg.connectionFailed];
@@ -479,7 +477,19 @@ class AuthenticationRepository {
     }
   }
 
-  // 取得使用者帳號可以使用的 RICOMS 功能列表
+  /// 取得使用者帳號可以使用的 RICOMS 功能列表
+  /// {"func_id": 2, "name": "dashboard"},
+  /// {"func_id": 4, "name": "history"},
+  /// {"func_id": 23, "name": "systemlog"},
+  /// {"func_id": 5, "name": "account"},
+  /// {"func_id": 6, "name": "advanced"}, 包含很多功能 /account/${user.id}/func/6,
+  /// {"func_id": 41, "name": "about"},
+  /// {"func_id": 42, "name": "contact"},
+  /// {"func_id": 8, "name": "New Group & Device"},
+  /// {"func_id": 9, "name": "Edit Group & Device"},
+  /// {"func_id": 10, "name": "Remove Group & Device"},
+  /// {"func_id": 12, "name": "Device Settings(Read)"},
+  /// {"func_id": 13, "name": "Tree Node List"},
   Future<List<dynamic>> getUserFunctions({
     String? functionId,
   }) async {
