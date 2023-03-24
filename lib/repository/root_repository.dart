@@ -159,13 +159,44 @@ class RootRepository {
         );
 
         return [true, info];
+      } else {
+        return [
+          false,
+          'Get Node Info Error, Error code: ${data['code']}, Msg: ${data['msg']}'
+        ];
+      }
+    } on DioError catch (_) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  /// call api 檢查 edfa or a8k slot 是否存在, 如果不存在則視為被刪除
+  /// 用 get node info api 來判斷
+  Future<List<dynamic>> checkNodeExists(
+      {required User user, required int nodeId}) async {
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String childsPath = '/net/node/' + nodeId.toString();
+
+    try {
+      Response response = await dio.get(childsPath);
+
+      //print(response.data.toString());
+      var data = jsonDecode(response.data.toString());
+
+      if (data['code'] == '200') {
+        return [true, ''];
       } else if (data['code'] == '410') {
         // return 410: no nodes from api. consider as the device has been deleted
         return [false, 'No node'];
       } else {
         return [
           false,
-          'Get Node Info Error, Error code: ${data['code']}, Msg: ${data['msg']}'
+          'Check Node Exists Error, Error code: ${data['code']}, Msg: ${data['msg']}'
         ];
       }
     } on DioError catch (_) {

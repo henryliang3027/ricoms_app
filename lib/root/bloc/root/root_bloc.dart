@@ -99,7 +99,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
       bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
 
-      List<dynamic> resultOfGetNodeInfo = await _rootRepository.getNodeInfo(
+      List<dynamic> resultOfGetNodeInfo = await _rootRepository.checkNodeExists(
         user: _user,
         nodeId: event.parent.id,
       );
