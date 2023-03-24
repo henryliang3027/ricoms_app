@@ -12,9 +12,28 @@ class MasterSlaveServerInfo {
     required Dio dio,
   }) async {
     dio.options.baseUrl = 'http://' + loginIP + '/aci/api';
-    dio.options.connectTimeout = 1000; //10s
+    dio.options.connectTimeout = 1000; //1s
     dio.options.receiveTimeout = 1000;
     String serverIPInformationPath = '/advanced/masterslave';
+
+    /// 如果call api 失敗, 則取得替代 ip (master or slave),
+    String _getSubstituteIP({
+      required String loginIP,
+    }) {
+      if (MasterSlaveServerInfo.onlineServerIP != '') {
+        // 如果 onlineServerIP 不為空字串, 則回傳 onlineServerIP
+        return MasterSlaveServerInfo.onlineServerIP;
+      } else {
+        // 如果 onlineServerIP 為空字串, 則切換ip
+        // 如果登入ip == masterServerIP, 則切換 slaveServerIP
+        // 如果登入ip == slaveServerIP, 則切換 masterServerIP
+        if (loginIP == MasterSlaveServerInfo.masterServerIP) {
+          return MasterSlaveServerInfo.slaveServerIP;
+        } else {
+          return MasterSlaveServerInfo.masterServerIP;
+        }
+      }
+    }
 
     try {
       Response response = await dio.get(
@@ -45,10 +64,14 @@ class MasterSlaveServerInfo {
       } else {
         // 如果api取得資料失敗, 判斷 online server ip 是否不為空
         // 不為空則回傳 onlineServerIP
-        return onlineServerIP != '' ? onlineServerIP : loginIP;
+        return _getSubstituteIP(
+          loginIP: loginIP,
+        );
       }
     } on DioError catch (_) {
-      return MasterSlaveServerInfo.slaveServerIP;
+      return _getSubstituteIP(
+        loginIP: loginIP,
+      );
     }
   }
 }

@@ -21,7 +21,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //set System UI to white (top status bar clock, notitificationicon, battery icon, wifi icon etc.)
+    // set system icons to white
+    // system icons are top status bar clock, notitificationicon, battery icon, wifi icon etc.)
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     Future<void> _showAutoLoginFailedDialog(
@@ -35,7 +36,10 @@ class LoginPage extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              errTitle,
+              getMessageLocalization(
+                msg: errTitle,
+                context: context,
+              ),
               style: const TextStyle(
                 color: CustomStyle.customRed,
               ),
@@ -43,7 +47,12 @@ class LoginPage extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(errmsg),
+                  Text(
+                    getMessageLocalization(
+                      msg: errmsg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -60,14 +69,8 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    final String errTitle = getMessageLocalization(
-      msg: context.read<AuthenticationBloc>().state.msgTitle,
-      context: context,
-    );
-    final String errmsg = getMessageLocalization(
-      msg: context.read<AuthenticationBloc>().state.msg,
-      context: context,
-    );
+    final String errTitle = context.read<AuthenticationBloc>().state.msgTitle;
+    final String errmsg = context.read<AuthenticationBloc>().state.msg;
 
     if (errmsg != '') {
       Future.delayed(
@@ -76,10 +79,8 @@ class LoginPage extends StatelessWidget {
                 context,
                 errTitle,
                 errmsg,
-              )); //dialog should be call after finish building layout
+              ));
     }
-
-    //final mq = MediaQueryData.fromWindow(window);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

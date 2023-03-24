@@ -152,13 +152,15 @@ class AuthenticationRepository {
     }
   }
 
-  /// 初次開啟app, 手動登入, 或自動登入失敗時會改為手動登入
+  /// 手動登入, 或自動登入失敗時會改為手動登入
   Future<List<dynamic>> logIn({
     required String ip,
     required String account,
     required String password,
   }) async {
     Dio dio = Dio();
+
+    /// 如果已經登入, 接著登出再登入時, 因為會取得 online ip, 所以不一定會用 login ip 登入
     String onlineIP =
         await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
 
