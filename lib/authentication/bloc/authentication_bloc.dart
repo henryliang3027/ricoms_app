@@ -39,12 +39,16 @@ class AuthenticationBloc
 
   StreamSubscription<int>? _permissionStatusSubscription;
 
+  /// 關閉所有 Stream
   @override
   Future<void> close() {
+    /// 關閉 StreamSubscription
     if (_permissionStatusSubscription != null) {
       _permissionStatusSubscription!.cancel();
     }
     _authenticationStatusSubscription.cancel();
+
+    /// 關閉 StreamController
     _authenticationRepository.dispose();
     return super.close();
   }

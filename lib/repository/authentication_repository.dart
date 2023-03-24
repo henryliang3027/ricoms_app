@@ -541,5 +541,6 @@ class AuthenticationRepository {
     }
   }
 
+  /// 關閉 StreamController<AuthenticationReport>
   void dispose() => _controller.close();
 }
