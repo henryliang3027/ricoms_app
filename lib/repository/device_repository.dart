@@ -120,7 +120,7 @@ class DeviceRepository {
 
         return data['data'];
       } else {
-        return 'Error errno: ${data['code']}';
+        return 'Get Device Page Error, Error code: ${data['code']}, Msg: ${data['msg']}';
       }
     } on DioError catch (_) {
       return CustomErrMsg.connectionFailed;

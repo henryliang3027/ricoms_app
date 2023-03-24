@@ -163,7 +163,10 @@ class RootRepository {
         // return 410: no nodes from api. consider as the device has been deleted
         return [false, 'No node'];
       } else {
-        return [false, 'Error code: ${data['code']}, Msg: ${data['msg']}'];
+        return [
+          false,
+          'Get Node Info Error, Error code: ${data['code']}, Msg: ${data['msg']}'
+        ];
       }
     } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];

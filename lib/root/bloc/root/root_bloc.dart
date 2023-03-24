@@ -324,7 +324,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
 
     if (resultOfDeviceConnectionStatus[0]) {
       if (state.formStatus.isRequestFailure) {
-        //if current formStatus isRequestFailure, refresh device page content
+        //if isRequestFailure, refresh device page content
         emit(state.copyWith(
           formStatus: FormStatus.requestSuccess,
           submissionStatus: SubmissionStatus.none,
@@ -334,7 +334,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           isDeviceHasBeenDeleted: false,
         ));
       } else {
-        // if device is still online, check if device name has been changed
+        // if device is still online, update device name on the directory
         var resultOfDeviceName = await _rootRepository.getDeviceName(
             user: _user, deviceId: state.directory.last.id);
 
@@ -374,6 +374,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     } else {
       if (resultOfDeviceConnectionStatus[1] == 'offline') {
         if (state.directory.last.type == 5) {
+          // a8k slot offline 時需要顯示的錯誤訊息
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
@@ -382,6 +383,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
                 'No module in the slot ${state.directory.last.slot.toString()}, please try another.',
           ));
         } else {
+          // edfa offline 時需要顯示的錯誤訊息
           emit(state.copyWith(
             formStatus: FormStatus.requestFailure,
             directory: state.directory,
@@ -390,6 +392,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           ));
         }
       } else {
+        // lost connection
         emit(state.copyWith(
           formStatus: FormStatus.requestFailure,
           directory: state.directory,
