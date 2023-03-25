@@ -270,12 +270,18 @@ class DeviceSettingResultBloc
     DeviceParamItemSelected event,
     Emitter<DeviceSettingResultState> emit,
   ) {
+    // 利用項目的 index 換算出 device 的 index
     int indexOfDevice =
         event.index ~/ state.deviceParamItemsCollection.first.length;
+
+    // 利用項目的 index 換算出參數的 index
     int indexOfParam =
         event.index % state.deviceParamItemsCollection.first.length;
 
-    print('list item ${event.index} is in ${indexOfDevice} ${indexOfParam}');
+    // ex: 選取一個項目 index = 8, 每個 device 總共有 3 個參數要設定
+    // 所以是第2個 device (8 ~/ 3 = 2)
+    // 的第2個參數 (8 % 3 = 2)
+    // print('list item ${event.index} is in ${indexOfDevice} ${indexOfParam}');
 
     List<List<bool>> newIsSelectedDevicesCollection = [];
 

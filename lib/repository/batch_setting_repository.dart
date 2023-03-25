@@ -11,6 +11,7 @@ import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class BatchSettingRepository {
+  /// call api 取得模組資料
   Future<dynamic> getModuleData({
     required User user,
   }) async {
@@ -45,6 +46,7 @@ class BatchSettingRepository {
     }
   }
 
+  /// call api 取得 device 資料
   Future<dynamic> getDeviceData({
     required User user,
     required int moduleId,
@@ -82,6 +84,7 @@ class BatchSettingRepository {
     }
   }
 
+  /// call api 取得 device 可設定的 pages
   Future<List<dynamic>> getDeviceBlock({
     required User user,
     required int moduleId,
@@ -127,6 +130,7 @@ class BatchSettingRepository {
     }
   }
 
+  /// call api 藉由 page id 取得該 page 的參數 json data, 用來建立 ui 元件
   Future<List<dynamic>> getDevicePageData({
     required User user,
     required int moduleId,
@@ -157,16 +161,7 @@ class BatchSettingRepository {
     }
   }
 
-  Future<List<dynamic>> testDeviceParameter({
-    required User user,
-    required DeviceParamItem deviceParamItem,
-    required int sec,
-  }) async {
-    print('sec: $sec');
-    await Future.delayed(Duration(seconds: sec));
-    return [true, ''];
-  }
-
+  /// call api 設定 device 參數
   Future<List<dynamic>> setDeviceParameter({
     required User user,
     required DeviceParamItem deviceParamItem,
@@ -207,7 +202,7 @@ class BatchSettingRepository {
         return [false, modifyResult, endTime];
       }
     } on DioError catch (_) {
-      return [false, CustomErrMsg.connectionFailed, 'request timeout'];
+      return [false, CustomErrMsg.connectionFailed, 'Request timeout'];
     }
   }
 }
