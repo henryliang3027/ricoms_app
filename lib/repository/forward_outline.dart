@@ -2,6 +2,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'forward_outline.g.dart';
 
+/// 解析 forward 列表個別項目的 key-value,
+/// fromJson : 從 json data 轉換為 ForwardDetail 的資料結構
+/// toJson : 從 ForwardDetail 轉換為 json data
+/// item 欄位後端有回傳資料, 但沒有使用到
 @JsonSerializable()
 class ForwardOutline {
   @JsonKey(name: 'id')

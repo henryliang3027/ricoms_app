@@ -39,6 +39,7 @@ class TrapForwardRepository {
     }
   }
 
+  /// call api 取得trap forward 內容, 並將 json data 轉換為 ForwardDetail 的資料結構
   Future<List<dynamic>> getForwardDetail({
     required User user,
     required int id,

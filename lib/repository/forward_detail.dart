@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'forward_detail.g.dart';
 
+/// 解析 forward 設定內容 key-value,
+/// fromJson : 從 json data 轉換為 ForwardDetail 的資料結構
+/// toJson : 從 ForwardDetail 轉換為 json data
 @JsonSerializable(explicitToJson: true)
 class ForwardDetail {
   @JsonKey(name: 'id')
@@ -36,6 +39,7 @@ class ForwardDetail {
   Map<String, dynamic> toJson() => _$ForwardDetailToJson(this);
 }
 
+/// 解析 forward 設定內容裡的 'item' 欄位的所有 key-value
 @JsonSerializable(explicitToJson: true)
 class Parameter {
   @JsonKey(name: 'name')
