@@ -32,6 +32,7 @@ class ServerIPSettingBloc
   final User _user;
   final ServerIPSettingRepository _serverIPSettingRepository;
 
+  /// 處理設定資料的獲取
   void _onServerIPSettingRequested(
     ServerIPSettingRequested event,
     Emitter<ServerIPSettingState> emit,
@@ -67,6 +68,7 @@ class ServerIPSettingBloc
     }
   }
 
+  /// 處理主伺服器的 ip 數值更改
   void _onMasterServerIPChanged(
     MasterServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
@@ -80,6 +82,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理副伺服器的 ip 數值更改
   void _onSlaveServerIPChanged(
     SlaveServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
@@ -92,6 +95,8 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理同步緩衝時間的數值更改, 此數值不可手動更改, 只讀取api相對應欄位,
+  /// _SynchronizationIntervalInput 元件的 enable 為 false 等效於一個不可手動輸入的輸入框
   void _onSynchronizationIntervalChanged(
     SynchronizationIntervalChanged event,
     Emitter<ServerIPSettingState> emit,
@@ -103,6 +108,8 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理當前執行伺服器的 ip 數值更改, 此 ip 不可手動更改, 只讀取api相對應欄位
+  /// _OnlineServerIPInput 元件的 enable 為 false 等效於一個不可手動輸入的輸入框
   void _onOnlineServerIPChanged(
     OnlineServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
@@ -116,6 +123,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<ServerIPSettingState> emit,
@@ -127,6 +135,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<ServerIPSettingState> emit,
@@ -138,6 +147,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理設定資料的儲存, 向後端更新資料
   void _onServerIPSettingSaved(
     ServerIPSettingSaved event,
     Emitter<ServerIPSettingState> emit,
