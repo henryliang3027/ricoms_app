@@ -8,7 +8,7 @@ import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class TrapForwardRepository {
-  /// call api 取得trap forward 列表, 並將 json data 轉換為 ForwardOutline 的資料結構
+  /// call api 取得 trap forward 列表, 並將 json data 轉換為 ForwardOutline 的資料結構
   Future<List<dynamic>> getForwardOutlineList({
     required User user,
   }) async {
@@ -40,7 +40,7 @@ class TrapForwardRepository {
     }
   }
 
-  /// call api 取得trap forward 設定內容, 並將 json data 轉換為 ForwardDetail 的資料結構
+  /// call api 取得 trap forward 設定內容, 並將 json data 轉換為 ForwardDetail 的資料結構
   Future<List<dynamic>> getForwardDetail({
     required User user,
     required int id,

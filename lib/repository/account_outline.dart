@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'account_outline.g.dart';
 
+/// 解析帳號列表個別項目的 key-value
+/// /// fromJson : 從 json data 轉換為 AccountOutline 的資料結構
+/// toJson : 從 AccountOutline 轉換為 json data
 @JsonSerializable()
 class AccountOutline {
   @JsonKey(name: 'id')

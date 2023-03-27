@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'batch_setting_device.g.dart';
 
+/// 解析 batch setting 用的 device 資料 key-value,
+/// fromJson : 從 json data 轉換為 BatchSettingDevice 的資料結構
+/// toJson : 從 BatchSettingDevice 轉換為 json data
 @JsonSerializable()
 class BatchSettingDevice {
   @JsonKey(name: 'id')

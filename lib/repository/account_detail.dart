@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'account_detail.g.dart';
 
+/// 解析帳號資料 key-value,
+/// fromJson : 從 json data 轉換為 AccountDetail 的資料結構
+/// toJson : 從 AccountDetail 轉換為 json data
 @JsonSerializable()
 class AccountDetail {
   @JsonKey(name: 'account')
