@@ -283,7 +283,12 @@ class _AccountFloatingActionButton extends StatelessWidget {
                   TrapForwardEditPage.route(
                       isEditing: false,
                       forwardOutline: ForwardOutline(
-                          id: 0, enable: 0, name: '', ip: '', parameter: '')));
+                        id: 0,
+                        enable: 0,
+                        name: '',
+                        ip: '',
+                        parameter: '',
+                      )));
 
               if (isModify != null) {
                 if (isModify) {

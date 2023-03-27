@@ -42,6 +42,7 @@ class TrapAlarmColorBloc
   final User _user;
   final TrapAlarmColorRepository _trapAlarmColorRepository;
 
+  /// 處理 Critical 背景顏色的更改
   void _onCriticalBackgroundColorChanged(
     CriticalBackgroundColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -52,6 +53,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Critical 文字顏色的更改
   void _onCriticalTextColorChanged(
     CriticalTextColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -62,6 +64,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Warning 背景顏色的更改
   void _onWarningBackgroundColorChanged(
     WarningBackgroundColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -72,6 +75,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Warning 文字顏色的更改
   void _onWarningTextColorChanged(
     WarningTextColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -82,6 +86,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Normal 背景顏色的更改
   void _onNormalBackgroundColorChanged(
     NormalBackgroundColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -92,6 +97,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Normal 文字顏色的更改
   void _onNormalTextColorChanged(
     NormalTextColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -102,6 +108,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Notice 背景顏色的更改
   void _onNoticeBackgroundColorChanged(
     NoticeBackgroundColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -112,6 +119,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理 Notice 文字顏色的更改
   void _onNoticeTextColorChanged(
     NoticeTextColorChanged event,
     Emitter<TrapAlarmColorState> emit,
@@ -122,6 +130,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<TrapAlarmColorState> emit,
@@ -132,6 +141,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理編輯模式的關閉, 並恢復目前設定值
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<TrapAlarmColorState> emit,
@@ -150,6 +160,7 @@ class TrapAlarmColorBloc
     ));
   }
 
+  /// 處理顏色設定資料的儲存, 儲存於手機端
   void _onTrapAlarmColorSaved(
     TrapAlarmColorSaved event,
     Emitter<TrapAlarmColorState> emit,
@@ -195,6 +206,7 @@ class TrapAlarmColorBloc
     }
   }
 
+  /// 恢復原廠顏色設定
   void _onTrapAlarmColorReseted(
     TrapAlarmColorReseted event,
     Emitter<TrapAlarmColorState> emit,

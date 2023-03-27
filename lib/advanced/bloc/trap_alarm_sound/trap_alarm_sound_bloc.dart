@@ -35,6 +35,7 @@ class TrapAlarmSoundBloc
   final User _user;
   final TrapAlarmSoundRepository _trapAlarmSoundRepository;
 
+  /// 是否開啟警告聲設定
   void _onTrapAlarmSoundEnabled(
     TrapAlarmSoundEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -45,6 +46,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 是否開啟 Critical 警告聲
   void _onCriticalAlarmSoundEnabled(
     CriticalAlarmSoundEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -55,6 +57,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 是否開啟 Warning 警告聲
   void _onWarningAlarmSoundEnabled(
     WarningAlarmSoundEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -65,6 +68,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 是否開啟 Normal 警告聲
   void _onNormalAlarmSoundEnabled(
     NormalAlarmSoundEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -75,6 +79,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 是否開啟 Notice 警告聲
   void _onNoticeAlarmSoundEnabled(
     NoticeAlarmSoundEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -85,6 +90,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -95,6 +101,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 處理編輯模式的關閉, 並恢復目前設定值
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<TrapAlarmSoundState> emit,
@@ -110,6 +117,7 @@ class TrapAlarmSoundBloc
     ));
   }
 
+  /// 處理警告聲的狀態(開啟/關閉)儲存, 儲存於手機端
   void _onTrapAlarmSoundEnableSaved(
     TrapAlarmSoundEnableSaved event,
     Emitter<TrapAlarmSoundState> emit,

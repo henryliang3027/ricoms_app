@@ -29,6 +29,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
   final User _user;
   final TrapForwardRepository _trapForwardRepository;
 
+  /// 處理 Trap Forward 列表的獲取
   Future<void> _onForwardOutlinesRequested(
     ForwardOutlinesRequested event,
     Emitter<TrapForwardState> emit,
@@ -56,6 +57,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
     }
   }
 
+  /// 處理刪除模式的開啟
   void _onForwardOutlinesDeletedModeEnabled(
     ForwardOutlinesDeletedModeEnabled event,
     Emitter<TrapForwardState> emit,
@@ -69,6 +71,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
     }
   }
 
+  /// 處理刪除模式的關閉
   void _onForwardOutlinesDeletedModeDisabled(
     ForwardOutlinesDeletedModeDisabled event,
     Emitter<TrapForwardState> emit,
@@ -80,6 +83,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
     ));
   }
 
+  /// 處理列表的選取, 刪除模式用
   void _onForwardOutlinesItemToggled(
     ForwardOutlinesItemToggled event,
     Emitter<TrapForwardState> emit,
@@ -99,6 +103,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
     ));
   }
 
+  /// 處理單筆 Trap Forward 項目的刪除
   Future<void> _onForwardOutlineDeleted(
     ForwardOutlineDeleted event,
     Emitter<TrapForwardState> emit,
@@ -145,6 +150,7 @@ class TrapForwardBloc extends Bloc<TrapForwardEvent, TrapForwardState> {
     }
   }
 
+  /// 處理多筆 Trap Forward 項目的刪除
   Future<void> _onMultipleForwardOutlinesDeleted(
     MultipleForwardOutlinesDeleted event,
     Emitter<TrapForwardState> emit,

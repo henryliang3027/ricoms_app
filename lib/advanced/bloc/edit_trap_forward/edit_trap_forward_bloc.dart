@@ -42,6 +42,7 @@ class EditTrapForwardBloc
   final bool _isEditing;
   final ForwardOutline? _forwardOutline;
 
+  /// 處理 Trap Forward 可編輯的資料的獲取
   Future<void> _onForwardDetailRequested(
     ForwardDetailRequested event,
     Emitter<EditTrapForwardState> emit,
@@ -84,6 +85,7 @@ class EditTrapForwardBloc
     } else {}
   }
 
+  /// 處理 Trap Forward 的開啟/關閉
   void _onForwardEnabledChanged(
     ForwardEnabledChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -95,6 +97,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 名稱的變更
   void _onNameChanged(
     NameChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -112,6 +115,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward ip 的變更
   void _onIPChanged(
     IPChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -129,6 +133,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 相關參數的變更
   void _onParametersChanged(
     ParametersChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -159,6 +164,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 設定資料的更新, 向後端更新資料
   Future<void> _onForwardDetailUpdateSubmitted(
     ForwardDetailUpdateSubmitted event,
     Emitter<EditTrapForwardState> emit,
@@ -190,6 +196,7 @@ class EditTrapForwardBloc
     }
   }
 
+  /// 處理 Trap Forward 的新增, 向後端新增資料
   Future<void> _onForwardDetailCreateSubmitted(
     ForwardDetailCreateSubmitted event,
     Emitter<EditTrapForwardState> emit,
