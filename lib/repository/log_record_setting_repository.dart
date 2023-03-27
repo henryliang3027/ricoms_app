@@ -9,6 +9,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class LogRecordSettingRepository {
   LogRecordSettingRepository();
 
+  /// call api 取得'清除記錄相關設定'資料
   Future<List<dynamic>> getLogRecordSetting({required User user}) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -42,19 +43,10 @@ class LogRecordSettingRepository {
     }
   }
 
+  /// call api 更新'清除記錄相關設定'資料, 向後端更新設定資料
   Future<List<dynamic>> setLogRecordSetting({
     required User user,
     required LogRecordSetting logRecordSetting,
-    // required String archivedHistoricalRecordQuanitiy,
-    // required String enableApiLogPreservation,
-    // required String apiLogPreservedQuantity,
-    // required String apiLogPreservedDays,
-    // required String enableUserSystemLogPreservation,
-    // required String userSystemLogPreservedQuantity,
-    // required String userSystemLogPreservedDays,
-    // required String enableDeviceSystemLogPreservation,
-    // required String deviceSystemLogPreservedQuantity,
-    // required String deviceSystemLogPreservedDays,
   }) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -65,19 +57,6 @@ class LogRecordSettingRepository {
     String logRecordSettingApiPath = '/advanced/datasave';
 
     try {
-      // LogRecordSetting logRecordSetting = LogRecordSetting(
-      //   archivedHistoricalRecordQuanitiy: archivedHistoricalRecordQuanitiy,
-      //   enableApiLogPreservation: enableApiLogPreservation,
-      //   apiLogPreservedQuantity: apiLogPreservedQuantity,
-      //   apiLogPreservedDays: apiLogPreservedDays,
-      //   enableUserSystemLogPreservation: enableUserSystemLogPreservation,
-      //   userSystemLogPreservedQuantity: userSystemLogPreservedQuantity,
-      //   userSystemLogPreservedDays: userSystemLogPreservedDays,
-      //   enableDeviceSystemLogPreservation: enableDeviceSystemLogPreservation,
-      //   deviceSystemLogPreservedQuantity: deviceSystemLogPreservedQuantity,
-      //   deviceSystemLogPreservedDays: deviceSystemLogPreservedDays,
-      // );
-
       Map<String, dynamic> requestData = logRecordSetting.toJson();
       requestData['uid'] = user.id;
 
@@ -101,29 +80,3 @@ class LogRecordSettingRepository {
     }
   }
 }
-
-// class LogRecordSetting {
-//   const LogRecordSetting({
-//     required this.archivedHistoricalRecordQuanitiy,
-//     required this.enableApiLogPreservation,
-//     required this.apiLogPreservedQuantity,
-//     required this.apiLogPreservedDays,
-//     required this.enableUserSystemLogPreservation,
-//     required this.userSystemLogPreservedQuantity,
-//     required this.userSystemLogPreservedDays,
-//     required this.enableDeviceSystemLogPreservation,
-//     required this.deviceSystemLogPreservedQuantity,
-//     required this.deviceSystemLogPreservedDays,
-//   });
-
-//   final String archivedHistoricalRecordQuanitiy;
-//   final String enableApiLogPreservation;
-//   final String apiLogPreservedQuantity;
-//   final String apiLogPreservedDays;
-//   final String enableUserSystemLogPreservation;
-//   final String userSystemLogPreservedQuantity;
-//   final String userSystemLogPreservedDays;
-//   final String enableDeviceSystemLogPreservation;
-//   final String deviceSystemLogPreservedQuantity;
-//   final String deviceSystemLogPreservedDays;
-// }
