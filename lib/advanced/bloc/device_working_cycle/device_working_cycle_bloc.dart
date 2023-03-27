@@ -29,6 +29,7 @@ class DeviceWorkingCycleBloc
   final User _user;
   final DeviceWorkingCycleRepository _deviceWorkingCycleRepository;
 
+  /// 處理裝置輪詢週期的資料的獲取
   void _onDeviceWorkingCycleRequested(
     DeviceWorkingCycleRequested event,
     Emitter<DeviceWorkingCycleState> emit,
@@ -55,6 +56,7 @@ class DeviceWorkingCycleBloc
     emit(state.copyWith());
   }
 
+  /// 處理裝置輪詢週期的元件的數值儲存, 向後端更新設定值
   void _onDeviceWorkingCycleSaved(
     DeviceWorkingCycleSaved event,
     Emitter<DeviceWorkingCycleState> emit,
@@ -80,6 +82,7 @@ class DeviceWorkingCycleBloc
     }
   }
 
+  /// 處理裝置輪詢週期的元件的數值更改
   void _onDeviceWorkingCycleChanged(
     DeviceWorkingCycleChanged event,
     Emitter<DeviceWorkingCycleState> emit,
@@ -90,6 +93,7 @@ class DeviceWorkingCycleBloc
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<DeviceWorkingCycleState> emit,
@@ -100,6 +104,7 @@ class DeviceWorkingCycleBloc
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<DeviceWorkingCycleState> emit,

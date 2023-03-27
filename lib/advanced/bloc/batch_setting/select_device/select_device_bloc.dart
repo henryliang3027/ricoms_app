@@ -32,6 +32,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
   final BatchSettingRepository _batchSettingRepository;
   final List<BatchSettingDevice> _allDevices = [];
 
+  /// 處理 device 資料列表的獲取
   void _onDeviceDataRequested(
     DeviceDataRequested event,
     Emitter<SelectDeviceState> emit,
@@ -67,6 +68,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     }
   }
 
+  /// 處理關鍵字的搜尋
   void _onKeywordSearched(
     KeywordSearched event,
     Emitter<SelectDeviceState> emit,
@@ -101,6 +103,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     }
   }
 
+  /// 處理關鍵字的清除
   void _onKeywordCleared(
     KeywordCleared event,
     Emitter<SelectDeviceState> emit,
@@ -111,6 +114,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     ));
   }
 
+  /// 處理 device 列表的選取
   void _onDeviceItemToggled(
     DeviceItemToggled event,
     Emitter<SelectDeviceState> emit,
@@ -125,6 +129,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     ));
   }
 
+  /// 處理 device 列表的全部選取
   void _onAllDeviceItemsSelected(
     AllDeviceItemsSelected event,
     Emitter<SelectDeviceState> emit,
@@ -142,6 +147,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     ));
   }
 
+  /// 處理 device 列表的全部取消選取
   void _onAllDeviceItemsDeselected(
     AllDeviceItemsDeselected event,
     Emitter<SelectDeviceState> emit,

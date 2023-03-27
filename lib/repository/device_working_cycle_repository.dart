@@ -6,6 +6,7 @@ import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class DeviceWorkingCycleRepository {
+  // call api 取得裝置輪詢週期資料與目前輪詢週期設定
   Future<List<dynamic>> getWorkingCycleList({required User user}) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -51,6 +52,7 @@ class DeviceWorkingCycleRepository {
     }
   }
 
+  // call api 設定裝置輪詢週期
   Future<List<dynamic>> setWorkingCycle({
     required User user,
     required String index,
@@ -89,6 +91,7 @@ class DeviceWorkingCycleRepository {
   }
 }
 
+// 儲存裝置輪詢週期設定的名稱與 index
 class DeviceWorkingCycle {
   const DeviceWorkingCycle({
     required this.index,

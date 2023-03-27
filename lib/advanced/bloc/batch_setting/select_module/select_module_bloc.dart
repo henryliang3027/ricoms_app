@@ -26,6 +26,7 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
   final BatchSettingRepository _batchSettingRepository;
   final List<Module> _allModules = [];
 
+  /// 處理模組資料列表的獲取
   void _onModulleDataRequested(
     ModuleDataRequested event,
     Emitter<SelectModuleState> emit,
@@ -53,6 +54,7 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
     }
   }
 
+  /// 處理關鍵字的搜尋
   void _onKeywordSearched(
     KeywordSearched event,
     Emitter<SelectModuleState> emit,
@@ -77,6 +79,7 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
     }
   }
 
+  /// 處理關鍵字的清除
   void _onKeywordCleared(
     KeywordCleared event,
     Emitter<SelectModuleState> emit,

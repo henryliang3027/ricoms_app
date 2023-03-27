@@ -10,6 +10,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class DefaultSettingRepository {
   DefaultSettingRepository();
 
+  /// call api 取得原廠預設值
   Future<List<dynamic>> getDefaultSetting({required User user}) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -43,6 +44,7 @@ class DefaultSettingRepository {
   }
 }
 
+/// call api 取得原廠預設值
 class DefaultSettingItem extends Equatable {
   const DefaultSettingItem({
     required this.defaultValue,
@@ -55,8 +57,8 @@ class DefaultSettingItem extends Equatable {
   final bool isSelected;
   final String defaultValue;
   final String currentValue;
-  final String defaultIdx; // valid only for device working cycle
-  final String currentIdx; // valid only for device working cycle
+  final String defaultIdx; // 只給裝置輪詢週期紀錄 index 用 (目前設定值)
+  final String currentIdx; // 只給裝置輪詢週期紀錄 index 用 (原廠設定值)
 
   @override
   List<Object?> get props => [

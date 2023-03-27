@@ -30,7 +30,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
   final int _moduleId;
   final BatchSettingRepository _batchSettingRepository;
 
-  /// 轉換 json data 為 ui 元件所需的資料
+  /// 將 json data 轉換為 ui 元件所需的資料
   Future<List<dynamic>> _getControllerData({
     required int pageId,
     required List<List<ControllerProperty>> controllerPropertiesCollection,
