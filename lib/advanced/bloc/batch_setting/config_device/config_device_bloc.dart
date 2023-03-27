@@ -30,6 +30,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
   final int _moduleId;
   final BatchSettingRepository _batchSettingRepository;
 
+  /// 轉換 json data 為 ui 元件所需的資料
   Future<List<dynamic>> _getControllerData({
     required int pageId,
     required List<List<ControllerProperty>> controllerPropertiesCollection,
@@ -60,6 +61,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
     }
   }
 
+  /// 處理 device 參數設定的頁面建立
   void _onDeviceSettingDataRequested(
     DeviceSettingDataRequested event,
     Emitter<ConfigDeviceState> emit,
@@ -69,6 +71,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
       status: FormStatus.requestInProgress,
     ));
 
+    // 取得所有分頁
     List<dynamic> resultOfGetDeviceBlocks =
         await _batchSettingRepository.getDeviceBlock(
       user: _user,
@@ -84,6 +87,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
       Map<int, Map<String, dynamic>> controllerInitialValuesMap = {};
       Map<int, bool> isControllerContainValue = {};
 
+      // 取得分頁的所有參數設定 json data
       for (DeviceBlock deviceBlock in deviceBlocks) {
         List<List<ControllerProperty>> controllerPropertiesCollection = [];
         Map<String, dynamic> controllerValues = {};
@@ -127,6 +131,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
     }
   }
 
+  /// 處理 ui 元件數值的改變
   void _onControllerValueChanged(
     ControllerValueChanged event,
     Emitter<ConfigDeviceState> emit,
@@ -143,6 +148,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
     // the below modification would not consider as different object
     // controllerValuesMap.addAll(state.controllerValuesMap);
     // controllerValuesMap[event.pageId]![event.oid] = event.value;
+
     // Use deep copy instead
     for (int pageId in state.controllerValuesMap.keys) {
       controllerValuesMap[pageId] = {};
@@ -166,6 +172,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
     ));
   }
 
+  /// 處理 ui 元件數值的清除
   void _onControllerValueCleared(
     ControllerValueCleared event,
     Emitter<ConfigDeviceState> emit,
@@ -212,6 +219,7 @@ class ConfigDeviceBloc extends Bloc<ConfigDeviceEvent, ConfigDeviceState> {
     ));
   }
 
+  /// 處理 ui 元件的數值更新
   void _updateControllerValuesMap({
     required Map<int, Map<String, dynamic>> controllerValuesMap,
     required int pageId,
