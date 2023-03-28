@@ -111,7 +111,7 @@ class User {
   final List<bool> alarmSoundEnableValues;
 }
 
-/// 定義手機端資料庫資料表 書籤的暫存資料
+/// 定義手機端資料庫資料表 書籤用的 device 簡易描述資料
 @HiveType(typeId: 2)
 class DeviceMeta {
   const DeviceMeta({

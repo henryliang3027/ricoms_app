@@ -11,7 +11,7 @@ class BookmarksRepository {
   final Dio _dio = Dio();
   final UserApi userApi = UserApi();
 
-  /// 從手機端資料庫取得所有書籤的列表, DeviceMeta 結構
+  /// 從手機端資料庫取得所有書籤用的 device 簡易描述列表, DeviceMeta 結構
   List<DeviceMeta> getDeviceMetas({
     required User user,
   }) {
