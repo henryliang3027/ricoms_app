@@ -331,6 +331,7 @@ class SingleYAxisLineChartPainter extends CustomPainter {
     required double yStep,
   }) {
     for (Marker marker in markers) {
+      print('${marker.prefix} : ${marker.value}');
       Paint markerPaint = Paint()
         ..color = marker.color
         ..strokeWidth = 1.0
@@ -351,8 +352,7 @@ class SingleYAxisLineChartPainter extends CustomPainter {
           Offset(size.width * scale + leftOffset - rightOffset, scaleY),
           markerPaint);
 
-      if (marker.prefix.contains('MajorHI') ||
-          marker.prefix.contains('MinorLO')) {
+      if (marker.prefix == 'MajorHI' || marker.prefix == 'MinorLO') {
         Rect rect1 = Rect.fromLTWH(
           size.width + leftOffset - rightOffset - _markerTextPainter.width,
           scaleY - _markerTextPainter.height,

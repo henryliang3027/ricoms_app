@@ -79,7 +79,7 @@ class SingleAxisChartForm extends StatelessWidget {
                   majorH: majorH,
                   majorL: majorL,
                   minorH: minorH,
-                  minorL: majorL,
+                  minorL: minorL,
                 ),
                 _ExportButton(
                   nodeName: nodeName,
