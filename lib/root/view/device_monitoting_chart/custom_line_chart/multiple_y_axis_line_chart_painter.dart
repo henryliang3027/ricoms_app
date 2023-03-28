@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/line_series.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/marker.dart';
 

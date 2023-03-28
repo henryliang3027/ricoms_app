@@ -4,11 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:excel/excel.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
-import 'package:ricoms_app/utils/storage_permission.dart';
 
 class SystemLogRepository {
   SystemLogRepository();

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/dashboard/bloc/dashboard_bloc.dart';
 import 'package:ricoms_app/dashboard/view/dashboard_form.dart';
-import 'package:ricoms_app/repository/dashboard_repository.dart';
+import 'package:ricoms_app/repository/dashboard_repository/dashboard_repository.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({

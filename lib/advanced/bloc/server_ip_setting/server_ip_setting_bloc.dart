@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/server_ip_setting.dart';
-import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/models/custom_input.dart';

@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/default_setting.dart';
-import 'package:ricoms_app/repository/default_setting_repository.dart';
-import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
-import 'package:ricoms_app/repository/log_record_setting.dart';
-import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/device_working_cycle_repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 

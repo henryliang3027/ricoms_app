@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/server_ip_setting/server_ip_setting_bloc.dart';
 import 'package:ricoms_app/advanced/view/server_ip_setting_view/server_ip_setting_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting_repository.dart';
 
 class ServerIPSettingPage extends StatelessWidget {
   const ServerIPSettingPage({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_device.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 part 'device_setting_result_event.dart';

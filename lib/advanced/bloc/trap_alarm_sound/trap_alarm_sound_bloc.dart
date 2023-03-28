@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_alarm_sound_repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/alarm_sound_config.dart';

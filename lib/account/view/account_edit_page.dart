@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/account/bloc/edit_account/edit_account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/account_outline.dart';
-import 'package:ricoms_app/repository/account_repository.dart';
+import 'package:ricoms_app/repository/account_repository/account_outline.dart';
+import 'package:ricoms_app/repository/account_repository/account_repository.dart';
 
 class AccountEditPage extends StatelessWidget {
   const AccountEditPage({

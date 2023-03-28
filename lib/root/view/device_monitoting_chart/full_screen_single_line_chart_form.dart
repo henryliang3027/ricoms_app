@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/custom_single_line_chart.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/utils/common_style.dart';

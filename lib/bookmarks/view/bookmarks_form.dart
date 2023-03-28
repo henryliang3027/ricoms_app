@@ -6,7 +6,7 @@ import 'package:ricoms_app/bookmarks/bloc/bookmarks_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/bookmarks_repository.dart';
+import 'package:ricoms_app/repository/bookmarks_repository/bookmarks_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';

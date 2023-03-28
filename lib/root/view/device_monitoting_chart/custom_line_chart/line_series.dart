@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 
 class LineSeries {
   const LineSeries({

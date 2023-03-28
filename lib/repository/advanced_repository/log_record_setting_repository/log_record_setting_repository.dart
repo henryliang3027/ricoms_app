@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:ricoms_app/repository/log_record_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';

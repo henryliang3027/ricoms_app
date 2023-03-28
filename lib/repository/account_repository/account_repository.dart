@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:ricoms_app/repository/account_detail.dart';
-import 'package:ricoms_app/repository/account_outline.dart';
+import 'package:ricoms_app/repository/account_repository/account_detail.dart';
+import 'package:ricoms_app/repository/account_repository/account_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';

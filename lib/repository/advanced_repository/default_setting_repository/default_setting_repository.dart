@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/default_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting.dart';
+
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';

@@ -1,4 +1,4 @@
-import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:ricoms_app/login/models/username.dart';
 import 'package:ricoms_app/login/models/password.dart';

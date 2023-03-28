@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/trap_alarm_color/trap_alarm_color_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_alarm_color_view/trap_alarm_color_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/trap_alarm_color_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_alarm_color_repository/trap_alarm_color_repository.dart';
 
 class TrapAlarmColorPage extends StatelessWidget {
   const TrapAlarmColorPage({Key? key}) : super(key: key);

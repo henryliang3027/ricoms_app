@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:ricoms_app/repository/forward_detail.dart';
-import 'package:ricoms_app/repository/forward_outline.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_detail.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';

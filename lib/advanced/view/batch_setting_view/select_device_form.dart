@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/select_device/select_device_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/config_device_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_device.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';

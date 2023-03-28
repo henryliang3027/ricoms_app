@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:ricoms_app/repository/server_ip_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/login/bloc/login_bloc.dart';
 import 'package:ricoms_app/login/view/login_form.dart';
-import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/authentication_repository/authentication_repository.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 

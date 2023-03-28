@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/config_device/config_device_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/config_device_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_device.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_repository.dart';
 
 class ConfigDevicePage extends StatelessWidget {
   const ConfigDevicePage({

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/real_time_alarm/bloc/real_time_alarm_bloc.dart';
 import 'package:ricoms_app/real_time_alarm/view/real_time_alarm_form.dart';
-import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
+import 'package:ricoms_app/repository/real_time_alarm_repository/real_time_alarm_repository.dart';
 
 class RealTimeAlarmPage extends StatelessWidget {
   const RealTimeAlarmPage({

@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:ricoms_app/repository/forward_detail.dart';
-import 'package:ricoms_app/repository/forward_outline.dart';
-import 'package:ricoms_app/repository/trap_forward_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_detail.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_outline.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/models/custom_input.dart';

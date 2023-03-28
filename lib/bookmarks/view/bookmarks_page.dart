@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/bloc/bookmarks_bloc.dart';
 import 'package:ricoms_app/bookmarks/view/bookmarks_form.dart';
-import 'package:ricoms_app/repository/bookmarks_repository.dart';
+import 'package:ricoms_app/repository/bookmarks_repository/bookmarks_repository.dart';
 
 class BookmarksPage extends StatelessWidget {
   const BookmarksPage({
