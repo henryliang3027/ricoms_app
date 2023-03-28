@@ -6,6 +6,7 @@ import 'package:ricoms_app/repository/system_log_repository/system_log_repositor
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/system_log/model/filter_critria.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 
 part 'system_log_event.dart';
 part 'system_log_state.dart';
@@ -123,7 +124,7 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
       logExportStatus: FormStatus.none,
     ));
 
-    List<dynamic> result = await _systemLogRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

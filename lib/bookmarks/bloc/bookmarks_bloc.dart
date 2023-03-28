@@ -5,6 +5,7 @@ import 'package:ricoms_app/repository/bookmarks_repository/bookmarks_repository.
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'bookmarks_event.dart';
@@ -100,12 +101,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     MoreBookmarksRequested event,
     Emitter<BookmarksState> emit,
   ) async {
-    // emit(state.copyWith(
-    //   loadMoreDevicesStatus: FormStatus.requestInProgress,
-    //   deviceDeleteStatus: FormStatus.none,
-    //   targetDeviceStatus: FormStatus.none,
-    // ));
-
     List<dynamic> result = await _bookmarksRepository.getBookmarks(
         user: _user,
         deviceMetas: _deviceMetas,
@@ -193,27 +188,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         selectedDevices: const [],
         isDeleteMode: false,
       ));
-
-      // List<dynamic> resultOfRetrieve =
-      //     await _bookmarksRepository.getBookmarks(user: _user);
-
-      // if (resultOfRetrieve[0]) {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestSuccess,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     devices: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // } else {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestFailure,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     requestErrorMsg: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
@@ -256,27 +230,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         selectedDevices: const [],
         isDeleteMode: false,
       ));
-
-      // List<dynamic> resultOfRetrieve =
-      //     await _bookmarksRepository.getBookmarks(user: _user);
-
-      // if (resultOfRetrieve[0]) {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestSuccess,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     devices: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // } else {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestFailure,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     requestErrorMsg: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
@@ -321,7 +274,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       isDeleteMode: false,
     ));
 
-    List<dynamic> result = await _bookmarksRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

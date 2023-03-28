@@ -9,6 +9,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class ServerIPSettingRepository {
   ServerIPSettingRepository();
 
+  /// call api 取得 '伺服器 ip 設定'資料
   Future<List<dynamic>> getServerIPSetting({
     required User user,
   }) async {
@@ -41,6 +42,7 @@ class ServerIPSettingRepository {
     }
   }
 
+  /// call api 更新 '伺服器 ip 設定'資料
   Future<List<dynamic>> setServerIPSetting({
     required User user,
     required String masterServerIP,

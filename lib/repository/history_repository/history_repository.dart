@@ -13,9 +13,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class HistoryRepository {
   HistoryRepository();
 
-  //final Dio _dio = Dio();
-
-  //current: 1 = show open issue only, 0 = show all alarms with given datetime
+  /// call api 依據條件取得歷史紀錄清單
   Future<List<dynamic>> getHistoryByFilter({
     required User user,
     String startDate = '',
@@ -34,6 +32,9 @@ class HistoryRepository {
     dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
+
+    // current = 1 : show open issue only,
+    // current = 0 : show all alarms with given datetime
     String historyApiPath =
         '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
 
@@ -108,6 +109,7 @@ class HistoryRepository {
     }
   }
 
+  /// call api 依據條件取得更多歷史紀錄清單, 一次最多獲取 1000 筆, next = top：上一千筆 next = button：下一千筆
   Future<List<dynamic>> getMoreHistoryByFilter({
     required User user,
     String startDate = '',
@@ -196,75 +198,7 @@ class HistoryRepository {
     }
   }
 
-  Future<List<dynamic>> getDeviceStatus({
-    required User user,
-    required List<int> path,
-  }) async {
-    Dio dio = Dio();
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: dio);
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-    String realTimeAlarmApiPath = '/device/' + path[0].toString();
-
-    try {
-      Response response = await dio.get(
-        realTimeAlarmApiPath,
-      );
-
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        List<int> nodes = path.skip(1).toList();
-        List<dynamic> verifiedResilt =
-            await _checkPath(user: user, path: nodes);
-        if (verifiedResilt[0]) {
-          return [true, ''];
-        } else {
-          return verifiedResilt;
-        }
-      } else {
-        return [false, 'The device does not respond!'];
-      }
-    } on DioError catch (_) {
-      return [false, CustomErrMsg.connectionFailed];
-    }
-  }
-
-  Future<List<dynamic>> _checkPath({
-    required User user,
-    required List<int> path,
-  }) async {
-    Dio dio = Dio();
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: dio);
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-
-    for (int nodeId in path) {
-      String childsPath = '/net/node/' + nodeId.toString();
-
-      try {
-        Response response = await dio.get(childsPath);
-
-        //print(response.data.toString());
-        var data = jsonDecode(response.data.toString());
-
-        if (data['code'] == '200') {
-          continue;
-        } else {
-          return [false, 'No node'];
-        }
-      } on DioError catch (_) {
-        return [false, CustomErrMsg.connectionFailed];
-      }
-    }
-
-    return [true, ''];
-  }
-
+  /// 匯出基於目前條件下的歷史紀錄清單
   Future<List> exportHistory({
     required User user,
     required List<Record> records,
@@ -353,6 +287,7 @@ class HistoryRepository {
   }
 }
 
+/// 儲存個別的歷史紀錄項目的資料結構
 class Record {
   const Record({
     required this.id, //device id

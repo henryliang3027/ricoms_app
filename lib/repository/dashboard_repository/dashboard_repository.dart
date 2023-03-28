@@ -10,6 +10,7 @@ class DashboardRepository {
 
   final Dio _dio = Dio();
 
+  /// call api 取得裝置狀態統計數據
   Future<List<dynamic>> getDeviceStatusStatistics({
     required User user,
   }) async {
@@ -20,6 +21,7 @@ class DashboardRepository {
     _dio.options.receiveTimeout = 10000;
     String deviceStatusStatisticApiPath = '/statistics/device';
 
+    // 如果是 demo 帳號, 全部為 0
     if (user.id == 'demo') {
       List deviceStatistics = [
         0,
@@ -61,6 +63,7 @@ class DashboardRepository {
     }
   }
 
+  /// call api 取得 Alarm 統計數據
   Future<List<dynamic>> getAlarmSeverityStatistics({
     required User user,
     required int type,

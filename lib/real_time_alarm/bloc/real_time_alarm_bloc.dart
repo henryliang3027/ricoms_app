@@ -314,7 +314,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
       targetDeviceStatus: FormStatus.requestInProgress,
     ));
 
-    List<dynamic> result = await _realTimeAlarmRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

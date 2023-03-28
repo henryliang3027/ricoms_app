@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'server_ip_setting.g.dart';
 
+/// 解析'伺服器 ip 設定'資料 key-value,
+/// fromJson : 從 json data 轉換為 ServerIPSetting 的資料結構
+/// toJson : 從 ServerIPSetting 轉換為 json data
 @JsonSerializable()
 class ServerIPSetting {
   @JsonKey(name: 'server_master')

@@ -11,12 +11,14 @@ class BookmarksRepository {
   final Dio _dio = Dio();
   final UserApi userApi = UserApi();
 
+  /// 從手機端資料庫取得所有書籤的列表, DeviceMeta 結構
   List<DeviceMeta> getDeviceMetas({
     required User user,
   }) {
     return userApi.getBookmarksByUserId(user.id);
   }
 
+  /// 藉由 DeviceMeta 結構的書籤列表去向後端取得每個 device 的完整內容
   Future<List<dynamic>> getBookmarks({
     required User user,
     required List<DeviceMeta> deviceMetas,
@@ -34,8 +36,8 @@ class BookmarksRepository {
     int currentIndex = startIndex;
     int deletedCount = 0;
 
+    /// 取得最多10筆 device 的完整內容, 已被刪除的忽略不計算筆數
     while (currentIndex < deviceMetas.length && count < maxCount) {
-      // print('count: $count, currentIndex: $currentIndex');
       DeviceMeta deviceMeta = deviceMetas[currentIndex];
       String deviceStatusApiPath = '/device/${deviceMeta.id.toString()}';
 
@@ -81,6 +83,7 @@ class BookmarksRepository {
             count = count + 1;
           }
         } else {
+          // 已被刪除的 device, status 設為 -99
           Device device = Device(
             id: deviceMeta.id,
             name: deviceMeta.name,
@@ -101,12 +104,14 @@ class BookmarksRepository {
       }
     }
     if (devices.length == deletedCount) {
+      // 如果在書籤內已經被刪除的 device 數量等於書籤內全部裝置數量, 則視為無書籤資料
       return [false, 'There are no records to show'];
     } else {
       return [true, devices];
     }
   }
 
+  /// 刪除書籤中的 device
   Future<List<dynamic>> deleteDevices({
     required User user,
     required List<Device> devices,
@@ -128,84 +133,9 @@ class BookmarksRepository {
       return [false, 'Your account id does not exist.'];
     }
   }
-
-  Future<List<dynamic>> getDeviceStatus({
-    required User user,
-    required List<int> path,
-  }) async {
-    Dio dio = Dio();
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: _dio);
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-    String realTimeAlarmApiPath = '/device/' + path[0].toString();
-
-    try {
-      Response response = await dio.get(
-        realTimeAlarmApiPath,
-      );
-
-      var data = jsonDecode(response.data.toString());
-
-      if (data['code'] == '200') {
-        if (data['data'][0]['status'] == 0 || data['data'][0]['status'] == 4) {
-          // 0: unknown
-          // 4: offline
-          // 4011 HenryE data['code'] = 200 but 2866 ED5229GP-64@29.209 data['code'] = 404, both device status = 0
-          return [false, 'The device does not respond!'];
-        } else {
-          List<int> nodes = path.skip(1).toList();
-          List<dynamic> verifiedResilt =
-              await _checkPath(user: user, path: nodes);
-          if (verifiedResilt[0]) {
-            return [true, ''];
-          } else {
-            return verifiedResilt;
-          }
-        }
-      } else {
-        return [false, 'The device does not respond!'];
-      }
-    } on DioError catch (_) {
-      return [false, CustomErrMsg.connectionFailed];
-    }
-  }
-
-  Future<List<dynamic>> _checkPath({
-    required User user,
-    required List<int> path,
-  }) async {
-    Dio dio = Dio();
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: _dio);
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-
-    for (int nodeId in path) {
-      String childsPath = '/net/node/' + nodeId.toString();
-
-      try {
-        Response response = await dio.get(childsPath);
-
-        //print(response.data.toString());
-        var data = jsonDecode(response.data.toString());
-
-        if (data['code'] == '200') {
-          continue;
-        } else {
-          return [false, 'No node'];
-        }
-      } on DioError catch (_) {
-        return [false, CustomErrMsg.connectionFailed];
-      }
-    }
-
-    return [true, ''];
-  }
 }
 
+/// 儲存書籤內個別 device 的資料
 class Device {
   const Device({
     required this.id,
@@ -241,7 +171,6 @@ class Device {
   final String series;
   final int status;
 }
-
 
 // e.g.
 // "name": "A8KQRR-AGC-HG",

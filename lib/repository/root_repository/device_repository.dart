@@ -480,7 +480,7 @@ class DeviceRepository {
     return [true, chartDateValues];
   }
 
-  ///匯出 的line chart 用的數據
+  ///匯出單軸 line chart 數據
   Future<List<dynamic>> exportSingleAxisChartData({
     required String nodeName,
     required String parameterName,
@@ -549,6 +549,7 @@ class DeviceRepository {
     }
   }
 
+  ///匯出多軸 line chart 數據
   Future<List<dynamic>> exportMultipleAxisChartData({
     required String nodeName,
     required Map<String, CheckBoxValue> checkBoxValues,

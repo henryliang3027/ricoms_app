@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_function.g.dart';
 
+/// 解析使用者可以使用的 RISOMS 功能 key-value,
+/// fromJson : 從 json data 轉換為 UserFunction 的資料結構
+/// toJson : 從 UserFunction 轉換為 json data
 @JsonSerializable()
 class UserFunction {
   @JsonKey(name: 'func_id')
