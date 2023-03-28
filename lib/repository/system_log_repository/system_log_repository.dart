@@ -11,6 +11,7 @@ import 'package:ricoms_app/utils/master_slave_info.dart';
 class SystemLogRepository {
   SystemLogRepository();
 
+  /// call api 依據條件取得系統紀錄
   Future<List<dynamic>> getLogByFilter({
     required User user,
     String startDate = '',
@@ -94,6 +95,7 @@ class SystemLogRepository {
     }
   }
 
+  /// call api 依據條件取得更多系統紀錄, 一次最多獲取 1000 筆, next = top：上一千筆 next = button：下一千筆
   Future<List<dynamic>> getMoreLogsByFilter({
     required User user,
     String startDate = '',
@@ -170,6 +172,7 @@ class SystemLogRepository {
     }
   }
 
+  /// 匯出目前條件下的系統記錄
   Future<List> exportLogs({
     required User user,
     required List<Log> logs,
@@ -262,6 +265,7 @@ class SystemLogRepository {
   }
 }
 
+/// 儲存個別的系統紀錄項目的資料結構
 class Log {
   const Log({
     required this.id, //log id

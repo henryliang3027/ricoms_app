@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 part 'user.g.dart';
 
+/// 定義手機端資料庫資料表 使用者的資訊
 @HiveType(typeId: 1)
 class User {
   const User(
@@ -110,6 +111,7 @@ class User {
   final List<bool> alarmSoundEnableValues;
 }
 
+/// 定義手機端資料庫資料表 書籤的暫存資料
 @HiveType(typeId: 2)
 class DeviceMeta {
   const DeviceMeta({
