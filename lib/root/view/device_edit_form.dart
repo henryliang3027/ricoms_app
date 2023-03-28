@@ -276,14 +276,11 @@ class _NameInput extends StatelessWidget {
           padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: SizedBox(
             width: 230,
-            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: TextFormField(
               key: const Key('deviceEditForm_nameInput_textField'),
-              // initialValue: state.isEditing && state.currentNode!.info != null
-              //     ? state.currentNode!.name
-              //     : null,
               controller: nameController,
               textInputAction: TextInputAction.done,
+              maxLength: 64,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -301,6 +298,7 @@ class _NameInput extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                counterText: '',
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.name.invalid

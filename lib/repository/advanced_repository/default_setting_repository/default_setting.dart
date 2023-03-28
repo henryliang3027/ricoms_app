@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'default_setting.g.dart';
 
+/// 解析原廠設定資料 key-value,
+/// fromJson : 從 json data 轉換為 DefaultSetting 的資料結構
+/// toJson : 從 DefaultSetting 轉換為 json data
 @JsonSerializable()
 class DefaultSetting {
   @JsonKey(name: 'rotation_index')

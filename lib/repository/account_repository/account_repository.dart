@@ -11,6 +11,7 @@ class AccountRepository {
 
   final Dio _dio = Dio();
 
+  /// call api 取得帳號列表
   Future<List<dynamic>> getAccountOutlineList({
     required User user,
     String? keyword,
@@ -22,6 +23,7 @@ class AccountRepository {
     _dio.options.receiveTimeout = 10000;
     String accountListApiPath = '/accounts';
 
+    // demo 帳號 無資料
     if (user.id == 'demo') {
       return [false, 'There are no records to show'];
     }
@@ -77,6 +79,7 @@ class AccountRepository {
     }
   }
 
+  /// call api 藉由 account id 取得特定帳號內容
   Future<List<dynamic>> getAccountDetail({
     required User user,
     required int accountId,
@@ -108,6 +111,7 @@ class AccountRepository {
     }
   }
 
+  /// call api 新增帳號
   Future<List<dynamic>> createAccount({
     required User user,
     required String account,
@@ -161,6 +165,7 @@ class AccountRepository {
     }
   }
 
+  /// call api 更新帳號內容
   Future<List<dynamic>> updateAccount({
     required User user,
     required int accountId,
@@ -215,6 +220,7 @@ class AccountRepository {
     }
   }
 
+  /// call api 刪除帳號
   Future<List<dynamic>> deleteAccount({
     required User user,
     required int accountId,

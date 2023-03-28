@@ -11,7 +11,7 @@ import 'package:ricoms_app/utils/custom_errmsg.dart';
 import 'package:ricoms_app/utils/master_slave_info.dart';
 
 class BatchSettingRepository {
-  /// call api 取得模組資料
+  /// call api 取得批次設定用的模組資料
   Future<dynamic> getModuleData({
     required User user,
   }) async {
@@ -46,7 +46,7 @@ class BatchSettingRepository {
     }
   }
 
-  /// call api 取得 device 資料
+  /// call api 取得批次設定用的 device 資料
   Future<dynamic> getDeviceData({
     required User user,
     required int moduleId,
@@ -84,7 +84,7 @@ class BatchSettingRepository {
     }
   }
 
-  /// call api 取得 device 可設定的 pages
+  /// call api 取得批次設定用的 device 可設定的 pages
   Future<List<dynamic>> getDeviceBlock({
     required User user,
     required int moduleId,

@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'module.g.dart';
 
+/// 解析批次設定用的模組資料 key-value,
+/// fromJson : 從 json data 轉換為 Module 的資料結構
+/// toJson : 從 Module 轉換為 json data
 @JsonSerializable()
 class Module {
   @JsonKey(name: 'id')

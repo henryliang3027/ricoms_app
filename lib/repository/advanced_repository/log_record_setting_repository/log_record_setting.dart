@@ -3,6 +3,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'log_record_setting.g.dart';
 
+/// 解析'清除記錄相關設定'資料 key-value,
+/// fromJson : 從 json data 轉換為 LogRecordSetting 的資料結構
+/// toJson : 從 LogRecordSetting 轉換為 json data
 @JsonSerializable()
 class LogRecordSetting extends Equatable {
   @JsonKey(name: 'history_max_table_size')

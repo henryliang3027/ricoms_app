@@ -226,11 +226,11 @@ class _NameInput extends StatelessWidget {
           padding: const EdgeInsets.all(3),
           child: SizedBox(
             width: 230,
-            //padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: TextFormField(
               key: const Key('groupEditForm_nameInput_textField'),
               controller: nameController,
               textInputAction: TextInputAction.done,
+              maxLength: 64,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
@@ -248,10 +248,11 @@ class _NameInput extends StatelessWidget {
                   fontSize: CommonStyle.sizeL,
                   color: Colors.grey.shade400,
                 ),
+                counterText: '',
                 errorMaxLines: 2,
                 errorStyle: const TextStyle(fontSize: CommonStyle.sizeS),
                 errorText: state.name.invalid
-                    ? 'The name must be between 1-64 characters long.'
+                    ? AppLocalizations.of(context)!.nameErrorText
                     : null,
               ),
             ),
