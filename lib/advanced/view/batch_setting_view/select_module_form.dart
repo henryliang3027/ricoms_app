@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/select_module/select_module_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/select_device_page.dart';
-import 'package:ricoms_app/repository/module.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/module.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
@@ -51,22 +52,19 @@ class _KeywordInput extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: TextFormField(
               controller: _controller,
-              textInputAction: TextInputAction.search,
+              textInputAction: TextInputAction.done,
               style: const TextStyle(
                 fontSize: CommonStyle.sizeL,
               ),
               onChanged: (String? keyword) {
                 if (keyword != null) {
-                  context.read<SelectModuleBloc>().add(KeywordChanged(keyword));
+                  context
+                      .read<SelectModuleBloc>()
+                      .add(KeywordSearched(keyword));
                 }
               },
-              onFieldSubmitted: (String? keyword) {
-                context
-                    .read<SelectModuleBloc>()
-                    .add(const ModuleDataSearched());
-              },
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(5),
+                contentPadding: const EdgeInsets.all(6),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(width: 1.0),
                 ),
@@ -86,28 +84,35 @@ class _KeywordInput extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
-                suffixIcon: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  color: Colors.grey,
-                  child: IconButton(
-                    color: Colors.white,
-                    splashColor: Colors.blue.shade100,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.search_outlined,
-                    ),
-                    onPressed: () {
-                      context
-                          .read<SelectModuleBloc>()
-                          .add(const ModuleDataSearched());
-                    },
-                  ),
-                ),
+                suffixIconConstraints: state.keyword.isNotEmpty
+                    ? const BoxConstraints(
+                        maxHeight: 34,
+                        maxWidth: 34,
+                        minHeight: 34,
+                        minWidth: 34)
+                    : null,
+                suffixIcon: state.keyword.isNotEmpty
+                    ? Material(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(4.0),
+                          bottomRight: Radius.circular(4.0),
+                        ),
+                        color: Colors.grey,
+                        child: IconButton(
+                          color: Colors.white,
+                          splashColor: Colors.blue.shade100,
+                          icon: const Icon(
+                            CustomIcons.cancel,
+                          ),
+                          onPressed: () {
+                            _controller.clear();
+                            context
+                                .read<SelectModuleBloc>()
+                                .add(const KeywordCleared());
+                          },
+                        ),
+                      )
+                    : null,
               ),
             ),
           );
@@ -196,11 +201,26 @@ class _ModuleListView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         } else {
-          return Center(
-            child: Text(getMessageLocalization(
-              msg: state.requestErrorMsg,
-              context: context,
-            )),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
+            ),
           );
         }
       },

@@ -3,7 +3,7 @@ part of 'login_bloc.dart';
 class LoginState extends Equatable {
   const LoginState({
     this.status = FormzStatus.pure,
-    this.ip = const IP.pure(),
+    this.ip = const IPv4.pure(),
     this.username = const Username.pure(),
     this.password = const Password.pure(),
     this.passwordVisibility = false,
@@ -11,7 +11,7 @@ class LoginState extends Equatable {
   });
 
   final FormzStatus status;
-  final IP ip;
+  final IPv4 ip;
   final Username username;
   final Password password;
   final bool passwordVisibility;
@@ -19,7 +19,7 @@ class LoginState extends Equatable {
 
   LoginState copyWith({
     FormzStatus? status,
-    IP? ip,
+    IPv4? ip,
     Username? username,
     Password? password,
     bool? passwordVisibility,

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/root_repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/models/name.dart';
 
@@ -38,6 +38,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
   final Node? _currentNode;
   final _type = 1;
 
+  /// 處理 群組 的新增或編輯時需要取得的資料
   Future<void> _onDataRequested(
     DataRequested event,
     Emitter<EditGroupState> emit,
@@ -77,6 +78,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     }
   }
 
+  /// 處理 name 的更改
   void _onNameChanged(
     NameChanged event,
     Emitter<EditGroupState> emit,
@@ -91,6 +93,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     );
   }
 
+  /// 處理 description 的更改
   void _onDescriptionChanged(
     DescriptionChanged event,
     Emitter<EditGroupState> emit,
@@ -103,14 +106,13 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     );
   }
 
+  /// 處理 群組 的新增並傳給後端
   Future<void> _onNodeCreationSubmitted(
     NodeCreationSubmitted event,
     Emitter<EditGroupState> emit,
   ) async {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
-
-      // new password is the same as confirm password
 
       List<dynamic> msg = await _rootRepository.createNode(
         user: _user,
@@ -136,6 +138,7 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     }
   }
 
+  /// 處理 群組 的編輯資料更新並傳給後端
   Future<void> _onNodeUpdateSubmitted(
     NodeUpdateSubmitted event,
     Emitter<EditGroupState> emit,
@@ -143,7 +146,6 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
     if (state.status.isValidated) {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-      // new password is the same as confirm password
       List<dynamic> msg = await _rootRepository.updateNode(
         user: _user,
         currentNode: state.currentNode!,

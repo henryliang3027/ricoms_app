@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/device_working_cycle/device_working_cycle_bloc.dart';
 import 'package:ricoms_app/advanced/view/device_working_cycle_view/device_working_cycle_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/device_working_cycle_repository/device_working_cycle_repository.dart';
 
 class DeviceWorkingCyclePage extends StatelessWidget {
   const DeviceWorkingCyclePage({Key? key}) : super(key: key);

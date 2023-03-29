@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
-import 'package:ricoms_app/repository/module.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/module.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
@@ -16,8 +16,8 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
         _batchSettingRepository = batchSettingRepository,
         super(const SelectModuleState()) {
     on<ModuleDataRequested>(_onModulleDataRequested);
-    on<KeywordChanged>(_onKeywordChanged);
-    on<ModuleDataSearched>(_onModuleDataSearched);
+    on<KeywordSearched>(_onKeywordSearched);
+    on<KeywordCleared>(_onKeywordCleared);
 
     add(const ModuleDataRequested());
   }
@@ -26,6 +26,7 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
   final BatchSettingRepository _batchSettingRepository;
   final List<Module> _allModules = [];
 
+  /// 處理模組資料列表的獲取
   void _onModulleDataRequested(
     ModuleDataRequested event,
     Emitter<SelectModuleState> emit,
@@ -53,34 +54,39 @@ class SelectModuleBloc extends Bloc<SelectModuleEvent, SelectModuleState> {
     }
   }
 
-  void _onKeywordChanged(
-    KeywordChanged event,
+  /// 處理關鍵字的搜尋
+  void _onKeywordSearched(
+    KeywordSearched event,
     Emitter<SelectModuleState> emit,
   ) {
-    emit(state.copyWith(
-      keyword: event.keyword,
-    ));
-  }
-
-  void _onModuleDataSearched(
-    ModuleDataSearched event,
-    Emitter<SelectModuleState> emit,
-  ) {
-    if (state.keyword.isNotEmpty) {
+    if (event.keyword.isNotEmpty) {
       List<Module> modules = [];
 
       modules = _allModules
           .where((module) =>
-              module.name.toLowerCase().contains(state.keyword.toLowerCase()))
+              module.name.toLowerCase().contains(event.keyword.toLowerCase()))
           .toList();
 
       emit(state.copyWith(
+        keyword: event.keyword,
         modules: modules,
       ));
     } else {
       emit(state.copyWith(
+        keyword: event.keyword,
         modules: _allModules,
       ));
     }
+  }
+
+  /// 處理關鍵字的清除
+  void _onKeywordCleared(
+    KeywordCleared event,
+    Emitter<SelectModuleState> emit,
+  ) {
+    emit(state.copyWith(
+      keyword: '',
+      modules: _allModules,
+    ));
   }
 }

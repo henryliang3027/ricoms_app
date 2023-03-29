@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/log_record_setting.dart';
-
-import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
@@ -47,6 +46,7 @@ class LogRecordSettingBloc
     return enable ? '1' : '0';
   }
 
+  /// 處理清除記錄相關參數設定的資料獲取
   void _onLogRecordSettingRequested(
     LogRecordSettingRequested event,
     Emitter<LogRecordSettingState> emit,
@@ -73,6 +73,7 @@ class LogRecordSettingBloc
     }
   }
 
+  /// 處理歷史紀錄封存筆數的數值更改
   void _onArchivedHistoricalRecordQuanitiyChanged(
     ArchivedHistoricalRecordQuanitiyChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -86,6 +87,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 是否開啟 API 紀錄限制
   void _onApiLogPreservationEnabled(
     ApiLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
@@ -99,6 +101,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理 API 紀錄的保存上限筆數的數值更改
   void _onApiLogPreservedQuantityChanged(
     ApiLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -112,6 +115,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理 API 紀錄的保存上限天數的數值更改
   void _onApiLogPreservedDaysChanged(
     ApiLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -125,6 +129,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 是否開啟使用者系統紀錄限制
   void _onUserSystemLogPreservationEnabled(
     UserSystemLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
@@ -139,6 +144,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理使用者系統紀錄的保存上限筆數的數值更改
   void _onUserSystemLogPreservedQuantityChanged(
     UserSystemLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -152,6 +158,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理使用者系統紀錄的保存上限天數的數值更改
   void _onUserSystemLogPreservedDaysChanged(
     UserSystemLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -165,6 +172,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 是否開啟裝置系統紀錄限制
   void _onDeviceSystemLogPreservationEnabled(
     DeviceSystemLogPreservationEnabled event,
     Emitter<LogRecordSettingState> emit,
@@ -179,6 +187,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理裝置系統紀錄的保存上限筆數的數值更改
   void _onDeviceSystemLogPreservedQuantityChanged(
     DeviceSystemLogPreservedQuantityChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -192,6 +201,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理裝置系統紀錄的保存上限天數的數值更改
   void _onDeviceSystemLogPreservedDaysChanged(
     DeviceSystemLogPreservedDaysChanged event,
     Emitter<LogRecordSettingState> emit,
@@ -205,6 +215,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理設定資料的儲存, 向後端更新資料
   void _onLogRecordSettingSaved(
     LogRecordSettingSaved event,
     Emitter<LogRecordSettingState> emit,
@@ -233,6 +244,7 @@ class LogRecordSettingBloc
     }
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<LogRecordSettingState> emit,
@@ -244,6 +256,7 @@ class LogRecordSettingBloc
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<LogRecordSettingState> emit,

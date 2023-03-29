@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/select_module/select_module_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/select_module_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_repository.dart';
 
 class SelectModulePage extends StatelessWidget {
   const SelectModulePage({Key? key}) : super(key: key);

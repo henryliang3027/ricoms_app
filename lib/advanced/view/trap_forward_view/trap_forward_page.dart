@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/trap_forward_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/trap_forward_repository.dart';
 
 class TrapForwardPage extends StatelessWidget {
   const TrapForwardPage({Key? key}) : super(key: key);

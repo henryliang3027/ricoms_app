@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/log_record_setting/log_record_setting_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting_repository.dart';
 
 import 'clear_log_record_setting_form.dart';
 

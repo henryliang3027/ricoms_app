@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/account_outline.dart';
-import 'package:ricoms_app/repository/account_repository.dart';
+import 'package:ricoms_app/repository/account_repository/account_outline.dart';
+import 'package:ricoms_app/repository/account_repository/account_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device_history/device_history_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
@@ -224,12 +224,26 @@ class _HistorySliverList extends StatelessWidget {
             ),
           );
         } else if (state.status.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

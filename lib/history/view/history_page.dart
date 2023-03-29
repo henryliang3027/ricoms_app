@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/history/bloc/history/history_bloc.dart';
 import 'package:ricoms_app/history/view/history_form.dart';
-import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/history_repository/history_repository.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({

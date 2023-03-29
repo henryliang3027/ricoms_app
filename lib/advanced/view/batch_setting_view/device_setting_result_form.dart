@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/device_setting_result/device_setting_result_bloc.dart';
@@ -28,6 +26,7 @@ class DeviceSettingResultForm extends StatelessWidget {
       ),
       body: Column(
         children: const [
+          // _KeywordInput(),
           Expanded(
             child: _DeviceListView(),
           ),
@@ -100,6 +99,88 @@ class _PopupMenu extends StatelessWidget {
     });
   }
 }
+
+// class _KeywordInput extends StatelessWidget {
+//   _KeywordInput({Key? key}) : super(key: key);
+
+//   final TextEditingController _controller = TextEditingController();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<DeviceSettingResultBloc, DeviceSettingResultState>(
+//         buildWhen: (previous, current) => previous.keyword != current.keyword,
+//         builder: (context, state) {
+//           return Padding(
+//             padding: const EdgeInsets.all(16.0),
+//             child: TextFormField(
+//               controller: _controller,
+//               textInputAction: TextInputAction.search,
+//               style: const TextStyle(
+//                 fontSize: CommonStyle.sizeL,
+//               ),
+//               onChanged: (String? keyword) {
+//                 if (keyword != null) {
+//                   context
+//                       .read<DeviceSettingResultBloc>()
+//                       .add(KeywordSearched(keyword));
+//                 }
+//               },
+//               decoration: InputDecoration(
+//                 contentPadding: const EdgeInsets.all(6),
+//                 border: const OutlineInputBorder(
+//                   borderSide: BorderSide(width: 1.0),
+//                 ),
+//                 isDense: true,
+//                 filled: true,
+//                 fillColor: Colors.white,
+//                 labelText: AppLocalizations.of(context)!.searchHint,
+//                 labelStyle: const TextStyle(
+//                   fontSize: CommonStyle.sizeL,
+//                 ),
+//                 floatingLabelStyle: const TextStyle(
+//                   color: Colors.black,
+//                 ),
+//                 focusedBorder: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(4.0),
+//                   borderSide: const BorderSide(
+//                     color: Colors.black,
+//                   ),
+//                 ),
+//                 suffixIconConstraints: state.keyword.isNotEmpty
+//                     ? const BoxConstraints(
+//                         maxHeight: 34,
+//                         maxWidth: 34,
+//                         minHeight: 34,
+//                         minWidth: 34)
+//                     : null,
+//                 suffixIcon: state.keyword.isNotEmpty
+//                     ? Material(
+//                         borderRadius: const BorderRadius.only(
+//                           topRight: Radius.circular(4.0),
+//                           bottomRight: Radius.circular(4.0),
+//                         ),
+//                         color: Colors.grey,
+//                         child: IconButton(
+//                           color: Colors.white,
+//                           splashColor: Colors.blue.shade100,
+//                           icon: const Icon(
+//                             CustomIcons.cancel,
+//                           ),
+//                           onPressed: () {
+//                             _controller.clear();
+//                             context
+//                                 .read<DeviceSettingResultBloc>()
+//                                 .add(const KeywordCleared());
+//                           },
+//                         ),
+//                       )
+//                     : null,
+//               ),
+//             ),
+//           );
+//         });
+//   }
+// }
 
 class _DeviceListView extends StatelessWidget {
   const _DeviceListView({
@@ -242,7 +323,7 @@ class _ParameterItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 6.0),
+                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 0.0),
                         child: Text(
                           device.ip,
                           //maxLines: 2,
@@ -253,25 +334,12 @@ class _ParameterItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                        child: Text(
-                          device.group,
-                          //maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: CommonStyle.sizeM,
-                            color: Colors.grey.shade700,
-                            // fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
                       Row(
                         children: [
                           Flexible(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(
-                                  10.0, 0.0, 6.0, 0.0),
+                                  10.0, 6.0, 6.0, 0.0),
                               child: Text(
                                 _getDisplayName(device),
                                 //maxLines: 2,
@@ -286,6 +354,25 @@ class _ParameterItem extends StatelessWidget {
                           ),
                         ],
                       ),
+                      processingStatus != ProcessingStatus.processing
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 6.0, 6.0, 0.0),
+                              child: Text(
+                                resultDetail.description,
+                                //maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: CommonStyle.sizeM,
+                                  color: Colors.grey.shade700,
+                                  // fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: 0.0,
+                              width: 0.0,
+                            ),
                     ],
                   ),
                 ),

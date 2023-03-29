@@ -87,7 +87,12 @@ class LogRecordSettingForm extends StatelessWidget {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(msg),
+                  Text(
+                    getMessageLocalization(
+                      msg: msg,
+                      context: context,
+                    ),
+                  ),
                 ],
               ),
             ),

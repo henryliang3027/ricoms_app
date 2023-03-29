@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/system_log_repository/system_log_repository.dart';
 import 'package:ricoms_app/system_log/bloc/system_log/system_log_bloc.dart';
 import 'package:ricoms_app/system_log/view/system_log_form.dart';
 

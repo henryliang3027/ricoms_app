@@ -10,6 +10,15 @@ class CustomStyle {
     3: 'Critical', //critical
   };
 
+  static Map<int, Color> nodeStatusColor = {
+    // node status
+    0: const Color(0xff000000), //unknown
+    1: const Color(0xff28a745), //normal
+    2: const Color(0xffffc107), //warning
+    3: const Color(0xffdc3545), //critical
+    4: const Color(0xff6c757d), //offline
+  };
+
   static Map<int, Color> severityFontColor = {
     // device severity
     0: const Color(0xffffffff), //notice
@@ -20,7 +29,6 @@ class CustomStyle {
 
   static Map<int, Color> severityColor = {
     // device severity
-    -2: const Color(0xff000000), //unknown
     0: const Color(0xff6c757d), //notice
     1: const Color(0xff28a745), //normal
     2: const Color(0xffffc107), //warning
@@ -50,11 +58,11 @@ class CustomStyle {
       color: Color(0xff172a88),
     ), //Group
     2: Icon(
-      CustomIcons.device_simple,
+      CustomIcons.deviceSimple,
       color: Color(0xff172a88),
     ), //Device
     3: Icon(
-      CustomIcons.device_simple,
+      CustomIcons.deviceSimple,
       color: Color(0xff172a88),
     ), //A8K
     4: null, //shelf
@@ -92,5 +100,9 @@ class CustomStyle {
 
     CustomStyle.multiAxisLineAnnotationColors[1] = Color(severityColors[3]);
     CustomStyle.multiAxisLineAnnotationColors[0] = Color(severityColors[2]);
+
+    CustomStyle.nodeStatusColor[3] = Color(severityColors[3]);
+    CustomStyle.nodeStatusColor[2] = Color(severityColors[2]);
+    CustomStyle.nodeStatusColor[1] = Color(severityColors[1]);
   }
 }

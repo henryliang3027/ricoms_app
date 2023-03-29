@@ -6,7 +6,7 @@ import 'package:ricoms_app/bookmarks/bloc/bookmarks_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/bookmarks_repository.dart';
+import 'package:ricoms_app/repository/bookmarks_repository/bookmarks_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -198,120 +198,125 @@ class _DeviceSliverList extends StatelessWidget {
     return SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         if (index >= data.length) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
         Device device = data[index];
-        return Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: Material(
-            color: index.isEven ? Colors.grey.shade100 : Colors.white,
-            child: InkWell(
-              onTap: () {
-                if (isDeleteMode) {
-                  context
-                      .read<BookmarksBloc>()
-                      .add(BookmarksItemToggled(device));
-                } else {
-                  context.read<BookmarksBloc>().add(DeviceStatusChecked(
-                        initialPath,
-                        device.path,
-                        pageController,
-                      ));
-                }
-              },
-              onLongPress: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<BookmarksBloc>(),
-                    child: _BookmarksEditBottomMenu(
-                      superContext: context,
-                      device: device,
-                    ),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: CommonStyle.severityRectangleWidth,
-                            height: 60.0,
-                            color: CustomStyle.severityColor[device.status],
+        return device.status != -99
+            ? Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: Material(
+                  color: index.isEven ? Colors.grey.shade100 : Colors.white,
+                  child: InkWell(
+                    onTap: () {
+                      if (isDeleteMode) {
+                        context
+                            .read<BookmarksBloc>()
+                            .add(BookmarksItemToggled(device));
+                      } else {
+                        // print('${device.id} : ${device.path}');
+                        context.read<BookmarksBloc>().add(DeviceStatusChecked(
+                              initialPath,
+                              device.path,
+                              pageController,
+                            ));
+                      }
+                    },
+                    onLongPress: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<BookmarksBloc>(),
+                          child: _BookmarksEditBottomMenu(
+                            superContext: context,
+                            device: device,
                           ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 8,
-                      child: Column(
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                            child: Text(
-                              _getDisplayName(device),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.roboto(
-                                fontSize: CommonStyle.sizeL,
-                                //fontWeight: FontWeight.w500,
-                              ),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: CommonStyle.severityRectangleWidth,
+                                  height: 60.0,
+                                  color: CustomStyle
+                                      .nodeStatusColor[device.status],
+                                ),
+                              ],
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(10.0, 0.0, 6.0, 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  device.ip,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: CommonStyle.sizeS,
-                                    //fontWeight: FontWeight.w500,
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 6.0, 4.0),
+                                  child: Text(
+                                    _getDisplayName(device),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                      fontSize: CommonStyle.sizeL,
+                                      //fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 6.0, 4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        device.ip,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.roboto(
+                                          fontSize: CommonStyle.sizeS,
+                                          //fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          isDeleteMode
+                              ? selectedDevices.contains(device)
+                                  ? const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Colors.amber,
+                                    )
+                                  : const Icon(
+                                      Icons.circle_outlined,
+                                      color: Colors.amber,
+                                    )
+                              : const Icon(
+                                  Icons.circle_outlined,
+                                  color: Colors.transparent,
+                                )
                         ],
                       ),
                     ),
-                    isDeleteMode
-                        ? selectedDevices.contains(device)
-                            ? const Icon(
-                                Icons.check_circle_rounded,
-                                color: Colors.amber,
-                              )
-                            : const Icon(
-                                Icons.circle_outlined,
-                                color: Colors.amber,
-                              )
-                        : const Icon(
-                            Icons.circle_outlined,
-                            color: Colors.transparent,
-                          )
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        );
+              )
+            : Container(); // Hide deleted device
       },
       childCount: hasReachMax ? data.length : data.length + 1,
     );

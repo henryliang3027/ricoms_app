@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/server_ip_setting.dart';
-import 'package:ricoms_app/repository/server_ip_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/server_ip_setting_repository/server_ip_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/models/device_ip.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 
 part 'server_ip_setting_event.dart';
 part 'server_ip_setting_state.dart';
@@ -32,6 +32,7 @@ class ServerIPSettingBloc
   final User _user;
   final ServerIPSettingRepository _serverIPSettingRepository;
 
+  /// 處理設定資料的獲取
   void _onServerIPSettingRequested(
     ServerIPSettingRequested event,
     Emitter<ServerIPSettingState> emit,
@@ -47,10 +48,10 @@ class ServerIPSettingBloc
     if (result[0]) {
       ServerIPSetting serverIPSetting = result[1];
 
-      DeviceIP masterServerIP = DeviceIP.dirty(serverIPSetting.masterServerIP);
-      DeviceIP slaveServerIP = DeviceIP.dirty(serverIPSetting.slaveServerIP);
+      IPv4 masterServerIP = IPv4.dirty(serverIPSetting.masterServerIP);
+      IPv4 slaveServerIP = IPv4.dirty(serverIPSetting.slaveServerIP);
       String synchronizationInterval = serverIPSetting.synchronizationInterval;
-      DeviceIP onlineServerIP = DeviceIP.dirty(serverIPSetting.onlineServerIP);
+      IPv4 onlineServerIP = IPv4.dirty(serverIPSetting.onlineServerIP);
 
       emit(state.copyWith(
         status: FormStatus.requestSuccess,
@@ -67,11 +68,12 @@ class ServerIPSettingBloc
     }
   }
 
+  /// 處理主伺服器的 ip 數值更改
   void _onMasterServerIPChanged(
     MasterServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP masterServerIP = DeviceIP.dirty(event.masterServerIP);
+    IPv4 masterServerIP = IPv4.dirty(event.masterServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,
@@ -80,11 +82,12 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理副伺服器的 ip 數值更改
   void _onSlaveServerIPChanged(
     SlaveServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP slaveServerIP = DeviceIP.dirty(event.slaveServerIP);
+    IPv4 slaveServerIP = IPv4.dirty(event.slaveServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,
@@ -92,6 +95,8 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理同步緩衝時間的數值更改, 此數值不可手動更改, 只讀取api相對應欄位,
+  /// _SynchronizationIntervalInput 元件的 enable 為 false 等效於一個不可手動輸入的輸入框
   void _onSynchronizationIntervalChanged(
     SynchronizationIntervalChanged event,
     Emitter<ServerIPSettingState> emit,
@@ -103,11 +108,13 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理當前執行伺服器的 ip 數值更改, 此 ip 不可手動更改, 只讀取api相對應欄位
+  /// _OnlineServerIPInput 元件的 enable 為 false 等效於一個不可手動輸入的輸入框
   void _onOnlineServerIPChanged(
     OnlineServerIPChanged event,
     Emitter<ServerIPSettingState> emit,
   ) {
-    DeviceIP onlineServerIP = DeviceIP.dirty(event.onlineServerIP);
+    IPv4 onlineServerIP = IPv4.dirty(event.onlineServerIP);
 
     emit(state.copyWith(
       status: FormStatus.none,
@@ -116,6 +123,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<ServerIPSettingState> emit,
@@ -127,6 +135,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<ServerIPSettingState> emit,
@@ -138,6 +147,7 @@ class ServerIPSettingBloc
     ));
   }
 
+  /// 處理設定資料的儲存, 向後端更新資料
   void _onServerIPSettingSaved(
     ServerIPSettingSaved event,
     Emitter<ServerIPSettingState> emit,

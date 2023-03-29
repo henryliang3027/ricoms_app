@@ -6,7 +6,7 @@ import 'package:ricoms_app/account/view/account_edit_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/account_outline.dart';
+import 'package:ricoms_app/repository/account_repository/account_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
@@ -423,9 +423,24 @@ class _AccountSliverList extends StatelessWidget {
           );
         } else if (state.formStatus.isRequestFailure) {
           return Container(
-            color: Colors.grey.shade300,
-            child: Center(
-              child: Text(state.requestErrorMsg),
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

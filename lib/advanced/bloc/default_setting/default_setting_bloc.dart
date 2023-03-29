@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/default_setting.dart';
-import 'package:ricoms_app/repository/default_setting_repository.dart';
-import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
-import 'package:ricoms_app/repository/log_record_setting.dart';
-import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/device_working_cycle_repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
@@ -38,14 +38,17 @@ class DefaultSettingBloc
   final DeviceWorkingCycleRepository _deviceWorkingCycleRepository;
   final LogRecordSettingRepository _logRecordSettingRepository;
 
+  /// 數字轉為字串, 1:enable, 0:disable
   String _intToString(var enable) {
     return enable == 1 || enable == '1' ? 'enable' : 'disable';
   }
 
+  /// 字串轉為數字, enable:1, disable:0
   String _boolStringToIntString(String enable) {
     return enable == 'enable' ? '1' : '0';
   }
 
+  /// 處理原廠預設值與目前設定值的取得
   void _onDefaultSettingRequested(
     DefaultSettingRequested event,
     Emitter<DefaultSettingState> emit,
@@ -55,12 +58,26 @@ class DefaultSettingBloc
       submissionStatus: SubmissionStatus.none,
     ));
 
+    // 取得原廠預設值
     List<dynamic> resultOfGetDefaultSetting =
         await _defaultSettingRepository.getDefaultSetting(user: _user);
 
+    // 取得目前裝置輪詢週期
     List<dynamic> resultOfGetCurrentDeviceWorkingSetting =
         await _deviceWorkingCycleRepository.getWorkingCycleList(user: _user);
 
+    // 取得目前設定值, 歷史紀錄封存筆數設定值, API log 紀錄設定值, 使用者系統記錄設定值, 裝置系統記錄設定值
+    // api resopnse example:
+    // "history_max_table_size": "100000",
+    // "log_schedule": "1",
+    // "log_max_size": "100000",
+    // "log_max_save_days": "10",
+    // "device_schedule": "1",
+    // "device_max_size": "90000",
+    // "device_max_save_days": "180",
+    // "user_schedule": "1",
+    // "user_max_size": "9000",
+    // "user_max_save_days": "180"
     List<dynamic> resultOfGetCurrentLogRecordSetting =
         await _logRecordSettingRepository.getLogRecordSetting(user: _user);
 
@@ -163,6 +180,7 @@ class DefaultSettingBloc
     }
   }
 
+  /// 處理設定項目的選取
   void _onDefaultSettingItemToggled(
     DefaultSettingItemToggled event,
     Emitter<DefaultSettingState> emit,
@@ -187,6 +205,7 @@ class DefaultSettingBloc
     ));
   }
 
+  /// 處理設定項目的全部選取
   void _onAllItemsSelected(
     AllItemsSelected event,
     Emitter<DefaultSettingState> emit,
@@ -213,6 +232,7 @@ class DefaultSettingBloc
     ));
   }
 
+  /// 處理被選取的設定項目的更新, 向後端更新設定值
   void _onDefaultSettingSaved(
     DefaultSettingSaved event,
     Emitter<DefaultSettingState> emit,
@@ -299,6 +319,7 @@ class DefaultSettingBloc
     }
   }
 
+  /// 更新裝置輪詢週期設定值
   Future<bool> _updateDeviceWorkingCycle() async {
     List<dynamic> resultOfSetWorkingCycle =
         await _deviceWorkingCycleRepository.setWorkingCycle(
@@ -309,6 +330,7 @@ class DefaultSettingBloc
     return resultOfSetWorkingCycle[0];
   }
 
+  /// 更新歷史紀錄封存筆數設定值, API log 紀錄設定值, 使用者系統記錄設定值, 裝置系統記錄設定值
   Future<bool> _updateLogRecordSetting() async {
     LogRecordSetting logRecordSetting = LogRecordSetting(
       archivedHistoricalRecordQuanitiy: state.defaultSettingItems[1].isSelected
@@ -351,6 +373,7 @@ class DefaultSettingBloc
     return resultOfSetLogRecord[0];
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<DefaultSettingState> emit,
@@ -362,6 +385,7 @@ class DefaultSettingBloc
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<DefaultSettingState> emit,

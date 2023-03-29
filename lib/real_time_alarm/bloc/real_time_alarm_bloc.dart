@@ -5,12 +5,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ricoms_app/repository/real_time_alarm_repository.dart';
+import 'package:ricoms_app/repository/real_time_alarm_repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/alarm_sound_config.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/request_interval.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'real_time_alarm_event.dart';
@@ -47,11 +48,11 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
       transformer: throttleDroppable(throttleDuration),
     );
 
-    add(const AllAlarmRequested(RequestMode.initial));
-    add(const CriticalAlarmRequested(RequestMode.initial));
-    add(const WarningAlarmRequested(RequestMode.initial));
-    add(const NormalAlarmRequested(RequestMode.initial));
-    add(const NoticeAlarmRequested(RequestMode.initial));
+    // add(const AllAlarmRequested(RequestMode.initial));
+    // add(const CriticalAlarmRequested(RequestMode.initial));
+    // add(const WarningAlarmRequested(RequestMode.initial));
+    // add(const NormalAlarmRequested(RequestMode.initial));
+    // add(const NoticeAlarmRequested(RequestMode.initial));
 
     _assetsAudioPlayer.open(
       Audio("assets/audios/trap_sound.mp3"),
@@ -86,8 +87,9 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     AlarmPeriodicUpdated event,
     Emitter<RealTimeAlarmState> emit,
   ) async {
-    final dataStream =
-        Stream<int>.periodic(const Duration(seconds: 3), (count) => count);
+    final dataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.realTimeAlarm),
+        (count) => count);
 
     _dataStreamSubscription?.cancel();
     _dataStreamSubscription = dataStream.listen((count) {
@@ -312,7 +314,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
       targetDeviceStatus: FormStatus.requestInProgress,
     ));
 
-    List<dynamic> result = await _realTimeAlarmRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

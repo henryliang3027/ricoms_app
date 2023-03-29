@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
-import 'package:ricoms_app/repository/batch_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_device.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 
@@ -18,8 +18,8 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
         _batchSettingRepository = batchSettingRepository,
         super(const SelectDeviceState()) {
     on<DeviceDataRequested>(_onDeviceDataRequested);
-    on<KeywordChanged>(_onKeywordChanged);
-    on<DeviceDataSearched>(_onDeviceDataSearched);
+    on<KeywordCleared>(_onKeywordCleared);
+    on<KeywordSearched>(_onKeywordSearched);
     on<DeviceItemToggled>(_onDeviceItemToggled);
     on<AllDeviceItemsSelected>(_onAllDeviceItemsSelected);
     on<AllDeviceItemsDeselected>(_onAllDeviceItemsDeselected);
@@ -32,6 +32,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
   final BatchSettingRepository _batchSettingRepository;
   final List<BatchSettingDevice> _allDevices = [];
 
+  /// 處理 device 資料列表的獲取
   void _onDeviceDataRequested(
     DeviceDataRequested event,
     Emitter<SelectDeviceState> emit,
@@ -67,31 +68,23 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     }
   }
 
-  void _onKeywordChanged(
-    KeywordChanged event,
+  /// 處理關鍵字的搜尋
+  void _onKeywordSearched(
+    KeywordSearched event,
     Emitter<SelectDeviceState> emit,
   ) {
-    emit(state.copyWith(
-      keyword: event.keyword,
-    ));
-  }
-
-  void _onDeviceDataSearched(
-    DeviceDataSearched event,
-    Emitter<SelectDeviceState> emit,
-  ) {
-    if (state.keyword.isNotEmpty) {
+    if (event.keyword.isNotEmpty) {
       List<BatchSettingDevice> devices = [];
 
       devices = _allDevices.where((device) {
-        if (device.ip.toLowerCase().contains(state.keyword.toLowerCase()) ||
-            device.group.toLowerCase().contains(state.keyword.toLowerCase()) ||
+        if (device.ip.toLowerCase().contains(event.keyword.toLowerCase()) ||
+            device.group.toLowerCase().contains(event.keyword.toLowerCase()) ||
             device.deviceName
                 .toLowerCase()
-                .contains(state.keyword.toLowerCase()) ||
+                .contains(event.keyword.toLowerCase()) ||
             device.moduleName
                 .toLowerCase()
-                .contains(state.keyword.toLowerCase())) {
+                .contains(event.keyword.toLowerCase())) {
           return true;
         } else {
           return false;
@@ -99,15 +92,29 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
       }).toList();
 
       emit(state.copyWith(
+        keyword: event.keyword,
         devices: devices,
       ));
     } else {
       emit(state.copyWith(
+        keyword: event.keyword,
         devices: _allDevices,
       ));
     }
   }
 
+  /// 處理關鍵字的清除
+  void _onKeywordCleared(
+    KeywordCleared event,
+    Emitter<SelectDeviceState> emit,
+  ) {
+    emit(state.copyWith(
+      keyword: '',
+      devices: _allDevices,
+    ));
+  }
+
+  /// 處理 device 列表的選取
   void _onDeviceItemToggled(
     DeviceItemToggled event,
     Emitter<SelectDeviceState> emit,
@@ -122,6 +129,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     ));
   }
 
+  /// 處理 device 列表的全部選取
   void _onAllDeviceItemsSelected(
     AllDeviceItemsSelected event,
     Emitter<SelectDeviceState> emit,
@@ -139,6 +147,7 @@ class SelectDeviceBloc extends Bloc<SelectDeviceEvent, SelectDeviceState> {
     ));
   }
 
+  /// 處理 device 列表的全部取消選取
   void _onAllDeviceItemsDeselected(
     AllDeviceItemsDeselected event,
     Emitter<SelectDeviceState> emit,

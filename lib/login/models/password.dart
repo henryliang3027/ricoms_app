@@ -17,8 +17,5 @@ class Password extends FormzInput<String, PasswordValidationError> {
         return null;
       }
     }
-    // return value?.isNotEmpty == true && value!.length >= 4
-    //     ? null
-    //     : PasswordValidationError.empty;
   }
 }

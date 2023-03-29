@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:ricoms_app/repository/forward_detail.dart';
-import 'package:ricoms_app/repository/forward_outline.dart';
-import 'package:ricoms_app/repository/trap_forward_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_detail.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_outline.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/root/models/device_ip.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/root/models/name.dart';
 
 part 'edit_trap_forward_event.dart';
@@ -42,6 +42,7 @@ class EditTrapForwardBloc
   final bool _isEditing;
   final ForwardOutline? _forwardOutline;
 
+  /// 處理 Trap Forward 可編輯的資料的獲取
   Future<void> _onForwardDetailRequested(
     ForwardDetailRequested event,
     Emitter<EditTrapForwardState> emit,
@@ -56,14 +57,14 @@ class EditTrapForwardBloc
 
       if (_isEditing) {
         final Name name = Name.dirty(forwardDetail.name);
-        final DeviceIP ip = DeviceIP.dirty(forwardDetail.ip);
+        final IPv4 ip = IPv4.dirty(forwardDetail.ip);
 
         emit(state.copyWith(
           submissionStatus: SubmissionStatus.none,
           isInitController: true,
           enable: forwardDetail.enable == 0 ? false : true,
           name: Name.dirty(forwardDetail.name),
-          ip: DeviceIP.dirty(forwardDetail.ip),
+          ip: IPv4.dirty(forwardDetail.ip),
           parameters: forwardDetail.parameters,
           status: Formz.validate([
             name,
@@ -84,6 +85,7 @@ class EditTrapForwardBloc
     } else {}
   }
 
+  /// 處理 Trap Forward 的開啟/關閉
   void _onForwardEnabledChanged(
     ForwardEnabledChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -95,6 +97,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 名稱的變更
   void _onNameChanged(
     NameChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -112,11 +115,12 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward ip 的變更
   void _onIPChanged(
     IPChanged event,
     Emitter<EditTrapForwardState> emit,
   ) {
-    final ip = DeviceIP.dirty(event.ip);
+    final ip = IPv4.dirty(event.ip);
 
     emit(state.copyWith(
       submissionStatus: SubmissionStatus.none,
@@ -129,6 +133,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 相關參數的變更
   void _onParametersChanged(
     ParametersChanged event,
     Emitter<EditTrapForwardState> emit,
@@ -159,6 +164,7 @@ class EditTrapForwardBloc
     ));
   }
 
+  /// 處理 Trap Forward 設定資料的更新, 向後端更新資料
   Future<void> _onForwardDetailUpdateSubmitted(
     ForwardDetailUpdateSubmitted event,
     Emitter<EditTrapForwardState> emit,
@@ -190,6 +196,7 @@ class EditTrapForwardBloc
     }
   }
 
+  /// 處理 Trap Forward 的新增, 向後端新增資料
   Future<void> _onForwardDetailCreateSubmitted(
     ForwardDetailCreateSubmitted event,
     Emitter<EditTrapForwardState> emit,

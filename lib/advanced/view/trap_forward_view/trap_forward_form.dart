@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_edit_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
-import 'package:ricoms_app/repository/forward_outline.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/forward_outline.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -283,7 +283,12 @@ class _AccountFloatingActionButton extends StatelessWidget {
                   TrapForwardEditPage.route(
                       isEditing: false,
                       forwardOutline: ForwardOutline(
-                          id: 0, enable: 0, name: '', ip: '', parameter: '')));
+                        id: 0,
+                        enable: 0,
+                        name: '',
+                        ip: '',
+                        parameter: '',
+                      )));
 
               if (isModify != null) {
                 if (isModify) {
@@ -416,12 +421,25 @@ class _ForwardOutlineSliverList extends StatelessWidget {
             ),
           );
         } else if (state.status.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.requestErrorMsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.requestErrorMsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

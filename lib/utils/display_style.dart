@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/history_repository.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
-import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/history_repository/history_repository.dart';
+import 'package:ricoms_app/repository/root_repository/root_repository.dart';
+import 'package:ricoms_app/repository/system_log_repository/system_log_repository.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 
 class DisplayStyle {

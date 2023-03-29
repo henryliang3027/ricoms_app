@@ -16,8 +16,8 @@ class ConfigDeviceState extends Equatable {
   final List<DeviceBlock> deviceBlocks;
   final Map<int, List<List<ControllerProperty>>>
       controllerPropertiesCollectionMap;
-  final Map<int, Map<String, String>> controllerValuesMap;
-  final Map<int, Map<String, String>> controllerInitialValuesMap;
+  final Map<int, Map<String, dynamic>> controllerValuesMap;
+  final Map<int, Map<String, dynamic>> controllerInitialValuesMap;
   final Map<int, bool> isControllerContainValue;
   final bool isInitialController;
   final String requestErrorMsg;
@@ -26,8 +26,8 @@ class ConfigDeviceState extends Equatable {
     FormStatus? status,
     List<DeviceBlock>? deviceBlocks,
     Map<int, List<List<ControllerProperty>>>? controllerPropertiesCollectionMap,
-    Map<int, Map<String, String>>? controllerValuesMap,
-    Map<int, Map<String, String>>? controllerInitialValuesMap,
+    Map<int, Map<String, dynamic>>? controllerValuesMap,
+    Map<int, Map<String, dynamic>>? controllerInitialValuesMap,
     Map<int, bool>? isControllerContainValue,
     bool? isInitialController,
     String? requestErrorMsg,

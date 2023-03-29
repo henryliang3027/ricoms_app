@@ -6,6 +6,7 @@ import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:ricoms_app/utils/custom_style.dart';
 
 class HomeDrawerToolTip {
   static Builder setToolTip(BuildContext context) {
@@ -49,7 +50,7 @@ class HomeDrawer extends StatelessWidget {
     ];
 
     List<IconData> _listTileIcons = [
-      CustomIcons.realtime_alarm,
+      CustomIcons.realTimeAlarm,
       CustomIcons.network,
       CustomIcons.dashboard,
       CustomIcons.history,
@@ -163,6 +164,61 @@ class HomeDrawer extends StatelessWidget {
       );
     }
 
+    Future<bool?> _showConfirmLogoutDialog() async {
+      return showDialog<bool>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.logout,
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: AppLocalizations.of(context)!
+                              .dialogMessage_AskBeforeLogout,
+                          style: const TextStyle(
+                            fontSize: CommonStyle.sizeXL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+              TextButton(
+                child: Text(
+                  AppLocalizations.of(context)!.yes,
+                  style: const TextStyle(
+                    color: CustomStyle.customRed,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return SafeArea(
       child: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -229,7 +285,7 @@ class HomeDrawer extends StatelessWidget {
               dense: true,
               leading: const Padding(
                 padding: EdgeInsets.all(10),
-                child: Icon(CustomIcons.change_password),
+                child: Icon(CustomIcons.changePassword),
               ),
               title: Text(
                 AppLocalizations.of(context)!.changePassword,
@@ -258,10 +314,15 @@ class HomeDrawer extends StatelessWidget {
                 AppLocalizations.of(context)!.logout,
                 style: const TextStyle(fontSize: CommonStyle.sizeL),
               ),
-              onTap: () {
-                context
-                    .read<AuthenticationBloc>()
-                    .add(AuthenticationLogoutRequested(user));
+              onTap: () async {
+                bool? result = await _showConfirmLogoutDialog();
+                if (result != null) {
+                  if (result) {
+                    context
+                        .read<AuthenticationBloc>()
+                        .add(AuthenticationLogoutRequested(user));
+                  }
+                }
               },
             ),
             const Padding(

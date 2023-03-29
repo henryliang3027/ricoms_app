@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:ricoms_app/login/models/password.dart';
-import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/authentication_repository/authentication_repository.dart';
 part 'change_password_event.dart';
 part 'change_password_state.dart';
 

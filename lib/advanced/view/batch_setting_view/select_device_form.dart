@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/advanced/bloc/batch_setting/select_device/select_device_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/config_device_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
-import 'package:ricoms_app/repository/batch_setting_device.dart';
+import 'package:ricoms_app/repository/advanced_repository/batch_setting_repository/batch_setting_device.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
@@ -122,16 +122,13 @@ class _KeywordInput extends StatelessWidget {
               ),
               onChanged: (String? keyword) {
                 if (keyword != null) {
-                  context.read<SelectDeviceBloc>().add(KeywordChanged(keyword));
+                  context
+                      .read<SelectDeviceBloc>()
+                      .add(KeywordSearched(keyword));
                 }
               },
-              onFieldSubmitted: (String? keyword) {
-                context
-                    .read<SelectDeviceBloc>()
-                    .add(const DeviceDataSearched());
-              },
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(5),
+                contentPadding: const EdgeInsets.all(6),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(width: 1.0),
                 ),
@@ -151,28 +148,35 @@ class _KeywordInput extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
-                suffixIcon: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  color: Colors.grey,
-                  child: IconButton(
-                    color: Colors.white,
-                    splashColor: Colors.blue.shade100,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.search_outlined,
-                    ),
-                    onPressed: () {
-                      context
-                          .read<SelectDeviceBloc>()
-                          .add(const DeviceDataSearched());
-                    },
-                  ),
-                ),
+                suffixIconConstraints: state.keyword.isNotEmpty
+                    ? const BoxConstraints(
+                        maxHeight: 34,
+                        maxWidth: 34,
+                        minHeight: 34,
+                        minWidth: 34)
+                    : null,
+                suffixIcon: state.keyword.isNotEmpty
+                    ? Material(
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(4.0),
+                          bottomRight: Radius.circular(4.0),
+                        ),
+                        color: Colors.grey,
+                        child: IconButton(
+                          color: Colors.white,
+                          splashColor: Colors.blue.shade100,
+                          icon: const Icon(
+                            CustomIcons.cancel,
+                          ),
+                          onPressed: () {
+                            _controller.clear();
+                            context
+                                .read<SelectDeviceBloc>()
+                                .add(const KeywordCleared());
+                          },
+                        ),
+                      )
+                    : null,
               ),
             ),
           );

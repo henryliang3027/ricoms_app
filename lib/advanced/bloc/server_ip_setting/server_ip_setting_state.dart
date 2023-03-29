@@ -5,30 +5,30 @@ class ServerIPSettingState extends Equatable {
     this.status = FormStatus.none,
     this.submissionStatus = SubmissionStatus.none,
     this.isEditing = false,
-    this.masterServerIP = const DeviceIP.pure(),
-    this.slaveServerIP = const DeviceIP.pure(),
+    this.masterServerIP = const IPv4.pure(),
+    this.slaveServerIP = const IPv4.pure(),
     this.synchronizationInterval = '',
-    this.onlineServerIP = const DeviceIP.pure(),
+    this.onlineServerIP = const IPv4.pure(),
     this.errmsg = '',
   });
 
   final FormStatus status;
   final SubmissionStatus submissionStatus;
   final bool isEditing;
-  final DeviceIP masterServerIP;
-  final DeviceIP slaveServerIP;
+  final IPv4 masterServerIP;
+  final IPv4 slaveServerIP;
   final String synchronizationInterval;
-  final DeviceIP onlineServerIP;
+  final IPv4 onlineServerIP;
   final String errmsg;
 
   ServerIPSettingState copyWith({
     FormStatus? status,
     SubmissionStatus? submissionStatus,
     bool? isEditing,
-    DeviceIP? masterServerIP,
-    DeviceIP? slaveServerIP,
+    IPv4? masterServerIP,
+    IPv4? slaveServerIP,
     String? synchronizationInterval,
-    DeviceIP? onlineServerIP,
+    IPv4? onlineServerIP,
     String? errmsg,
   }) {
     return ServerIPSettingState(

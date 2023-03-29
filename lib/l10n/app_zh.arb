@@ -79,8 +79,9 @@
     "deviceSettingTab_wanSettings": "WAN 設定",
     "deviceSettingTab_snmpSetup": "SNMP 設定",
     "deviceSettingTab_discreteProperty": "離散屬性",
-    
     "multipleYAxis": "多Y軸圖表",
+    "lineChart": "折線圖",
+
     "alarmRatio": "告警百分比",
     "deviceStatus": "裝置狀態",
     "allDeviceStatus": "全部裝置",
@@ -221,6 +222,9 @@
     "dialogMessage_lostConnectionToServerContent": "請檢查您的網路連線後再重新登入",
     "dialogMessage_resetToRICOMSDefault": "確認回復 RICOMS 預設設定 ?",
     "dialogMessage_resetToDefaultSetting": "確認執行回復 RICOMS 出廠設定值 ?",
+    "dialogMessage_AskBeforeLogout": "您確定要登出嗎?",
+    "dialogMessage_leafNodehasBeenDeleted": "裝置已被刪除。",
+    "dialogTitle_Logout": "Logout",
     "dialogTitle_resetToDefaultSetting": "回復預設設定",
     "dialogTitle_lostConnectionToServer": "失去與伺服器的連線",
     "dialogTitle_NoMoreData": "搜尋成功！",

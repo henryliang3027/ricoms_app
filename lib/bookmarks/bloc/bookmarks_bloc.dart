@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/bookmarks_repository.dart';
+import 'package:ricoms_app/repository/bookmarks_repository/bookmarks_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'bookmarks_event.dart';
@@ -68,17 +69,26 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
     if (result[0]) {
       List<Device> devices = result[1];
-      if (devices.length < _deviceMetas.length) {
-        hasReachedMax = false;
+      if (devices.isNotEmpty) {
+        if (devices.length < _deviceMetas.length) {
+          hasReachedMax = false;
+        } else {
+          hasReachedMax = true;
+        }
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          devices: devices,
+          hasReachedMax: hasReachedMax,
+        ));
       } else {
-        hasReachedMax = true;
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          requestErrorMsg: 'There are no records to show',
+          hasReachedMax: true,
+        ));
       }
-      emit(state.copyWith(
-        formStatus: FormStatus.requestSuccess,
-        devices: result[1],
-        hasReachedMax: hasReachedMax,
-      ));
     } else {
+      // connection failed
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
         requestErrorMsg: result[1],
@@ -91,12 +101,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     MoreBookmarksRequested event,
     Emitter<BookmarksState> emit,
   ) async {
-    // emit(state.copyWith(
-    //   loadMoreDevicesStatus: FormStatus.requestInProgress,
-    //   deviceDeleteStatus: FormStatus.none,
-    //   targetDeviceStatus: FormStatus.none,
-    // ));
-
     List<dynamic> result = await _bookmarksRepository.getBookmarks(
         user: _user,
         deviceMetas: _deviceMetas,
@@ -119,6 +123,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         devices: originalDevices,
       ));
     } else {
+      // connection failed
       emit(state.copyWith(
         loadMoreDeviceStatus: FormStatus.requestFailure,
         hasReachedMax: true,
@@ -183,27 +188,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         selectedDevices: const [],
         isDeleteMode: false,
       ));
-
-      // List<dynamic> resultOfRetrieve =
-      //     await _bookmarksRepository.getBookmarks(user: _user);
-
-      // if (resultOfRetrieve[0]) {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestSuccess,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     devices: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // } else {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestFailure,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     requestErrorMsg: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
@@ -246,27 +230,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         selectedDevices: const [],
         isDeleteMode: false,
       ));
-
-      // List<dynamic> resultOfRetrieve =
-      //     await _bookmarksRepository.getBookmarks(user: _user);
-
-      // if (resultOfRetrieve[0]) {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestSuccess,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     devices: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // } else {
-      //   emit(state.copyWith(
-      //     formStatus: FormStatus.requestFailure,
-      //     deviceDeleteStatus: FormStatus.requestSuccess,
-      //     requestErrorMsg: resultOfRetrieve[1],
-      //     selectedDevices: const [],
-      //     isDeleteMode: false,
-      //   ));
-      // }
     } else {
       emit(state.copyWith(
         formStatus: FormStatus.requestFailure,
@@ -311,7 +274,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       isDeleteMode: false,
     ));
 
-    List<dynamic> result = await _bookmarksRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

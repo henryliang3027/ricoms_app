@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/trap_alarm_sound/trap_alarm_sound_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_alarm_sound_view/trap_alarm_sound_form.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/trap_alarm_sound_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/trap_alarm_sound_repository/trap_alarm_sound_repository.dart';
 
 class TrapAlarmSoundPage extends StatelessWidget {
   const TrapAlarmSoundPage({Key? key}) : super(key: key);

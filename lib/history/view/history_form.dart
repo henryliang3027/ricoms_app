@@ -8,7 +8,7 @@ import 'package:ricoms_app/history/view/device_history_detail_page.dart';
 import 'package:ricoms_app/history/view/search_page.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/history_repository/history_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
@@ -125,8 +125,6 @@ class HistoryForm extends StatelessWidget {
                       type: 'application/vnd.ms-excel',
                       uti: 'com.microsoft.excel.xls',
                     );
-
-                    print(result.message);
                   },
                 ),
               ),
@@ -249,7 +247,7 @@ class _PopupMenu extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Icon(
-                  CustomIcons.filter,
+                  CustomIcons.filters,
                   size: 20.0,
                   color: Colors.black,
                 ),
@@ -484,12 +482,25 @@ class _HistorySliverList extends StatelessWidget {
                 : _showEmptyContent(context),
           );
         } else if (state.status.isRequestFailure) {
-          return Center(
-            child: Text(
-              getMessageLocalization(
-                msg: state.errmsg,
-                context: context,
-              ),
+          return Container(
+            width: double.maxFinite,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_rounded,
+                  size: 200,
+                  color: Color(0xffffc107),
+                ),
+                Text(
+                  getMessageLocalization(
+                    msg: state.errmsg,
+                    context: context,
+                  ),
+                ),
+                const SizedBox(height: 40.0),
+              ],
             ),
           );
         } else {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/bloc/default_setting/default_setting_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/default_setting_repository.dart';
-import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
-import 'package:ricoms_app/repository/log_record_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/default_setting_repository/default_setting_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/device_working_cycle_repository/device_working_cycle_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/log_record_setting_repository/log_record_setting_repository.dart';
 
 import 'default_setting_form.dart';
 

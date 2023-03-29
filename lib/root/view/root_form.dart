@@ -7,7 +7,7 @@ import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/root_repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
@@ -111,6 +111,41 @@ class RootForm extends StatelessWidget {
       );
     }
 
+    Future<void> _showDeviceHasBeenDeletedDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.notice,
+              style: const TextStyle(
+                color: CustomStyle.customRed,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    AppLocalizations.of(context)!
+                        .dialogMessage_leafNodehasBeenDeleted,
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // pop dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return BlocListener<RootBloc, RootState>(
       listener: (context, state) async {
         if (state.submissionStatus.isSubmissionInProgress) {
@@ -159,6 +194,8 @@ class RootForm extends StatelessWidget {
                 ),
               ),
             );
+        } else if (state.isDeviceHasBeenDeleted) {
+          _showDeviceHasBeenDeletedDialog();
         }
       },
       child: WillPopScope(
@@ -271,119 +308,127 @@ class _PopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PopupMenuItem<Menu> _getSearchMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.search,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.search,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.search,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getfavoriteMenuItem(
+      bool isAddedToBookmarks,
+    ) {
+      return PopupMenuItem<Menu>(
+        value: Menu.favorite,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            isAddedToBookmarks
+                ? const Icon(
+                    Icons.star_outlined,
+                    size: 20.0,
+                    color: Colors.amber,
+                  )
+                : const Icon(
+                    Icons.star_border_outlined,
+                    size: 20.0,
+                    color: Colors.black,
+                  ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.favorite,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getDatasheetMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.datasheet,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.assignment_outlined,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.datasheet,
+            ),
+          ],
+        ),
+      );
+    }
+
+    PopupMenuItem<Menu> _getExportMenuItem() {
+      return PopupMenuItem<Menu>(
+        value: Menu.export,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(
+              CustomIcons.export,
+              size: 20.0,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Text(
+              AppLocalizations.of(context)!.export,
+            ),
+          ],
+        ),
+      );
+    }
+
     return BlocBuilder<RootBloc, RootState>(builder: (context, state) {
       List<PopupMenuEntry<Menu>> _buildPopupMenu() {
         if (state.directory.last.type == 5 || state.directory.last.type == 2) {
-          return [
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
+          if (state.directory.last.status != 0) {
+            // unknown
+            return [
+              _getSearchMenuItem(),
+              _getfavoriteMenuItem(
+                state.isAddedToBookmarks,
               ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.favorite,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  state.isAddedToBookmarks
-                      ? const Icon(
-                          Icons.star_outlined,
-                          size: 20.0,
-                          color: Colors.amber,
-                        )
-                      : const Icon(
-                          Icons.star_border_outlined,
-                          size: 20.0,
-                          color: Colors.black,
-                        ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.favorite,
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.datasheet,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.assignment_outlined,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.datasheet,
-                  ),
-                ],
-              ),
-            ),
-          ];
+              _getDatasheetMenuItem(),
+            ];
+          } else {
+            return [
+              _getSearchMenuItem(),
+            ];
+          }
         } else {
           return [
-            PopupMenuItem<Menu>(
-              value: Menu.search,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.search,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.search,
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.export,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(
-                    CustomIcons.export,
-                    size: 20.0,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.export,
-                  ),
-                ],
-              ),
-            )
+            _getSearchMenuItem(),
+            _getExportMenuItem(),
           ];
         }
       }
@@ -479,7 +524,7 @@ class _NodeContent extends StatelessWidget {
 
   SliverChildBuilderDelegate _rootSliverChildBuilderDelegate(
     Node parentNode,
-    List data,
+    List childData,
     bool enabledEdit,
     bool enabledDelete,
   ) {
@@ -488,7 +533,7 @@ class _NodeContent extends StatelessWidget {
         // if (kDebugMode) {
         //   print('build _rootSliverChildBuilderDelegate : $index');
         // }
-        Node node = data[index];
+        Node node = childData[index];
         return Padding(
           padding: const EdgeInsets.all(1.0),
           child: Material(
@@ -535,7 +580,7 @@ class _NodeContent extends StatelessWidget {
                         Container(
                           width: CommonStyle.severityRectangleWidth,
                           height: CommonStyle.severityRectangleHeight,
-                          color: CustomStyle.severityColor[node.status],
+                          color: CustomStyle.nodeStatusColor[node.status],
                         ),
                       ],
                     ),
@@ -566,7 +611,7 @@ class _NodeContent extends StatelessWidget {
           ),
         );
       },
-      childCount: data.length,
+      childCount: childData.length,
     );
   }
 
@@ -579,6 +624,32 @@ class _NodeContent extends StatelessWidget {
       if (state.formStatus.isRequestSuccess) {
         if (state.directory.last.type == 2 || state.directory.last.type == 5) {
           // 2: edfa, 5: a8k slot
+
+          if (state.directory.last.status == 0) {
+            return Expanded(
+              child: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.warning_rounded,
+                      size: 200,
+                      color: Color(0xffffc107),
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!
+                          .dialogMessage_DeviceDoesNotRespond,
+                    ),
+                    const SizedBox(height: 40.0),
+                  ],
+                ),
+              ),
+            );
+          }
+
           descriptionChangeNotifier() =>
               context.read<RootBloc>().add(const DeviceTypeNodeUpdated());
 
@@ -591,7 +662,7 @@ class _NodeContent extends StatelessWidget {
         } else {
           if (state.directory.last.type == 1) {
             //group
-            if (state.data.isEmpty) {
+            if (state.childData.isEmpty) {
               return Expanded(
                 child: Center(
                   child: Text(
@@ -609,7 +680,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))
@@ -651,7 +722,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))
@@ -690,7 +761,7 @@ class _NodeContent extends StatelessWidget {
                   SliverList(
                       delegate: _rootSliverChildBuilderDelegate(
                     state.directory.last,
-                    state.data,
+                    state.childData,
                     _userFunctionMap[9],
                     _userFunctionMap[10],
                   ))

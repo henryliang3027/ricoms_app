@@ -3,10 +3,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/history/model/search_critria.dart';
-import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/history_repository/history_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/common_request.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'history_event.dart';
@@ -143,7 +144,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       historyExportStatus: FormStatus.none,
     ));
 
-    List<dynamic> result = await _historyRepository.getDeviceStatus(
+    List<dynamic> result = await getDeviceStatus(
       user: _user,
       path: event.path,
     );

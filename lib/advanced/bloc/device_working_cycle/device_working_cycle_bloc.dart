@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:ricoms_app/repository/device_working_cycle_repository.dart';
+import 'package:ricoms_app/repository/advanced_repository/device_working_cycle_repository/device_working_cycle_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
+import 'package:ricoms_app/utils/custom_errmsg.dart';
 
 part 'device_working_cycle_event.dart';
 part 'device_working_cycle_state.dart';
@@ -28,6 +29,7 @@ class DeviceWorkingCycleBloc
   final User _user;
   final DeviceWorkingCycleRepository _deviceWorkingCycleRepository;
 
+  /// 處理裝置輪詢週期的資料的獲取
   void _onDeviceWorkingCycleRequested(
     DeviceWorkingCycleRequested event,
     Emitter<DeviceWorkingCycleState> emit,
@@ -54,12 +56,12 @@ class DeviceWorkingCycleBloc
     emit(state.copyWith());
   }
 
+  /// 處理裝置輪詢週期的元件的數值儲存, 向後端更新設定值
   void _onDeviceWorkingCycleSaved(
     DeviceWorkingCycleSaved event,
     Emitter<DeviceWorkingCycleState> emit,
   ) async {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.submissionInProgress,
     ));
 
@@ -75,38 +77,39 @@ class DeviceWorkingCycleBloc
       emit(state.copyWith(
         submissionStatus: SubmissionStatus.submissionFailure,
         isEditing: true,
+        submissionErrorMsg: CustomErrMsg.connectionFailed,
       ));
     }
   }
 
+  /// 處理裝置輪詢週期的元件的數值更改
   void _onDeviceWorkingCycleChanged(
     DeviceWorkingCycleChanged event,
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       deviceWorkingCycleIndex: event.index,
     ));
   }
 
+  /// 處理編輯模式的開啟
   void _onEditModeEnabled(
     EditModeEnabled event,
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       isEditing: true,
     ));
   }
 
+  /// 處理編輯模式的關閉
   void _onEditModeDisabled(
     EditModeDisabled event,
     Emitter<DeviceWorkingCycleState> emit,
   ) {
     emit(state.copyWith(
-      status: FormStatus.none,
       submissionStatus: SubmissionStatus.none,
       isEditing: false,
     ));

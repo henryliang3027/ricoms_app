@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/history_repository.dart';
+import 'package:ricoms_app/repository/history_repository/history_repository.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';

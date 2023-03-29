@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 
 class DeviceSettingStyle {
@@ -18,8 +19,8 @@ class DeviceSettingStyle {
   static void getSettingData({
     required dynamic e,
     required List<ControllerProperty> controllerProperties,
-    required Map<String, String> controllerValues,
-    required Map<String, String> controllerInitialValues,
+    required Map<String, dynamic> controllerValues,
+    required Map<String, dynamic> controllerInitialValues,
   }) {
     int style = e['style'] ?? -1;
     int length = e['length'] ?? 1;
@@ -27,6 +28,7 @@ class DeviceSettingStyle {
     String value = e['value'] ?? '';
     double font = e['font'] != null ? (e['font'] as int).toDouble() : 14.0;
     int status = e['status'] ?? 0;
+    int? format = e['format'];
     String rawParameter = (e['parameter'] ?? '').toString();
     int rawReadOnly = e['readonly'] ?? 0;
     String id = e['id'] != null ? e['id'].toString() : '-1';
@@ -35,17 +37,49 @@ class DeviceSettingStyle {
 
     switch (style) {
       case 0: //文字輸入方塊
+        int? maxLength;
+        CustomInput customInput;
+        if (format == 1) {
+          maxLength = 6;
+          customInput = Input6.dirty(value);
+        } else if (format == 2) {
+          maxLength = 7;
+          customInput = Input7.dirty(value);
+        } else if (format == 3) {
+          maxLength = 8;
+          customInput = Input8.dirty(value);
+        } else if (format == 4) {
+          maxLength = 31;
+          customInput = Input31.dirty(value);
+        } else if (format == 5) {
+          maxLength = 63;
+          customInput = Input63.dirty(value);
+        } else if (format == 6) {
+          maxLength = null;
+          customInput = InputInfinity.dirty(value);
+        } else if (format == 11) {
+          maxLength = 15;
+          customInput = IPv4.dirty(value);
+        } else if (format == 12) {
+          maxLength = 23;
+          customInput = IPv6.dirty(value);
+        } else {
+          maxLength = null;
+          customInput = InputInfinity.dirty(value);
+        }
+
         TextFieldProperty textFieldProperty = TextFieldProperty(
           oid: id,
           initValue: value,
           readOnly: readOnly,
           boxLength: length,
           fontSize: font,
+          maxLength: maxLength,
         );
         controllerProperties.add(textFieldProperty);
 
-        controllerValues[id] = value;
-        controllerInitialValues[id] = value;
+        controllerValues[id] = customInput;
+        controllerInitialValues[id] = customInput;
 
         break;
       case 1: //下拉式功能表
@@ -133,7 +167,11 @@ class DeviceSettingStyle {
         break;
 
       case 99: //勾選方塊
-        bool initValue = value == '0' || value == "" ? false : true;
+        bool? initValue = value == ""
+            ? null
+            : value == '0'
+                ? false
+                : true;
         CheckBoxProperty checkBoxProperty = CheckBoxProperty(
           oid: id,
           initValue: initValue,
@@ -709,6 +747,7 @@ class TextFieldProperty extends ControllerProperty {
     this.readOnly = false,
     this.maxLine = 1,
     this.boxLength = 1,
+    this.maxLength,
     this.fontSize = 14.0,
     this.textAlign = TextAlign.center,
   });
@@ -717,6 +756,7 @@ class TextFieldProperty extends ControllerProperty {
   final String initValue;
   final bool readOnly;
   final int maxLine;
+  final int? maxLength;
   final int boxLength;
   final double fontSize;
   final TextAlign textAlign;
@@ -789,7 +829,7 @@ class CheckBoxProperty extends ControllerProperty {
   });
 
   final String oid;
-  final bool initValue;
+  final bool? initValue;
   final bool readOnly;
   final int boxLength;
 }

@@ -8,7 +8,7 @@ class EditTrapForwardState extends Equatable {
     this.isInitController = false,
     this.enable = false,
     this.name = const Name.pure(),
-    this.ip = const DeviceIP.pure(),
+    this.ip = const IPv4.pure(),
     this.parameters = const [],
     this.submissionMsg = '',
   });
@@ -19,7 +19,7 @@ class EditTrapForwardState extends Equatable {
   final bool isInitController;
   final bool enable;
   final Name name;
-  final DeviceIP ip;
+  final IPv4 ip;
   final List<Parameter> parameters;
   final String submissionMsg;
 
@@ -30,7 +30,7 @@ class EditTrapForwardState extends Equatable {
     bool? isInitController,
     bool? enable,
     Name? name,
-    DeviceIP? ip,
+    IPv4? ip,
     List<Parameter>? parameters,
     String? submissionMsg,
   }) {

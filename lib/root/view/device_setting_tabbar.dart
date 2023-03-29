@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
-import 'package:ricoms_app/repository/device_repository.dart';
-import 'package:ricoms_app/repository/root_repository.dart';
+import 'package:ricoms_app/repository/root_repository/device_repository.dart';
+import 'package:ricoms_app/repository/root_repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/device/device_bloc.dart';
 import 'package:ricoms_app/root/view/device_history_page.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/device_monitoring_chart_page.dart';
@@ -51,63 +51,66 @@ class DeviceSettingTabBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    width: double.maxFinite,
                     color: Colors.blue,
-                    child: TabBar(
-                      unselectedLabelColor: Colors.white,
-                      labelColor: Colors.blue,
-                      isScrollable: true,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicator: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        color: Colors.white,
+                    child: Center(
+                      child: TabBar(
+                        unselectedLabelColor: Colors.white,
+                        labelColor: Colors.blue,
+                        isScrollable: true,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicator: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          color: Colors.white,
+                        ),
+                        labelPadding:
+                            const EdgeInsets.symmetric(horizontal: 24.0),
+                        tabs: [
+                          if (isA8KPCM2()) ...[
+                            for (DeviceBlock deviceBlock in deviceBlocks)
+                              Tab(
+                                child: SizedBox(
+                                  width: 130,
+                                  child: Center(
+                                    child: Text(
+                                      getMessageLocalization(
+                                        msg: deviceBlock.name,
+                                        context: context,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ] else ...[
+                            for (DeviceBlock deviceBlock in deviceBlocks)
+                              Tab(
+                                child: SizedBox(
+                                  width: 130,
+                                  child: Center(
+                                    child: Text(
+                                      getMessageLocalization(
+                                        msg: deviceBlock.name,
+                                        context: context,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Tab(
+                              child: SizedBox(
+                                width: 120,
+                                child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.history,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]
+                        ],
                       ),
-                      labelPadding:
-                          const EdgeInsets.symmetric(horizontal: 24.0),
-                      tabs: [
-                        if (isA8KPCM2()) ...[
-                          for (DeviceBlock deviceBlock in deviceBlocks)
-                            Tab(
-                              child: SizedBox(
-                                width: 130,
-                                child: Center(
-                                  child: Text(
-                                    getMessageLocalization(
-                                      msg: deviceBlock.name,
-                                      context: context,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ] else ...[
-                          for (DeviceBlock deviceBlock in deviceBlocks)
-                            Tab(
-                              child: SizedBox(
-                                width: 130,
-                                child: Center(
-                                  child: Text(
-                                    getMessageLocalization(
-                                      msg: deviceBlock.name,
-                                      context: context,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          Tab(
-                            child: SizedBox(
-                              width: 120,
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.history,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]
-                      ],
                     ),
                   ),
                   Expanded(

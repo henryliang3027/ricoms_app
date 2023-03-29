@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ricoms_app/repository/system_log_repository.dart';
+import 'package:ricoms_app/repository/system_log_repository/system_log_repository.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/display_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

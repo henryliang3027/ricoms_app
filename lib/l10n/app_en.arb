@@ -109,7 +109,7 @@
       "description": "about article paragraph title"
     },
 
-    "aboutArticleParagraph6": "Our development team includes web project managers, web designers, Front-end / Back-end programmers and system engineers. ACI believes that the correctly designed network management system ( RICOMS ) will help clients in executing accurate, timely, and quick-response monitoring jobs, as well as reaping other benefits. And we will keep improving our ability to gain experience, learn and grow, develop creativity, keep up with the times and integrate with new technologies, absorb the customer feedback, develop more professional equipment monitoring products and global services, and realize the concept of remote monitoring services.",
+    "aboutArticleParagraph6": "Our development team includes web project managers, web designers, Front-end / Back-end programmers and system engineers. Twoway Group believes that the correctly designed network management system ( RICOMS ) will help clients in executing accurate, timely, and quick-response monitoring jobs, as well as reaping other benefits. And we will keep improving our ability to gain experience, learn and grow, develop creativity, keep up with the times and integrate with new technologies, absorb the customer feedback, develop more professional equipment monitoring products and global services, and realize the concept of remote monitoring services.",
     "@setting": {
       "description": "about article paragraph title"
     },
@@ -379,6 +379,11 @@
     "multipleYAxis": "Multiple y-axis chart",
     "@all": {
       "description": "multiple y-axis chart"
+    },
+
+    "lineChart": "Line Chart",
+    "@all": {
+      "description": "line chart"
     },
 
     "alarmRatio": "Alarm Ratio",
@@ -959,7 +964,7 @@
       "description": "Please allow permission before you export your data."
     },
 
-    "dialogMessage_AskBeforeDelete": "Are you sure you want to delete ",
+    "dialogMessage_AskBeforeDelete": "Do you want to delete ",
     "@all": {
       "description": "ask before delete"
     },
@@ -1043,6 +1048,16 @@
     "dialogMessage_resetToDefaultSetting": "Do you want to reset these setting to default ?",
     "@all": {
       "description": "Do you want to reset these setting to default ?"
+    },
+
+    "dialogMessage_AskBeforeLogout": "Do you want to logout ?",
+    "@all": {
+      "description": "Do you want to logout ?"
+    },
+
+    "dialogMessage_leafNodehasBeenDeleted": "The device has been deleted.",
+    "@all": {
+      "description": "The device has been deleted."
     },
 
     "dialogTitle_resetToDefaultSetting": "Reset",
@@ -1130,9 +1145,9 @@
       "description": "edit device or group success"
     },
 
-    "dialogTitle_AskBeforeExitApp": "Are you sure you want to exit App ?",
+    "dialogTitle_AskBeforeExitApp": "Do you want to exit App ?",
     "@all": {
-      "description": "Are you sure you want to exit app ?"
+      "description": "Do you want to exit app ?"
     },
 
     "dialogTitle_resetToRICOMSDefault": "Reset to RICOMS default",

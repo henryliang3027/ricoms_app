@@ -1,10 +1,10 @@
-import 'package:ricoms_app/repository/authentication_repository.dart';
+import 'package:ricoms_app/repository/authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:ricoms_app/login/models/ip.dart';
 import 'package:ricoms_app/login/models/username.dart';
 import 'package:ricoms_app/login/models/password.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:ricoms_app/root/models/custom_input.dart';
 part 'login_event.dart';
 part 'login_state.dart';
 
@@ -25,7 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginIPChanged event,
     Emitter<LoginState> emit,
   ) {
-    final ip = IP.dirty(event.ip);
+    final ip = IPv4.dirty(event.ip);
     emit(
       state.copyWith(
         ip: ip,
