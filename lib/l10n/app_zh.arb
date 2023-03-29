@@ -224,7 +224,6 @@
     "dialogMessage_resetToDefaultSetting": "確認執行回復 RICOMS 出廠設定值 ?",
     "dialogMessage_AskBeforeLogout": "您確定要登出嗎?",
     "dialogMessage_leafNodehasBeenDeleted": "裝置已被刪除。",
-    "dialogTitle_Logout": "Logout",
     "dialogTitle_resetToDefaultSetting": "回復預設設定",
     "dialogTitle_lostConnectionToServer": "失去與伺服器的連線",
     "dialogTitle_NoMoreData": "搜尋成功！",
