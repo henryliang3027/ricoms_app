@@ -462,10 +462,8 @@ class AuthenticationRepository {
           String permission = data['data'][0]['permission'];
 
           if (user.permission == permission) {
-            print('msg: ${user.permission}, ${permission}');
             return [true, false];
           } else {
-            print('msg: ${user.permission}, ${permission}');
             return [true, true];
           }
         } else {
@@ -474,7 +472,6 @@ class AuthenticationRepository {
           return [false, false];
         }
       } on DioError catch (_) {
-        print('msg: DioError');
         return [false, CustomErrMsg.connectionFailed];
       }
     } else {
