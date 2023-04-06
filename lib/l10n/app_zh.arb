@@ -143,7 +143,6 @@
     "telErrorText": "這不是有效的電話號碼。",
     "extErrorText": "這不是有效的分機號碼。",
     "ipErrorText": "這不是有效的IP位址。",
-    "passwordDoesNotMatch": "您輸入的兩個密碼並不相符，請再試一次。",
 
     "currentPassword": "當前密碼",
     "currentPasswordHelperText": "請輸入當前密碼",
@@ -224,6 +223,8 @@
     "dialogMessage_resetToDefaultSetting": "確認執行回復 RICOMS 出廠設定值 ?",
     "dialogMessage_AskBeforeLogout": "您確定要登出嗎?",
     "dialogMessage_leafNodehasBeenDeleted": "裝置已被刪除。",
+    "dialogMessage_passwordDoesNotMatch": "您輸入的兩個密碼並不相符，請再試一次。",
+    "dialogMessage_originalPasswordIncorrect": "修改密碼失敗，原密碼輸入錯誤",
     "dialogTitle_resetToDefaultSetting": "回復預設設定",
     "dialogTitle_lostConnectionToServer": "失去與伺服器的連線",
     "dialogTitle_NoMoreData": "搜尋成功！",

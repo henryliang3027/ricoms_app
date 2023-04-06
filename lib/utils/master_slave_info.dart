@@ -20,18 +20,19 @@ class MasterSlaveServerInfo {
     String _getSubstituteIP({
       required String loginIP,
     }) {
+      // 如果在已經登入時登出 onlineServerIP 不為空字串, 則回傳 onlineServerIP
       if (MasterSlaveServerInfo.onlineServerIP != '') {
-        // 如果 onlineServerIP 不為空字串, 則回傳 onlineServerIP
-        return MasterSlaveServerInfo.onlineServerIP;
-      } else {
-        // 如果 onlineServerIP 為空字串, 則切換ip
-        // 如果登入ip == masterServerIP, 則切換 slaveServerIP
-        // 如果登入ip == slaveServerIP, 則切換 masterServerIP
-        if (loginIP == MasterSlaveServerInfo.masterServerIP) {
-          return MasterSlaveServerInfo.slaveServerIP;
+        // 如果 login ip == masterServerIP 或 slaveServerIP, 則回傳 online ip
+        if (loginIP == MasterSlaveServerInfo.masterServerIP ||
+            loginIP == MasterSlaveServerInfo.slaveServerIP) {
+          return MasterSlaveServerInfo.onlineServerIP;
         } else {
-          return MasterSlaveServerInfo.masterServerIP;
+          // 如果不是, 則回傳輸入的 loginIP (這樣才會顯示 login IP 錯誤訊息)
+          return loginIP;
         }
+      } else {
+        // 如果是開啟app時首次登入, MasterSlaveServerInfo 都是空字串, 所以直接回傳輸入的 loginIP
+        return loginIP;
       }
     }
 
@@ -62,8 +63,7 @@ class MasterSlaveServerInfo {
           return loginIP;
         }
       } else {
-        // 如果api取得資料失敗, 判斷 online server ip 是否不為空
-        // 不為空則回傳 onlineServerIP
+        // 如果api取得資料失敗, 則判斷是否切換ip
         return _getSubstituteIP(
           loginIP: loginIP,
         );

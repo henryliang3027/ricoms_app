@@ -668,11 +668,6 @@
       "description": "Invalid ip address."
     },
 
-    "passwordDoesNotMatch": "Your confirmation password does not match the new password.",
-    "@all": {
-      "description": "Your confirmation password does not match the new password."
-    },
-
     "currentPassword": "Current Password",
     "@all": {
       "description": "current password"
@@ -1058,6 +1053,16 @@
     "dialogMessage_leafNodehasBeenDeleted": "The device has been deleted.",
     "@all": {
       "description": "The device has been deleted."
+    },
+
+    "dialogMessage_passwordDoesNotMatch": "Your confirmation password does not match the new password.",
+    "@all": {
+      "description": "Your confirmation password does not match the new password."
+    },
+
+    "dialogMessage_originalPasswordIncorrect": "Modify password failed, original password incorrect.",
+    "@all": {
+      "description": "Modify password failed, original password incorrect."
     },
 
     "dialogTitle_resetToDefaultSetting": "Reset",

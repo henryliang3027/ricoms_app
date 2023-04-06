@@ -156,12 +156,14 @@ class _CurrentPasswordInput extends StatelessWidget {
               .add(CurrentPasswordChanged(password)),
           obscureText: !state.currentPasswordVisibility,
           obscuringCharacter: '●',
+          maxLength: 32,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(5),
             border: const OutlineInputBorder(),
             isDense: true,
             filled: true,
             fillColor: Colors.white,
+            counterText: '',
             hintText: AppLocalizations.of(context)!.currentPassword,
             hintStyle: const TextStyle(
               fontSize: CommonStyle.sizeL,
@@ -213,12 +215,14 @@ class _NewPasswordInput extends StatelessWidget {
               .add(NewPasswordChanged(password)),
           obscureText: !state.newPasswordVisibility,
           obscuringCharacter: '●',
+          maxLength: 32,
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(5),
               border: const OutlineInputBorder(),
               isDense: true,
               filled: true,
               fillColor: Colors.white,
+              counterText: '',
               hintText: AppLocalizations.of(context)!.newPassword,
               hintStyle: const TextStyle(
                 fontSize: CommonStyle.sizeL,
@@ -270,12 +274,14 @@ class _ConfirmPasswordInput extends StatelessWidget {
               .add(ConfirmPasswordChanged(password)),
           obscureText: !state.confirmPasswordVisibility,
           obscuringCharacter: '●',
+          maxLength: 32,
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(5),
               border: const OutlineInputBorder(),
               isDense: true,
               filled: true,
               fillColor: Colors.white,
+              counterText: '',
               hintText: AppLocalizations.of(context)!.confirmPassword,
               hintStyle: const TextStyle(
                 fontSize: CommonStyle.sizeL,

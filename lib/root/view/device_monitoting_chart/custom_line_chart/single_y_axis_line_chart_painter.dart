@@ -331,7 +331,6 @@ class SingleYAxisLineChartPainter extends CustomPainter {
     required double yStep,
   }) {
     for (Marker marker in markers) {
-      print('${marker.prefix} : ${marker.value}');
       Paint markerPaint = Paint()
         ..color = marker.color
         ..strokeWidth = 1.0

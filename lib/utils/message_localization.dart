@@ -50,7 +50,10 @@ String getMessageLocalization({
     return AppLocalizations.of(context)!.connectionFailed;
   } else if (msg ==
       'Your confirmation password does not match the new password.') {
-    return AppLocalizations.of(context)!.passwordDoesNotMatch;
+    return AppLocalizations.of(context)!.dialogMessage_passwordDoesNotMatch;
+  } else if (msg == 'Modify password failed, original password incorrect.') {
+    return AppLocalizations.of(context)!
+        .dialogMessage_originalPasswordIncorrect;
   } else if (msg == 'Status') {
     return AppLocalizations.of(context)!.deviceSettingTab_status;
   } else if (msg == 'Configuration') {
