@@ -189,7 +189,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     List<String> queries = [];
     queries.addAll(state.queries); // add current queries
 
-    if (_isDateQuery(queries[event.index])) {
+    if (isDateQuery(queries[event.index])) {
       queries.removeAt(event.index); // remove query by index
       emit(state.copyWith(
         startDate: '',
@@ -244,7 +244,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     List<String> keywordQueries = [];
     if (queries.isNotEmpty) {
-      if (_isDateQuery(queries[0])) {
+      if (isDateQuery(queries[0])) {
         keywordQueries.addAll(queries.skip(1));
       } else {
         keywordQueries.addAll(queries);
@@ -263,20 +263,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     Navigator.pop(event.context, searchCriteria);
   }
 
-  bool _isDateQuery(String query) {
-    RegExp dateRegex =
-        RegExp(r'^([0-9]+-[0-9]+-[0-9]+ - [0-9]+-[0-9]+-[0-9]+)$');
-    if (dateRegex.hasMatch(query)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   // if query is date, it should be add/update in the first index
   void _updateDateInQureies(List<String> queries, String date) {
     if (queries.isNotEmpty) {
-      if (_isDateQuery(queries[0])) {
+      if (isDateQuery(queries[0])) {
         //if first element is date, replace it with new date
         queries[0] = date;
       } else {

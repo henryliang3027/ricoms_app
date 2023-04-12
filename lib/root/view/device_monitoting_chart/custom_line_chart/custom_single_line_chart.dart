@@ -55,22 +55,6 @@ class CustomSingleLineChart extends StatelessWidget {
 
   List<Marker> _getMarkers() {
     List<Marker> markers = [];
-    if (majorH != null) {
-      markers.add(Marker(
-        value: majorH!,
-        prefix: 'MajorHI',
-        color: CustomStyle.severityColor[3]!,
-      ));
-    }
-
-    if (majorL != null) {
-      markers.add(Marker(
-        value: majorL!,
-        prefix: 'MajorLO',
-        color: CustomStyle.severityColor[3]!,
-      ));
-    }
-
     if (minorH != null) {
       markers.add(Marker(
         value: minorH!,
@@ -84,6 +68,22 @@ class CustomSingleLineChart extends StatelessWidget {
         value: minorL!,
         prefix: 'MinorLO',
         color: CustomStyle.severityColor[2]!,
+      ));
+    }
+
+    if (majorH != null) {
+      markers.add(Marker(
+        value: majorH!,
+        prefix: 'MajorHI',
+        color: CustomStyle.severityColor[3]!,
+      ));
+    }
+
+    if (majorL != null) {
+      markers.add(Marker(
+        value: majorL!,
+        prefix: 'MajorLO',
+        color: CustomStyle.severityColor[3]!,
       ));
     }
 

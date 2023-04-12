@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ricoms_app/system_log/bloc/filter/filter_bloc.dart';
+import 'package:ricoms_app/system_log/model/filter_critria.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -339,8 +340,13 @@ class _AppliedFilterList extends StatelessWidget {
                 state.queries.length,
                 (int index) {
                   return InputChip(
+                    // 檢查第一筆 InputChip 是不是日期的query, 來決定icon
+                    // 如果是則使用 calendar icon, 否則使用 tag icon
+                    // 其他筆 InputChip 都是用 tag icon
                     avatar: index == 0
-                        ? const Icon(Icons.calendar_month_outlined)
+                        ? isDateQuery(state.queries[index])
+                            ? const Icon(Icons.calendar_month_outlined)
+                            : const Icon(Icons.tag)
                         : const Icon(Icons.tag),
                     label: Text(state.queries[index]),
                     onDeleted: () {

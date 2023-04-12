@@ -15,3 +15,12 @@ class SearchCriteria {
   final bool unsolvedOnly;
   final List<String> queries;
 }
+
+bool isDateQuery(String query) {
+  RegExp dateRegex = RegExp(r'^([0-9]+-[0-9]+-[0-9]+ - [0-9]+-[0-9]+-[0-9]+)$');
+  if (dateRegex.hasMatch(query)) {
+    return true;
+  } else {
+    return false;
+  }
+}
