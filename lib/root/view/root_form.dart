@@ -435,6 +435,10 @@ class _PopupMenu extends StatelessWidget {
 
       if (state.formStatus.isRequestSuccess) {
         return PopupMenuButton<Menu>(
+          icon: const Icon(
+            Icons.more_vert_outlined,
+            color: Colors.white,
+          ),
           tooltip: '',
           onSelected: (Menu item) async {
             switch (item) {

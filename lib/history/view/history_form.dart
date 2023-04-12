@@ -219,6 +219,10 @@ class _PopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
       return PopupMenuButton<Menu>(
+        icon: const Icon(
+          Icons.more_vert_outlined,
+          color: Colors.white,
+        ),
         tooltip: '',
         onSelected: (Menu item) async {
           switch (item) {

@@ -552,19 +552,56 @@ class RootRepository {
 
       String rawData = response.data;
 
-      rawData = rawData.replaceAll('\"=\"', '');
-      rawData = rawData.replaceAll('\"', '');
+      // rawData = rawData.replaceAll('\"=\"', '');
+      // rawData = rawData.replaceAll('\"', '');
+      // rawData = rawData.replaceAll('\n', '\\n');
 
-      List<String> rawDataList = rawData.split('\n');
+      // RegExp regex = RegExp(r'(?<!\")\\n(?!\")');
+      // List<String> rawDataList = rawData.split(regex);
+
+      RegExp regExp = RegExp(r'"[^"]*"'); // 匹配雙引號内的字串
+      String specialToken = '\\n'; // 換行符號的特殊標記
+      String commaSpecialToken = '\u0000'; // 逗號的特殊標記
+
+      // 將在雙引號內的换行符號替換為特殊標記
+      String modifiedString = rawData.replaceAllMapped(regExp, (match) {
+        return match[0]!.replaceAll('\n', specialToken);
+      });
+
+      // 對替換後的字串進行分割
+      List<String> rawDataList = modifiedString.split('\n');
+
+      // 將特殊標記替换為真正的換行符號
+      for (int i = 0; i < rawDataList.length; i++) {
+        rawDataList[i] = rawDataList[i].replaceAll(specialToken, '\n');
+      }
 
       Excel excel = Excel.createExcel();
       Sheet sheet = excel['Sheet1'];
 
       for (int i = 0; i < rawDataList.length; i++) {
         if (rawDataList[i].isNotEmpty) {
-          List<String> line = rawDataList[i].split(',');
+          // 將在雙引號內的逗號替換為特殊標記
+          String modifiedSubString =
+              rawDataList[i].replaceAllMapped(regExp, (match) {
+            return match[0]!.replaceAll(',', commaSpecialToken);
+          });
 
-          sheet.insertRowIterables(line, i);
+          List<String> line = modifiedSubString.split(',');
+
+          // 將特殊標記替换為真正的逗號
+          for (int j = 0; j < line.length; j++) {
+            line[j] = line[j].replaceAll(commaSpecialToken, ',');
+          }
+
+          List<String> noQuotesLine = [];
+
+          // 將雙引號去掉, 替換為空字元
+          for (String word in line) {
+            noQuotesLine.add(word.replaceAll('\"', ''));
+          }
+
+          sheet.insertRowIterables(noQuotesLine, i);
         }
       }
 
