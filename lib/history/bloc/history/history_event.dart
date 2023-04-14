@@ -13,6 +13,13 @@ class HistoryRequested extends HistoryEvent {
   List<Object?> get props => [searchCriteria];
 }
 
+class RefreshHistoryRequested extends HistoryEvent {
+  const RefreshHistoryRequested();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class MoreRecordsRequested extends HistoryEvent {
   const MoreRecordsRequested(this.startTrapId);
 

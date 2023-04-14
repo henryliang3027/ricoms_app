@@ -8,6 +8,8 @@ class HistoryState extends Equatable {
     this.historyExportStatus = FormStatus.none,
     this.moreRecordsStatus = FormStatus.none,
     this.currentCriteria = const SearchCriteria(),
+    this.tapLoadNewerRecordsCount = 0,
+    this.tapLoadOlderRecordsCount = 0,
     this.errmsg = '',
     this.historyExportMsg = '',
     this.historyExportFilePath = '',
@@ -21,6 +23,8 @@ class HistoryState extends Equatable {
   final FormStatus historyExportStatus;
   final FormStatus moreRecordsStatus;
   final SearchCriteria currentCriteria;
+  final int tapLoadNewerRecordsCount;
+  final int tapLoadOlderRecordsCount;
   final String errmsg;
   final String historyExportMsg;
   final String historyExportFilePath;
@@ -34,6 +38,8 @@ class HistoryState extends Equatable {
     FormStatus? historyExportStatus,
     FormStatus? moreRecordsStatus,
     SearchCriteria? currentCriteria,
+    int? tapLoadNewerRecordsCount,
+    int? tapLoadOlderRecordsCount,
     String? errmsg,
     String? historyExportMsg,
     String? historyExportFilePath,
@@ -47,6 +53,10 @@ class HistoryState extends Equatable {
       historyExportStatus: historyExportStatus ?? this.historyExportStatus,
       moreRecordsStatus: moreRecordsStatus ?? this.moreRecordsStatus,
       currentCriteria: currentCriteria ?? this.currentCriteria,
+      tapLoadNewerRecordsCount:
+          tapLoadNewerRecordsCount ?? this.tapLoadNewerRecordsCount,
+      tapLoadOlderRecordsCount:
+          tapLoadOlderRecordsCount ?? this.tapLoadOlderRecordsCount,
       errmsg: errmsg ?? this.errmsg,
       historyExportMsg: historyExportMsg ?? this.historyExportMsg,
       historyExportFilePath:
@@ -65,6 +75,8 @@ class HistoryState extends Equatable {
         historyExportStatus,
         moreRecordsStatus,
         currentCriteria,
+        tapLoadNewerRecordsCount,
+        tapLoadOlderRecordsCount,
         errmsg,
         historyExportMsg,
         historyExportFilePath,

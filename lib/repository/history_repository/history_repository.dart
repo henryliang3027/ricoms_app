@@ -109,7 +109,7 @@ class HistoryRepository {
     }
   }
 
-  /// call api 依據條件取得更多歷史紀錄清單, 一次最多獲取 1000 筆, next = top：上一千筆 next = button：下一千筆
+  /// call api 依據條件取得更多歷史紀錄清單, 一次最多獲取 1000 筆, next = top：上一千筆(越舊) next = button：下一千筆(越新)
   Future<List<dynamic>> getMoreHistoryByFilter({
     required User user,
     String startDate = '',
@@ -185,9 +185,11 @@ class HistoryRepository {
             recordDataList.add(record);
           }
         }
-
+        Stopwatch stopwatch = Stopwatch()..start();
         // sort by received time from latest to oldest
         recordDataList.sort((b, a) => a.trapId.compareTo(b.trapId));
+
+        print('sort time ${stopwatch.elapsed.inSeconds}');
 
         return [true, recordDataList];
       } else {

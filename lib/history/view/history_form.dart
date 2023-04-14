@@ -458,32 +458,51 @@ class _HistorySliverList extends StatelessWidget {
           if (state.moreRecordsStatus.isRequestSuccess) {
             WidgetsBinding.instance?.addPostFrameCallback((_) {
               if (_scrollController.hasClients) {
-                _scrollController.animateTo(_scrollController.offset + 20,
-                    duration: const Duration(seconds: 1), curve: Curves.ease);
+                if (_scrollController.offset >=
+                    _scrollController.position.maxScrollExtent) {
+                  _scrollController.animateTo(_scrollController.offset + 20,
+                      duration: const Duration(seconds: 1), curve: Curves.ease);
+                }
               }
             });
           }
 
-          return Container(
-            color: Colors.grey.shade300,
-            child: state.records.isNotEmpty
-                ? Scrollbar(
-                    controller: _scrollController,
-                    thickness: 8.0,
-                    child: CustomScrollView(
+          return RefreshIndicator(
+            onRefresh: () async {
+              Future block = context.read<HistoryBloc>().stream.first;
+              context.read<HistoryBloc>().add(const RefreshHistoryRequested());
+              await block;
+            },
+            child: Container(
+              color: Colors.grey.shade300,
+              child: state.records.isNotEmpty
+                  ? Scrollbar(
                       controller: _scrollController,
-                      slivers: [
-                        SliverList(
-                          delegate: _historySliverChildBuilderDelegate(
-                            state.records,
-                            initialPath,
-                            pageController,
+                      interactive: true,
+                      thickness: 8.0,
+                      child: ScrollConfiguration(
+                        behavior: ScrollBehavior(),
+                        child: GlowingOverscrollIndicator(
+                          axisDirection: AxisDirection.down,
+                          color: Colors.blue,
+                          child: CustomScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            controller: _scrollController,
+                            slivers: [
+                              SliverList(
+                                delegate: _historySliverChildBuilderDelegate(
+                                  state.records,
+                                  initialPath,
+                                  pageController,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                : _showEmptyContent(context),
+                      ),
+                    )
+                  : _showEmptyContent(context),
+            ),
           );
         } else if (state.status.isRequestFailure) {
           return Container(

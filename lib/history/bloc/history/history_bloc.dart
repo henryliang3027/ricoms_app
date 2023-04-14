@@ -29,6 +29,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         _historyRepository = historyRepository,
         super(const HistoryState()) {
     on<HistoryRequested>(_onHistoryRequested);
+    on<RefreshHistoryRequested>(_onRefreshHistoryRequested);
     on<MoreRecordsRequested>(_onMoreRecordsRequested);
 
     on<HistoryRecordsExported>(_onHistoryRecordsExported);
@@ -90,6 +91,69 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
+  Future<void> _onRefreshHistoryRequested(
+    RefreshHistoryRequested event,
+    Emitter<HistoryState> emit,
+  ) async {
+    // emit(state.copyWith(
+    //   historyExportStatus: FormStatus.none,
+    //   targetDeviceStatus: FormStatus.none,
+    //   moreRecordsStatus: FormStatus.requestInProgress,
+    // ));
+
+    List<String> queries = state.currentCriteria.queries;
+    String formattedQurey = _formatQuery(queries);
+
+    // 取得最新的 records ( api 預設回傳最多 1000 筆 ) , 用來檢查是否有新的 record 產生
+    List<dynamic> resultOfNewRecords =
+        await _historyRepository.getHistoryByFilter(
+      user: _user,
+      startDate: state.currentCriteria.startDate,
+      endDate: state.currentCriteria.endDate,
+      shelf: state.currentCriteria.shelf,
+      slot: state.currentCriteria.slot,
+      trapId: state.records[0].trapId.toString(),
+      next: 'button',
+      unsolvedOnly: state.currentCriteria.unsolvedOnly == true ? '1' : '0',
+      queryData: formattedQurey,
+    );
+
+    if (resultOfNewRecords[0]) {
+      List<Record> records = [];
+      records.addAll(resultOfNewRecords[1]);
+      records.addAll(state.records);
+
+      // if (resultOfNewRecords[0]) {
+      //   // 目前的最新的一筆 record, 在 newRecords 裡的哪一個 index
+      //   // 如果 index = 0; 代表沒有新的紀錄
+      //   // 如果 index = -1; 代表找不到, 不做任何動作, 基本上不會有這種情況
+      //   // 如果 index > 0; 有新的紀錄
+      //   List<Record> newRecords = resultOfNewRecords[1];
+      //   int index = newRecords.indexWhere(
+      //     (newRecord) => newRecord.trapId == records[0].trapId,
+      //   );
+
+      //   // 把新的紀錄加到 record list 的最前面
+      //   if (index > 0) {
+      //     records.insertAll(0, newRecords.getRange(0, index));
+      //   }
+      // }
+      emit(state.copyWith(
+        targetDeviceStatus: FormStatus.none,
+        moreRecordsStatus: FormStatus.requestSuccess,
+        tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
+        records: records,
+      ));
+    } else {
+      emit(state.copyWith(
+        targetDeviceStatus: FormStatus.none,
+        moreRecordsStatus: FormStatus.requestFailure,
+        tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
+        moreRecordsMessage: resultOfNewRecords[1],
+      ));
+    }
+  }
+
   Future<void> _onMoreRecordsRequested(
     MoreRecordsRequested event,
     Emitter<HistoryState> emit,
@@ -103,7 +167,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     List<String> queries = state.currentCriteria.queries;
     String formattedQurey = _formatQuery(queries);
 
-    List<dynamic> result = await _historyRepository.getMoreHistoryByFilter(
+    List<dynamic> resultOfMoreRecords =
+        await _historyRepository.getMoreHistoryByFilter(
       user: _user,
       startDate: state.currentCriteria.startDate,
       endDate: state.currentCriteria.endDate,
@@ -115,10 +180,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       queryData: formattedQurey,
     );
 
-    if (result[0]) {
+    if (resultOfMoreRecords[0]) {
       List<Record> records = [];
       records.addAll(state.records);
-      records.addAll(result[1]);
+      records.addAll(resultOfMoreRecords[1]);
 
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
@@ -129,7 +194,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         moreRecordsStatus: FormStatus.requestFailure,
-        moreRecordsMessage: result[1],
+        moreRecordsMessage: resultOfMoreRecords[1],
       ));
     }
   }
