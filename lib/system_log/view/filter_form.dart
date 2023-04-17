@@ -79,6 +79,7 @@ class FilterForm extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: const _FilterFloatingActionButton(),
     );
   }
 }
@@ -134,7 +135,7 @@ class _KeywordInput extends StatelessWidget {
                 context.read<FilterBloc>().add(CriteriaSaved(context));
               },
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(5),
+                contentPadding: const EdgeInsets.all(8.0),
                 border: const OutlineInputBorder(
                   borderSide: BorderSide(width: 1.0),
                 ),
@@ -152,28 +153,6 @@ class _KeywordInput extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.0),
                   borderSide: const BorderSide(
                     color: Colors.black,
-                  ),
-                ),
-                suffixIconConstraints: const BoxConstraints(
-                    maxHeight: 36, maxWidth: 36, minHeight: 36, minWidth: 36),
-                suffixIcon: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                  color: Colors.grey,
-                  child: IconButton(
-                    color: Colors.white,
-                    splashColor: Colors.blue.shade100,
-                    iconSize: 22,
-                    icon: const Icon(
-                      Icons.search_outlined,
-                    ),
-                    onPressed: () {
-                      context.read<FilterBloc>().add(CriteriaSaved(context));
-                      // context.read<SearchBloc>().add(const FilterAdded());
-                      // _controller.clear();
-                    },
                   ),
                 ),
               ),
@@ -358,5 +337,23 @@ class _AppliedFilterList extends StatelessWidget {
             ],
           );
         });
+  }
+}
+
+class _FilterFloatingActionButton extends StatelessWidget {
+  const _FilterFloatingActionButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      elevation: 0.0,
+      backgroundColor: const Color(0x742195F3),
+      onPressed: () {
+        context.read<FilterBloc>().add(CriteriaSaved(context));
+      },
+      child: const Icon(
+        Icons.search_outlined,
+      ),
+    );
   }
 }

@@ -5,6 +5,7 @@ class DeviceHistoryState extends Equatable {
     this.status = FormStatus.none,
     this.moreRecordsStatus = FormStatus.none,
     this.deviceHistoryRecords = const [],
+    this.tapLoadNewerRecordsCount = 0,
     this.errmsg = '',
     this.moreRecordsMessage = '',
     this.isShowFloatingActionButton = false,
@@ -13,6 +14,7 @@ class DeviceHistoryState extends Equatable {
   final FormStatus status;
   final FormStatus moreRecordsStatus;
   final List<DeviceHistoryData> deviceHistoryRecords;
+  final int tapLoadNewerRecordsCount;
   final String errmsg;
   final String moreRecordsMessage;
   final bool isShowFloatingActionButton;
@@ -21,6 +23,7 @@ class DeviceHistoryState extends Equatable {
     FormStatus? status,
     FormStatus? moreRecordsStatus,
     List<DeviceHistoryData>? deviceHistoryRecords,
+    int? tapLoadNewerRecordsCount,
     String? errmsg,
     String? moreRecordsMessage,
     bool? isShowFloatingActionButton,
@@ -29,6 +32,8 @@ class DeviceHistoryState extends Equatable {
       status: status ?? this.status,
       moreRecordsStatus: moreRecordsStatus ?? this.moreRecordsStatus,
       deviceHistoryRecords: deviceHistoryRecords ?? this.deviceHistoryRecords,
+      tapLoadNewerRecordsCount:
+          tapLoadNewerRecordsCount ?? this.tapLoadNewerRecordsCount,
       errmsg: errmsg ?? this.errmsg,
       moreRecordsMessage: moreRecordsMessage ?? this.moreRecordsMessage,
       isShowFloatingActionButton:
@@ -41,6 +46,7 @@ class DeviceHistoryState extends Equatable {
         status,
         moreRecordsStatus,
         deviceHistoryRecords,
+        tapLoadNewerRecordsCount,
         errmsg,
         isShowFloatingActionButton,
       ];

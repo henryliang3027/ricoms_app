@@ -188,7 +188,7 @@ class _HistoryFloatingActionButton extends StatelessWidget {
                 ? () {
                     context
                         .read<HistoryBloc>()
-                        .add(MoreRecordsRequested(state.records.last.trapId));
+                        .add(const MoreOlderRecordsRequested());
                   }
                 : null,
             child: state.moreRecordsStatus.isRequestInProgress
@@ -458,11 +458,8 @@ class _HistorySliverList extends StatelessWidget {
           if (state.moreRecordsStatus.isRequestSuccess) {
             WidgetsBinding.instance?.addPostFrameCallback((_) {
               if (_scrollController.hasClients) {
-                if (_scrollController.offset >=
-                    _scrollController.position.maxScrollExtent) {
-                  _scrollController.animateTo(_scrollController.offset + 20,
-                      duration: const Duration(seconds: 1), curve: Curves.ease);
-                }
+                _scrollController.animateTo(_scrollController.offset + 20,
+                    duration: const Duration(seconds: 1), curve: Curves.ease);
               }
             });
           }
@@ -470,7 +467,9 @@ class _HistorySliverList extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: () async {
               Future block = context.read<HistoryBloc>().stream.first;
-              context.read<HistoryBloc>().add(const RefreshHistoryRequested());
+              context
+                  .read<HistoryBloc>()
+                  .add(const MoreNewerRecordsRequested());
               await block;
             },
             child: Container(

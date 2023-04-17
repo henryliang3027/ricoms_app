@@ -13,13 +13,18 @@ class HistoryRequested extends DeviceHistoryEvent {
   List<Object?> get props => [nodeId];
 }
 
-class MoreRecordsRequested extends DeviceHistoryEvent {
-  const MoreRecordsRequested(this.startTrapId);
-
-  final int startTrapId;
+class MoreNewerRecordsRequested extends DeviceHistoryEvent {
+  const MoreNewerRecordsRequested();
 
   @override
-  List<Object?> get props => [startTrapId];
+  List<Object?> get props => [];
+}
+
+class MoreOlderRecordsRequested extends DeviceHistoryEvent {
+  const MoreOlderRecordsRequested();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class FloatingActionButtonHided extends DeviceHistoryEvent {

@@ -7,6 +7,7 @@ import 'package:ricoms_app/repository/history_repository/history_repository.dart
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:ricoms_app/utils/common_list_limit.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -29,8 +30,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         _historyRepository = historyRepository,
         super(const HistoryState()) {
     on<HistoryRequested>(_onHistoryRequested);
-    on<RefreshHistoryRequested>(_onRefreshHistoryRequested);
-    on<MoreRecordsRequested>(_onMoreRecordsRequested);
+    on<MoreNewerRecordsRequested>(_onMoreNewerRecordsRequested);
+    on<MoreOlderRecordsRequested>(_onMoreOlderRecordsRequested);
 
     on<HistoryRecordsExported>(_onHistoryRecordsExported);
     on<FloatingActionButtonHided>(_onFloatingActionButtonHided);
@@ -91,8 +92,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
-  Future<void> _onRefreshHistoryRequested(
-    RefreshHistoryRequested event,
+  Future<void> _onMoreNewerRecordsRequested(
+    MoreNewerRecordsRequested event,
     Emitter<HistoryState> emit,
   ) async {
     // emit(state.copyWith(
@@ -123,21 +124,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       records.addAll(resultOfNewRecords[1]);
       records.addAll(state.records);
 
-      // if (resultOfNewRecords[0]) {
-      //   // 目前的最新的一筆 record, 在 newRecords 裡的哪一個 index
-      //   // 如果 index = 0; 代表沒有新的紀錄
-      //   // 如果 index = -1; 代表找不到, 不做任何動作, 基本上不會有這種情況
-      //   // 如果 index > 0; 有新的紀錄
-      //   List<Record> newRecords = resultOfNewRecords[1];
-      //   int index = newRecords.indexWhere(
-      //     (newRecord) => newRecord.trapId == records[0].trapId,
-      //   );
+      records.length = records.length >= CommonListLimit.maximimHistoryRecords
+          ? CommonListLimit.maximimHistoryRecords
+          : records.length;
 
-      //   // 把新的紀錄加到 record list 的最前面
-      //   if (index > 0) {
-      //     records.insertAll(0, newRecords.getRange(0, index));
-      //   }
-      // }
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
         moreRecordsStatus: FormStatus.requestSuccess,
@@ -154,8 +144,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     }
   }
 
-  Future<void> _onMoreRecordsRequested(
-    MoreRecordsRequested event,
+  Future<void> _onMoreOlderRecordsRequested(
+    MoreOlderRecordsRequested event,
     Emitter<HistoryState> emit,
   ) async {
     emit(state.copyWith(
@@ -175,7 +165,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       shelf: state.currentCriteria.shelf,
       slot: state.currentCriteria.slot,
       unsolvedOnly: state.currentCriteria.unsolvedOnly == true ? '1' : '0',
-      trapId: event.startTrapId.toString(),
+      trapId: state.records.last.trapId.toString(),
       next: 'top',
       queryData: formattedQurey,
     );
@@ -184,6 +174,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       List<Record> records = [];
       records.addAll(state.records);
       records.addAll(resultOfMoreRecords[1]);
+
+      records.length = records.length >= CommonListLimit.maximimHistoryRecords
+          ? CommonListLimit.maximimHistoryRecords
+          : records.length;
 
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
@@ -245,7 +239,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       historyExportStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       moreRecordsStatus: FormStatus.none,
-      isShowFloatingActionButton: true,
+      isShowFloatingActionButton:
+          state.records.length < CommonListLimit.maximimHistoryRecords
+              ? true
+              : false,
     ));
   }
 

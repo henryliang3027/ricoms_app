@@ -76,7 +76,7 @@ class SystemLogForm extends StatelessWidget {
             title: Text(
               AppLocalizations.of(context)!.dialogTitle_NoMoreData,
               style: const TextStyle(
-                color: CustomStyle.customRed,
+                color: CustomStyle.customGreen,
               ),
             ),
             content: SingleChildScrollView(
@@ -191,7 +191,7 @@ class _LogFloatingActionButton extends StatelessWidget {
                 ? () {
                     context
                         .read<SystemLogBloc>()
-                        .add(MoreLogsRequested(state.logs.last.id));
+                        .add(const MoreOlderLogsRequested());
                   }
                 : null,
             child: state.moreLogsStatus.isRequestInProgress
@@ -573,25 +573,33 @@ class _LogSliverList extends StatelessWidget {
             });
           }
 
-          return Container(
-            color: Colors.grey.shade300,
-            child: Scrollbar(
-              controller: _scrollController,
-              thickness: 8.0,
-              child: state.logs.isNotEmpty
-                  ? CustomScrollView(
-                      controller: _scrollController,
-                      slivers: [
-                        SliverList(
-                          delegate: _logSliverChildBuilderDelegate(
-                            state.logs,
-                            initialPath,
-                            pageController,
+          return RefreshIndicator(
+            onRefresh: () async {
+              Future block = context.read<SystemLogBloc>().stream.first;
+              context.read<SystemLogBloc>().add(const MoreNewerLogsRequested());
+              await block;
+            },
+            child: Container(
+              color: Colors.grey.shade300,
+              child: Scrollbar(
+                controller: _scrollController,
+                thickness: 8.0,
+                child: state.logs.isNotEmpty
+                    ? CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        slivers: [
+                          SliverList(
+                            delegate: _logSliverChildBuilderDelegate(
+                              state.logs,
+                              initialPath,
+                              pageController,
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  : _showEmptyContent(context),
+                        ],
+                      )
+                    : _showEmptyContent(context),
+              ),
             ),
           );
         } else if (state.status.isRequestFailure) {

@@ -13,20 +13,18 @@ class HistoryRequested extends HistoryEvent {
   List<Object?> get props => [searchCriteria];
 }
 
-class RefreshHistoryRequested extends HistoryEvent {
-  const RefreshHistoryRequested();
+class MoreNewerRecordsRequested extends HistoryEvent {
+  const MoreNewerRecordsRequested();
 
   @override
   List<Object?> get props => [];
 }
 
-class MoreRecordsRequested extends HistoryEvent {
-  const MoreRecordsRequested(this.startTrapId);
-
-  final int startTrapId;
+class MoreOlderRecordsRequested extends HistoryEvent {
+  const MoreOlderRecordsRequested();
 
   @override
-  List<Object?> get props => [startTrapId];
+  List<Object?> get props => [];
 }
 
 class DeviceStatusChecked extends HistoryEvent {

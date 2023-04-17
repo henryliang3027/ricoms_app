@@ -13,13 +13,18 @@ class LogRequested extends SystemLogEvent {
   List<Object?> get props => [filterCriteria];
 }
 
-class MoreLogsRequested extends SystemLogEvent {
-  const MoreLogsRequested(this.startId);
-
-  final int startId;
+class MoreNewerLogsRequested extends SystemLogEvent {
+  const MoreNewerLogsRequested();
 
   @override
-  List<Object?> get props => [startId];
+  List<Object?> get props => [];
+}
+
+class MoreOlderLogsRequested extends SystemLogEvent {
+  const MoreOlderLogsRequested();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class DeviceStatusChecked extends SystemLogEvent {

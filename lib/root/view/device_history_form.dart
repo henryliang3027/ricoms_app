@@ -209,17 +209,27 @@ class _HistorySliverList extends StatelessWidget {
               }
             });
           }
-          return Container(
-            color: Colors.grey.shade300,
-            child: Scrollbar(
-              thickness: 8.0,
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverList(
-                      delegate: _historySliverChildBuilderDelegate(
-                          state.deviceHistoryRecords)),
-                ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              Future block = context.read<DeviceHistoryBloc>().stream.first;
+              context
+                  .read<DeviceHistoryBloc>()
+                  .add(const MoreNewerRecordsRequested());
+              await block;
+            },
+            child: Container(
+              color: Colors.grey.shade300,
+              child: Scrollbar(
+                thickness: 8.0,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                  slivers: [
+                    SliverList(
+                        delegate: _historySliverChildBuilderDelegate(
+                            state.deviceHistoryRecords)),
+                  ],
+                ),
               ),
             ),
           );
@@ -272,8 +282,9 @@ class _HistoryFloatingActionButton extends StatelessWidget {
             backgroundColor: const Color(0x742195F3),
             onPressed: !state.moreRecordsStatus.isRequestInProgress
                 ? () {
-                    context.read<DeviceHistoryBloc>().add(MoreRecordsRequested(
-                        state.deviceHistoryRecords.last.trapId));
+                    context
+                        .read<DeviceHistoryBloc>()
+                        .add(const MoreOlderRecordsRequested());
                   }
                 : null,
             child: state.moreRecordsStatus.isRequestInProgress

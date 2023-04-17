@@ -8,6 +8,7 @@ class SystemLogState extends Equatable {
     this.logExportStatus = FormStatus.none,
     this.moreLogsStatus = FormStatus.none,
     this.filterCriteria = const FilterCriteria(),
+    this.tapLoadNewerRecordsCount = 0,
     this.errmsg = '',
     this.logExportMsg = '',
     this.logExportFilePath = '',
@@ -21,6 +22,7 @@ class SystemLogState extends Equatable {
   final FormStatus logExportStatus;
   final FormStatus moreLogsStatus;
   final FilterCriteria filterCriteria;
+  final int tapLoadNewerRecordsCount;
   final String errmsg;
   final String logExportMsg;
   final String logExportFilePath;
@@ -34,6 +36,7 @@ class SystemLogState extends Equatable {
     FormStatus? logExportStatus,
     FormStatus? moreLogsStatus,
     FilterCriteria? filterCriteria,
+    int? tapLoadNewerRecordsCount,
     String? errmsg,
     String? logExportMsg,
     String? logExportFilePath,
@@ -47,6 +50,8 @@ class SystemLogState extends Equatable {
       logExportStatus: logExportStatus ?? this.logExportStatus,
       moreLogsStatus: moreLogsStatus ?? this.moreLogsStatus,
       filterCriteria: filterCriteria ?? this.filterCriteria,
+      tapLoadNewerRecordsCount:
+          tapLoadNewerRecordsCount ?? this.tapLoadNewerRecordsCount,
       errmsg: errmsg ?? this.errmsg,
       logExportMsg: logExportMsg ?? this.logExportMsg,
       logExportFilePath: logExportFilePath ?? this.logExportFilePath,
@@ -64,6 +69,7 @@ class SystemLogState extends Equatable {
         logExportStatus,
         moreLogsStatus,
         filterCriteria,
+        tapLoadNewerRecordsCount,
         errmsg,
         logExportMsg,
         logExportFilePath,

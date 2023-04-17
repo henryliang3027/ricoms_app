@@ -6,6 +6,7 @@ import 'package:ricoms_app/repository/system_log_repository/system_log_repositor
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/system_log/model/filter_critria.dart';
+import 'package:ricoms_app/utils/common_list_limit.dart';
 import 'package:ricoms_app/utils/common_request.dart';
 
 part 'system_log_event.dart';
@@ -19,7 +20,8 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
         _systemLogRepository = systemLogRepository,
         super(const SystemLogState()) {
     on<LogRequested>(_onLogRequested);
-    on<MoreLogsRequested>(_onMoreLogsRequested);
+    on<MoreOlderLogsRequested>(_onMoreOlderLogsRequested);
+    on<MoreNewerLogsRequested>(_onMoreNewerLogsRequested);
     on<DeviceStatusChecked>(_onDeviceStatusChecked);
     on<LogsExported>(_onLogsExported);
     on<FloatingActionButtonHided>(_onFloatingActionButtonHided);
@@ -73,8 +75,58 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
     }
   }
 
-  Future<void> _onMoreLogsRequested(
-    MoreLogsRequested event,
+  /// 處理更多新的系統紀錄的獲取
+  Future<void> _onMoreNewerLogsRequested(
+    MoreNewerLogsRequested event,
+    Emitter<SystemLogState> emit,
+  ) async {
+    // emit(state.copyWith(
+    //   logExportStatus: FormStatus.none,
+    //   targetDeviceStatus: FormStatus.none,
+    //   moreLogsStatus: FormStatus.requestInProgress,
+    // ));
+
+    List<String> queries = state.filterCriteria.queries;
+    String formattedQurey = _formatQuery(queries);
+
+    List<dynamic> result = await _systemLogRepository.getMoreLogsByFilter(
+      user: _user,
+      startDate: state.filterCriteria.startDate,
+      endDate: state.filterCriteria.endDate,
+      startId: state.logs.first.id.toString(),
+      next: 'button',
+      queryData: formattedQurey,
+    );
+
+    if (result[0]) {
+      List<Log> logs = [];
+      logs.addAll(result[1]);
+      logs.addAll(state.logs);
+
+      /// 限制在最大筆數之內
+      logs.length = logs.length >= CommonListLimit.maximumLogs
+          ? CommonListLimit.maximumLogs
+          : logs.length;
+
+      emit(state.copyWith(
+        targetDeviceStatus: FormStatus.none,
+        moreLogsStatus: FormStatus.requestSuccess,
+        logs: logs,
+        tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
+      ));
+    } else {
+      emit(state.copyWith(
+        targetDeviceStatus: FormStatus.none,
+        moreLogsStatus: FormStatus.requestFailure,
+        tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
+        moreLogsMessage: result[1],
+      ));
+    }
+  }
+
+  /// 處理更多舊的系統紀錄的獲取
+  Future<void> _onMoreOlderLogsRequested(
+    MoreOlderLogsRequested event,
     Emitter<SystemLogState> emit,
   ) async {
     emit(state.copyWith(
@@ -90,7 +142,7 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
       user: _user,
       startDate: state.filterCriteria.startDate,
       endDate: state.filterCriteria.endDate,
-      startId: event.startId.toString(),
+      startId: state.logs.last.id.toString(),
       next: 'top',
       queryData: formattedQurey,
     );
@@ -99,6 +151,11 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
       List<Log> logs = [];
       logs.addAll(state.logs);
       logs.addAll(result[1]);
+
+      /// 限制在最大筆數之內
+      logs.length = logs.length >= CommonListLimit.maximumLogs
+          ? CommonListLimit.maximumLogs
+          : logs.length;
 
       emit(state.copyWith(
         targetDeviceStatus: FormStatus.none,
@@ -160,7 +217,8 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
       logExportStatus: FormStatus.none,
       targetDeviceStatus: FormStatus.none,
       moreLogsStatus: FormStatus.none,
-      isShowFloatingActionButton: true,
+      isShowFloatingActionButton:
+          state.logs.length < CommonListLimit.maximumLogs ? true : false,
     ));
   }
 
