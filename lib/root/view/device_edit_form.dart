@@ -392,12 +392,14 @@ class _ReadInput extends StatelessWidget {
               ),
               onChanged: (read) =>
                   context.read<EditDeviceBloc>().add(ReadChanged(read)),
+              maxLength: 32,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.read,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
@@ -439,12 +441,14 @@ class _WriteInput extends StatelessWidget {
               ),
               onChanged: (write) =>
                   context.read<EditDeviceBloc>().add(WriteChanged(write)),
+              maxLength: 32,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(5),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 filled: true,
                 fillColor: Colors.white,
+                counterText: '',
                 labelText: AppLocalizations.of(context)!.write,
                 labelStyle: TextStyle(
                   fontSize: CommonStyle.sizeL,
