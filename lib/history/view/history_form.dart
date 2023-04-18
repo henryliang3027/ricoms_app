@@ -477,7 +477,6 @@ class _HistorySliverList extends StatelessWidget {
               child: state.records.isNotEmpty
                   ? Scrollbar(
                       controller: _scrollController,
-                      interactive: true,
                       thickness: 8.0,
                       child: ScrollConfiguration(
                         behavior: ScrollBehavior(),

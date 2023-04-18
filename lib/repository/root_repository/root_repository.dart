@@ -598,7 +598,13 @@ class RootRepository {
 
           // 將雙引號去掉, 替換為空字元
           for (String word in line) {
-            noQuotesLine.add(word.replaceAll('\"', ''));
+            if (word.startsWith('\"') && word.endsWith('\"')) {
+              word = word.replaceFirst('\"', '');
+              word = word.replaceFirst('\"', '', word.length - 1);
+              word = word.replaceAll('\"\"', '\"');
+            }
+
+            noQuotesLine.add(word);
           }
 
           sheet.insertRowIterables(noQuotesLine, i);

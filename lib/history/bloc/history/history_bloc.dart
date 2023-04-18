@@ -286,9 +286,15 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     if (queries.isNotEmpty) {
       for (int i = 0; i < queries.length - 1; i++) {
         String formattedElement = '\"${queries[i]}\"';
+
+        /// 使用 html encode 來編碼特殊字元 ex: # -> %23, " -> %22
+        /// https://www.w3schools.com/tags/ref_urlencode.ASP
+        formattedElement = Uri.encodeQueryComponent(formattedElement);
         formattedQurey = formattedQurey + formattedElement + '+';
       }
-      formattedQurey = formattedQurey + '\"${queries[queries.length - 1]}\"';
+      String lastFormatedElement = '\"${queries[queries.length - 1]}\"';
+      lastFormatedElement = Uri.encodeQueryComponent(lastFormatedElement);
+      formattedQurey = formattedQurey + lastFormatedElement;
     }
     return formattedQurey;
   }
