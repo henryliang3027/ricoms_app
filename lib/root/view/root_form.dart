@@ -10,6 +10,7 @@ import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/root_repository/root_repository.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/root/bloc/root/root_bloc.dart';
+import 'package:ricoms_app/utils/common_list_limit.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_tabbar.dart';
@@ -506,6 +507,7 @@ class _DynamicFloatingActionButton extends StatelessWidget {
                         builder: (_) => _NodeCreationBottomMenu(
                               parentContext: context,
                               parentNode: state.directory.last,
+                              currentDepth: state.directory.length,
                             ));
                   },
                   child: const Icon(
@@ -1365,46 +1367,50 @@ class _NodeCreationBottomMenu extends StatelessWidget {
     Key? key,
     required this.parentContext,
     required this.parentNode,
+    required this.currentDepth,
   }) : super(key: key);
 
   final BuildContext parentContext;
   final Node parentNode;
+  final int currentDepth;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        ListTile(
-          dense: true,
-          leading: Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300, shape: BoxShape.circle),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 24.0,
-                height: 24.0,
-                child: Icon(
-                  CustomIcons.root,
+        currentDepth <= CommonListLimit.maximumTreeNodeDepth
+            ? ListTile(
+                dense: true,
+                leading: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300, shape: BoxShape.circle),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: Icon(
+                        CustomIcons.root,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.group,
-            style: const TextStyle(fontSize: CommonStyle.sizeM),
-          ),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(
-                context,
-                GroupEditPage.route(
-                    user: context.read<AuthenticationBloc>().state.user,
-                    parentNode: parentNode,
-                    isEditing: false,
-                    currentNode: null));
-          },
-        ),
+                title: Text(
+                  AppLocalizations.of(context)!.group,
+                  style: const TextStyle(fontSize: CommonStyle.sizeM),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      GroupEditPage.route(
+                          user: context.read<AuthenticationBloc>().state.user,
+                          parentNode: parentNode,
+                          isEditing: false,
+                          currentNode: null));
+                },
+              )
+            : Container(),
         ListTile(
           dense: true,
           leading: Container(

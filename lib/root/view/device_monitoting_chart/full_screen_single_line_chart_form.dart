@@ -75,7 +75,7 @@ class _FullScreenSingleLineChartFormState
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.lineChart,
+            widget.nodeName,
           ),
           centerTitle: true,
         ),

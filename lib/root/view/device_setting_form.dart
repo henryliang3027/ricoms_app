@@ -442,7 +442,7 @@ class _DeviceTextField extends StatelessWidget {
                 textAlign: textFieldProperty.textAlign,
                 maxLines: textFieldProperty.maxLine,
                 maxLength: textFieldProperty.maxLength,
-                enabled: isEditing && !textFieldProperty.readOnly,
+                readOnly: isEditing && !textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
                   context

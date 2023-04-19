@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/custom_line_chart/custom_multiple_line_chart.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ricoms_app/root/view/device_monitoting_chart/monitoring_chart_style.dart';
 
 class FullScreenMultipleLineChartForm extends StatefulWidget {
@@ -60,7 +59,7 @@ class _FullScreenMultipleLineChartFormState
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context)!.lineChart,
+            widget.nodeName,
           ),
           centerTitle: true,
         ),

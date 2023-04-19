@@ -80,7 +80,6 @@
     "deviceSettingTab_snmpSetup": "SNMP 設定",
     "deviceSettingTab_discreteProperty": "離散屬性",
     "multipleYAxis": "多Y軸圖表",
-    "lineChart": "折線圖",
 
     "alarmRatio": "告警百分比",
     "deviceStatus": "裝置狀態",

@@ -49,13 +49,13 @@ class DeviceSettingStyle {
           maxLength = 8;
           customInput = Input8.dirty(value);
         } else if (format == 4) {
-          maxLength = 31;
+          maxLength = 32;
           customInput = Input31.dirty(value);
         } else if (format == 5) {
-          maxLength = 63;
+          maxLength = 64;
           customInput = Input63.dirty(value);
         } else if (format == 6) {
-          maxLength = null;
+          maxLength = 1024;
           customInput = InputInfinity.dirty(value);
         } else if (format == 11) {
           maxLength = 15;
