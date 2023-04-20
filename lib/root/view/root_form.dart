@@ -16,7 +16,6 @@ import 'package:ricoms_app/root/view/device_edit_page.dart';
 import 'package:ricoms_app/root/view/device_setting_tabbar.dart';
 import 'package:ricoms_app/root/view/group_edit_page.dart';
 import 'package:ricoms_app/root/view/search_page.dart';
-import 'package:ricoms_app/utils/common_request.dart';
 import 'package:ricoms_app/utils/common_style.dart';
 import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/display_style.dart';
@@ -203,8 +202,9 @@ class RootForm extends StatelessWidget {
         onWillPop: () async {
           List<Node> _directory = context.read<RootBloc>().state.directory;
           if (_directory.length > 1) {
-            context.read<RootBloc>().add(ChildDataRequested(
-                _directory[_directory.length - 2], RequestMode.initial));
+            context
+                .read<RootBloc>()
+                .add(ChildDataRequested(_directory[_directory.length - 2]));
             return false;
           } else {
             bool? isExit =
@@ -551,9 +551,7 @@ class _NodeContent extends StatelessWidget {
                 // A8K: 3,
                 // Shelf: 4,
                 // Slot: 5,
-                context
-                    .read<RootBloc>()
-                    .add(ChildDataRequested(node, RequestMode.initial));
+                context.read<RootBloc>().add(ChildDataRequested(node));
               },
               onLongPress: () {
                 if (node.type == 1 || node.type == 2 || node.type == 3) {
@@ -1090,8 +1088,9 @@ class _NodeDirectory extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(6.0, 2.0, 2.0, 2.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<RootBloc>().add(ChildDataRequested(
-                            state.directory[0], RequestMode.initial));
+                        context
+                            .read<RootBloc>()
+                            .add(ChildDataRequested(state.directory[0]));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1143,9 +1142,11 @@ class _NodeDirectory extends StatelessWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  context.read<RootBloc>().add(
-                                      ChildDataRequested(state.directory[i],
-                                          RequestMode.initial));
+                                  context
+                                      .read<RootBloc>()
+                                      .add(ChildDataRequested(
+                                        state.directory[i],
+                                      ));
                                 },
                                 child: state.directory.length - 1 == i
                                     ? DisplayStyle.getNodeDisplayName(

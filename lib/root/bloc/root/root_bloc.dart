@@ -1,15 +1,24 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ricoms_app/repository/root_repository/root_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
-import 'package:ricoms_app/utils/common_request.dart';
 import 'package:ricoms_app/utils/request_interval.dart';
+import 'package:stream_transform/stream_transform.dart';
 part 'root_event.dart';
 part 'root_state.dart';
+
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class RootBloc extends Bloc<RootEvent, RootState> {
   RootBloc({
@@ -22,9 +31,10 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         super(const RootState()) {
     on<ChildDataRequested>(
       _onChildDataRequested,
-      // sequential: 按照順序處理 ChildDataRequested event (使用者點擊節點事件 或 自動更新節點事件)
-      transformer: sequential(),
+      // throttleDroppable: 防止重複且快速點擊同一個node, 不斷發出 api request
+      transformer: throttleDroppable(throttleDuration),
     );
+    on<ChildDataUpdated>(_onChildDataUpdated);
     on<NodeDeleted>(_onNodeDeleted);
     on<NodesExported>(_onNodesExported);
     on<DeviceTypeNodeUpdated>(_onDeviceTypeNodeUpdated);
@@ -35,30 +45,19 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     // 取得第一層 root node 的子節點
     // root node id = 0
     add(const ChildDataRequested(
-        Node(
-          id: 0,
-          type: 1,
-          name: 'Root',
-        ),
-        RequestMode.initial));
-
-    // 每 3 秒更新目前節點的子節點 data
-    final _dataStream = Stream<int>.periodic(
-        const Duration(seconds: RequestInterval.rootNode), (count) => count);
-
-    _dataStreamSubscription = _dataStream.listen((count) {
-      if (kDebugMode) {
-        print('Root update trigger times: $count');
-      }
-      if (state.directory.isNotEmpty) {
-        add(ChildDataRequested(state.directory.last, RequestMode.update));
-      }
-    });
+      Node(
+        id: 0,
+        type: 1,
+        name: 'Root',
+      ),
+    ));
   }
 
   final User _user;
   final RootRepository _rootRepository;
   final List? _initialPath;
+
+  CancelToken cancelToken = CancelToken();
 
   StreamSubscription<int>? _dataStreamSubscription;
 
@@ -73,6 +72,124 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     ChildDataRequested event,
     Emitter<RootState> emit,
   ) async {
+    // 取消目前正在進行的api request, 尤其是定期更新(_onChildDataUpdated) 中有 call _rootRepository.getChilds 的 api request
+    cancelToken.cancel();
+    cancelToken = CancelToken();
+    // 展開子節點的時候 emit state 帶 FormStatus.requestInProgress 來讓畫面顯示loading轉圈圖示
+    await _dataStreamSubscription
+        ?.cancel()
+        .then((_) => _dataStreamSubscription = null);
+    emit(state.copyWith(
+      formStatus: FormStatus.requestInProgress,
+      submissionStatus: SubmissionStatus.none,
+      dataSheetOpenStatus: FormStatus.none,
+      nodesExportStatus: FormStatus.none,
+      isDeviceHasBeenDeleted: false,
+    ));
+
+    // 取得所有子節點data
+    dynamic result = await _rootRepository.getChilds(
+      user: _user,
+      parentId: event.parent.id,
+      cancelToken: cancelToken,
+    );
+
+    List<Node> directory = [];
+    directory.addAll(state.directory);
+
+    !directory.contains(event.parent) ? directory.add(event.parent) : null;
+    int currentIndex =
+        directory.indexOf(event.parent); // -1 means to element does not exist
+    currentIndex != -1
+        ? directory.removeRange(
+            currentIndex + 1 < directory.length
+                ? currentIndex + 1
+                : directory.length,
+            directory.length)
+        : null;
+
+    // 如果從real time alarm 畫面點擊某一筆alarm資料
+    // 則會帶 _initialPath 內容
+    if (_initialPath!.isNotEmpty) {
+      List<dynamic> resultOfBuildDirectory = await _buildDirectorybyPath(
+          directory: directory, path: _initialPath!);
+
+      bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
+
+      if (resultOfBuildDirectory[0]) {
+        if (resultOfBuildDirectory[1] == '') {
+          // device setting page
+          emit(state.copyWith(
+            formStatus: FormStatus.requestSuccess,
+            submissionStatus: SubmissionStatus.none,
+            nodesExportStatus: FormStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
+            isAddedToBookmarks: isAddedToBookmarks,
+            isDeviceHasBeenDeleted: false,
+            directory: directory,
+          ));
+        } else {
+          // node
+          emit(state.copyWith(
+            formStatus: FormStatus.requestSuccess,
+            submissionStatus: SubmissionStatus.none,
+            nodesExportStatus: FormStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
+            isAddedToBookmarks: false,
+            isDeviceHasBeenDeleted: false,
+            directory: directory,
+            childData: result[1],
+          ));
+        }
+      } else {
+        // already handle in realtimealarm bloc
+      }
+
+      // 清除 _initialPath 防止頁面重複導航
+      // 防止切換到其他畫面再切換回來樹的畫面時,因為 _initialPath 還留著資料而重複導航
+      _initialPath!.clear();
+    } else {
+      if (result[0]) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          isDeviceHasBeenDeleted: false,
+          childData: result[1],
+          directory: directory,
+        ));
+      } else {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          isDeviceHasBeenDeleted: false,
+          errmsg: result[1],
+        ));
+      }
+    }
+
+    // 每 3 秒更新目前節點的子節點 data
+    Stream<int> dataStream = Stream<int>.periodic(
+        const Duration(seconds: RequestInterval.rootNode), (count) => count);
+
+    _dataStreamSubscription ??= dataStream.listen((count) {
+      if (kDebugMode) {
+        print('Root update trigger times: $count');
+      }
+      if (state.directory.isNotEmpty) {
+        add(const ChildDataUpdated());
+      }
+    });
+  }
+
+  /// 處理目前節點的子節點資料更新
+  Future<void> _onChildDataUpdated(
+    ChildDataUpdated event,
+    Emitter<RootState> emit,
+  ) async {
     // Root: 0,
     // Group: 1,
     // Device: 2, (edfa)
@@ -80,28 +197,15 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     // Shelf: 4,
     // Slot: 5,
 
-    // 若目前所在節點是 device (edfa or a8k slot), 監控 device 狀態
-    if (event.parent.type == 2 || event.parent.type == 5) {
-      List<Node> directory = [];
-
-      directory.addAll(state.directory);
-
-      !directory.contains(event.parent) ? directory.add(event.parent) : null;
-      int currentIndex = directory
-          .indexOf(event.parent); // -1 represent to element does not exist
-      currentIndex != -1
-          ? directory.removeRange(
-              currentIndex + 1 < directory.length
-                  ? currentIndex + 1
-                  : directory.length,
-              directory.length)
-          : null;
-
-      bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
+    // 若目前所在節點非 device (edfa or a8k slot), 則更新其下一層子節點data
+    if (state.directory.last.type == 2 || state.directory.last.type == 5) {
+      // List<Node> directory = [];
+      // directory.addAll(state.directory);
+      // bool isAddedToBookmarks = _checkDeviceInBookmarks(event.parent.id);
 
       List<dynamic> resultOfGetNodeInfo = await _rootRepository.checkNodeExists(
         user: _user,
-        nodeId: event.parent.id,
+        nodeId: state.directory.last.id,
       );
 
       if (resultOfGetNodeInfo[0]) {
@@ -110,8 +214,8 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           submissionStatus: SubmissionStatus.none,
           dataSheetOpenStatus: FormStatus.none,
           nodesExportStatus: FormStatus.none,
-          directory: directory,
-          isAddedToBookmarks: isAddedToBookmarks,
+          directory: state.directory,
+          // isAddedToBookmarks: isAddedToBookmarks,
         ));
       } else {
         if (resultOfGetNodeInfo[1] == 'No node') {
@@ -144,113 +248,31 @@ class RootBloc extends Bloc<RootEvent, RootState> {
         }
       }
     } else {
-      // 若目前所在節點非 device (edfa or a8k slot), 則更新其下一層子節點data
-
-      if (event.requestMode == RequestMode.initial) {
-        // RequestMode.initial 代表使用者點擊某個節點
-        // 展開子節點的時候 emit 帶 FormStatus.requestInProgress 來讓畫面顯示loading轉圈圖示
-
-        // 處理 RequestMode.initial 時暫停定時更新
-        _dataStreamSubscription?.pause();
-        emit(state.copyWith(
-          formStatus: FormStatus.requestInProgress,
-          submissionStatus: SubmissionStatus.none,
-          dataSheetOpenStatus: FormStatus.none,
-          nodesExportStatus: FormStatus.none,
-          isDeviceHasBeenDeleted: false,
-        ));
-      }
-
       // 取得所有子節點data
       dynamic result = await _rootRepository.getChilds(
         user: _user,
-        parentId: event.parent.id,
+        parentId: state.directory.last.id,
+        cancelToken: cancelToken,
       );
 
-      List<Node> directory = [];
-      directory.addAll(state.directory);
-
-      !directory.contains(event.parent) ? directory.add(event.parent) : null;
-      int currentIndex =
-          directory.indexOf(event.parent); // -1 means to element does not exist
-      currentIndex != -1
-          ? directory.removeRange(
-              currentIndex + 1 < directory.length
-                  ? currentIndex + 1
-                  : directory.length,
-              directory.length)
-          : null;
-
-      // 如果從real time alarm 畫面點擊某一筆alarm資料
-      // 則會帶 _initialPath 內容
-      if (_initialPath!.isNotEmpty) {
-        List<dynamic> resultOfBuildDirectory = await _buildDirectorybyPath(
-            directory: directory, path: _initialPath!);
-
-        bool isAddedToBookmarks = _checkDeviceInBookmarks(_initialPath![0]);
-
-        if (resultOfBuildDirectory[0]) {
-          if (resultOfBuildDirectory[1] == '') {
-            // device setting page
-            emit(state.copyWith(
-              formStatus: FormStatus.requestSuccess,
-              submissionStatus: SubmissionStatus.none,
-              nodesExportStatus: FormStatus.none,
-              dataSheetOpenStatus: FormStatus.none,
-              isAddedToBookmarks: isAddedToBookmarks,
-              isDeviceHasBeenDeleted: false,
-              directory: directory,
-            ));
-          } else {
-            // node
-            emit(state.copyWith(
-              formStatus: FormStatus.requestSuccess,
-              submissionStatus: SubmissionStatus.none,
-              nodesExportStatus: FormStatus.none,
-              dataSheetOpenStatus: FormStatus.none,
-              isAddedToBookmarks: false,
-              isDeviceHasBeenDeleted: false,
-              directory: directory,
-              childData: result[1],
-            ));
-          }
-        } else {
-          // already handle in realtimealarm bloc
-        }
-
-        // 清除 _initialPath 防止頁面重複導航
-        // 防止切換到其他畫面再切換回來樹的畫面時,因為 _initialPath 還留著資料而重複導航
-        _initialPath!.clear();
+      if (result[0]) {
+        emit(state.copyWith(
+          formStatus: FormStatus.requestSuccess,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          isDeviceHasBeenDeleted: false,
+          childData: result[1],
+        ));
       } else {
-        if (result[0]) {
-          emit(state.copyWith(
-            formStatus: FormStatus.requestSuccess,
-            submissionStatus: SubmissionStatus.none,
-            nodesExportStatus: FormStatus.none,
-            dataSheetOpenStatus: FormStatus.none,
-            isDeviceHasBeenDeleted: false,
-            childData: result[1],
-            directory: directory,
-          ));
-        } else {
-          emit(state.copyWith(
-            formStatus: FormStatus.requestFailure,
-            submissionStatus: SubmissionStatus.none,
-            nodesExportStatus: FormStatus.none,
-            dataSheetOpenStatus: FormStatus.none,
-            isDeviceHasBeenDeleted: false,
-            errmsg: result[1],
-          ));
-        }
-      }
-
-      //  RequestMode.initial 處理完, 恢復定時更新
-      if (event.requestMode == RequestMode.initial) {
-        if (_dataStreamSubscription != null) {
-          if (_dataStreamSubscription!.isPaused) {
-            _dataStreamSubscription?.resume();
-          }
-        }
+        emit(state.copyWith(
+          formStatus: FormStatus.requestFailure,
+          submissionStatus: SubmissionStatus.none,
+          nodesExportStatus: FormStatus.none,
+          dataSheetOpenStatus: FormStatus.none,
+          isDeviceHasBeenDeleted: false,
+          errmsg: result[1],
+        ));
       }
     }
   }
@@ -576,9 +598,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
     // 建到 path 的第一個 id 會對應到目標 node id ( device id or node id )
     for (int i = path.length - 1; i >= 0; i--) {
       resultOfGetChilds = await _rootRepository.getChilds(
-        user: _user,
-        parentId: directory.last.id,
-      );
+          user: _user, parentId: directory.last.id, cancelToken: cancelToken);
       if (resultOfGetChilds[0]) {
         List childs = resultOfGetChilds[1];
         for (int j = 0; j < childs.length; j++) {
@@ -600,6 +620,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
       resultOfGetChilds = await _rootRepository.getChilds(
         user: _user,
         parentId: directory.last.id,
+        cancelToken: cancelToken,
       );
       return [true, resultOfGetChilds[1]];
     }

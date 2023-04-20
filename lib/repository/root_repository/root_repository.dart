@@ -17,6 +17,7 @@ class RootRepository {
   Future<List<dynamic>> getChilds({
     required User user,
     required int parentId,
+    required CancelToken cancelToken,
   }) async {
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
@@ -33,6 +34,7 @@ class RootRepository {
     try {
       Response response = await dio.get(
         childsPath,
+        cancelToken: cancelToken,
       );
 
       var data = jsonDecode(response.data.toString());

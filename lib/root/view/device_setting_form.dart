@@ -429,9 +429,6 @@ class _DeviceTextField extends StatelessWidget {
             previous.controllerValues[textFieldProperty.oid] !=
                 current.controllerValues[textFieldProperty.oid],
         builder: (context, state) {
-          // print(state.controllerValues[textFieldProperty.oid]!.runtimeType);
-          // print((state.controllerValues[textFieldProperty.oid]! as CustomInput)
-          //     .invalid);
           return Expanded(
             flex: textFieldProperty.boxLength,
             child: Padding(
@@ -442,7 +439,7 @@ class _DeviceTextField extends StatelessWidget {
                 textAlign: textFieldProperty.textAlign,
                 maxLines: textFieldProperty.maxLine,
                 maxLength: textFieldProperty.maxLength,
-                readOnly: isEditing && !textFieldProperty.readOnly,
+                readOnly: !isEditing || textFieldProperty.readOnly,
                 style: TextStyle(fontSize: textFieldProperty.fontSize),
                 onChanged: (text) {
                   context
