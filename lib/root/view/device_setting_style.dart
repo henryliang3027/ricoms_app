@@ -5,17 +5,6 @@ import 'package:ricoms_app/root/models/custom_input.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 
 class DeviceSettingStyle {
-  Color _getStatusColor({
-    required int status,
-    required Color defaultColor,
-  }) {
-    if (status == 1) {
-      return defaultColor;
-    } else {
-      return CustomStyle.statusColor[status] ?? defaultColor;
-    }
-  }
-
   static void getSettingData({
     required dynamic e,
     required List<ControllerProperty> controllerProperties,
