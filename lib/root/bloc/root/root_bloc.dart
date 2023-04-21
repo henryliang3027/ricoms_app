@@ -265,14 +265,16 @@ class RootBloc extends Bloc<RootEvent, RootState> {
           childData: result[1],
         ));
       } else {
-        emit(state.copyWith(
-          formStatus: FormStatus.requestFailure,
-          submissionStatus: SubmissionStatus.none,
-          nodesExportStatus: FormStatus.none,
-          dataSheetOpenStatus: FormStatus.none,
-          isDeviceHasBeenDeleted: false,
-          errmsg: result[1],
-        ));
+        if (result[1] != 'Request canceled') {
+          emit(state.copyWith(
+            formStatus: FormStatus.requestFailure,
+            submissionStatus: SubmissionStatus.none,
+            nodesExportStatus: FormStatus.none,
+            dataSheetOpenStatus: FormStatus.none,
+            isDeviceHasBeenDeleted: false,
+            errmsg: result[1],
+          ));
+        }
       }
     }
   }

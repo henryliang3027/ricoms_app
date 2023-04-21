@@ -62,8 +62,12 @@ class RootRepository {
       } else {
         return [false, 'No node'];
       }
-    } on DioError catch (_) {
-      return [false, CustomErrMsg.connectionFailed];
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.cancel) {
+        return [false, 'Request canceled'];
+      } else {
+        return [false, CustomErrMsg.connectionFailed];
+      }
     }
   }
 
