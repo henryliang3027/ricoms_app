@@ -138,7 +138,7 @@ class RootBloc extends Bloc<RootEvent, RootState> {
             isAddedToBookmarks: false,
             isDeviceHasBeenDeleted: false,
             directory: directory,
-            childData: result[1],
+            childData: resultOfBuildDirectory[1],
           ));
         }
       } else {
