@@ -129,6 +129,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           : records.length;
 
       emit(state.copyWith(
+        historyExportStatus: FormStatus.none,
         targetDeviceStatus: FormStatus.none,
         moreRecordsStatus: FormStatus.requestSuccess,
         tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
@@ -136,6 +137,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       ));
     } else {
       emit(state.copyWith(
+        historyExportStatus: FormStatus.none,
         targetDeviceStatus: FormStatus.none,
         moreRecordsStatus: FormStatus.requestFailure,
         tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,

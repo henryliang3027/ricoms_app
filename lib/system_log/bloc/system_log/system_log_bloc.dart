@@ -109,6 +109,7 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
           : logs.length;
 
       emit(state.copyWith(
+        logExportStatus: FormStatus.none,
         targetDeviceStatus: FormStatus.none,
         moreLogsStatus: FormStatus.requestSuccess,
         logs: logs,
@@ -116,6 +117,7 @@ class SystemLogBloc extends Bloc<SystemLogEvent, SystemLogState> {
       ));
     } else {
       emit(state.copyWith(
+        logExportStatus: FormStatus.none,
         targetDeviceStatus: FormStatus.none,
         moreLogsStatus: FormStatus.requestFailure,
         tapLoadNewerRecordsCount: state.tapLoadNewerRecordsCount + 1,
