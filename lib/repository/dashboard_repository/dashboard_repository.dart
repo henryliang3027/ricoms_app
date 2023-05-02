@@ -14,13 +14,6 @@ class DashboardRepository {
   Future<List<dynamic>> getDeviceStatusStatistics({
     required User user,
   }) async {
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: _dio);
-    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
-    String deviceStatusStatisticApiPath = '/statistics/device';
-
     // 如果是 demo 帳號, 全部為 0
     if (user.id == 'demo') {
       List deviceStatistics = [
@@ -34,6 +27,13 @@ class DashboardRepository {
 
       return [true, deviceStatistics];
     }
+
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String deviceStatusStatisticApiPath = '/statistics/device';
 
     try {
       Response response = await _dio.get(
@@ -68,14 +68,6 @@ class DashboardRepository {
     required User user,
     required int type,
   }) async {
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: _dio);
-    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
-    _dio.options.connectTimeout = 10000; //10s
-    _dio.options.receiveTimeout = 10000;
-    String deviceSeverityStatisticApiPath =
-        '/statistics/severity?type=${type.toString()}';
-
     if (user.id == 'demo') {
       List alarmStatistics = [
         0,
@@ -84,6 +76,14 @@ class DashboardRepository {
       ];
       return [true, alarmStatistics];
     }
+
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String deviceSeverityStatisticApiPath =
+        '/statistics/severity?type=${type.toString()}';
 
     try {
       Response response = await _dio.get(

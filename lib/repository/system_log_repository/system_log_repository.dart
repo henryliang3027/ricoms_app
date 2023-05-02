@@ -20,6 +20,10 @@ class SystemLogRepository {
     String startId = '',
     String queryData = '',
   }) async {
+    if (user.id == 'demo') {
+      return [true, <Log>[]];
+    }
+
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: dio);
@@ -28,10 +32,6 @@ class SystemLogRepository {
     dio.options.receiveTimeout = 10000;
     String systemLogApiPath =
         '/records/search?uid=${user.id}&start_time=$startDate&end_time=$endDate&next=$next&start_id=$startId&q=$queryData';
-
-    if (user.id == 'demo') {
-      return [true, <Log>[]];
-    }
 
     try {
       Response response = await dio.get(

@@ -19,6 +19,10 @@ class RootRepository {
     required int parentId,
     required CancelToken cancelToken,
   }) async {
+    if (user.id == 'demo') {
+      return [false, 'No node'];
+    }
+
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: dio);
@@ -26,10 +30,6 @@ class RootRepository {
     dio.options.connectTimeout = 10000; //10s
     dio.options.receiveTimeout = 10000;
     String childsPath = '/net/node/' + parentId.toString() + '/childs';
-
-    if (user.id == 'demo') {
-      return [false, 'No node'];
-    }
 
     try {
       Response response = await dio.get(

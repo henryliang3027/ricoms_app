@@ -15,16 +15,16 @@ class RealTimeAlarmRepository {
     required User user,
     required AlarmType alarmType,
   }) async {
+    if (user.id == 'demo') {
+      return [true, <Alarm>[]];
+    }
+
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: _dio);
     _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api/';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String realTimeAlarmApiPath = '/history/realtime?max=';
-
-    if (user.id == 'demo') {
-      return [true, <Alarm>[]];
-    }
 
     try {
       Response response = await _dio.get(

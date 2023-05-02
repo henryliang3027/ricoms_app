@@ -16,17 +16,17 @@ class AccountRepository {
     required User user,
     String? keyword,
   }) async {
+    // demo 帳號 無資料
+    if (user.id == 'demo') {
+      return [false, 'There are no records to show'];
+    }
+
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: _dio);
     _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
     _dio.options.connectTimeout = 10000; //10s
     _dio.options.receiveTimeout = 10000;
     String accountListApiPath = '/accounts';
-
-    // demo 帳號 無資料
-    if (user.id == 'demo') {
-      return [false, 'There are no records to show'];
-    }
 
     try {
       Response response = await _dio.get(

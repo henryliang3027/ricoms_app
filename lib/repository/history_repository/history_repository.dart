@@ -26,6 +26,10 @@ class HistoryRepository {
     String trapId = '',
     String queryData = '',
   }) async {
+    if (user.id == 'demo') {
+      return [true, <Record>[]];
+    }
+
     Dio dio = Dio();
     String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
         loginIP: user.ip, dio: dio);
@@ -37,10 +41,6 @@ class HistoryRepository {
     // current = 0 : show all alarms with given datetime
     String historyApiPath =
         '/history/search?start_time=$startDate&end_time=$endDate&node_id=$nodeId&shelf=$shelf&slot=$slot&next=$next&trap_id=$trapId&current=$unsolvedOnly&q=$queryData';
-
-    if (user.id == 'demo') {
-      return [true, <Record>[]];
-    }
 
     try {
       Response response = await dio.get(

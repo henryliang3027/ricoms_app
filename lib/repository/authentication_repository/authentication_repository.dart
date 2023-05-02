@@ -56,15 +56,6 @@ class AuthenticationRepository {
   Future<void> autoLogIn({
     required User user,
   }) async {
-    Dio dio = Dio();
-    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
-        loginIP: user.ip, dio: dio);
-
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-    String loginPath = '/account/login';
-
     if (user.id == 'demo') {
       _controller.add(AuthenticationReport(
         status: AuthenticationStatus.authenticated,
@@ -77,6 +68,15 @@ class AuthenticationRepository {
       ));
       return;
     }
+
+    Dio dio = Dio();
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String loginPath = '/account/login';
 
     try {
       Response response = await dio.post(
@@ -158,17 +158,6 @@ class AuthenticationRepository {
     required String account,
     required String password,
   }) async {
-    Dio dio = Dio();
-
-    /// 如果已經登入, 接著登出再登入時, 因為會取得 online ip, 所以不一定會用 login ip 登入
-    String onlineIP =
-        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
-
-    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
-    dio.options.connectTimeout = 10000; //10s
-    dio.options.receiveTimeout = 10000;
-    String loginPath = '/account/login';
-
     if (account == 'demo' && password == 'demo') {
       await setUserInfo(
         ip: ip,
@@ -193,6 +182,17 @@ class AuthenticationRepository {
         return [true];
       }
     }
+
+    Dio dio = Dio();
+
+    /// 如果已經登入, 接著登出再登入時, 因為會取得 online ip, 所以不一定會用 login ip 登入
+    String onlineIP =
+        await MasterSlaveServerInfo.getOnlineServerIP(loginIP: ip, dio: dio);
+
+    dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    dio.options.connectTimeout = 10000; //10s
+    dio.options.receiveTimeout = 10000;
+    String loginPath = '/account/login';
 
     try {
       Response response = await dio.post(
