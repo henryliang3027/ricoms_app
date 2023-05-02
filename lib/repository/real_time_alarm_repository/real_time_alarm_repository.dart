@@ -23,7 +23,7 @@ class RealTimeAlarmRepository {
     String realTimeAlarmApiPath = '/history/realtime?max=';
 
     if (user.id == 'demo') {
-      return [true, []];
+      return [true, <Alarm>[]];
     }
 
     try {
