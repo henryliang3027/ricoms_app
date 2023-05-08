@@ -175,6 +175,16 @@
       "description": "add device"
     },
 
+    "cut": "Cut",
+    "@all": {
+      "description": "Cut a device"
+    },
+
+    "paste": "Paste",
+    "@all": {
+      "description": "Paste a device"
+    },
+
     "edit": "Edit",
     "@all": {
       "description": "edit"

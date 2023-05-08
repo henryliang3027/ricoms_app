@@ -341,7 +341,6 @@ class CreateEditingTool extends StatelessWidget {
                       context.read<DeviceBloc>().add(const DeviceParamSaved());
                     },
                     child: const Icon(CustomIcons.check),
-                    //const Text('Save'),
                   ),
                   const Padding(
                     padding: EdgeInsets.all(6.0),
@@ -351,6 +350,10 @@ class CreateEditingTool extends StatelessWidget {
                       elevation: 0.0,
                       backgroundColor: const Color(0x742195F3),
                       onPressed: () {
+                        // 如果有點擊任何的輸入框, 那麼輸入框會出現游標, 將停留在輸入框中的游標 unfocus
+                        // 避免再次編輯的時候游標出現在錯誤的文字位置
+                        FocusScope.of(context).focusedChild?.unfocus();
+
                         context
                             .read<DeviceBloc>()
                             .add(const FormStatusChanged(false));
@@ -362,6 +365,10 @@ class CreateEditingTool extends StatelessWidget {
                 elevation: 0.0,
                 backgroundColor: const Color(0x742195F3),
                 onPressed: () {
+                  // 如果有點擊任何的輸入框, 輸入框會變成 focus 狀態, 將狀態改為 unfocus
+                  // 避免編輯的時候游標出現在錯誤的文字位置
+                  FocusScope.of(context).focusedChild?.unfocus();
+
                   context.read<DeviceBloc>().add(const FormStatusChanged(true));
                 },
                 child: const Icon(Icons.edit),
