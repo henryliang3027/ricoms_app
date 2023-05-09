@@ -218,6 +218,7 @@
     "dialogMessage_ExportChartDataSuccess": "匯出圖表資料成功",
     "dialogMessage_ExportHistoryDataSuccess": "匯出歷史資料成功",
     "dialogMessage_ExportSystemLogDataSuccess": "匯出系統紀錄成功",
+    "dialogMessage_ExportAccountDataSuccess": "匯出帳號資料成功",
     "dialogMessage_changePasswordSuccessfully": "請重新登入。",
     "dialogMessage_lostConnectionToServerContent": "請檢查您的網路連線後再重新登入",
     "dialogMessage_resetToRICOMSDefault": "確認回復 RICOMS 預設設定 ?",

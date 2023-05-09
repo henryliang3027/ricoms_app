@@ -28,3 +28,10 @@ class AccountDeleted extends AccountEvent {
   @override
   List<Object?> get props => [accountId];
 }
+
+class AccountRecordsExported extends AccountEvent {
+  const AccountRecordsExported();
+
+  @override
+  List<Object?> get props => [];
+}

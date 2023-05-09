@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/account/bloc/account/account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_page.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
 import 'package:ricoms_app/repository/account_repository/account_outline.dart';
@@ -105,6 +107,31 @@ class AccountForm extends StatelessWidget {
           _showSuccessDialog(state.deleteMsg);
         } else if (state.deleteStatus.isSubmissionFailure) {
           _showFailureDialog(state.deleteMsg);
+        } else if (state.accountExportStatus.isRequestSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  getMessageLocalization(
+                    msg: state.accountExportMsg,
+                    context: context,
+                  ),
+                ),
+                action: SnackBarAction(
+                  label: AppLocalizations.of(context)!.open,
+                  onPressed: () async {
+                    OpenResult result = await OpenFilex.open(
+                      state.accountExportPath,
+                      type: 'application/vnd.ms-excel',
+                      uti: 'com.microsoft.excel.xls',
+                    );
+                  },
+                ),
+              ),
+            );
+        } else if (state.accountExportStatus.isRequestFailure) {
+          _showFailureDialog(state.accountExportMsg);
         }
       },
       child: WillPopScope(
@@ -119,6 +146,9 @@ class AccountForm extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.account),
             leading: HomeDrawerToolTip.setToolTip(context),
             elevation: 0.0,
+            actions: const [
+              _PopupMenu(),
+            ],
           ),
           bottomNavigationBar: HomeBottomNavigationBar(
             pageController: pageController,
@@ -144,6 +174,59 @@ class AccountForm extends StatelessWidget {
           floatingActionButton: const _AccountFloatingActionButton(),
         ),
       ),
+    );
+  }
+}
+
+enum Menu {
+  export,
+}
+
+class _PopupMenu extends StatelessWidget {
+  const _PopupMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AccountBloc, AccountState>(
+      builder: (context, state) {
+        return PopupMenuButton<Menu>(
+          icon: const Icon(
+            Icons.more_vert_outlined,
+            color: Colors.white,
+          ),
+          tooltip: '',
+          onSelected: (Menu item) {
+            switch (item) {
+              case Menu.export:
+                context.read<AccountBloc>().add(const AccountRecordsExported());
+                break;
+              default:
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+                value: Menu.export,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      CustomIcons.export,
+                      size: 20.0,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.export,
+                    ),
+                  ],
+                ))
+          ],
+        );
+      },
     );
   }
 }

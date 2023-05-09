@@ -256,14 +256,23 @@ class _DeviceContent extends StatelessWidget {
       required bool isEditing,
       required Map<String, dynamic> controllerValues,
     }) {
-      return _userFunctionMap[13]
-          ? editable
-              ? CreateEditingTool(
-                  isEditing: isEditing,
-                  pageName: deviceBlock.name,
-                )
-              : null
-          : null;
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _CreateRefreshTool(
+            pageName: deviceBlock.name,
+          ),
+          _userFunctionMap[13]
+              ? editable
+                  ? _CreateEditingTool(
+                      isEditing: isEditing,
+                      pageName: deviceBlock.name,
+                    )
+                  : Container()
+              : Container(),
+        ],
+      );
     }
 
     return BlocBuilder<DeviceBloc, DeviceState>(
@@ -315,8 +324,40 @@ class _DeviceContent extends StatelessWidget {
   }
 }
 
-class CreateEditingTool extends StatelessWidget {
-  const CreateEditingTool({
+class _CreateRefreshTool extends StatelessWidget {
+  const _CreateRefreshTool({
+    Key? key,
+    required this.pageName,
+  }) : super(key: key);
+
+  final String pageName;
+
+  @override
+  Widget build(BuildContext context) {
+    return pageName != 'Description'
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                heroTag: null,
+                elevation: 0.0,
+                backgroundColor: const Color(0x742195F3),
+                onPressed: () {},
+                child: const Icon(
+                  Icons.refresh_outlined,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(6.0),
+              ),
+            ],
+          )
+        : Container();
+  }
+}
+
+class _CreateEditingTool extends StatelessWidget {
+  const _CreateEditingTool({
     Key? key,
     required this.isEditing,
     required this.pageName,

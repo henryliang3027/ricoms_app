@@ -557,14 +557,6 @@ class RootRepository {
       );
 
       String rawData = response.data;
-
-      // rawData = rawData.replaceAll('\"=\"', '');
-      // rawData = rawData.replaceAll('\"', '');
-      // rawData = rawData.replaceAll('\n', '\\n');
-
-      // RegExp regex = RegExp(r'(?<!\")\\n(?!\")');
-      // List<String> rawDataList = rawData.split(regex);
-
       RegExp regExp = RegExp(r'"[^"]*"'); // 匹配雙引號内的字串
       String specialToken = '\\n'; // 換行符號的特殊標記
       String commaSpecialToken = '\u0000'; // 逗號的特殊標記

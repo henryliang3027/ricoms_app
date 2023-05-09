@@ -18,6 +18,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountRequested>(_onAccountRequested);
     on<KeywordChanged>(_onKeywordChanged);
     on<AccountDeleted>(_onAccountDeleted);
+    on<AccountRecordsExported>(_onAccountRecordsExported);
 
     add(const AccountRequested());
   }
@@ -101,6 +102,29 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       emit(state.copyWith(
         deleteStatus: SubmissionStatus.submissionFailure,
         deleteMsg: resultOfDelete[1],
+      ));
+    }
+  }
+
+  Future<void> _onAccountRecordsExported(
+    AccountRecordsExported event,
+    Emitter<AccountState> emit,
+  ) async {
+    List<dynamic> result = await _accountRepository.exportAccounts(user: _user);
+
+    if (result[0]) {
+      emit(state.copyWith(
+        deleteStatus: SubmissionStatus.none,
+        accountExportStatus: FormStatus.requestSuccess,
+        accountExportMsg: result[1],
+        accountExportPath: result[2],
+      ));
+    } else {
+      emit(state.copyWith(
+        deleteStatus: SubmissionStatus.none,
+        accountExportStatus: FormStatus.requestFailure,
+        accountExportMsg: result[1],
+        accountExportPath: '',
       ));
     }
   }

@@ -1030,6 +1030,11 @@
       "description": "Export system logs success"
     },
 
+    "dialogMessage_ExportAccountDataSuccess": "Export account data success",
+    "@all": {
+      "description": "Export account data success"
+    },
+
     "dialogMessage_changePasswordSuccessfully": "Please login again.",
     "@all": {
       "description": "Please login again."

@@ -46,6 +46,8 @@ String getMessageLocalization({
   } else if (msg == 'Export system log data success') {
     return AppLocalizations.of(context)!
         .dialogMessage_ExportSystemLogDataSuccess;
+  } else if (msg == 'Export account data success') {
+    return AppLocalizations.of(context)!.dialogMessage_ExportAccountDataSuccess;
   } else if (msg == 'Connection failed!') {
     return AppLocalizations.of(context)!.connectionFailed;
   } else if (msg ==

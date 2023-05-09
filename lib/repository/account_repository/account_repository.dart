@@ -1,5 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:excel/excel.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:ricoms_app/account/model/account.dart';
 import 'package:ricoms_app/repository/account_repository/account_detail.dart';
 import 'package:ricoms_app/repository/account_repository/account_outline.dart';
 import 'package:ricoms_app/repository/user.dart';
@@ -251,6 +256,116 @@ class AccountRepository {
         return [false, data['msg']];
       }
     } catch (e) {
+      return [false, CustomErrMsg.connectionFailed];
+    }
+  }
+
+  /// 匯出基於目前條件下的帳號清單
+  Future<List> exportAccounts({
+    required User user,
+  }) async {
+    String onlineIP = await MasterSlaveServerInfo.getOnlineServerIP(
+        loginIP: user.ip, dio: _dio);
+    _dio.options.baseUrl = 'http://' + onlineIP + '/aci/api';
+    _dio.options.connectTimeout = 10000; //10s
+    _dio.options.receiveTimeout = 10000;
+    String exportAccountsApiPath = '/accounts/export';
+
+    try {
+      Response response = await _dio.get(
+        exportAccountsApiPath,
+      );
+
+      String rawData = response.data;
+      RegExp regExp = RegExp(r'"[^"]*"'); // 匹配雙引號内的字串
+      String specialToken = '\\n'; // 換行符號的特殊標記
+      String commaSpecialToken = '\u0000'; // 逗號的特殊標記
+
+      // 將在雙引號內的换行符號替換為特殊標記
+      String modifiedString = rawData.replaceAllMapped(regExp, (match) {
+        return match[0]!.replaceAll('\n', specialToken);
+      });
+
+      // 對替換後的字串進行分割
+      List<String> rawDataList = modifiedString.split('\n');
+
+      // 將特殊標記替换為真正的換行符號
+      for (int i = 0; i < rawDataList.length; i++) {
+        rawDataList[i] = rawDataList[i].replaceAll(specialToken, '\n');
+      }
+
+      Excel excel = Excel.createExcel();
+      Sheet sheet = excel['Sheet1'];
+
+      for (int i = 0; i < rawDataList.length; i++) {
+        if (rawDataList[i].isNotEmpty) {
+          // 將在雙引號內的逗號替換為特殊標記
+          String modifiedSubString =
+              rawDataList[i].replaceAllMapped(regExp, (match) {
+            return match[0]!.replaceAll(',', commaSpecialToken);
+          });
+
+          List<String> line = modifiedSubString.split(',');
+
+          // 將特殊標記替换為真正的逗號
+          for (int j = 0; j < line.length; j++) {
+            line[j] = line[j].replaceAll(commaSpecialToken, ',');
+          }
+
+          List<String> noQuotesLine = [];
+
+          // 將雙引號去掉, 替換為空字元
+          for (String word in line) {
+            if (word.startsWith('\"') && word.endsWith('\"')) {
+              word = word.replaceFirst('\"', '');
+              word = word.replaceFirst('\"', '', word.length - 1);
+              word = word.replaceAll('\"\"', '\"');
+            }
+
+            noQuotesLine.add(word);
+          }
+
+          sheet.insertRowIterables(noQuotesLine, i);
+        }
+      }
+
+      var fileBytes = excel.save();
+
+      String timeStamp =
+          DateFormat('yyyy_MM_dd_HH_mm_ss').format(DateTime.now()).toString();
+
+      String filename = 'User_Accounts_data_$timeStamp.xlsx';
+
+      if (Platform.isIOS) {
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+        String appDocPath = appDocDir.path;
+        String fullWrittenPath = '$appDocPath/$filename';
+        File f = File(fullWrittenPath);
+        await f.writeAsBytes(fileBytes!);
+        return [
+          true,
+          'Export account data success',
+          fullWrittenPath,
+        ];
+      } else if (Platform.isAndroid) {
+        Directory appDocDir = await getApplicationDocumentsDirectory();
+        String appDocPath = appDocDir.path;
+        String fullWrittenPath = '$appDocPath/$filename';
+        File f = File(fullWrittenPath);
+        await f.writeAsBytes(fileBytes!);
+
+        return [
+          true,
+          'Export account data success',
+          fullWrittenPath,
+        ];
+      } else {
+        return [
+          false,
+          'write file failed, export function not implement on ${Platform.operatingSystem} '
+        ];
+      }
+    } on DioError catch (_) {
       return [false, CustomErrMsg.connectionFailed];
     }
   }

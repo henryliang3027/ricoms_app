@@ -33,6 +33,7 @@ class SelectModuleForm extends StatelessWidget {
             ),
           ],
         ),
+        floatingActionButton: const _RefreshFloatingActionButton(),
       ),
     );
   }
@@ -224,6 +225,23 @@ class _ModuleListView extends StatelessWidget {
           );
         }
       },
+    );
+  }
+}
+
+class _RefreshFloatingActionButton extends StatelessWidget {
+  const _RefreshFloatingActionButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      heroTag: null,
+      elevation: 0.0,
+      backgroundColor: const Color(0x742195F3),
+      onPressed: () {},
+      child: const Icon(
+        Icons.refresh_outlined,
+      ),
     );
   }
 }
