@@ -54,6 +54,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     // add(const NormalAlarmRequested(RequestMode.initial));
     // add(const NoticeAlarmRequested(RequestMode.initial));
 
+    // 原則上要加 await, 這裡先不加, 因為沒有要馬上播放, 如果要馬上播放會沒有聲音
     _assetsAudioPlayer.open(
       Audio("assets/audios/trap_sound.mp3"),
       autoStart: false,
