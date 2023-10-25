@@ -147,6 +147,7 @@ class _AppViewState extends State<AppView> {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
+      locale: const Locale('en'),
       supportedLocales: const <Locale>[
         Locale('en'),
         Locale('zh'),
