@@ -147,13 +147,34 @@ class _AppViewState extends State<AppView> {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      locale: const Locale('en'),
+      localeListResolutionCallback: (locales, supportedLocales) {
+        // locales 為手機系統語言列表
+        // supportedLocales 為 下面參數定義的 supportedLocales
+
+        Locale defaultLocale = const Locale('en');
+        if (locales != null) {
+          // 如果手機系統語言列表是空的，則使用英文
+          if (locales.isEmpty) {
+            return defaultLocale;
+          } else {
+            List<String> languageCodes =
+                supportedLocales.map((e) => e.languageCode).toList();
+
+            // 比較 locales 中是否有符合 supportedLocales 的語言
+            // 有的話就使用該語言
+            defaultLocale = locales.firstWhere(
+                (locale) => languageCodes.contains(locale.languageCode));
+
+            return defaultLocale;
+          }
+        } else {
+          // 如果手機系統語言列表是 null，則使用英文
+          return defaultLocale;
+        }
+      },
       supportedLocales: const <Locale>[
         Locale('en'),
-        Locale('zh'),
-        Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hant'), //to use traditional chinese datepicker
+        Locale('zh', 'TW'),
       ],
       navigatorKey: _navigatorKey,
       builder: (context, child) {
