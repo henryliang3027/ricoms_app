@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/bookmarks/bloc/bookmarks_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -272,7 +271,7 @@ class _DeviceSliverList extends StatelessWidget {
                                     _getDisplayName(device),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: const TextStyle(
                                       fontSize: CommonStyle.sizeL,
                                       //fontWeight: FontWeight.w500,
                                     ),
@@ -289,7 +288,7 @@ class _DeviceSliverList extends StatelessWidget {
                                         device.ip,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.roboto(
+                                        style: const TextStyle(
                                           fontSize: CommonStyle.sizeS,
                                           //fontWeight: FontWeight.w500,
                                         ),

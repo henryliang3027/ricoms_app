@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/account/bloc/account/account_bloc.dart';
 import 'package:ricoms_app/account/view/account_edit_page.dart';
@@ -403,7 +402,7 @@ class _AccountSliverList extends StatelessWidget {
                                   child: Text(
                                     accountOutline.account,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: const TextStyle(
                                       fontSize: CommonStyle.sizeL,
                                     ),
                                   ),
@@ -419,7 +418,7 @@ class _AccountSliverList extends StatelessWidget {
                                     Text(
                                       accountOutline.permission,
                                       overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.roboto(
+                                      style: const TextStyle(
                                         fontSize: CommonStyle.sizeS,
                                         //fontWeight: FontWeight.w500,
                                       ),
@@ -440,7 +439,7 @@ class _AccountSliverList extends StatelessWidget {
                                     accountOutline.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: const TextStyle(
                                       fontSize: CommonStyle.sizeS,
                                       color: Colors.grey,
                                       //fontWeight: FontWeight.w500,
@@ -456,7 +455,7 @@ class _AccountSliverList extends StatelessWidget {
                                     accountOutline.department ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.roboto(
+                                    style: const TextStyle(
                                       fontSize: CommonStyle.sizeS,
                                       //fontWeight: FontWeight.w500,
                                     ),

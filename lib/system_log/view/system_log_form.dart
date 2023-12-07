@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -365,11 +364,11 @@ class _LogSliverList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          const Expanded(
             flex: 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(
                   CustomIcons.user,
                   color: Colors.blue,
@@ -396,7 +395,7 @@ class _LogSliverList extends StatelessWidget {
                         log.event,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeL,
                           //fontWeight: FontWeight.w500,
                         ),
@@ -405,7 +404,7 @@ class _LogSliverList extends StatelessWidget {
                         log.account,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeS,
                           //fontWeight: FontWeight.w500,
                         ),
@@ -422,7 +421,7 @@ class _LogSliverList extends StatelessWidget {
                         log.userIP,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeS,
                           //fontWeight: FontWeight.w500,
                         ),
@@ -431,7 +430,7 @@ class _LogSliverList extends StatelessWidget {
                         log.startTime,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeS,
                           //fontWeight: FontWeight.w500,
                         ),
@@ -482,7 +481,7 @@ class _LogSliverList extends StatelessWidget {
                     log.event,
                     //maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.roboto(
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeL,
                       //fontWeight: FontWeight.w500,
                     ),
@@ -494,7 +493,7 @@ class _LogSliverList extends StatelessWidget {
                     DisplayStyle.getSystemLogDeviceTypeDeviceDisplayName(log),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.roboto(
+                    style: const TextStyle(
                       fontSize: CommonStyle.sizeS,
                       //fontWeight: FontWeight.w500,
                     ),
@@ -509,7 +508,7 @@ class _LogSliverList extends StatelessWidget {
                         log.deviceIP,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeS,
                           //fontWeight: FontWeight.w500,
                         ),
@@ -518,7 +517,7 @@ class _LogSliverList extends StatelessWidget {
                         log.startTime,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
+                        style: const TextStyle(
                           fontSize: CommonStyle.sizeS,
                           //fontWeight: FontWeight.w500,
                         ),

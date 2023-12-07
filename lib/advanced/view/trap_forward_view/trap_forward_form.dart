@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/advanced/bloc/trap_forward/trap_forward_bloc.dart';
 import 'package:ricoms_app/advanced/view/trap_forward_view/trap_forward_edit_page.dart';
 import 'package:ricoms_app/custom_icons/custom_icons_icons.dart';
@@ -365,7 +364,7 @@ class _ForwardOutlineSliverList extends StatelessWidget {
                               forwardOutline.name,
                               //maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.roboto(
+                              style: const TextStyle(
                                 fontSize: CommonStyle.sizeXL,
                                 //fontWeight: FontWeight.w500,
                               ),

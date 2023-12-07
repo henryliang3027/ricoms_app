@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ricoms_app/repository/root_repository/device_repository.dart';
 import 'package:ricoms_app/root/bloc/device_history/device_history_bloc.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -161,7 +160,7 @@ class _HistorySliverList extends StatelessWidget {
                                         10.0, 0.0, 10.0, 0.0),
                                     child: Text(
                                       'Clear Time: ${deviceHistoryData.clearTime}',
-                                      style: GoogleFonts.roboto(
+                                      style: TextStyle(
                                         fontSize: 12.0,
                                         //fontWeight: FontWeight.w600,
                                         color: Colors.grey.shade400,
@@ -173,7 +172,7 @@ class _HistorySliverList extends StatelessWidget {
                                         10.0, 0.0, 10.0, 0.0),
                                     child: Text(
                                       'Time Received: ${deviceHistoryData.timeReceived}',
-                                      style: GoogleFonts.roboto(
+                                      style: TextStyle(
                                         fontSize: CommonStyle.sizeS,
                                         //fontWeight: FontWeight.w600,
                                         color: Colors.grey.shade400,
@@ -362,7 +361,7 @@ class _HistoryFloatingActionButton extends StatelessWidget {
 //                               deviceHistoryData.event,
 //                               maxLines: 2,
 //                               overflow: TextOverflow.ellipsis,
-//                               style: GoogleFonts.roboto(
+//                               style: const TextStyle(
 //                                 fontSize: 18.0,
 //                                 //fontWeight: FontWeight.w500,
 //                               ),
@@ -374,7 +373,7 @@ class _HistoryFloatingActionButton extends StatelessWidget {
 //                                       10.0, 0.0, 10.0, 0.0),
 //                                   child: Text(
 //                                     'Clear Time: ${deviceHistoryData.clearTime}',
-//                                     style: GoogleFonts.roboto(
+//                                     style: const TextStyle(
 //                                       fontSize: 12.0,
 //                                       //fontWeight: FontWeight.w600,
 //                                       color: Colors.grey.shade400,
@@ -386,7 +385,7 @@ class _HistoryFloatingActionButton extends StatelessWidget {
 //                                       10.0, 0.0, 10.0, 0.0),
 //                                   child: Text(
 //                                     'Time Received: ${deviceHistoryData.timeReceived}',
-//                                     style: GoogleFonts.roboto(
+//                                     style: const TextStyle(
 //                                       fontSize: 12.0,
 //                                       //fontWeight: FontWeight.w600,
 //                                       color: Colors.grey.shade400,

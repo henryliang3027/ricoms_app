@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:ricoms_app/authentication/bloc/authentication_bloc.dart';
 import 'package:ricoms_app/home/view/home_bottom_navigation_bar.dart';
 import 'package:ricoms_app/home/view/home_drawer.dart';
@@ -278,7 +278,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
                             alarmData.event,
                             //maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
+                            style: const TextStyle(
                               fontSize: CommonStyle.sizeL,
                               //fontWeight: FontWeight.w500,
                             ),
@@ -291,7 +291,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
                             _getDisplayName(alarmData),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
+                            style: const TextStyle(
                               fontSize: CommonStyle.sizeS,
                               //fontWeight: FontWeight.w500,
                             ),
@@ -307,7 +307,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
                                 alarmData.ip,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
+                                style: const TextStyle(
                                   fontSize: CommonStyle.sizeS,
                                   //fontWeight: FontWeight.w500,
                                 ),
@@ -316,7 +316,7 @@ SliverChildBuilderDelegate _alarmSliverChildBuilderDelegate(
                                 alarmData.receivedTime,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
+                                style: const TextStyle(
                                   fontSize: CommonStyle.sizeS,
                                   //fontWeight: FontWeight.w500,
                                 ),
