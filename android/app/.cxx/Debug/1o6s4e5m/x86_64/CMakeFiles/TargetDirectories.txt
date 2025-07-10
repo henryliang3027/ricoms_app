@@ -1,0 +1,2 @@
+/Users/henry.liang/projects_git/20230307/ricoms_app/android/app/.cxx/Debug/1o6s4e5m/x86_64/CMakeFiles/edit_cache.dir
+/Users/henry.liang/projects_git/20230307/ricoms_app/android/app/.cxx/Debug/1o6s4e5m/x86_64/CMakeFiles/rebuild_cache.dir

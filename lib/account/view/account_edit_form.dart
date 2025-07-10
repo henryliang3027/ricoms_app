@@ -431,20 +431,24 @@ class _PermissionDropDownMenu extends StatelessWidget {
               child: DropdownButtonHideUnderline(
                 child: DropdownButton2(
                   alignment: AlignmentDirectional.centerEnd,
-                  buttonPadding: const EdgeInsets.only(left: 5, right: 5),
-                  buttonHeight: 32,
-                  buttonDecoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey.shade700,
+                  buttonStyleData: ButtonStyleData(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    height: 32,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey.shade700,
+                      ),
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: _isMatchCurrentUser()
+                          ? Colors.grey.shade500
+                          : Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: _isMatchCurrentUser()
-                        ? Colors.grey.shade500
-                        : Colors.white,
                   ),
                   isExpanded: true,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  iconDisabledColor: Colors.grey.shade700,
+                  iconStyleData: IconStyleData(
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    iconDisabledColor: Colors.grey.shade700,
+                  ),
                   value: state.permission,
                   items: [
                     for (String k in types.keys)

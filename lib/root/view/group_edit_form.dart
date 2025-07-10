@@ -321,7 +321,7 @@ class _CancelButton extends StatelessWidget {
       padding: const EdgeInsets.all(CommonStyle.lineSpacing),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.white,
+            backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
                 side: BorderSide(width: 1.0, color: Colors.black),
                 borderRadius: BorderRadius.all(Radius.circular(4.0))),

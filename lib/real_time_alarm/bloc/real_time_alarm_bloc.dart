@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository/real_time_alarm_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
 import 'package:ricoms_app/root/bloc/form_status.dart';
@@ -54,16 +54,12 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     // add(const NormalAlarmRequested(RequestMode.initial));
     // add(const NoticeAlarmRequested(RequestMode.initial));
 
-    // 原則上要加 await, 這裡先不加, 因為沒有要馬上播放, 如果要馬上播放會沒有聲音
-    _assetsAudioPlayer.open(
-      Audio("assets/audios/trap_sound.mp3"),
-      autoStart: false,
-    );
+    _audioPlayer.setUrl("assets/audios/trap_sound.mp3");
   }
 
   final User _user;
   final RealTimeAlarmRepository _realTimeAlarmRepository;
-  final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   StreamSubscription<int>? _dataStreamSubscription;
 
@@ -79,7 +75,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
   ) {
     if (AlarmSoundConfig.activateAlarm) {
       if (AlarmSoundConfig.enableTrapAlarmSound[event.latestAlarm.severity]) {
-        _assetsAudioPlayer.play();
+        _audioPlayer.play();
       }
     }
   }

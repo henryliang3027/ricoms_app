@@ -146,6 +146,12 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
+
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.lightBlue,
+        ),
+      ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeListResolutionCallback: (locales, supportedLocales) {
         // locales 為手機系統語言列表

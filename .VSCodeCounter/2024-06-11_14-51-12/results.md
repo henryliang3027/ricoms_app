@@ -1,0 +1,21 @@
+# Summary
+
+Date : 2024-06-11 14:51:12
+
+Directory /Users/henry.liang/projects_git/20230307/ricoms_app/android/app/src/main/java/io/flutter/app
+
+Total : 1 files,  13 codes, 9 comments, 4 blanks, all 26 lines
+
+Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
+
+## Languages
+| language | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Java | 1 | 13 | 9 | 4 | 26 |
+
+## Directories
+| path | files | code | comment | blank | total |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| . | 1 | 13 | 9 | 4 | 26 |
+
+Summary / [Details](details.md) / [Diff Summary](diff.md) / [Diff Details](diff-details.md)

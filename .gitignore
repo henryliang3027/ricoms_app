@@ -1,4 +1,3 @@
-.fvm/flutter_sdk
 
 # Miscellaneous
 *.class
@@ -53,3 +52,6 @@ ios/fastlane/Appfile
 ios/fastlane/Fastfile
 ios/fastlane/README.md
 ios/fastlane/report.xml
+
+# FVM Version Cache
+.fvm/

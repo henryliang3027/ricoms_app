@@ -66,7 +66,13 @@ class _TypeDropDownMenu extends StatelessWidget {
                 ),
                 //isDense: true,
                 isExpanded: true,
-                icon: const Icon(Icons.keyboard_arrow_down),
+                iconStyleData: const IconStyleData(
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.black45,
+                  ),
+                  iconSize: 24,
+                ),
                 value: state.type,
                 items: [
                   for (String k in types.keys)

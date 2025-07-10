@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.0+26
 
 environment:
-  sdk: ">=2.16.2 <3.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  intl: any # format datetime
 
   bloc: ^8.0.2
   flutter_bloc: ^8.1.1
@@ -40,9 +41,9 @@ dependencies:
   hive: ^2.1.0
   hive_flutter: ^1.1.0
   path_provider: ^2.0.11 # for getting external storage directory
-  permission_handler: ^10.0.0 # for asking storage read/write permission
-  device_info: ^2.0.3 # for checking android sdk version
-  intl: ^0.18.1 # format datetime
+  permission_handler: ^12.0.1 # for asking storage read/write permission
+  device_info_plus: ^9.0.3 # for checking android sdk version
+  
   url_launcher: ^6.1.10 # for opening email app with given address
   # firebase_core: ^2.4.1
   # firebase_messaging: ^14.2.1
@@ -52,14 +53,14 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   equatable: ^2.0.5
-  dropdown_button2: ^1.4.0 # custom dropdownButton and dropdownMenuItems
+  dropdown_button2: ^2.3.9 # custom dropdownButton and dropdownMenuItems
   smooth_page_indicator: ^1.0.0+2 # for dashboard piechart
-  fl_chart: ^0.55.0 # for dashboard piechart
+  fl_chart: ^1.0.0 # for dashboard piechart
   open_filex: ^4.3.1
   json_serializable: ^6.3.1
   flutter_colorpicker: ^1.0.3
-  assets_audio_player: ^3.0.6
-  pdfx: ^2.3.0
+  just_audio: ^0.10.4
+  pdfx: ^2.9.2
   internet_file: ^1.2.0 # get pdf from net
   excel: ^2.0.1 
 
@@ -68,7 +69,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  hive_generator: ^1.1.2
+  hive_generator: ^2.0.1
   build_runner: ^2.1.7
   mocktail: ^0.3.0
   bloc_test: ^9.1.0
@@ -124,5 +125,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-flutter_intl:
-  enabled: true
