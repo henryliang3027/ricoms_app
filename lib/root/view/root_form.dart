@@ -498,11 +498,10 @@ class _DynamicFloatingActionButton extends StatelessWidget {
           return _userFunctionMap[8]
               ? FloatingActionButton(
                   elevation: 0.0,
-                  backgroundColor: const Color(0x742195F3),
                   onPressed: () {
                     // because RootBloc cannot be found inside ModalBottomSheet
                     // provide the context that contain RootBloc for it
-                    showModalBottomSheet(
+                    CommonWidget.showSafeModalBottomSheet(
                         context: context,
                         builder: (_) => _NodeCreationBottomMenu(
                               parentContext: context,
@@ -559,7 +558,7 @@ class _NodeContent extends StatelessWidget {
                     // because RootBloc cannot be found inside ModalBottomSheet
                     // provide the context that contain RootBloc for it
 
-                    showModalBottomSheet(
+                    CommonWidget.showSafeModalBottomSheet(
                       context: context,
                       builder: (_) => _NodeEditBottomMenu(
                         parentContext:

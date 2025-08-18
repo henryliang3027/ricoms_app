@@ -8,6 +8,7 @@ import 'package:ricoms_app/repository/advanced_repository/trap_forward_repositor
 import 'package:ricoms_app/root/bloc/form_status.dart';
 import 'package:ricoms_app/utils/custom_style.dart';
 import 'package:ricoms_app/utils/common_style.dart';
+import 'package:ricoms_app/utils/common_widget.dart';
 import 'package:ricoms_app/utils/message_localization.dart';
 
 class TrapForwardForm extends StatelessWidget {
@@ -335,7 +336,7 @@ class _ForwardOutlineSliverList extends StatelessWidget {
                     }
                   : null,
               onLongPress: () {
-                showModalBottomSheet(
+                CommonWidget.showSafeModalBottomSheet(
                   context: context,
                   builder: (_) => BlocProvider.value(
                     value: context.read<TrapForwardBloc>(),

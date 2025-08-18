@@ -148,9 +148,78 @@ class _AppViewState extends State<AppView> {
       // debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.lightBlue,
+        bottomAppBarTheme: const BottomAppBarTheme(
+          color: Colors.white,
         ),
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.light,
+          seedColor: Colors.blue,
+          primary: Colors.blue,
+          onPrimary: Colors.white,
+          secondaryContainer: Colors.white,
+          surfaceContainerLow: Colors.white, // default Card color
+          surfaceContainerHighest: Colors.white,
+          onSurface: Colors.black,
+        ),
+
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.blue,
+        ),
+        tabBarTheme: const TabBarTheme(
+          tabAlignment: TabAlignment.start,
+          unselectedLabelColor: Colors.white,
+          labelColor: Colors.blue,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicator: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+            color: Colors.white,
+          ),
+          labelPadding: EdgeInsets.symmetric(horizontal: 24.0),
+          dividerColor: Colors.white,
+        ),
+        cardColor: const Color.fromARGB(
+            255, 255, 165, 45), // card tap color in setting page
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.white,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey.shade700,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            elevation: WidgetStateProperty.resolveWith<double?>(
+                (Set<WidgetState> states) {
+              return 0.0;
+            }),
+            backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade300; // Disabled background color
+              }
+              return Colors.indigo; // Enabled background color
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey.shade500; // Disabled text color
+              }
+              return Colors.white; // Enabled text color
+            }),
+          ),
+        ),
+        scaffoldBackgroundColor: Colors.grey.shade50,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.blue.withAlpha(200),
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(
+            side: BorderSide.none,
+          ),
+        ),
+        useMaterial3: true,
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       localeListResolutionCallback: (locales, supportedLocales) {

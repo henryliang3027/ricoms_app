@@ -227,7 +227,7 @@ class _DeviceSliverList extends StatelessWidget {
                       }
                     },
                     onLongPress: () {
-                      showModalBottomSheet(
+                      CommonWidget.showSafeModalBottomSheet(
                         context: context,
                         builder: (_) => BlocProvider.value(
                           value: context.read<BookmarksBloc>(),

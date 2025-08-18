@@ -322,7 +322,7 @@ class _HistorySliverList extends StatelessWidget {
               onTap: () {
                 // because HistoryBloc cannot be found inside ModalBottomSheet
                 // provide the context that contain HistoryBloc for it
-                showModalBottomSheet(
+                CommonWidget.showSafeModalBottomSheet(
                   context: context,
                   builder: (_) => _HistoryBottomMenu(
                     parentContext: context,

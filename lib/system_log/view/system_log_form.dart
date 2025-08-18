@@ -324,7 +324,7 @@ class _LogSliverList extends StatelessWidget {
               onTap: () {
                 // because SystemLogBloc cannot be found inside ModalBottomSheet
                 // provide the context that contain SystemLogBloc for it
-                showModalBottomSheet(
+                CommonWidget.showSafeModalBottomSheet(
                   context: context,
                   builder: (_) => _LogBottomMenu(
                     parentContext: context,

@@ -245,7 +245,6 @@ class _AccountFloatingActionButton extends StatelessWidget {
             ? Container()
             : FloatingActionButton(
                 elevation: 0.0,
-                backgroundColor: const Color(0x742195F3),
                 onPressed: () async {
                   bool? isModify = await Navigator.push(
                       context, AccountEditPage.route(isEditing: false));
@@ -256,7 +255,9 @@ class _AccountFloatingActionButton extends StatelessWidget {
                     }
                   }
                 },
-                child: const Icon(Icons.add),
+                child: Icon(
+                  Icons.add,
+                ),
               );
       },
     );
@@ -374,7 +375,7 @@ class _AccountSliverList extends StatelessWidget {
               onLongPress: () {
                 // because AccountBloc cannot be found inside ModalBottomSheet
                 // provide the context that contain AccountBloc for it
-                showModalBottomSheet(
+                CommonWidget.showSafeModalBottomSheet(
                   context: context,
                   builder: (_) => _AccountEditBottomMenu(
                     parentContext: context,

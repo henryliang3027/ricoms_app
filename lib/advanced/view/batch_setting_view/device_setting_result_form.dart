@@ -307,13 +307,21 @@ class _ParameterItem extends StatelessWidget {
         child: InkWell(
           onLongPress: () {
             showModalBottomSheet(
-              context: context,
-              builder: (_) => _DeviceSettingResultBottomMenu(
-                parentContext: context,
-                deviceParamItem: device,
-                resultDetail: resultDetail,
-              ),
-            );
+                isScrollControlled: true,
+                context: context,
+                builder: (_) {
+                  return Container(
+                    // Add bottom padding to avoid system navigation bar
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewPadding.bottom,
+                    ),
+                    child: _DeviceSettingResultBottomMenu(
+                      parentContext: context,
+                      deviceParamItem: device,
+                      resultDetail: resultDetail,
+                    ),
+                  );
+                });
           },
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -373,10 +381,7 @@ class _ParameterItem extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : SizedBox(
-                              height: 0.0,
-                              width: 0.0,
-                            ),
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -444,7 +449,6 @@ class _RetryFloatingActionButton extends StatelessWidget {
                   FloatingActionButton(
                     heroTag: null,
                     elevation: 0.0,
-                    backgroundColor: const Color(0x742195F3),
                     onPressed: () async {
                       context
                           .read<DeviceSettingResultBloc>()
@@ -461,7 +465,6 @@ class _RetryFloatingActionButton extends StatelessWidget {
                   FloatingActionButton(
                       heroTag: null,
                       elevation: 0.0,
-                      backgroundColor: const Color(0x742195F3),
                       onPressed: () {
                         context
                             .read<DeviceSettingResultBloc>()
