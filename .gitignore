@@ -55,4 +55,5 @@ ios/fastlane/report.xml
 
 # FVM Version Cache
 .fvm/
-android/app/.cxx
+android/app/.cxx/
+android/app/.cxx/Debug
