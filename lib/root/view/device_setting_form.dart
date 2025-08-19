@@ -260,9 +260,9 @@ class _DeviceContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _CreateRefreshTool(
-            pageName: deviceBlock.name,
-          ),
+          // _CreateRefreshTool(
+          //   pageName: deviceBlock.name,
+          // ),
           _userFunctionMap[13]
               ? editable
                   ? _CreateEditingTool(

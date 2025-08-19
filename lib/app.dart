@@ -195,27 +195,30 @@ class _AppViewState extends State<AppView> {
                 (Set<WidgetState> states) {
               return 0.0;
             }),
+            shape: WidgetStateProperty.resolveWith<OutlinedBorder?>(
+                (Set<WidgetState> states) {
+              return const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              );
+            }),
             backgroundColor: WidgetStateProperty.resolveWith<Color?>(
                 (Set<WidgetState> states) {
               if (states.contains(WidgetState.disabled)) {
                 return Colors.grey.shade300; // Disabled background color
               }
-              return Colors.indigo; // Enabled background color
+              return Colors.blue; // Enabled background color
             }),
             foregroundColor: WidgetStateProperty.resolveWith<Color?>(
                 (Set<WidgetState> states) {
-              if (states.contains(WidgetState.disabled)) {
-                return Colors.grey.shade500; // Disabled text color
-              }
               return Colors.white; // Enabled text color
             }),
           ),
         ),
         scaffoldBackgroundColor: Colors.grey.shade50,
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.blue.withAlpha(200),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color(0x742195F3),
           foregroundColor: Colors.white,
-          shape: const CircleBorder(
+          shape: CircleBorder(
             side: BorderSide.none,
           ),
         ),

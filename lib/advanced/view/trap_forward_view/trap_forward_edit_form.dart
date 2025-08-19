@@ -160,34 +160,36 @@ class TrapForwardEditForm extends StatelessWidget {
                     AppLocalizations.of(context)!.addTrapForward,
                   ),
           ),
-          body: Container(
-            height: double.maxFinite,
-            width: double.maxFinite,
-            color: Colors.white,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                  ),
-                  const _EnableSwitchListTile(),
-                  _NameInput(nameController: _nameController),
-                  _IPInput(nameController: _ipController),
-                  const _ParametersSwitchListTile(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const _CancelButton(),
-                      _SaveButton(
-                        isEditing: _isEditing,
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                  ),
-                ],
+          body: SafeArea(
+            child: Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              color: Colors.white,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                    ),
+                    const _EnableSwitchListTile(),
+                    _NameInput(nameController: _nameController),
+                    _IPInput(nameController: _ipController),
+                    const _ParametersSwitchListTile(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const _CancelButton(),
+                        _SaveButton(
+                          isEditing: _isEditing,
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(16.0),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -216,6 +218,7 @@ class _EnableSwitchListTile extends StatelessWidget {
             child: SwitchListTile(
               title: const Text('Enable'),
               visualDensity: const VisualDensity(vertical: -4.0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
               value: state.enable,
               onChanged: (bool value) {
                 context
@@ -354,6 +357,7 @@ class _ParametersSwitchListTile extends StatelessWidget {
           title: Text(parameter.name),
           visualDensity: const VisualDensity(vertical: -4.0),
           value: isChecked,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
           onChanged: (bool value) {
             context
                 .read<EditTrapForwardBloc>()
@@ -399,7 +403,7 @@ class _CancelButton extends StatelessWidget {
             backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
                 side: BorderSide(width: 1.0, color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),

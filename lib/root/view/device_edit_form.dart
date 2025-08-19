@@ -520,10 +520,11 @@ class _ModuleSeries extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: CustomStyle.severityColor[0],
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                  horizontal: 10.0,
+                                ),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 visualDensity: const VisualDensity(
-                                  vertical: -1.0,
+                                  vertical: -1.5,
                                 ),
                                 textStyle: const TextStyle(
                                   fontSize: CommonStyle.sizeM,
@@ -685,18 +686,6 @@ class _SaveButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(CommonStyle.lineSpacing),
           child: ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed)) {
-                    return Colors.blue;
-                  } else if (states.contains(MaterialState.disabled)) {
-                    return Colors.grey;
-                  }
-                  return null; // Use the component's default.
-                },
-              ),
-            ),
             key: const Key('deviceEditForm_submit_raisedButton'),
             child: state.isEditing
                 ? Text(

@@ -352,18 +352,6 @@ class _SubmitButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(6),
           child: ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed)) {
-                    return Colors.blue;
-                  } else if (states.contains(MaterialState.disabled)) {
-                    return Colors.grey;
-                  }
-                  return null; // Use the component's default.
-                },
-              ),
-            ),
             key: const Key('groupEditForm_submit_raisedButton'),
             child: state.isEditing
                 ? Text(

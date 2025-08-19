@@ -4,6 +4,13 @@ abstract class RealTimeAlarmEvent extends Equatable {
   const RealTimeAlarmEvent();
 }
 
+class AlarmAudioInitialized extends RealTimeAlarmEvent {
+  const AlarmAudioInitialized();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class AllAlarmRequested extends RealTimeAlarmEvent {
   const AllAlarmRequested(this.requestMode);
   final RequestMode requestMode;

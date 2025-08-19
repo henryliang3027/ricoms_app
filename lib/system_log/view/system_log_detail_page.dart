@@ -25,66 +25,68 @@ class SystemLogDetailPage extends StatelessWidget {
         ),
         elevation: 0.0,
       ),
-      body: SizedBox(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.systemLogType,
-                initialValue: log.logType,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.account,
-                initialValue: log.account,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.permission,
-                initialValue: log.permission,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.department,
-                initialValue: log.model,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.userIP,
-                initialValue: log.userIP,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.timeReceived,
-                initialValue: log.startTime,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.deviceIP,
-                initialValue: log.deviceIP,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.group,
-                initialValue: log.group,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.model,
-                initialValue: log.model,
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.name,
-                initialValue:
-                    DisplayStyle.getSystemLogDeviceTypeDeviceDisplayName(log),
-              ),
-              _Item(
-                labelText: AppLocalizations.of(context)!.event,
-                initialValue: log.event,
-              ),
-              _DescriptionItem(
-                labelText: AppLocalizations.of(context)!.description,
-                initialValue: log.description,
-              ),
-            ],
+      body: SafeArea(
+        child: SizedBox(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.systemLogType,
+                  initialValue: log.logType,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.account,
+                  initialValue: log.account,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.permission,
+                  initialValue: log.permission,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.department,
+                  initialValue: log.model,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.userIP,
+                  initialValue: log.userIP,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.timeReceived,
+                  initialValue: log.startTime,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.deviceIP,
+                  initialValue: log.deviceIP,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.group,
+                  initialValue: log.group,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.model,
+                  initialValue: log.model,
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.name,
+                  initialValue:
+                      DisplayStyle.getSystemLogDeviceTypeDeviceDisplayName(log),
+                ),
+                _Item(
+                  labelText: AppLocalizations.of(context)!.event,
+                  initialValue: log.event,
+                ),
+                _DescriptionItem(
+                  labelText: AppLocalizations.of(context)!.description,
+                  initialValue: log.description,
+                ),
+              ],
+            ),
           ),
         ),
       ),

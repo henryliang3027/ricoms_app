@@ -121,6 +121,7 @@ Widget _buildTrapAlarmSoundSwitchTile({
       ),
       title: Text(title),
       visualDensity: const VisualDensity(vertical: -4.0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
       value: initValue,
       onChanged: isEditing
           ? (bool value) {

@@ -59,6 +59,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   ) {
     emit(state.copyWith(
       deleteStatus: SubmissionStatus.none,
+      accountExportStatus: FormStatus.none,
       keyword: event.keyword,
     ));
   }
@@ -69,6 +70,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   ) async {
     emit(state.copyWith(
       deleteStatus: SubmissionStatus.submissionInProgress,
+      accountExportStatus: FormStatus.none,
     ));
 
     List<dynamic> resultOfDelete = await _accountRepository.deleteAccount(

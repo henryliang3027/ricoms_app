@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:ricoms_app/repository/real_time_alarm_repository/real_time_alarm_repository.dart';
@@ -33,6 +34,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
   })  : _user = user,
         _realTimeAlarmRepository = realTimeAlarmRepository,
         super(const RealTimeAlarmState()) {
+    on<AlarmAudioInitialized>(_onAlarmAudioInitialized);
     on<AllAlarmRequested>(_onAllAlarmRequested);
     on<CriticalAlarmRequested>(_onCriticalAlarmRequested);
     on<WarningAlarmRequested>(_onWarningAlarmRequested);
@@ -54,7 +56,7 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     // add(const NormalAlarmRequested(RequestMode.initial));
     // add(const NoticeAlarmRequested(RequestMode.initial));
 
-    _audioPlayer.setUrl("assets/audios/trap_sound.mp3");
+    add(const AlarmAudioInitialized());
   }
 
   final User _user;
@@ -69,10 +71,20 @@ class RealTimeAlarmBloc extends Bloc<RealTimeAlarmEvent, RealTimeAlarmState> {
     return super.close();
   }
 
+  Future<void> _onAlarmAudioInitialized(
+    AlarmAudioInitialized event,
+    Emitter<RealTimeAlarmState> emit,
+  ) async {
+    await _audioPlayer.setAsset('assets/audios/trap_sound.mp3');
+    if (kDebugMode) {
+      print('Alarm audio initialized');
+    }
+  }
+
   void _onAlarmSoundPlayed(
     AlarmSoundPlayed event,
     Emitter<RealTimeAlarmState> emit,
-  ) {
+  ) async {
     if (AlarmSoundConfig.activateAlarm) {
       if (AlarmSoundConfig.enableTrapAlarmSound[event.latestAlarm.severity]) {
         _audioPlayer.play();
