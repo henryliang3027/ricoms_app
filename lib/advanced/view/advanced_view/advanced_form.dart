@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ricoms_app/advanced/view/batch_setting_view/select_module_page.dart';
-import 'package:ricoms_app/advanced/view/clear_log_record_setting_view/clear_log_record_setting_page.dart';
+import 'package:ricoms_app/advanced/view/log_record_setting_view/log_record_setting_page.dart';
 import 'package:ricoms_app/advanced/view/default_setting_view/default_setting_page.dart';
 import 'package:ricoms_app/advanced/view/device_working_cycle_view/device_working_cycle_page.dart';
 import 'package:ricoms_app/advanced/view/server_ip_setting_view/server_ip_setting_page.dart';
