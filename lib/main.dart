@@ -20,17 +20,6 @@ import 'package:ricoms_app/repository/advanced_repository/trap_alarm_color_repos
 import 'package:ricoms_app/repository/advanced_repository/trap_alarm_sound_repository/trap_alarm_sound_repository.dart';
 import 'package:ricoms_app/repository/advanced_repository/trap_forward_repository/trap_forward_repository.dart';
 import 'package:ricoms_app/repository/user.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-
-// @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   // If you're going to use other Firebase services in the background, such as Firestore,
-//   // make sure you call `initializeApp` before using other Firebase services.
-
-//   print("Handling a background message: ${message.messageId}");
-// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,15 +34,6 @@ Future<void> main() async {
   Hive.registerAdapter<User>(UserAdapter());
   Hive.registerAdapter<DeviceMeta>(DeviceMetaAdapter());
   await Hive.openBox<User>('UserData');
-
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // final fcmToken = await FirebaseMessaging.instance.getToken();
-  // print(fcmToken);
 
   runApp(
     App(
